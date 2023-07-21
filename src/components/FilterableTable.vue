@@ -1,7 +1,13 @@
 <template>
   <v-container>
     <h2>table of schools</h2>
-    <v-data-table :headers="headers" :items="tableData" class="elevation-1"></v-data-table>
+    <v-data-table 
+      :headers="headers" 
+      :items="tableData" 
+      @click:row="handleRowClick"
+      class="elevation-1"
+    >
+    </v-data-table>
   </v-container>
 </template>
 
@@ -34,6 +40,9 @@ export default {
         })
         .catch((error) => console.error('Error fetching or parsing data:', error));
     },
+    handleRowClick(item) {
+      alert('You clicked ' + item.name);
+    }
   },
   mounted() {
     this.fetchData();
