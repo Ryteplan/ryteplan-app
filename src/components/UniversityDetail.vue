@@ -1,5 +1,6 @@
+<!-- src/components/UniversityDetail.vue -->
 <template>
-  <div class="university-page">
+  <div>
     <h2>{{ university.name }}</h2>
     <p>Location: {{ university.location }}</p>
     <p>Ranking: {{ university.ranking }}</p>
@@ -10,10 +11,11 @@
 
 <script>
 export default {
-  props: ['university'],
+  props: {
+    university: {
+      type: Object,
+      required: true,
+    },
+  },
 };
 </script>
-
-<style>
-/* Add your desired CSS styles here */
-</style>

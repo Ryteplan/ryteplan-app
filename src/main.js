@@ -1,12 +1,29 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 import { createRouter, createWebHistory } from 'vue-router';
+import { createVuetify } from 'vuetify'
+import * as components from 'vuetify/components'
+import * as labsComponents from 'vuetify/labs/components'
+import * as directives from 'vuetify/directives'
+import 'vuetify/dist/vuetify.min.css';
+
+
+// Import components
 import FilterableTable from './components/FilterableTable.vue';
-import UniversityPage from './components/UniversityPage.vue';
+import UniversityDetail from './components/UniversityDetail.vue';
 
 const routes = [
-  { path: '/', component: FilterableTable },
-  { path: '/university/:id', component: UniversityPage, props: true, name: 'university' },
+  // Add the root route for the FilterableTable component
+  {
+    path: '/',
+    name: 'home',
+    component: FilterableTable,
+  },
+  {
+    path: '/university/:id',
+    name: 'university',
+    component: UniversityDetail,
+  },
 ];
 
 const router = createRouter({
@@ -17,5 +34,15 @@ const router = createRouter({
 const app = createApp(App);
 
 app.use(router);
+
+const vuetify = createVuetify({
+  components: {
+    ...components,
+    ...labsComponents,
+  },
+  directives,
+})
+
+app.use(vuetify)
 
 app.mount('#app');
