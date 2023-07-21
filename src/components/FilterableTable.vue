@@ -23,6 +23,7 @@ export default {
           { title: 'Location', key: 'Location' },
           { title: 'Ranking', key: 'Ranking' },
           { title: 'Average Tuition', key: 'Average Tuition' },
+          { title: 'Has Hospital', key: 'Has Hospital' },
           { title: 'Website', key: 'Website' },
         ],
     };
@@ -41,7 +42,7 @@ export default {
         .catch((error) => console.error('Error fetching or parsing data:', error));
     },
     handleRowClick(item) {
-      alert('You clicked ' + item.name);
+      console.log(item.name);
     }
   },
   mounted() {

@@ -10,7 +10,6 @@ import 'vuetify/dist/vuetify.min.css';
 
 // Import components
 import FilterableTable from './components/FilterableTable.vue';
-import UniversityDetail from './components/UniversityDetail.vue';
 
 const routes = [
   // Add the root route for the FilterableTable component
@@ -18,11 +17,6 @@ const routes = [
     path: '/',
     name: 'home',
     component: FilterableTable,
-  },
-  {
-    path: '/university/:id',
-    name: 'university',
-    component: UniversityDetail,
   },
 ];
 
