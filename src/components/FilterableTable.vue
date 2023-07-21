@@ -34,10 +34,9 @@
   </div>
 </template>
 
-
 <script>
 import { ref, onMounted } from 'vue';
-import XLSX from 'xlsx';
+import * as XLSX from 'xlsx'; // Use the asterisk to import all functions
 
 export default {
   setup() {
@@ -99,6 +98,7 @@ export default {
   },
 };
 </script>
+
 
 
 <style>
