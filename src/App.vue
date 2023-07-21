@@ -1,26 +1,23 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="container">
+    <h1>Excel to Filterable Database</h1>
+    <!-- Use the FilterableTable component -->
+    <FilterableTable />
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+// Import the FilterableTable component
+import FilterableTable from './components/FilterableTable.vue';
 
 export default {
-  name: 'App',
   components: {
-    HelloWorld
-  }
-}
+    // Register the FilterableTable component
+    FilterableTable,
+  },
+};
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+/* Add your desired CSS styles here */
 </style>
