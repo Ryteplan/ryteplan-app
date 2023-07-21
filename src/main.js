@@ -1,23 +1,21 @@
-import Vue from 'vue';
+import { createApp } from 'vue';
 import App from './App.vue';
-import VueRouter from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 import FilterableTable from './components/FilterableTable.vue';
 import UniversityPage from './components/UniversityPage.vue';
 
-Vue.config.productionTip = false;
-
-Vue.use(VueRouter);
-
 const routes = [
   { path: '/', component: FilterableTable },
-  { path: '/university/:id', component: UniversityPage, props: true },
+  { path: '/university/:id', component: UniversityPage, props: true, name: 'university' },
 ];
 
-const router = new VueRouter({
+const router = createRouter({
+  history: createWebHistory(),
   routes,
 });
 
-new Vue({
-  router,
-  render: h => h(App),
-}).$mount('#app');
+const app = createApp(App);
+
+app.use(router);
+
+app.mount('#app');

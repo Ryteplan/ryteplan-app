@@ -34,46 +34,72 @@
   </div>
 </template>
 
+
 <script>
-import * as XLSX from "xlsx/xlsx";
+import { ref, onMounted } from 'vue';
+import XLSX from 'xlsx';
 
 export default {
-  data() {
-    return {
-      columns: ['University', 'Location', 'Ranking', 'Tuition', 'Website'], // Add 'Website' to the columns
-      data: [],
-      filteredData: [],
-      filterColumn: '',
-      filterValue: '',
-    };
-  },
-  created() {
-    this.fetchData();
-  },
-  methods: {
-    async fetchData() {
-      const response = await fetch('/Schools.xlsx');
-      const arrayBuffer = await response.arrayBuffer();
-      const workbook = XLSX.read(new Uint8Array(arrayBuffer), { type: 'array' });
-      const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-      this.data = XLSX.utils.sheet_to_json(worksheet);
-      this.filteredData = this.data;
-    },
-    applyFilter() {
-      if (!this.filterColumn || !this.filterValue) {
-        this.filteredData = this.data;
-      } else {
-        this.filteredData = this.data.filter(row => row[this.columns.indexOf(this.filterColumn)]?.toString().toLowerCase().includes(this.filterValue.toLowerCase()));
+  setup() {
+    const columns = ['University', 'Location', 'Ranking', 'Tuition', 'Website'];
+    const data = ref([]);
+    const filteredData = ref([]);
+    const filterColumn = ref('');
+    const filterValue = ref('');
+
+    const fetchData = async () => {
+      try {
+        // Update the file path to point to the correct location of the Excel file
+        const response = await fetch('/sample_data.xlsx');
+        const arrayBuffer = await response.arrayBuffer();
+        const workbook = XLSX.read(new Uint8Array(arrayBuffer), { type: 'array' });
+
+        if (workbook.SheetNames.length === 0) {
+          console.error('No sheets found in the Excel file.');
+          return;
+        }
+
+        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+        data.value = XLSX.utils.sheet_to_json(worksheet);
+        filteredData.value = data.value;
+      } catch (error) {
+        console.error('Error fetching or parsing data:', error);
       }
-    },
-    resetFilter() {
-      this.filterColumn = '';
-      this.filterValue = '';
-      this.filteredData = this.data;
-    },
+    };
+
+    const applyFilter = () => {
+      if (!filterColumn.value || !filterValue.value) {
+        filteredData.value = data.value;
+      } else {
+        filteredData.value = data.value.filter(row =>
+          row[columns.indexOf(filterColumn.value)]?.toString().toLowerCase().includes(filterValue.value.toLowerCase())
+        );
+      }
+    };
+
+    const resetFilter = () => {
+      filterColumn.value = '';
+      filterValue.value = '';
+      filteredData.value = data.value;
+    };
+
+    onMounted(() => {
+      fetchData();
+    });
+
+    return {
+      columns,
+      data,
+      filteredData,
+      filterColumn,
+      filterValue,
+      applyFilter,
+      resetFilter,
+    };
   },
 };
 </script>
+
 
 <style>
 /* Add your desired CSS styles here */
