@@ -5,6 +5,8 @@ import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as labsComponents from 'vuetify/labs/components'
 import * as directives from 'vuetify/directives'
+import '@mdi/font/css/materialdesignicons.css'
+import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import 'vuetify/dist/vuetify.min.css';
 
 
@@ -40,6 +42,13 @@ const vuetify = createVuetify({
     ...labsComponents,
   },
   directives,
+  icons: {
+    defaultSet: 'mdi',
+    aliases,
+    sets: {
+      mdi,
+    }
+  },
 })
 
 app.use(vuetify)

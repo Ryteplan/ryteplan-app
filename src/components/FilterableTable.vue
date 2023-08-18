@@ -1,11 +1,11 @@
 <template>
   <v-container>
     <div style="margin-top: 36px;">
-
       <v-text-field
         v-model="search"
         append-icon="mdi-magnify"
         label="Search"
+        multi-sort
         single-line
         hide-details
       ></v-text-field>
