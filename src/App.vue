@@ -9,3 +9,9 @@
 export default {
 };
 </script>
+
+<style>
+  a {
+    color: blue;
+  }
+</style>

@@ -1,23 +1,26 @@
 <template>
   <v-container>
+    <h1 style="margin-top: 24px;">Institution Search</h1>
     <div style="margin-top: 36px;">
       <v-text-field
         v-model="search"
-        append-icon="mdi-magnify"
         label="Search"
-        multi-sort
         single-line
         hide-details
       ></v-text-field>
     </div>
-      <v-data-table 
+    <keep-alive>
+      <v-data-table
         :headers="headers" 
         :items="tableData" 
         :search="search"
         @click:row="navigateToInstitution"
         class="elevation-1"
+        multi-sort
+        :sort-by="[{ key: 'State', order: 'asc' }]"
       >
       </v-data-table>
+    </keep-alive>
   </v-container>
 </template>
 
@@ -30,39 +33,53 @@ export default {
       search: '',
       tableData: [],
       headers: [
-          { title: 'Institution name', key: 'institution name'},
+          { title: 'Institution name', key: 'institution name' },
           { title: 'State', key: 'State' },
+          { title: 'Locale', key: ' Urban-centric locale'},
           { title: 'Admittance', key: '%admit' },
         ],
     };
   },
   methods: {
     fetchData() {
-      const file = '/Institutions.xlsx'; // Update the file name if necessary
+      const file = '/Institutions.xlsx'; 
 
       fetch(file)
         .then((res) => res.arrayBuffer())
         .then((data) => {
           const workbook = XLSX.read(new Uint8Array(data), { type: 'array' });
           const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-          this.tableData = XLSX.utils.sheet_to_json(worksheet);
+          localStorage.setItem("institutionTable", JSON.stringify(XLSX.utils.sheet_to_json(worksheet)));
         })
         .catch((error) => console.error('Error fetching or parsing data:', error));
     },
     navigateToInstitution(event, item) {
       const institution = JSON.parse(JSON.stringify(item));
 
+      localStorage.setItem("institutionDetail", JSON.stringify(institution.item.raw));
+      
       this.$router.push({ 
         name: 'institutionDetail', 
         params: { 
           name: institution.item.raw['institution name'],
-          institutionDetail: "a" 
         } 
       })
     }
   },
+  beforeMount(){
+    if (!localStorage.getItem("institutionTable")) {
+      this.fetchData();
+    }
+  },
   mounted() {
-    this.fetchData();
+    this.tableData = JSON.parse(localStorage.getItem("institutionTable"));
   },
 };
 </script>
+
+<style>
+.v-data-table-header__content {
+  color: #303030;
+  font-weight: 700;
+}
+</style>

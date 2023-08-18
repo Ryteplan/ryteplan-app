@@ -30,6 +30,13 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { top: 0 }
+    }
+  },  
 });
 
 const app = createApp(App);
@@ -54,3 +61,4 @@ const vuetify = createVuetify({
 app.use(vuetify)
 
 app.mount('#app');
+
