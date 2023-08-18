@@ -1,13 +1,23 @@
 <template>
   <v-container>
-    <h2>table of schools</h2>
-    <v-data-table 
-      :headers="headers" 
-      :items="tableData" 
-      @click:row="handleRowClick"
-      class="elevation-1"
-    >
-    </v-data-table>
+    <div style="margin-top: 36px;">
+
+      <v-text-field
+        v-model="search"
+        append-icon="mdi-magnify"
+        label="Search"
+        single-line
+        hide-details
+      ></v-text-field>
+    </div>
+      <v-data-table 
+        :headers="headers" 
+        :items="tableData" 
+        :search="search"
+        @click:row="navigateToInstitution"
+        class="elevation-1"
+      >
+      </v-data-table>
   </v-container>
 </template>
 
@@ -17,20 +27,18 @@ import * as XLSX from 'xlsx';
 export default {
   data() {
     return {
+      search: '',
       tableData: [],
       headers: [
-          { title: 'University', key: 'University'},
-          { title: 'Location', key: 'Location' },
-          { title: 'Ranking', key: 'Ranking' },
-          { title: 'Average Tuition', key: 'Average Tuition' },
-          { title: 'Has Hospital', key: 'Has Hospital' },
-          { title: 'Website', key: 'Website' },
+          { title: 'Institution name', key: 'institution name'},
+          { title: 'State', key: 'State' },
+          { title: 'Admittance', key: '%admit' },
         ],
     };
   },
   methods: {
     fetchData() {
-      const file = 'data.xlsx'; // Update the file name if necessary
+      const file = '/Institutions.xlsx'; // Update the file name if necessary
 
       fetch(file)
         .then((res) => res.arrayBuffer())
@@ -41,8 +49,16 @@ export default {
         })
         .catch((error) => console.error('Error fetching or parsing data:', error));
     },
-    handleRowClick(item) {
-      console.log(item.name);
+    navigateToInstitution(event, item) {
+      const institution = JSON.parse(JSON.stringify(item));
+
+      this.$router.push({ 
+        name: 'institutionDetail', 
+        params: { 
+          name: institution.item.raw['institution name'],
+          institutionDetail: "a" 
+        } 
+      })
     }
   },
   mounted() {
