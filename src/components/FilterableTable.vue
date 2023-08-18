@@ -93,6 +93,5 @@ export default {
 
 .v-data-table__tr:hover td {
   background: #efefef !important;
-
 }
 </style>
