@@ -20,7 +20,6 @@
       class="elevation-1"
       multi-sort
       :items-per-page="30"
-      :sort-by="[{ key: 'institution name', order: 'asc' }]"
     >
     </v-data-table>
   </v-container>
