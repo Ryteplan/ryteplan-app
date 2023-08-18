@@ -13,6 +13,29 @@
       </div>
       <v-row class="mt-6">
         <v-col cols="6">
+          <section style="margin: 24px 0;">
+            <h2>Test Related Content</h2>
+            <p><span>%enrolled submitted test score: </span>{{ institutionDetail["%enrolled submitted test score"] }}</p>
+            <v-row style="margin-top: 24px;">
+              <v-col cols="6">
+                <h3>SAT</h3>
+                <p><span>%submitting SAT scores: </span>{{ institutionDetail["%submitting SAT scores"] }}</p>
+                <p><span>SAT EBRW 25th percentile score: </span>{{ institutionDetail["SAT EBRW 25th percentile score"] }}</p>
+                <p><span>SAT EBRW 75th percentile score: </span>{{ institutionDetail["SAT EBRW 75th percentile score"] }}</p>
+                <p><span>SAT 50th%ile: </span>{{ institutionDetail["SAT 50th%ile"] }}</p>
+                <p><span>SAT Math 25th percentile score: </span>{{ institutionDetail["SAT Math 25th percentile score"] }}</p>
+                <p><span>SAT Math 75th percentile score: </span>{{ institutionDetail["SAT Math 75th percentile score"] }}</p>
+              </v-col>
+              <v-col cols="6">
+                <h3>ACT</h3>
+                <p><span>% submitting ACT scores: </span>{{ institutionDetail["% submitting ACT scores"] }}</p>
+                <p><span>ACT Composite 25th percentile score: </span>{{ institutionDetail["ACT Composite 25th percentile score"] }}</p>
+                <p><span>ACT Composite 75th percentile score: </span>{{ institutionDetail["ACT Composite 75th percentile score"] }}</p>
+                <p><span>ACT 50th%ile: </span>{{ institutionDetail["ACT 50th%ile"] }}</p>
+              </v-col>
+            </v-row>
+          </section>
+
           <p><span>Hospital: </span> {{ institutionDetail["Has hospital"] }}</p>
           <p><span>HBCU: </span> {{ institutionDetail["HBCU"] }}</p>
           <p><span>Tribal: </span> {{ institutionDetail["Tribal"] }}</p>
@@ -59,17 +82,6 @@
           <p><span>Enrolled  men: </span>{{ institutionDetail["Enrolled  men"] }}</p>
           <p><span>Enrolled  women: </span>{{ institutionDetail["Enrolled  women"] }}</p>
           <p><span>Percent admitted : </span>{{ institutionDetail["Percent admitted "] }}</p>
-          <p><span>%submitting SAT scores: </span>{{ institutionDetail["%submitting SAT scores"] }}</p>
-          <p><span>% submitting ACT scores: </span>{{ institutionDetail["% submitting ACT scores"] }}</p>
-          <p><span>SAT EBRW 25th percentile score: </span>{{ institutionDetail["SAT EBRW 25th percentile score"] }}</p>
-          <p><span>SAT EBRW 75th percentile score: </span>{{ institutionDetail["SAT EBRW 75th percentile score"] }}</p>
-          <p><span>SAT 50th%ile: </span>{{ institutionDetail["SAT 50th%ile"] }}</p>
-          <p><span>SAT Math 25th percentile score: </span>{{ institutionDetail["SAT Math 25th percentile score"] }}</p>
-          <p><span>SAT Math 75th percentile score: </span>{{ institutionDetail["SAT Math 75th percentile score"] }}</p>
-          <p><span>ACT Composite 25th percentile score: </span>{{ institutionDetail["ACT Composite 25th percentile score"] }}</p>
-          <p><span>ACT Composite 75th percentile score: </span>{{ institutionDetail["ACT Composite 75th percentile score"] }}</p>
-          <p><span>ACT 50th%ile: </span>{{ institutionDetail["ACT 50th%ile"] }}</p>
-          <p><span>%enrolled submitted test score: </span>{{ institutionDetail["%enrolled submitted test score"] }}</p>
           <p><span>Interview: </span>{{ institutionDetail["Interview"] }}</p>
           <p><span>Demonstrated Interest: </span>{{ institutionDetail["Demonstrated Interest"] }}</p>
           <p><span>% in Greek Life: </span>{{ institutionDetail["% in Greek Life"] }}</p>

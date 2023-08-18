@@ -37,6 +37,7 @@ export default {
           { title: 'State', key: 'State' },
           { title: 'Locale', key: ' Urban-centric locale'},
           { title: 'Admittance', key: '%admit' },
+          { title: 'Religious affiliation', key: 'Religious affiliation' },
         ],
     };
   },
