@@ -4,7 +4,7 @@
     <div style="margin-top: 36px;">
       <v-text-field
         v-model="search"
-        label="Search"
+        label="Keyword Search"
         single-line
         hide-details
       ></v-text-field>
@@ -12,12 +12,15 @@
     <v-data-table
       v-if="!loading"
       :headers="headers" 
+      fixed-header
       :items="tableData" 
       :search="search"
+      height="100%"
       @click:row="navigateToInstitution"
       class="elevation-1"
       multi-sort
-      :sort-by="[{ key: 'State', order: 'asc' }]"
+      :items-per-page="30"
+      :sort-by="[{ key: 'institution name', order: 'asc' }]"
     >
     </v-data-table>
   </v-container>
@@ -33,17 +36,26 @@ export default {
       tableData: [],
       loading: true,
       headers: [
-          { title: 'Institution name', key: 'institution name' },
-          { title: 'State', key: 'State' },
-          { title: 'Locale', key: ' Urban-centric locale'},
-          { title: 'Admittance', key: '%admit' },
-          { title: 'Religious affiliation', key: 'Religious affiliation' },
+          { title: 'Institution name', key: 'institution name', width: "300px", fixed: true },
+          { title: 'State', key: 'State ', width: "100px" },
+          { title: 'Sector', key: 'Sector', width: "300px" },
+          { title: 'Admittance', key: '%admit', width: "80px" },
+          { title: 'Calendar', key: 'Calendar', width: "150px" },
+          { title: 'HBCU', key: 'HBCU', width: "60px" },          
+          { title: 'Tribal', key: 'Tribal', width: "60px" },          
+          { title: 'Urban-centric locale', key: 'Urban-centric locale', width: "210px" },          
+          { title: '%reg DSPS', key: '%reg DSPS', width: "200px" },          
+          { title: 'COA in-state students', key: 'COA in-state students', width: "250px" },          
+          { title: 'COA out-of-state', key: 'COA out-of-state', width: "200px" },          
+          { title: 'Size range', key: 'Size range', width: "200px" },          
+          { title: 'Undergraduate enrollment', key: 'Undergraduate enrollment', width: "280px" },          
+          { title: 'Graduate enrollment', key: 'Graduate enrollment', width: "280px" },          
         ],
     };
   },
   methods: {
     fetchData() {
-      const file = '/Institutions.xlsx'; 
+      const file = '/21-22 updated IPEDS.xlsx'; 
 
       fetch(file)
         .then((res) => res.arrayBuffer())
