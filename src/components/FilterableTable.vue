@@ -9,18 +9,17 @@
         hide-details
       ></v-text-field>
     </div>
-    <keep-alive>
-      <v-data-table
-        :headers="headers" 
-        :items="tableData" 
-        :search="search"
-        @click:row="navigateToInstitution"
-        class="elevation-1"
-        multi-sort
-        :sort-by="[{ key: 'State', order: 'asc' }]"
-      >
-      </v-data-table>
-    </keep-alive>
+    <v-data-table
+      v-if="!loading"
+      :headers="headers" 
+      :items="tableData" 
+      :search="search"
+      @click:row="navigateToInstitution"
+      class="elevation-1"
+      multi-sort
+      :sort-by="[{ key: 'State', order: 'asc' }]"
+    >
+    </v-data-table>
   </v-container>
 </template>
 
@@ -32,6 +31,7 @@ export default {
     return {
       search: '',
       tableData: [],
+      loading: true,
       headers: [
           { title: 'Institution name', key: 'institution name' },
           { title: 'State', key: 'State' },
@@ -51,6 +51,8 @@ export default {
           const workbook = XLSX.read(new Uint8Array(data), { type: 'array' });
           const worksheet = workbook.Sheets[workbook.SheetNames[0]];
           localStorage.setItem("institutionTable", JSON.stringify(XLSX.utils.sheet_to_json(worksheet)));
+          this.tableData = JSON.parse(localStorage.getItem("institutionTable"));
+          this.loading = false;
         })
         .catch((error) => console.error('Error fetching or parsing data:', error));
     },
@@ -70,10 +72,15 @@ export default {
   beforeMount(){
     if (!localStorage.getItem("institutionTable")) {
       this.fetchData();
+    } else {
+      this.tableData = JSON.parse(localStorage.getItem("institutionTable"));
+      this.loading = false;
     }
   },
   mounted() {
-    this.tableData = JSON.parse(localStorage.getItem("institutionTable"));
+    if (!this.loading) {
+      this.tableData = JSON.parse(localStorage.getItem("institutionTable"));
+    }
   },
 };
 </script>
@@ -82,5 +89,10 @@ export default {
 .v-data-table-header__content {
   color: #303030;
   font-weight: 700;
+}
+
+.v-data-table__tr:hover td {
+  background: #efefef !important;
+
 }
 </style>
