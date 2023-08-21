@@ -126,10 +126,9 @@ export default {
       this.institutionDetail = JSON.parse(localStorage.getItem("institutionDetail"));
     },
     async getImages() {
-      const institutionSearchString = this.institutionDetail["institution name"] + " campus";
-      const response = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&q=${institutionSearchString}`);
+      const institutionSearchString = encodeURIComponent(this.institutionDetail["institution name"]) + " campus -logo";
+      const response = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=medium&q=${institutionSearchString}`);
       const data = await response.json();
-      // get image links from items object
       let linkArray = [];
       for (const i in data.items) {
         linkArray.push(data.items[i].link);
