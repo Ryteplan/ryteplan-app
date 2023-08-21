@@ -7,6 +7,11 @@
         <p><span>Sector: </span> {{ institutionDetail["Sector"] }}</p>
         <p><span>Urban-centric locale: </span> {{ institutionDetail[" Urban-centric locale"] }}</p>
       </div>
+      <div class="institution-images-container">
+        <template v-for="(image, index) in images" :key="index">
+          <img class="institution-image" :src="image" />
+        </template>
+      </div>
       <div style="margin-top: 24px;">
         <p style="margin-top: 12px;"><span>Mission statement: : </span>{{ institutionDetail["Mission statement"] }}</p>
         <p style="margin-top: 12px;"><span>About: </span>{{ institutionDetail["About"] }}</p>
@@ -104,12 +109,14 @@
 </template>
 
 <script>
+
 export default {
   name: "institutionDetail",
   data() {
     return {
       institutionDetail: {},
-      links: {}
+      links: {},
+      images: []
     };
   },
   computed: {
@@ -117,12 +124,25 @@ export default {
   methods: {
     getInstitution() {
       this.institutionDetail = JSON.parse(localStorage.getItem("institutionDetail"));
+    },
+    async getImages() {
+      const institutionSearchString = this.institutionDetail["institution name"] + " campus";
+      const response = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&q=${institutionSearchString}`);
+      const data = await response.json();
+      // get image links from items object
+      let linkArray = [];
+      for (const i in data.items) {
+        linkArray.push(data.items[i].link);
+      }
+      this.images = linkArray;
     }
   },
   beforeMount() {
     this.getInstitution();
+    this.getImages();
+  },
+  mounted() {
   }
-
 };
 </script>
 
@@ -133,4 +153,20 @@ export default {
   p span {
     font-weight: bold;
   }
+
+  .institution-images-container {
+    margin: 24px 0;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    column-gap: 24px;
+    row-gap: 24px;
+  }
+
+  .institution-image {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    object-position: center;
+  }
+
 </style>

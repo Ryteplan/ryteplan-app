@@ -36,7 +36,7 @@ export default {
       loading: true,
       headers: [
           { title: 'Institution name', key: 'institution name', width: "300px", fixed: true },
-          { title: 'State', key: 'State ', width: "100px" },
+          { title: 'State', key: 'State', width: "130px" },
           { title: 'Sector', key: 'Sector', width: "300px" },
           { title: 'Admittance', key: '%admit', width: "80px" },
           { title: 'Calendar', key: 'Calendar', width: "150px" },
