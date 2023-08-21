@@ -1,16 +1,19 @@
 <template>
   <v-container>
-    <div style="margin-top: 24px;">
+    <div style="margin-top: 24px; max-width: 1120px; margin: 0 auto;">
       <h1>{{ institutionDetail["institution name"] }}</h1>
       <div style="margin-top: 24px;">
-        <p><span>State: </span> {{ institutionDetail["State"] }}</p>
+        <p><span>State: </span> {{ institutionDetail["State "] }}</p>
         <p><span>Sector: </span> {{ institutionDetail["Sector"] }}</p>
         <p><span>Urban-centric locale: </span> {{ institutionDetail[" Urban-centric locale"] }}</p>
       </div>
       <div class="institution-images-container">
-        <template v-for="(image, index) in images" :key="index">
-          <img class="institution-image" :src="image" />
-        </template>
+        <img :src="image " v-for="(image, index) in images.slice(0, 1)" class="institution-image" :key="index" />
+        <div class="institution-images-grid">
+          <template v-for="(image, index) in images.slice(1, 5)" :key="index">
+            <img class="institution-image" :src="image" />
+          </template>
+        </div>
       </div>
       <div style="margin-top: 24px;">
         <p style="margin-top: 12px;"><span>Mission statement: : </span>{{ institutionDetail["Mission statement"] }}</p>
@@ -127,7 +130,7 @@ export default {
     },
     async getImages() {
       const institutionSearchString = encodeURIComponent(this.institutionDetail["institution name"]) + " campus -logo";
-      const response = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=medium&q=${institutionSearchString}`);
+      const response = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${institutionSearchString}&num=5`);
       const data = await response.json();
       let linkArray = [];
       for (const i in data.items) {
@@ -149,23 +152,30 @@ export default {
   ul {
     list-style: none;
   }
+
   p span {
     font-weight: bold;
   }
-
+  
   .institution-images-container {
     margin: 24px 0;
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    column-gap: 24px;
-    row-gap: 24px;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 8px;
+  }
+
+  .institution-images-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 8px;
+    row-gap: 8px;
   }
 
   .institution-image {
-    width: 200px;
-    height: 200px;
+    aspect-ratio: 1 / 1;
     object-fit: cover;
     object-position: center;
+    width: 100%;
   }
 
 </style>

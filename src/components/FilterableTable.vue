@@ -39,7 +39,7 @@ export default {
           { title: 'State', key: 'State ', width: "130px" },
           { title: 'Sector', key: 'Sector', width: "300px" },
           { title: 'Admittance', key: '%admit', width: "80px" },
-          { title: 'Calendar', key: 'Calendar', width: "150px" },
+          { title: 'Calendar', key: 'Calendar', width: "180px" },
           { title: 'HBCU', key: 'HBCU', width: "60px" },          
           { title: 'Tribal', key: 'Tribal', width: "60px" },          
           { title: 'Urban-centric locale', key: 'Urban-centric locale', width: "210px" },          
