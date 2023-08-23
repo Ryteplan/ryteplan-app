@@ -28,22 +28,22 @@
         </div>
       </div> -->
     </div>
-    <v-data-table-virtual
-      :headers="headers" 
-      fixed-header
-      :items="tableStore.tableData" 
-      :search="search"
-      filterable
-      height="calc(90vh - 200px)"
-      @click:row="navigateToInstitution"
-      class="elevation-1"
-      multi-sort
-      dense
-      :items-per-page="-1"
+    <v-data-table
+      id="dataTable"
       item-key="institution name"
       selectable-key="institution name"
+      height="100vh"
+      fixed-header
+      filterable
+      multi-sort
+      dense
+      @click:row="navigateToInstitution"
+      :headers="headers" 
+      :items="tableStore.tableData" 
+      :search="search"
+      :items-per-page="-1"
     >
-    </v-data-table-virtual>
+    </v-data-table>
   </v-container>
 </template>
 
@@ -52,7 +52,6 @@ import { useTableStore } from '../stores/tableStore';
 
 export default {
   setup() {
-    console.log("setup()");
     let tableStore = useTableStore(); // Access the Pinia store instance
     
     if (tableStore.tableData.length == 0 ) {
@@ -62,7 +61,6 @@ export default {
     return {
       tableStore,
       loading: true,
-      search: '',
       filters: {
         State: [],
         Sector: [],
@@ -86,7 +84,35 @@ export default {
       ],      
     };
   },
+  mounted() {
+    const dataTable = document.querySelector("#dataTable .v-table__wrapper");
+    dataTable.addEventListener("scroll", this.onScroll, true);
+    this.scrollToLastKnownPosition();
+  },
+  beforeUnmount() {
+    window.removeEventListener("scroll", this.onScroll, true)
+  },
+  data() {
+    return {
+      search: '',
+    }
+  },
   methods: {
+    onScroll(e) {
+      localStorage.setItem("tableViewScrollPositionY", e.target.scrollTop);
+      localStorage.setItem("tableViewScrollPositionX", e.target.scrollLeft);
+    },
+    scrollToLastKnownPosition() {
+      if (
+        localStorage.getItem("tableViewScrollPositionY") > 0 ||
+        localStorage.getItem("tableViewScrollPositionX") > 0
+      ) {
+        console.log("scroll to a position");
+        console.log(localStorage.getItem("tableViewScrollPositionY"));
+        document.querySelector('#dataTable .v-table__wrapper').scrollTop = localStorage.getItem("tableViewScrollPositionY");
+        document.querySelector('#dataTable .v-table__wrapper').scrollLeft = localStorage.getItem("tableViewScrollPositionX");
+      }
+    },
     navigateToInstitution(event, item) {
       const institution = JSON.parse(JSON.stringify(item));
 
@@ -100,15 +126,6 @@ export default {
       })
     }
   },
-  // beforeRouteEnter(to, from, next) {
-  //   if (!localStorage.getItem('institutionTable')) {
-  //     next(vm => {
-  //       vm.fetchData();
-  //     });
-  //   } else {
-  //     next();
-  //   }
-  // },
 };
 </script>
 
