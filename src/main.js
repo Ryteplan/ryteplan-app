@@ -8,7 +8,7 @@ import * as directives from 'vuetify/directives'
 import '@mdi/font/css/materialdesignicons.css'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import 'vuetify/dist/vuetify.min.css';
-
+import { createPinia } from 'pinia'
 
 // Import components
 import FilterableTable from './components/FilterableTable.vue';
@@ -39,9 +39,11 @@ const router = createRouter({
   },  
 });
 
+const pinia = createPinia()
 const app = createApp(App);
 
 app.use(router);
+app.use(pinia);
 
 const vuetify = createVuetify({
   components: {

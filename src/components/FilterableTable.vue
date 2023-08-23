@@ -8,65 +8,85 @@
         single-line
         hide-details
       ></v-text-field>
+      <!-- <div
+        v-for="header in headers"
+        :key="header.title"
+      >
+        <div v-if="filters.hasOwnProperty(header.title)">
+          {{ header.title }}
+          {{ tableData }}
+          <v-select 
+            flat 
+            hide-details 
+            small 
+            multiple 
+            clearable 
+            :items="tableData.columnValueList(header.value)" 
+            v-model="filters[header.value]"
+          >
+          </v-select>          
+        </div>
+      </div> -->
     </div>
-    <v-data-table
-      v-if="!loading"
+    <v-data-table-virtual
       :headers="headers" 
       fixed-header
-      :items="tableData" 
+      :items="tableStore.tableData" 
       :search="search"
-      height="100%"
+      filterable
+      height="calc(90vh - 200px)"
       @click:row="navigateToInstitution"
       class="elevation-1"
       multi-sort
-      :items-per-page="30"
+      dense
+      :items-per-page="-1"
+      item-key="institution name"
+      selectable-key="institution name"
     >
-    </v-data-table>
+    </v-data-table-virtual>
   </v-container>
 </template>
 
 <script>
-import * as XLSX from 'xlsx';
+import { useTableStore } from '../stores/tableStore';
 
 export default {
-  data() {
+  setup() {
+    console.log("setup()");
+    let tableStore = useTableStore(); // Access the Pinia store instance
+    
+    if (tableStore.tableData.length == 0 ) {
+      tableStore.fetchTableData(); // Call the action
+    }
+  
     return {
-      search: '',
-      tableData: [],
+      tableStore,
       loading: true,
+      search: '',
+      filters: {
+        State: [],
+        Sector: [],
+        Admittance: [],
+      },
       headers: [
-          { title: 'Institution name', key: 'institution name', width: "300px", fixed: true },
-          { title: 'State', key: 'State ', width: "130px" },
-          { title: 'Sector', key: 'Sector', width: "300px" },
-          { title: 'Admittance', key: '%admit', width: "80px" },
-          { title: 'Calendar', key: 'Calendar', width: "180px" },
-          { title: 'HBCU', key: 'HBCU', width: "60px" },          
-          { title: 'Tribal', key: 'Tribal', width: "60px" },          
-          { title: 'Urban-centric locale', key: 'Urban-centric locale', width: "210px" },          
-          { title: '%reg DSPS', key: '%reg DSPS', width: "200px" },          
-          { title: 'COA in-state students', key: 'COA in-state students', width: "250px" },          
-          { title: 'COA out-of-state', key: 'COA out-of-state', width: "200px" },          
-          { title: 'Size range', key: 'Size range', width: "200px" },          
-          { title: 'Undergraduate enrollment', key: 'Undergraduate enrollment', width: "280px" },          
-          { title: 'Graduate enrollment', key: 'Graduate enrollment', width: "280px" },          
-        ],
+        { title: 'Institution name', key: 'institution name', width: "300px", fixed: true },
+        { title: 'State', key: 'State ', width: "130px" },
+        { title: 'Sector', key: 'Sector', width: "300px" },
+        { title: 'Admittance', key: '%admit', width: "80px" },
+        { title: 'Calendar', key: 'Calendar', width: "180px" },
+        { title: 'HBCU', key: 'HBCU', width: "60px" },          
+        { title: 'Tribal', key: 'Tribal', width: "60px" },          
+        { title: 'Urban-centric locale', key: 'Urban-centric locale', width: "210px" },          
+        { title: '%reg DSPS', key: '%reg DSPS', width: "200px" },          
+        { title: 'COA in-state students', key: 'COA in-state students', width: "250px" },          
+        { title: 'COA out-of-state', key: 'COA out-of-state', width: "200px" },          
+        { title: 'Size range', key: 'Size range', width: "200px" },          
+        { title: 'Undergraduate enrollment', key: 'Undergraduate enrollment', width: "280px" },          
+        { title: 'Graduate enrollment', key: 'Graduate enrollment', width: "280px" },          
+      ],      
     };
   },
   methods: {
-    fetchData() {
-      const file = '/21-22 updated IPEDS.xlsx'; 
-
-      fetch(file)
-        .then((res) => res.arrayBuffer())
-        .then((data) => {
-          const workbook = XLSX.read(new Uint8Array(data), { type: 'array' });
-          const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-          localStorage.setItem("institutionTable", JSON.stringify(XLSX.utils.sheet_to_json(worksheet)));
-          this.tableData = JSON.parse(localStorage.getItem("institutionTable"));
-          this.loading = false;
-        })
-        .catch((error) => console.error('Error fetching or parsing data:', error));
-    },
     navigateToInstitution(event, item) {
       const institution = JSON.parse(JSON.stringify(item));
 
@@ -80,19 +100,15 @@ export default {
       })
     }
   },
-  beforeMount(){
-    if (!localStorage.getItem("institutionTable")) {
-      this.fetchData();
-    } else {
-      this.tableData = JSON.parse(localStorage.getItem("institutionTable"));
-      this.loading = false;
-    }
-  },
-  mounted() {
-    if (!this.loading) {
-      this.tableData = JSON.parse(localStorage.getItem("institutionTable"));
-    }
-  },
+  // beforeRouteEnter(to, from, next) {
+  //   if (!localStorage.getItem('institutionTable')) {
+  //     next(vm => {
+  //       vm.fetchData();
+  //     });
+  //   } else {
+  //     next();
+  //   }
+  // },
 };
 </script>
 

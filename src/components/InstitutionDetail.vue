@@ -16,7 +16,7 @@
         </div>
       </div>
       <div style="margin-top: 24px;">
-        <p style="margin-top: 12px;"><span>Mission statement: : </span>{{ institutionDetail["Mission statement"] }}</p>
+        <p style="margin-top: 12px;"><span>Mission statement: </span>{{ institutionDetail["Mission statement"] }}</p>
         <p style="margin-top: 12px;"><span>About: </span>{{ institutionDetail["About"] }}</p>
       </div>
       <v-row class="mt-6">
