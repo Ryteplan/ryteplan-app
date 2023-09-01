@@ -31,8 +31,8 @@
     <v-data-table
       id="dataTable"
       class="elevation-1"
-      item-key="institution name"
-      selectable-key="institution name"
+      item-key="Institution name"
+      selectable-key="Institution name"
       height="65vh"
       fixed-header
       filterable
@@ -45,8 +45,13 @@
       :page="tableStore.page"
       @click:row="navigateToInstitution"
       @update:page="tableStore.updatePage"
+      item-value="institution name"
+      v-model="selected"
+      show-select
+      return-object
     >
     </v-data-table>
+    <pre style="margin-top: 48px;">{{ selected }}</pre>
   </v-container>
 </template>
 
@@ -96,6 +101,7 @@ export default {
   },
   data() {
     return {
+      selected: []
     }
   },
   methods: {
@@ -142,5 +148,22 @@ export default {
 
 .v-data-table__tr:hover td {
   background: #efefef !important;
+}
+
+tr th:first-of-type,
+tr td:first-of-type {
+  position: sticky !important;
+  z-index: 6;
+  left: 0;
+  width: 48px;
+}
+
+tr th:first-of-type {
+  z-index: 7 !important;
+}
+
+tr th:nth-child(2),
+tr td:nth-child(2) {
+  left: 56px !important;
 }
 </style>

@@ -6,7 +6,8 @@ export const useTableStore = defineStore('table', {
       loading: true,
       tableData: [],
       search: '',
-      page: 1
+      page: 1,
+      selectedRows: []
   }),
   actions: {
     async fetchTableData() {
@@ -27,6 +28,9 @@ export const useTableStore = defineStore('table', {
     },
     updatePage(pageNumber) {
       this.page = pageNumber;
+    },
+    updateSelected(selectedRows) {
+      this.selectedRows = selectedRows;
     }
   },
 });
