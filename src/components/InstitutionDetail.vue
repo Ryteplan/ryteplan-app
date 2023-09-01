@@ -160,6 +160,7 @@ export default {
   .institution-images-container {
     margin: 24px 0;
     display: grid;
+    aspect-ratio: 2 / 1;
     grid-template-columns: 1fr 1fr;
     column-gap: 8px;
   }
