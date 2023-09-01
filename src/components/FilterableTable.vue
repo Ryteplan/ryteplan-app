@@ -52,7 +52,9 @@
     >
       
     </v-data-table>
-    <h2 style="margin-top: 48px;" v-if="selected.length">Comparison Nutrition facts</h2>
+    <v-btn style="margin-top: 24px;" v-if="selected.length">Send Schools to Student</v-btn>
+
+    <h2 style="margin-top: 200px;" v-if="selected.length">Comparison Nutrition facts</h2>
     <div class="nutrition-facts-container">
       <div class="institution-nutrition-column"  :key="item" v-for="item in selected">
         <pre style="margin-top: 36px; white-space: pre-wrap;">{{ item }}</pre>

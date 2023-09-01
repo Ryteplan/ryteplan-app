@@ -19,6 +19,7 @@
         <p style="margin-top: 12px;"><span>Mission statement: </span>{{ institutionDetail["Mission statement"] }}</p>
         <p style="margin-top: 12px;"><span>About: </span>{{ institutionDetail["About"] }}</p>
       </div>
+      <h1 style="color: Red; margin-top: 96px;">Paid Account</h1>
       <v-row class="mt-6">
         <v-col cols="6">
           <section style="margin: 24px 0;">
