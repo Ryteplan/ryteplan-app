@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h1 style="font-size: 20px; margin-top: 16px;">Institution Search</h1>
+    <h1 style="margin-top: 16px;">Institution Search</h1>
     <div style="margin-top: 24px;">
       <v-text-field
         v-model="tableStore.search"
@@ -50,8 +50,14 @@
       show-select
       return-object
     >
+      
     </v-data-table>
-    <pre style="margin-top: 48px;">{{ selected }}</pre>
+    <h2 style="margin-top: 48px;" v-if="selected.length">Comparison Nutrition facts</h2>
+    <div class="nutrition-facts-container">
+      <div class="institution-nutrition-column"  :key="item" v-for="item in selected">
+        <pre style="margin-top: 36px; white-space: pre-wrap;">{{ item }}</pre>
+      </div>
+    </div>
   </v-container>
 </template>
 
@@ -119,6 +125,7 @@ export default {
       }
     },
     navigateToInstitution(event, item) {
+      event.srcElement.classList.add('last-clicked');
       const institution = JSON.parse(JSON.stringify(item));
 
       localStorage.setItem("institutionDetail", JSON.stringify(institution.item.raw));
@@ -165,5 +172,16 @@ tr th:first-of-type {
 tr th:nth-child(2),
 tr td:nth-child(2) {
   left: 56px !important;
+}
+
+.nutrition-facts-container {
+  display: flex;
+}
+
+.institution-nutrition-column {
+  width: 500px;
+  border-right: 1px solid grey;
+  margin-right: 48px;
+
 }
 </style>
