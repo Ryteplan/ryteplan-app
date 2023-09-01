@@ -13,6 +13,7 @@ import { createPinia } from 'pinia'
 // Import components
 import FilterableTable from './components/FilterableTable.vue';
 import InstitutionDetail from './components/InstitutionDetail.vue';
+import CompareInstituion from './components/CompareInstituion.vue';
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: '/institution/:name',
     name: 'institutionDetail',
     component: InstitutionDetail,
+  },
+  {
+    path: '/compare-instituion',
+    name: 'CompareInstituion',
+    component: CompareInstituion,
   },
 ];
 
