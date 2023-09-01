@@ -4,7 +4,7 @@
     <div style="margin-top: 24px;">
       <v-text-field
         v-model="tableStore.search"
-        label="Keyword Search"
+        label="Search Institutions"
         single-line
         hide-details
       ></v-text-field>
@@ -13,8 +13,6 @@
         :key="header.title"
       >
         <div v-if="filters.hasOwnProperty(header.title)">
-          {{ header.title }}
-          {{ tableData }}
           <v-select 
             flat 
             hide-details 
@@ -34,6 +32,7 @@
       item-key="Institution name"
       selectable-key="Institution name"
       height="65vh"
+      style="margin-top: 24px;"
       fixed-header
       filterable
       multi-sort
@@ -46,18 +45,23 @@
       @click:row="navigateToInstitution"
       @update:page="tableStore.updatePage"
       item-value="institution name"
-      v-model="selected"
+      v-model="tableStore.selectedRows"
       show-select
       return-object
     >
-      
     </v-data-table>
-    <v-btn style="margin-top: 24px;" v-if="selected.length">Send Schools to Student</v-btn>
-
-    <h2 style="margin-top: 200px;" v-if="selected.length">Comparison Nutrition facts</h2>
-    <div class="nutrition-facts-container">
-      <div class="institution-nutrition-column"  :key="item" v-for="item in selected">
-        <pre style="margin-top: 36px; white-space: pre-wrap;">{{ item }}</pre>
+    <div v-if="tableStore.selectedRows.length">
+      <v-text-field
+        label="Email"
+        single-line
+        hide-details
+      ></v-text-field>
+      <v-btn style="margin-top: 24px;">Send Schools to Student</v-btn>
+      <h2 style="margin-top: 200px;">Comparison Nutrition facts</h2>
+      <div class="nutrition-facts-container">
+        <div class="institution-nutrition-column"  :key="item" v-for="item in tableStore.selectedRows">
+          <pre style="margin-top: 36px; white-space: pre-wrap;">{{ item }}</pre>
+        </div>
       </div>
     </div>
   </v-container>
@@ -76,11 +80,6 @@ export default {
   
     return {
       tableStore,
-      filters: {
-        State: [],
-        Sector: [],
-        Admittance: [],
-      },
       headers: [
         { title: 'Institution name', key: 'institution name', width: "300px", fixed: true },
         { title: 'State', key: 'State ', width: "130px" },
@@ -109,7 +108,11 @@ export default {
   },
   data() {
     return {
-      selected: []
+    }
+  },
+  watch: {
+    selected(newValue) {
+      this.tableStore.updateSelected(newValue);
     }
   },
   methods: {
@@ -127,7 +130,7 @@ export default {
       }
     },
     navigateToInstitution(event, item) {
-      event.srcElement.classList.add('last-clicked');
+      
       const institution = JSON.parse(JSON.stringify(item));
 
       localStorage.setItem("institutionDetail", JSON.stringify(institution.item.raw));
@@ -162,18 +165,20 @@ export default {
 tr th:first-of-type,
 tr td:first-of-type {
   position: sticky !important;
-  z-index: 6;
+  z-index: 5;
   left: 0;
   width: 48px;
 }
 
 tr th:first-of-type {
-  z-index: 7 !important;
+  z-index: 6 !important;
 }
 
 tr th:nth-child(2),
 tr td:nth-child(2) {
   left: 56px !important;
+  padding-bottom: 8px !important;  
+  padding-top: 8px !important;
 }
 
 .nutrition-facts-container {

@@ -30,6 +30,8 @@ export const useTableStore = defineStore('table', {
       this.page = pageNumber;
     },
     updateSelected(selectedRows) {
+      console.log("selectedRows");
+      console.log(selectedRows);
       this.selectedRows = selectedRows;
     }
   },
