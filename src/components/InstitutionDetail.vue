@@ -8,11 +8,15 @@
         <p><span>Urban-centric locale: </span> {{ institutionDetail[" Urban-centric locale"] }}</p>
       </div>
       <div class="institution-images-container">
-        <img :src="image " v-for="(image, index) in images.slice(0, 1)" class="institution-image" :key="index" />
+        <div class="img-bg">
+          <img :src="image " v-for="(image, index) in images.slice(0, 1)" class="institution-image" :key="index" />
+        </div>
         <div class="institution-images-grid">
-          <template v-for="(image, index) in images.slice(1, 5)" :key="index">
-            <img class="institution-image" :src="image" />
-          </template>
+            <template v-for="(image, index) in images.slice(1, 5)" :key="index">
+              <div class="img-bg">
+                <img class="institution-image" :src="image" />
+              </div>
+            </template>
         </div>
       </div>
       <div style="margin-top: 24px;">
@@ -173,11 +177,22 @@ export default {
     row-gap: 8px;
   }
 
-  .institution-image {
+  .img-bg {
     aspect-ratio: 1 / 1;
+    background: #ededed;
+    line-height: 0;
+  }
+
+  .institution-image {
+    animation: fadeIn ease-in 600ms;
     object-fit: cover;
     object-position: center;
     width: 100%;
   }
+
+  @keyframes fadeIn {
+  0% {opacity:0;}
+  100% {opacity:1;}
+}
 
 </style>
