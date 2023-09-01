@@ -5,6 +5,8 @@ export const useTableStore = defineStore('table', {
   state: () => ({
       loading: true,
       tableData: [],
+      search: '',
+      page: 1
   }),
   actions: {
     async fetchTableData() {
@@ -23,5 +25,8 @@ export const useTableStore = defineStore('table', {
         console.error('Error fetching table data:', error);
       }
     },
+    updatePage(pageNumber) {
+      this.page = pageNumber;
+    }
   },
 });

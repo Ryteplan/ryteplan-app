@@ -1,9 +1,9 @@
 <template>
   <v-container>
-    <h1 style="margin-top: 24px;">Institution Search</h1>
-    <div style="margin-top: 36px;">
+    <h1 style="font-size: 20px; margin-top: 16px;">Institution Search</h1>
+    <div style="margin-top: 24px;">
       <v-text-field
-        v-model="search"
+        v-model="tableStore.search"
         label="Keyword Search"
         single-line
         hide-details
@@ -30,18 +30,21 @@
     </div>
     <v-data-table
       id="dataTable"
+      class="elevation-1"
       item-key="institution name"
       selectable-key="institution name"
-      height="100vh"
+      height="65vh"
       fixed-header
       filterable
       multi-sort
       dense
-      @click:row="navigateToInstitution"
       :headers="headers" 
       :items="tableStore.tableData" 
-      :search="search"
-      :items-per-page="-1"
+      :search="tableStore.search"
+      :items-per-page="50"
+      :page="tableStore.page"
+      @click:row="navigateToInstitution"
+      @update:page="tableStore.updatePage"
     >
     </v-data-table>
   </v-container>
@@ -52,15 +55,14 @@ import { useTableStore } from '../stores/tableStore';
 
 export default {
   setup() {
-    let tableStore = useTableStore(); // Access the Pinia store instance
+    let tableStore = useTableStore();
     
     if (tableStore.tableData.length == 0 ) {
-      tableStore.fetchTableData(); // Call the action
+      tableStore.fetchTableData();
     }
   
     return {
       tableStore,
-      loading: true,
       filters: {
         State: [],
         Sector: [],
@@ -94,7 +96,6 @@ export default {
   },
   data() {
     return {
-      search: '',
     }
   },
   methods: {
@@ -107,8 +108,6 @@ export default {
         localStorage.getItem("tableViewScrollPositionY") > 0 ||
         localStorage.getItem("tableViewScrollPositionX") > 0
       ) {
-        console.log("scroll to a position");
-        console.log(localStorage.getItem("tableViewScrollPositionY"));
         document.querySelector('#dataTable .v-table__wrapper').scrollTop = localStorage.getItem("tableViewScrollPositionY");
         document.querySelector('#dataTable .v-table__wrapper').scrollLeft = localStorage.getItem("tableViewScrollPositionX");
       }
@@ -130,6 +129,12 @@ export default {
 </script>
 
 <style>
+.v-data-table-footer {
+  margin-top: 0px;
+  padding: 8px;
+  border-top: 1px solid #ccc;
+}
+
 .v-data-table-header__content {
   color: #303030;
   font-weight: 700;
