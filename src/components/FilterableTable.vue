@@ -8,37 +8,49 @@
         single-line
         hide-details
       ></v-text-field>
-      <!-- <div
+      <div
         v-for="header in headers"
         :key="header.title"
       >
-        <div v-if="filters.hasOwnProperty(header.title)">
+        <div v-if="tableStore.filters.hasOwnProperty(header.title)">
           <v-select 
             flat 
             hide-details 
             small 
             multiple 
             clearable 
-            :items="tableData.columnValueList(header.value)" 
-            v-model="filters[header.value]"
+            auto
+            :label="header.title"
+            :items="tableStore.columnValueList(header.key)" 
+            v-model="tableStore.filters[header.key]"
           >
-          </v-select>          
+          </v-select>
         </div>
-      </div> -->
+      </div>
+    </div>
+    <div class="d-flex font-weight-medium mt-3">
+      <span class="d-block">Showing {{ tableStore.filteredTableData().length }} results</span>
+      <div v-if="tableStore.selectedRows.length" class="d-flex align-center">
+        <v-icon size="16" class="ml-3">mdi-circle-medium</v-icon>
+        <span class="ml-3">{{ tableStore.selectedRows.length }} Selected</span>
+        <button class="dark ml-3">Compare</button>
+        <button class="dark ml-3">Share</button>
+      </div>
     </div>
     <v-data-table
       id="dataTable"
-      class="elevation-1"
+      class="elevation-1 mt-4"
       item-key="Institution name"
       selectable-key="Institution name"
       height="65vh"
-      style="margin-top: 24px;"
       fixed-header
       filterable
       multi-sort
       dense
+      show-select
+      return-object
       :headers="headers" 
-      :items="tableStore.tableData" 
+      :items="tableStore.filteredTableData()" 
       :search="tableStore.search"
       :items-per-page="50"
       :page="tableStore.page"
@@ -46,8 +58,6 @@
       @update:page="tableStore.updatePage"
       item-value="institution name"
       v-model="tableStore.selectedRows"
-      show-select
-      return-object
     >
     </v-data-table>
     <div v-if="tableStore.selectedRows.length">

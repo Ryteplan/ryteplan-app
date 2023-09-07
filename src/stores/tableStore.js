@@ -5,6 +5,12 @@ export const useTableStore = defineStore('table', {
   state: () => ({
       loading: true,
       tableData: [],
+      filteredTableDataArray: [],
+      filters: {
+        State: [],
+        Sector: [],
+        Calendar: []
+      },
       search: '',
       page: 1,
       selectedRows: []
@@ -25,6 +31,16 @@ export const useTableStore = defineStore('table', {
       } catch (error) {
         console.error('Error fetching table data:', error);
       }
+    },
+    filteredTableData(){
+      return this.tableData.filter(d => {
+        return Object.keys(this.filters).every(f => {
+          return this.filters[f].length < 1 || this.filters[f].includes(d[f])
+        })
+      })
+    },
+    columnValueList(val) {
+      return [...new Set(this.tableData.map(d => d[val]))] 
     },
     updatePage(pageNumber) {
       this.page = pageNumber;
