@@ -56,7 +56,7 @@
         single-line
         hide-details
       ></v-text-field>
-      <v-btn style="margin-top: 24px;">Send Schools to Student</v-btn>
+      <v-btn style="margin-top: 24px;">Send to Student</v-btn>
       <h2 style="margin-top: 200px;">Comparison Nutrition facts</h2>
       <div class="nutrition-facts-container">
         <div class="institution-nutrition-column"  :key="item" v-for="item in tableStore.selectedRows">
@@ -102,6 +102,7 @@ export default {
     const dataTable = document.querySelector("#dataTable .v-table__wrapper");
     dataTable.addEventListener("scroll", this.onScroll, true);
     this.scrollToLastKnownPosition();
+    this.highlightLastClickedRow();
   },
   beforeUnmount() {
     window.removeEventListener("scroll", this.onScroll, true)
@@ -129,10 +130,22 @@ export default {
         document.querySelector('#dataTable .v-table__wrapper').scrollLeft = localStorage.getItem("tableViewScrollPositionX");
       }
     },
+    highlightLastClickedRow(){
+      // console.log("Last Clicked Row");
+      // console.log(localStorage.getItem("lastClickedRow"));
+
+    },
     navigateToInstitution(event, item) {
       
-      const institution = JSON.parse(JSON.stringify(item));
+      console.log("item");
+      console.log(item.isSelected);      
+      
+      // console.log("event.target's closest tr");
+      // console.log(event.target.closest("tr"));
 
+      localStorage.setItem("lastClickedRow", event.target);
+
+      const institution = JSON.parse(JSON.stringify(item));
       localStorage.setItem("institutionDetail", JSON.stringify(institution.item.raw));
       
       this.$router.push({ 
@@ -162,6 +175,11 @@ export default {
   background: #efefef !important;
 }
 
+tr.v-data-table__selected 
+{
+    background: #f5f5f5;
+}
+
 tr th:first-of-type,
 tr td:first-of-type {
   position: sticky !important;
@@ -189,6 +207,5 @@ tr td:nth-child(2) {
   width: 500px;
   border-right: 1px solid grey;
   margin-right: 48px;
-
 }
 </style>

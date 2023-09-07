@@ -12,7 +12,7 @@ export const useTableStore = defineStore('table', {
   actions: {
     async fetchTableData() {
       try {
-        const file = '/21-22 updated IPEDS.xlsx'; 
+        const file = '/21-22 updated IPEDS 09-02-2023.xlsx'; 
         fetch(file)
           .then((res) => res.arrayBuffer())
           .then((data) => {
@@ -30,8 +30,6 @@ export const useTableStore = defineStore('table', {
       this.page = pageNumber;
     },
     updateSelected(selectedRows) {
-      console.log("selectedRows");
-      console.log(selectedRows);
       this.selectedRows = selectedRows;
     }
   },
