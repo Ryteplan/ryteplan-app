@@ -25,12 +25,30 @@
           </v-col>
           <v-col cols="6" class="d-flex justify-end align-center">
             <div v-if="tableStore.selectedRows.length" class="d-flex align-center">
-              <!-- <v-icon size="16" class="ml-3">mdi-circle-medium</v-icon> -->
-              <v-btn class="ml-3">
-                {{ tableStore.selectedRows.length }} Selected
-              </v-btn>
+              <v-menu :location="location">
+                <template v-slot:activator="{ props }">
+                  <v-btn
+                    class="ml-3"
+                    v-bind="props"
+                  >
+                    {{ tableStore.selectedRows.length }} Selected
+                  </v-btn>
+                </template>
+
+                <v-list>
+                  <v-list-item
+                    v-for="(item, index) in selectedDropDown"
+                    @click="item.action"
+                    :key="index"
+                  >
+                    <div class="d-flex justify-space-between align-center">
+                      <v-list-item-title class="font-weight-medium">{{ item.title }}</v-list-item-title>
+                      <v-icon class="ml-3" :icon="item.icon"></v-icon>
+                    </div>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
             </div>
-            <!-- <span>Showing {{ tableStore.filteredTableData().length }} results</span> -->
           </v-col>
         </v-row>
       </div>
@@ -155,6 +173,19 @@ export default {
   },
   data() {
     return {
+      selectedDropDown: [
+        { 
+          title: 'Share',
+          icon: 'mdi-share',
+          action: this.shareClicked
+        },
+        { 
+          title: 'Compare', 
+          icon: 'mdi-compare-vertical',
+          action: this.compareClicked
+        }
+      ],
+
     }
   },
   watch: {
@@ -191,9 +222,8 @@ export default {
     navigateToInstitution(event, item) {        
 
       const institution = JSON.parse(JSON.stringify(item));
-      
-      console.log(institution.item.key);
       const targetRowKey = institution.item.key;
+      
       localStorage.setItem("lastClickedRow", targetRowKey);
 
       localStorage.setItem("institutionDetail", JSON.stringify(institution.item.raw));
@@ -210,6 +240,12 @@ export default {
         // WORKAROUND: fixes dialog menu popup position
         setTimeout(() => window.dispatchEvent(new Event("resize")), 0);
       }
+    },
+    shareClicked() {
+      alert("Share Clicked");
+    },
+    compareClicked() {
+      alert("Compare Clicked");
     }
   }
 };
