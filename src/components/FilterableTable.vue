@@ -177,21 +177,25 @@ export default {
       }
     },
     highlightLastClickedRow(){
-      // console.log("Last Clicked Row");
-      // console.log(localStorage.getItem("lastClickedRow"));
+
+      const lastClickRowKey = localStorage.getItem("lastClickedRow");
+
+      document.querySelectorAll("td").forEach(function(element){
+        if(element.textContent === lastClickRowKey){
+          let closest = element.closest("tr")
+          closest.classList.add('highlight-last-clicked');
+        }
+      });
 
     },
-    navigateToInstitution(event, item) {
-      
-      console.log("item");
-      console.log(item.isSelected);      
-      
-      // console.log("event.target's closest tr");
-      // console.log(event.target.closest("tr"));
-
-      localStorage.setItem("lastClickedRow", event.target);
+    navigateToInstitution(event, item) {        
 
       const institution = JSON.parse(JSON.stringify(item));
+      
+      console.log(institution.item.key);
+      const targetRowKey = institution.item.key;
+      localStorage.setItem("lastClickedRow", targetRowKey);
+
       localStorage.setItem("institutionDetail", JSON.stringify(institution.item.raw));
       
       this.$router.push({ 
@@ -281,6 +285,16 @@ tr td:nth-child(2) {
 tr td {
   color: #232323;
   font-weight: 300;
+}
+
+.v-theme--light .highlight-last-clicked td {
+  background: rgb(249, 246, 226);
+  animation: highlightLastClicked 4s normal forwards ease-out;
+}
+
+@keyframes highlightLastClicked {
+  from { background: rgb(249, 246, 226); }
+  to { background-color: white; }
 }
 
 .nutrition-facts-container {

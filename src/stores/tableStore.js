@@ -44,6 +44,7 @@ export const useTableStore = defineStore('table', {
     },
     updatePage(pageNumber) {
       this.page = pageNumber;
+      document.querySelector('#dataTable .v-table__wrapper').scrollTop = 0;
     },
     updateSelected(selectedRows) {
       this.selectedRows = selectedRows;
