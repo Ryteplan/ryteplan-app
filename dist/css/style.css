@@ -2,7 +2,7 @@
 @import "https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css";
 @import "https://fonts.googleapis.com/css?family=Material+Icons";
 body {
-  font-family: Arial, sans-serif;
+  font-family: Roboto, sans-serif;
   margin: 0;
   padding: 0;
 }

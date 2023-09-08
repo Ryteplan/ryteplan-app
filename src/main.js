@@ -9,6 +9,7 @@ import '@mdi/font/css/materialdesignicons.css'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import 'vuetify/dist/vuetify.min.css';
 import { createPinia } from 'pinia'
+import '/src/assets/css/style.scss';
 
 // Import components
 import FilterableTable from './components/FilterableTable.vue';
