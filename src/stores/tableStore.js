@@ -13,7 +13,23 @@ export const useTableStore = defineStore('table', {
       },
       search: '',
       page: 1,
-      selectedRows: []
+      selectedRows: [],
+      headers: [
+        { title: 'Institution name', key: 'institution name', width: "300px", fixed: true },
+        { title: 'State', key: 'State ', width: "130px", show: true },
+        { title: 'Sector', key: 'Sector', width: "300px", show: true },
+        { title: 'Admittance', key: '%admit', width: "80px", show: true },
+        { title: 'Calendar', key: 'Calendar', width: "180px", show: true },
+        { title: 'HBCU', key: 'HBCU', width: "60px", show: true },          
+        { title: 'Tribal', key: 'Tribal', width: "60px", show: true },          
+        { title: 'Urban-centric locale', key: 'Urban-centric locale', width: "210px", show: true },          
+        { title: '%reg DSPS', key: '%reg DSPS', width: "200px", show: true },          
+        { title: 'COA in-state students', key: 'COA in-state students', width: "250px", show: true },          
+        { title: 'COA out-of-state', key: 'COA out-of-state', width: "200px", show: true },          
+        { title: 'Size range', key: 'Size range', width: "200px", show: true },          
+        { title: 'Undergraduate enrollment', key: 'Undergraduate enrollment', width: "280px", show: true },          
+        { title: 'Graduate enrollment', key: 'Graduate enrollment', width: "280px", show: true },          
+      ],
   }),
   actions: {
     async fetchTableData() {
@@ -48,6 +64,10 @@ export const useTableStore = defineStore('table', {
     },
     updateSelected(selectedRows) {
       this.selectedRows = selectedRows;
+    },
+    updateHeaders(){
+      const filteredArray = this.headers.map(x => (x.show === false ? { ...x, align: " d-none" } : x));
+      this.headers = filteredArray;
     }
   },
 });
