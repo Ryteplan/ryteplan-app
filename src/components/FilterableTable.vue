@@ -78,10 +78,8 @@
                   <h2>Table settings</h2>
                   <p class="mt-2">Use the controls below to select which columns will appear on the table.</p>
                   <p class="mt-2">Note: I am not yet sure if we will be able to search or filter upon the data in the column if it is not appearing in the table!</p>
-                  {{ tableStore.headers }}
-                  <h3 class="mb-3">Columns</h3>
+                  <h3 class="mt-5 mb-3">Columns</h3>
                   <div
-                    class="mt-2"
                     v-for="header in tableStore.headers"
                     :key="header.title"
                   >
@@ -102,8 +100,10 @@
             </v-dialog>
           </v-col>
           <v-col cols="4" class="d-flex justify-end align-center">
-            <!-- <div v-if="tableStore.selectedRows.length" class="d-flex align-center"> -->
-            <div class="d-flex align-center">
+            <div v-if="tableStore.selectedRows.length" class="d-flex align-center">
+              <v-btn>
+                Focus
+              </v-btn>
               <v-menu
               >
                 <template v-slot:activator="{ props }">
@@ -197,7 +197,7 @@
     </v-dialog>
   </v-container>
 </template>
-
+ 
 <script>
 import { useTableStore } from '../stores/tableStore';
 
@@ -230,13 +230,18 @@ export default {
       testValue: true,
       selectedDropDown: [
         { 
+          title: 'Save to list',
+          icon: 'mdi-list-box-outline',
+          action: this.shareClicked
+        },
+        { 
           title: 'Compare', 
           icon: 'mdi-ab-testing',
           action: this.compareClicked
         },
         { 
           title: 'Share',
-          icon: 'mdi-export-variant',
+          icon: 'mdi-account-plus',
           action: this.shareClicked
         }
       ],
@@ -295,7 +300,7 @@ export default {
     },
     compareClicked() {
       alert("Compare Clicked");
-    }
+    },
   }
 };
 </script>
@@ -381,12 +386,12 @@ tr td {
 }
 
 .v-theme--light .highlight-last-clicked td {
-  background: rgb(249, 246, 226);
-  animation: highlightLastClicked 4s normal forwards ease-out;
+  background: rgb(255, 225, 32);
+  animation: highlightLastClicked 8s normal forwards ease-out;
 }
 
 @keyframes highlightLastClicked {
-  from { background: rgb(249, 246, 226); }
+  from { background: rgb(255, 225, 32); }
   to { background-color: white; }
 }
 
