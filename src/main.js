@@ -1,5 +1,6 @@
 import { createApp } from 'vue';
 import App from './App.vue';
+import * as firebase from "firebase/app";
 import { createRouter, createWebHistory } from 'vue-router';
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
@@ -11,6 +12,19 @@ import 'vuetify/dist/vuetify.min.css';
 import { createPinia } from 'pinia'
 import '/src/assets/css/style.scss';
 
+const firebaseConfig = {
+  apiKey: "AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk",
+  authDomain: "college-counselo-1692637185845.firebaseapp.com",
+  projectId: "college-counselo-1692637185845",
+  storageBucket: "college-counselo-1692637185845.appspot.com",
+  messagingSenderId: "304990071110",
+  appId: "1:304990071110:web:837f224817c85feb7d5d47",
+  measurementId: "G-N15EGVJW30"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+
 // Import components
 import HomeView from './components/HomeView.vue';
 import AuthenticationView from './components/AuthenticationView.vue';
@@ -19,6 +33,8 @@ import InstitutionDetail from './components/InstitutionDetail.vue';
 import CompareInstituion from './components/CompareInstituion.vue';
 
 const app = createApp(App);
+
+// const analytics = getAnalytics(app);
 
 const routes = [
   {
