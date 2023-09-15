@@ -1,5 +1,5 @@
 <template>
-  <FilterableTable></FilterableTable>
+    <FilterableTable></FilterableTable>
 </template>
  
 <script>

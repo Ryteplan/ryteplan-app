@@ -3,7 +3,6 @@
     <div class="AuthenticationView">
       <v-tabs
         v-model="tab"
-        :transition="false"
         align-tabs="center"
         class="w-50 mx-auto"
       >
@@ -11,7 +10,10 @@
         <v-tab value="Login">Login</v-tab>
       </v-tabs>
       <v-window class="py-12 w-50 mx-auto" v-model="tab">
-        <v-window-item value="Sign Up">
+        <v-window-item 
+          class="px-6"
+          value="Sign Up"
+        >
           <v-btn
             @click="signInWithGoogle"
           >
@@ -37,11 +39,14 @@
             </v-btn>   
           </form> 
         </v-window-item>
-        <v-window-item value="Login">
+        <v-window-item 
+          class="px-6"
+          value="Login"
+        >
           <v-btn
             @click="signInWithGoogle"
           >
-            Sign up With Google
+            Login With Google
           </v-btn>
           <form class="mt-6" @submit.prevent="signIn"> 
             <v-text-field       
