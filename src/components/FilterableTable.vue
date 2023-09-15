@@ -1,6 +1,5 @@
 <template>
-  <v-container>
-    <h1 style="margin-top: 16px;">CampusMatch</h1>
+  <div class="px-12">
     <div style="margin-top: 24px;">
       <div style="display: flex; justify-content: center; align-items: center;">
         <v-row class="">
@@ -195,7 +194,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-container>
+  </div>
 </template>
  
 <script>

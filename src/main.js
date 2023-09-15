@@ -12,14 +12,28 @@ import { createPinia } from 'pinia'
 import '/src/assets/css/style.scss';
 
 // Import components
+import HomeView from './components/HomeView.vue';
+import AuthenticationView from './components/AuthenticationView.vue';
 import FilterableTable from './components/FilterableTable.vue';
 import InstitutionDetail from './components/InstitutionDetail.vue';
 import CompareInstituion from './components/CompareInstituion.vue';
+
+const app = createApp(App);
 
 const routes = [
   {
     path: '/',
     name: 'home',
+    component: HomeView,
+  },
+  {
+    path: '/account',
+    name: 'Account',
+    component: AuthenticationView,
+  },
+  {
+    path: '/browse',
+    name: 'browse',
     component: FilterableTable,
   },
   {
@@ -47,10 +61,10 @@ const router = createRouter({
   },  
 });
 
-const pinia = createPinia()
-const app = createApp(App);
-
 app.use(router);
+
+
+const pinia = createPinia()
 app.use(pinia);
 
 const vuetify = createVuetify({
@@ -71,4 +85,3 @@ const vuetify = createVuetify({
 app.use(vuetify)
 
 app.mount('#app');
-
