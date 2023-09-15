@@ -1,6 +1,6 @@
 <template>
-  <div class="px-12">
-    <div style="margin-top: 24px;">
+  <v-container class="browse-institution-table-container pt-8 px-8">
+    <div>
       <div style="display: flex; justify-content: center; align-items: center;">
         <v-row class="">
           <v-col cols="3">
@@ -65,7 +65,7 @@
             >
               <template v-slot:activator="{ props }">
                 <v-btn
-                  class="ml-5"
+                  class="ml-5 fill-height"
                   v-bind="props"
                   append-icon="mdi-table"
                 >
@@ -156,7 +156,7 @@
     >
       <template v-slot:bottom="{ pagination, options, updateOptions }">
         <v-row class="data-table-footer-container">
-          <v-col cols="9" class="d-flex align-center justify-end">
+          <v-col class="d-flex align-center justify-center">
             <v-data-table-footer
               :pagination="pagination" 
               :options="options"
@@ -194,7 +194,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </div>
+  </v-container>
 </template>
  
 <script>
@@ -306,6 +306,10 @@ export default {
 
 <style>
 
+.browse-institution-table-container {
+  max-width: 1328px;
+}
+
 #dataTable {
   border-radius: 8px;
   overflow: hidden;
@@ -326,7 +330,6 @@ export default {
   margin-top: 0px;
   background: #fbfbfb;
   border-radius: 8px;
-  margin-right: 12px;
   padding: 0 24px;
 
   &:hover {
@@ -385,8 +388,8 @@ tr td {
 }
 
 .v-theme--light .highlight-last-clicked td {
-  background: rgb(255, 225, 32);
-  animation: highlightLastClicked 8s normal forwards ease-out;
+  background: rgb(159, 154, 121);
+  animation: highlightLastClicked 2s normal forwards ease-out;
 }
 
 @keyframes highlightLastClicked {

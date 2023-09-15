@@ -31,6 +31,7 @@ import AuthenticationView from './components/AuthenticationView.vue';
 import FilterableTable from './components/FilterableTable.vue';
 import InstitutionDetail from './components/InstitutionDetail.vue';
 import CompareInstituion from './components/CompareInstituion.vue';
+import StudentsView from './components/StudentsView.vue';
 
 const app = createApp(App);
 
@@ -61,6 +62,11 @@ const routes = [
     path: '/compare-instituion',
     name: 'CompareInstituion',
     component: CompareInstituion,
+  },
+  {
+    path: '/students',
+    name: 'StudentsView',
+    component: StudentsView,
   },
 ];
 

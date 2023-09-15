@@ -1,6 +1,6 @@
 <template>
-  <div class="app-container">
-    <v-toolbar class="px-12">
+  <v-layout class="app-container">
+    <v-app-bar class="px-12 elevation-1">
       <v-toolbar-title class="logo"><a href="/" class="logo">RytePlan</a></v-toolbar-title>
       <div v-if="!isLoggedIn">
         <v-btn 
@@ -16,28 +16,31 @@
           Login
         </v-btn>
       </div>
-      <v-btn
+    </v-app-bar>
+      <v-navigation-drawer
         v-if="isLoggedIn"
-        @click="handleSignOut" 
-        class="no-active"
-      >
-        Logout
-      </v-btn>
-    </v-toolbar>
-    <v-layout>
-      <!-- <v-navigation-drawer
         permanent
       >
         <v-list nav>
-          <v-list-item prepend-icon="mdi-email" title="Inbox" value="inbox"></v-list-item>
-          <v-list-item prepend-icon="mdi-account-supervisor-circle" title="Supervisors" value="supervisors"></v-list-item>
-          <v-list-item prepend-icon="mdi-clock-start" title="Clock-in" value="clockin"></v-list-item>
+          <v-list-item to="/" prepend-icon="mdi-magnify" title="Browse Instituions" value="Browse Instituions"></v-list-item>
+          <v-list-item to="/saved-lists" prepend-icon="mdi-list-box-outline" title="Saved Lists" value="Saved Searches"></v-list-item>
+          <v-list-item to="/saved-lists" prepend-icon="mdi-list-box-outline" title="Saved Lists" value="Saved Lists"></v-list-item>
+          <v-list-item to="/students" prepend-icon="mdi-account-school" title="Students" value="Students"></v-list-item>
+          <v-list-item to="/account" prepend-icon="mdi-cog" title="Account Settings" value="Account Settings"></v-list-item>
+          <v-list-item 
+            prepend-icon="mdi-logout" 
+            title="Logout" 
+            value="Students" 
+            @click="handleSignOut"
+          >
+          </v-list-item>
         </v-list>
-      </v-navigation-drawer>     -->
+      </v-navigation-drawer>    
 
-    </v-layout>
-    <router-view></router-view>
-  </div>
+    <v-main>
+      <router-view></router-view>
+    </v-main>
+  </v-layout>
 </template>
 
 <script>
