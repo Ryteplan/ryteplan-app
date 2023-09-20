@@ -23,7 +23,7 @@
       >
         <v-list nav>
           <v-list-item to="/" prepend-icon="mdi-magnify" title="Browse Instituions" value="Browse Instituions"></v-list-item>
-          <v-list-item to="/saved-lists" prepend-icon="mdi-list-box-outline" title="Saved Lists" value="Saved Searches"></v-list-item>
+          <v-list-item to="/saved-lists" prepend-icon="mdi-list-box-outline" title="Saved Searches" value="Saved Searches"></v-list-item>
           <v-list-item to="/saved-lists" prepend-icon="mdi-list-box-outline" title="Saved Lists" value="Saved Lists"></v-list-item>
           <v-list-item to="/students" prepend-icon="mdi-account-school" title="Students" value="Students"></v-list-item>
           <v-list-item to="/account" prepend-icon="mdi-cog" title="Account Settings" value="Account Settings"></v-list-item>
