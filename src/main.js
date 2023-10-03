@@ -32,6 +32,7 @@ import FilterableTable from './components/FilterableTable.vue';
 import InstitutionDetail from './components/InstitutionDetail.vue';
 import CompareInstituion from './components/CompareInstituion.vue';
 import StudentsView from './components/StudentsView.vue';
+import ListsView from './components/ListsView.vue';
 
 const app = createApp(App);
 
@@ -67,6 +68,11 @@ const routes = [
     path: '/students',
     name: 'StudentsView',
     component: StudentsView,
+  },
+  {
+    path: '/lists',
+    name: 'ListsView',
+    component: ListsView,
   },
 ];
 

@@ -194,11 +194,15 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <SaveToListDialog 
+      v-model="showSaveToListDialog" 
+    />
   </v-container>
 </template>
  
 <script>
 import { useTableStore } from '../stores/tableStore';
+import SaveToListDialog from './SaveToListDialog'
 
 export default {
   setup() {
@@ -226,12 +230,13 @@ export default {
       filterDialog: false,
       columnSettingsDialog: false,
       shareDialog: false,
+      showSaveToListDialog: false,
       testValue: true,
       selectedDropDown: [
         { 
           title: 'Save to list',
           icon: 'mdi-list-box-outline',
-          action: this.shareClicked
+          action: this.saveToListClicked
         },
         { 
           title: 'Compare', 
@@ -297,9 +302,15 @@ export default {
     shareClicked() {
       this.shareDialog = true;
     },
+    saveToListClicked() {
+      this.showSaveToListDialog = true;
+    },
     compareClicked() {
       alert("Compare Clicked");
     },
+  },
+  components: {
+    SaveToListDialog
   }
 };
 </script>
