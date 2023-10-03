@@ -11,6 +11,23 @@
         >
           Create new list
         </v-btn>
+        <div class="create-new-list-form">
+          <v-text-field
+            v-model="newListName"
+            label="Enter List Name"
+            density="compact"
+            variant="solo"
+            single-line
+            hide-details
+            clearable
+          ></v-text-field>
+          <v-btn 
+            color="primary" 
+            @click="createNewList"
+          >
+          Create
+        </v-btn>
+        </div>
       </div>
       <v-card-actions>
         <v-btn 
@@ -39,6 +56,16 @@ export default {
       set (value) {
         this.$emit('update:modelValue', value)
       }
+    }
+  },
+  data() {
+    return {
+      newListName: "",
+    }
+  },
+  methods: {
+    createNewList() {
+      console.log("create new list");
     }
   }
 }
