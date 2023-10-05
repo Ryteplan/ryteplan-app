@@ -4,13 +4,13 @@
       <v-toolbar-title class="logo"><a href="/" class="logo">RytePlan</a></v-toolbar-title>
       <div v-if="!isLoggedIn">
         <v-btn 
-          to="/account"
+          to="/login"
           class="no-active"
         >
           Sign up
         </v-btn>
         <v-btn 
-          to="/account"
+          to="/login"
           class="no-active"
         >
           Login

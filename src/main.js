@@ -33,6 +33,7 @@ import InstitutionDetail from './components/InstitutionDetail.vue';
 import CompareInstituion from './components/CompareInstituion.vue';
 import StudentsView from './components/StudentsView.vue';
 import ListsView from './components/ListsView.vue';
+import AccountView from './components/AccountView.vue';
 
 const app = createApp(App);
 
@@ -45,8 +46,8 @@ const routes = [
     component: HomeView,
   },
   {
-    path: '/account',
-    name: 'Account',
+    path: '/login',
+    name: 'Login',
     component: AuthenticationView,
   },
   {
@@ -74,6 +75,12 @@ const routes = [
     name: 'ListsView',
     component: ListsView,
   },
+  {
+    path: '/account',
+    name: 'Account',
+    component: AccountView,
+  },
+
 ];
 
 const router = createRouter({
