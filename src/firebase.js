@@ -1,8 +1,5 @@
 import { initializeApp } from 'firebase/app'
-// import { getFirestore } from 'firebase/firestore'
-import { getDatabase } from 'firebase/database'
-import { ref as dbRef } from "firebase/database";
-// import * as firebase from "firebase/app";
+import { getFirestore, collection, getDocs } from 'firebase/firestore'
 
 export const firebaseApp = initializeApp({
   apiKey: "AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk",
@@ -14,8 +11,16 @@ export const firebaseApp = initializeApp({
   measurementId: "G-N15EGVJW30"
 })
 
-// used for the databas refs
-const db = getDatabase(firebaseApp)
+export const dbFireStore = getFirestore(firebaseApp);
 
-// here we can export reusable database references
-export const institutionsRef = dbRef(db, 'institutions')
+async function getFireStoreDB(dbFireStore) {
+  const institutionsCol = collection(dbFireStore, 'institutions');
+  console.log(institutionsCol);
+  const institutionSnapshot = await getDocs(institutionsCol);
+  console.log(institutionSnapshot);
+  const institutionList = institutionSnapshot.docs.map(doc => doc.data());
+  console.log("institutionList from Firestore");
+  console.log(institutionList);
+}
+
+getFireStoreDB(dbFireStore);

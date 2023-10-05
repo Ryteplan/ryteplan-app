@@ -23,12 +23,18 @@ import CompareInstituion from './components/CompareInstituion.vue';
 import StudentsView from './components/StudentsView.vue';
 import ListsView from './components/ListsView.vue';
 import AccountView from './components/AccountView.vue';
+import PlaygroundView from './components/PlaygroundView.vue';
 
 const app = createApp(App);
 
 // const analytics = getAnalytics(app);
 
 const routes = [
+  {
+    path: '/playground',
+    name: 'Playground',
+    component: PlaygroundView,
+  },
   {
     path: '/',
     name: 'home',
