@@ -1,29 +1,18 @@
 import { createApp } from 'vue';
-import App from './App.vue';
-import * as firebase from "firebase/app";
 import { createRouter, createWebHistory } from 'vue-router';
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as labsComponents from 'vuetify/labs/components'
 import * as directives from 'vuetify/directives'
-import '@mdi/font/css/materialdesignicons.css'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
-import 'vuetify/dist/vuetify.min.css';
 import { createPinia } from 'pinia'
+import { firebaseApp } from './firebase'
+import { VueFire } from 'vuefire'
+import App from './App.vue';
+
+import '@mdi/font/css/materialdesignicons.css'
+import 'vuetify/dist/vuetify.min.css';
 import '/src/assets/css/style.scss';
-
-const firebaseConfig = {
-  apiKey: "AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk",
-  authDomain: "college-counselo-1692637185845.firebaseapp.com",
-  projectId: "college-counselo-1692637185845",
-  storageBucket: "college-counselo-1692637185845.appspot.com",
-  messagingSenderId: "304990071110",
-  appId: "1:304990071110:web:837f224817c85feb7d5d47",
-  measurementId: "G-N15EGVJW30"
-};
-
-firebase.initializeApp(firebaseConfig);
-
 
 // Import components
 import HomeView from './components/HomeView.vue';
@@ -117,6 +106,14 @@ const vuetify = createVuetify({
   },
 })
 
-app.use(vuetify)
+app.use(vuetify);
+
+app.use(VueFire, {
+  // imported above but could also just be created here
+  firebaseApp,
+  modules: [
+    // VueFireAuth(),
+  ],
+})
 
 app.mount('#app');
