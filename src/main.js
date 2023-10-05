@@ -18,7 +18,8 @@ import '/src/assets/css/style.scss';
 import HomeView from './components/HomeView.vue';
 import AuthenticationView from './components/AuthenticationView.vue';
 import FilterableTable from './components/FilterableTable.vue';
-import InstitutionDetail from './components/InstitutionDetail.vue';
+// import InstitutionDetail from './components/InstitutionDetail.vue';
+import InstitutionPage from './components/InstitutionPage.vue';
 import CompareInstituion from './components/CompareInstituion.vue';
 import StudentsView from './components/StudentsView.vue';
 import ListsView from './components/ListsView.vue';
@@ -50,10 +51,15 @@ const routes = [
     name: 'browse',
     component: FilterableTable,
   },
+  // {
+  //   path: '/institution/:name',
+  //   name: 'institutionDetail',
+  //   component: InstitutionDetail,
+  // },
   {
     path: '/institution/:name',
-    name: 'institutionDetail',
-    component: InstitutionDetail,
+    name: 'institutionPage',
+    component: InstitutionPage,
   },
   {
     path: '/compare-instituion',
