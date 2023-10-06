@@ -13,14 +13,11 @@ export const firebaseApp = initializeApp({
 
 export const dbFireStore = getFirestore(firebaseApp);
 
-async function getFireStoreDB(dbFireStore) {
+export async function getFireStoreDB(dbFireStore) {
   const institutionsCol = collection(dbFireStore, 'institutions');
-  console.log(institutionsCol);
   const institutionSnapshot = await getDocs(institutionsCol);
-  console.log(institutionSnapshot);
   const institutionList = institutionSnapshot.docs.map(doc => doc.data());
   console.log("institutionList from Firestore");
   console.log(institutionList);
 }
 
-getFireStoreDB(dbFireStore);

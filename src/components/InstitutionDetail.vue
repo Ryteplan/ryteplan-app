@@ -152,54 +152,54 @@ export default {
     root._logo.dispose();
     root.setThemes([am5themes_Animated.new(root)]);
 
-// Create chart
-// https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/
-var chart = root.container.children.push(
-  am5percent.PieChart.new(root, {
-    endAngle: 270
-  })
-);
+    // Create chart
+    // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/
+    var chart = root.container.children.push(
+      am5percent.PieChart.new(root, {
+        endAngle: 270
+      })
+    );
 
-// Create series
-// https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Series
-var series = chart.series.push(
-  am5percent.PieSeries.new(root, {
-    valueField: "value",
-    categoryField: "category",
-    endAngle: 270
-  })
-);
+    // Create series
+    // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Series
+    var series = chart.series.push(
+      am5percent.PieSeries.new(root, {
+        valueField: "value",
+        categoryField: "category",
+        endAngle: 270
+      })
+    );
 
-series.states.create("hidden", {
-  endAngle: -90
-});
+    series.states.create("hidden", {
+      endAngle: -90
+    });
 
-// Set data
-// https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Setting_data
-series.data.setAll([{
-  category: "American Indian or Alaska Native",
-  value: 501.9
-}, {
-  category: "Asian",
-  value: 301.9
-}, {
-  category: "Black or African American",
-  value: 201.1
-}, {
-  category: "Hispanic/Latino",
-  value: 165.8
-}, {
-  category: "Native Hawaiian or Other Pacific Islander",
-  value: 139.9
-}, {
-  category: "Two or more races",
-  value: 128.3
-}, {
-  category: "Unknown",
-  value: 99
-}]);
+    // Set data
+    // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Setting_data
+    series.data.setAll([{
+      category: "American Indian or Alaska Native",
+      value: 501.9
+    }, {
+      category: "Asian",
+      value: 301.9
+    }, {
+      category: "Black or African American",
+      value: 201.1
+    }, {
+      category: "Hispanic/Latino",
+      value: 165.8
+    }, {
+      category: "Native Hawaiian or Other Pacific Islander",
+      value: 139.9
+    }, {
+      category: "Two or more races",
+      value: 128.3
+    }, {
+      category: "Unknown",
+      value: 99
+    }]);
 
-series.appear(1000, 100);
+    series.appear(1000, 100);
   },
 
   beforeUnmount() {

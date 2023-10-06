@@ -57,7 +57,7 @@ const routes = [
   //   component: InstitutionDetail,
   // },
   {
-    path: '/institution/:name',
+    path: '/institution/:slug',
     name: 'institutionPage',
     component: InstitutionPage,
   },
