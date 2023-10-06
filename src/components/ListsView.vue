@@ -3,6 +3,11 @@
     <h1>Lists</h1>
     <v-row class="mt-4">
       <v-col cols="4">
+        <ul>
+          <li v-for="list in userLists" :key="list.id">{{ list.name }}</li>
+        </ul>
+      </v-col>
+      <v-col cols="4">
         <v-text-field       
           type="text"       
           placeholder="Name"       
@@ -20,7 +25,7 @@
 <script>
 
 import { dbFireStore } from "../firebase";
-import { collection, query, where, getDocs, setDoc, doc } from 'firebase/firestore'
+import { collection, getDocs, setDoc, doc } from 'firebase/firestore'
 
 export default {
   setup() {
@@ -32,31 +37,25 @@ export default {
   },
   data() {
     return {
-      createNewListName: ""
+      createNewListName: "",
+      userLists: {}
     }
   },
   methods: {
     async loadUserLists() {
-
       const lists = collection(dbFireStore, 'lists');
-
       const docSnap = await getDocs(lists);
-
-      docSnap.forEach((doc) => {
-        console.log(query);
-        console.log(where);
-        console.log(doc);
-      });
-
-      const list = "this.createNewListName";
-      console.log(list);      
+      this.userLists = docSnap.docs.map(doc => doc.data());
     },
     async createNewList() {
-      const newListName = this.createNewListName
+      const newListName = this.createNewListName;
       await setDoc(doc(dbFireStore, 'lists', newListName), {
         name: newListName
       })
-    }
+    },
+    async sendList() {
+      // Send list
+    }  
   }
 };
 </script>

@@ -1,6 +1,7 @@
 <template>
   <v-container>
     {{ institution }}
+
   </v-container>
 </template>
  
@@ -34,6 +35,9 @@ export default {
       docSnap.forEach((doc) => {
         this.institution = doc.data();
       });
+    },
+    async addInstitutionToList() {
+      // Add to list
     }
   }
 };
