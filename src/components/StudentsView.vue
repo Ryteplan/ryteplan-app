@@ -4,16 +4,23 @@
     <v-row class="mt-4">
       <v-col cols="4">
         <ul>
-          <li v-for="student in userStudents" :key="student.id">{{ student.name }}</li>
+          <li class="mt-4" v-for="student in userStudents" :key="student.id">
+            <p><strong>{{ student.name }}</strong></p>
+            <p>{{ student.email }}</p>            
+          </li>
         </ul>
       </v-col>
       <v-col cols="4">
         <v-text-field       
           type="text"       
           placeholder="Name"       
-          v-model="createNewStudentName"     
+          v-model="newStudentName"     
         />
-        <v-btn
+        <v-text-field       
+          type="email"       
+          placeholder="joedirt@gmail.com"       
+          v-model="newStudentEmail"     
+        />        <v-btn
           @click="createNewStudent"
         >
           Create new student
@@ -37,7 +44,8 @@ export default {
   },
   data() {
     return {
-      createNewStudentName: "",
+      newStudentName: "",
+      newStudentEmail: "",
       userStudents: {}
     }
   },
@@ -48,9 +56,9 @@ export default {
       this.userStudents = docSnap.docs.map(doc => doc.data());
     },
     async createNewStudent() {
-      const newStudentName = this.createNewStudentName;
-      await setDoc(doc(dbFireStore, 'students', newStudentName), {
-        name: newStudentName
+      await setDoc(doc(dbFireStore, 'students', this.newStudentName), {
+        name: this.newStudentName,
+        email: this.newStudentEmail
       })
     },
     async sendStudent() {
