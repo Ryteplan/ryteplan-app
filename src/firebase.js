@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getFirestore, collection, getDocs } from 'firebase/firestore'
+import { getFirestore } from 'firebase/firestore'
 
 export const firebaseApp = initializeApp({
   apiKey: "AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk",
@@ -13,11 +13,11 @@ export const firebaseApp = initializeApp({
 
 export const dbFireStore = getFirestore(firebaseApp);
 
-export async function getFireStoreDB(dbFireStore) {
-  const institutionsCol = collection(dbFireStore, 'institutions');
-  const institutionSnapshot = await getDocs(institutionsCol);
-  const institutionList = institutionSnapshot.docs.map(doc => doc.data());
-  console.log("institutionList from Firestore");
-  console.log(institutionList);
-}
+// export async function getFireStoreDB(dbFireStore) {
+//   const institutionsCol = collection(dbFireStore, 'institutions');
+//   const institutionSnapshot = await getDocs(institutionsCol);
+//   const institutionList = institutionSnapshot.docs.map(doc => doc.data());
+//   console.log("institutionList from Firestore");
+//   console.log(institutionList);
+// }
 
