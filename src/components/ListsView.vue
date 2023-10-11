@@ -30,14 +30,17 @@ import { dbFireStore } from "../firebase";
 import { query, collection, setDoc, doc, Timestamp, orderBy, onSnapshot, where } from 'firebase/firestore'
 import { getAuth } from 'firebase/auth';
 
-export default {
-  setup() {
-  },
-  beforeMount() {
 
+export default {
+  beforeMount() {
   },
   mounted() {
-    this.loadUserLists();
+    getAuth().onAuthStateChanged((user) =>{
+      if(user) {
+        this.userID = user.uid;
+        this.loadUserLists();
+      } 
+    });
   },
   beforeUnmount() {
   },
@@ -45,41 +48,33 @@ export default {
     return {
       createNewListName: "",
       userLists: {},
+      userID: ""
     }
   },
   methods: {
     async loadUserLists() {
-      return getAuth().currentUser.uid
-        .then((uid) => {
-          const listsQuery = query(
-            collection(dbFireStore,"lists"),
-            orderBy('created'), 
-            where("createdBy", "==", uid)
-          );
-          onSnapshot(listsQuery,(snapshot)=>{
-            this.userLists = snapshot.docs.map((doc) => doc.data());
-          });
-        })
-        .catch((error) => {
-          console.log('Error fetching user data:', error);
-        });
+      const listsQuery = query(
+        collection(dbFireStore,"lists"),
+        orderBy('created', 'desc'), 
+        where("createdBy", "==", this.userID)
+      );
+      onSnapshot(listsQuery,(snapshot)=>{
+        this.userLists = snapshot.docs.map((doc) => doc.data());
+      });
+
     },
     async createNewList() {
-      let userID = getAuth().currentUser.uid;
       const newDocRef = doc(collection(dbFireStore, "lists"));
       await setDoc(newDocRef, 
         {
           id: newDocRef.id,
           name: this.createNewListName,
-          createdBy: userID,
+          createdBy: this.userID,
           created: Timestamp.fromDate(new Date()),
           updated: Timestamp.fromDate(new Date())
         }
       );
-    },
-    async sendList() {
-      // Send list
-    }  
+    }
   }
 };
 </script>
