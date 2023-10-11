@@ -74,13 +74,9 @@
 </template>
  
 <script>
-import { 
-  getAuth, 
-  createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword,
-  GoogleAuthProvider,
-  signInWithPopup
-  } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { doc, setDoc, collection, query, where, getCountFromServer, Timestamp } from 'firebase/firestore'
+import { dbFireStore } from "../firebase";
 
 export default {
   setup() {
@@ -137,9 +133,26 @@ export default {
     signInWithGoogle() {
       const provider = new GoogleAuthProvider();
       signInWithPopup(getAuth(), provider)
-        .then((result)=>{
-          console.log(result);
-          this.$router.push('/')
+        .then(async (result)=>{
+          
+          const users = collection(dbFireStore, 'users');
+          const q = query(users, where("uid", "==", result.user.uid));
+          const docSnap = await getCountFromServer(q);
+
+          if (docSnap.data().count == 0 ) {
+            const userData = {
+              "uid": result.user.uid,
+              "email": result.user.email,
+              "firstName": result._tokenResponse.firstName,
+              "lasName": result._tokenResponse.lastName,
+              created: Timestamp.fromDate(new Date()),
+              updated: Timestamp.fromDate(new Date())
+            }
+            await setDoc(doc(dbFireStore, "users", result.user.uid), {...userData});
+            this.$router.push('/')
+          } else {
+            this.$router.push('/')
+          }
         })
         .catch((error) =>{
           console.log(error);

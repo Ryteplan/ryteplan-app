@@ -1,8 +1,8 @@
 <template>
   <v-container class="pt-8 px-8">
-    <h1>Lists</h1>
     <v-row class="mt-4">
       <v-col cols="4">
+        <h2>Your lists</h2>
         <ul>
           <li class="mb-8" v-for="list in userLists" :key="list.id">
             {{ list }}
@@ -27,10 +27,14 @@
 <script>
 
 import { dbFireStore } from "../firebase";
-import { collection, getDocs, setDoc, doc, Timestamp } from 'firebase/firestore'
+import { query, collection, setDoc, doc, Timestamp, orderBy, onSnapshot, where } from 'firebase/firestore'
+import { getAuth } from 'firebase/auth';
 
 export default {
   setup() {
+  },
+  beforeMount() {
+
   },
   mounted() {
     this.loadUserLists();
@@ -40,22 +44,36 @@ export default {
   data() {
     return {
       createNewListName: "",
-      userLists: {}
+      userLists: {},
     }
   },
   methods: {
     async loadUserLists() {
-      const lists = collection(dbFireStore, 'lists');
-      const docSnap = await getDocs(lists);
-      this.userLists = docSnap.docs.map(doc => doc.data());
+      return getAuth().currentUser.uid
+        .then((uid) => {
+          const listsQuery = query(
+            collection(dbFireStore,"lists"),
+            orderBy('created'), 
+            where("createdBy", "==", uid)
+          );
+          onSnapshot(listsQuery,(snapshot)=>{
+            this.userLists = snapshot.docs.map((doc) => doc.data());
+          });
+        })
+        .catch((error) => {
+          console.log('Error fetching user data:', error);
+        });
     },
     async createNewList() {
+      let userID = getAuth().currentUser.uid;
       const newDocRef = doc(collection(dbFireStore, "lists"));
       await setDoc(newDocRef, 
         {
           id: newDocRef.id,
           name: this.createNewListName,
-          created: Timestamp.fromDate(new Date())
+          createdBy: userID,
+          created: Timestamp.fromDate(new Date()),
+          updated: Timestamp.fromDate(new Date())
         }
       );
     },

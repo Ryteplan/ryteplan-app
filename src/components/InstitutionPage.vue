@@ -189,7 +189,6 @@ export default {
     },
     async getImages() {
       const institutionSearchString = encodeURIComponent(this.institution["institutionName"]) + " campus -logo";
-      console.log(institutionSearchString);
       const response = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${institutionSearchString}&num=5`);
       const data = await response.json();
       let linkArray = [];
