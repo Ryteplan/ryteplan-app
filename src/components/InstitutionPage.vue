@@ -8,9 +8,19 @@
           <span class="stat-content">{{ institution["state"] }}</span>
         </div>
         <div class="d-flex flex-column align-end">
-          <a :href="institution['admissionsLink']" target="_blank">Admissions</a>
+          <v-btn
+            @click="showSaveToListDialog = true"
+          >
+            Add to list
+          </v-btn>
         </div>
-      </div>      
+      </div>  
+      <ul class="d-flex">
+        <li><a :href="institution['admissionsLink']" target="_blank">Admissions</a></li>
+        <li><a class="mt-2" :href="institution['missionStatementLink']" target="_blank">Visit mission statement</a></li>          
+        <li><a class="mt-2" :href="institution['netPriceCalculatorLink']" target="_blank">Net Price Calculator</a></li>          
+        <li><a class="mt-2" :href="institution['dspsLink']" target="_blank">Disability Services</a></li>          
+      </ul>
       <div class="institution-images-container mt-12">
         <div class="img-bg">
           <img :src="image " v-for="(image, index) in images.slice(0, 1)" class="institution-image" :key="index" />
@@ -50,15 +60,6 @@
         <div class="stat-container"><span class="stat-label">Religious </span> <span class="stat-content">{{ institution["religiousAffiliation"] }}</span></div>
 
       </div>
-      <div class="stat-container mt-8">
-        <span class="stat-label">Mission statement </span> 
-        <span class="stat-content">{{ institution["missionStatement"] }}</span>
-        <ul class="mt-4">
-          <li><a class="mt-2" :href="institution['missionStatementLink']" target="_blank">Visit mission statement</a></li>          
-          <li><a class="mt-2" :href="institution['netPriceCalculatorLink']" target="_blank">Net Price Calculator</a></li>          
-          <li><a class="mt-2" :href="institution['dspsLink']" target="_blank">Disability Services</a></li>          
-        </ul>
-      </div>      
       <div class="three-by-three-stat-grid mt-8">
         <div class="stat-container"><span class="stat-label">COA in-state students </span> <span class="stat-content">{{ institution["coaInStateStudents"] }}</span></div>
         <div class="stat-container"><span class="stat-label">COA out-of-state </span> <span class="stat-content">{{ institution["coaOutOfState"] }}</span></div>
@@ -86,12 +87,17 @@
         <div class="stat-container"><span class="stat-label">4 yr grad</span> <span class="stat-content">{{ institution["4YrGradRate"] }}%</span></div>
       </div>
     </div>
+    <SaveToListDialog 
+      v-model="showSaveToListDialog" 
+    />
   </v-container>
 </template>
  
 <script>
 import { dbFireStore } from "../firebase";
 import { collection, query, where, getDocs } from 'firebase/firestore'
+import SaveToListDialog from './SaveToListDialog'
+
 import * as am5 from '@amcharts/amcharts5';
 import * as am5percent from "@amcharts/amcharts5/percent";
 import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
@@ -166,7 +172,8 @@ export default {
   data() {
     return {
       institution: {},
-      images: []
+      images: [],
+      showSaveToListDialog: false,
     }
   },
   methods: {
@@ -195,9 +202,9 @@ export default {
       const percentage = Math.round(input * 100);
       return percentage;
     },
-    async addInstitutionToList() {
-      // Add to list
-    }
+  },
+  components: {
+    SaveToListDialog
   }
 };
 
