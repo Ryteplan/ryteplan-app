@@ -4,7 +4,9 @@
     <v-row class="mt-4">
       <v-col cols="4">
         <ul>
-          <li v-for="list in userLists" :key="list.id">{{ list.name }}</li>
+          <li class="mb-8" v-for="list in userLists" :key="list.id">
+            {{ list }}
+          </li>
         </ul>
       </v-col>
       <v-col cols="4">
@@ -25,7 +27,7 @@
 <script>
 
 import { dbFireStore } from "../firebase";
-import { collection, getDocs, setDoc, doc } from 'firebase/firestore'
+import { collection, getDocs, setDoc, doc, Timestamp } from 'firebase/firestore'
 
 export default {
   setup() {
@@ -48,10 +50,14 @@ export default {
       this.userLists = docSnap.docs.map(doc => doc.data());
     },
     async createNewList() {
-      const newListName = this.createNewListName;
-      await setDoc(doc(dbFireStore, 'lists', newListName), {
-        name: newListName
-      })
+      const newDocRef = doc(collection(dbFireStore, "lists"));
+      await setDoc(newDocRef, 
+        {
+          id: newDocRef.id,
+          name: this.createNewListName,
+          created: Timestamp.fromDate(new Date())
+        }
+      );
     },
     async sendList() {
       // Send list
