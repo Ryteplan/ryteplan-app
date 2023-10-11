@@ -279,18 +279,16 @@ export default {
 
     },
     navigateToInstitution(event, item) {        
-
       const institution = JSON.parse(JSON.stringify(item));
       const targetRowKey = institution.item.key;
       
       localStorage.setItem("lastClickedRow", targetRowKey);
-
-      localStorage.setItem("institutionDetail", JSON.stringify(institution.item.raw));
+      const slug = JSON.parse(JSON.stringify(item.item.slug));
       
       this.$router.push({ 
-        name: 'institutionDetail', 
+        name: 'institutionPage', 
         params: { 
-          name: institution.item.raw['institution name'],
+          slug: slug,
         } 
       })
     },

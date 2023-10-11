@@ -1,7 +1,6 @@
 <template>
   <v-container>
     {{ institution }}
-
   </v-container>
 </template>
  

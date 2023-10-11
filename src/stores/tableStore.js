@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia';
-import * as XLSX from 'xlsx';
+import { dbFireStore } from "../firebase";
+import { collection, getDocs } from 'firebase/firestore'
+
 
 export const useTableStore = defineStore('table', {
   state: () => ({
@@ -15,35 +17,29 @@ export const useTableStore = defineStore('table', {
       page: 1,
       selectedRows: [],
       headers: [
-        { title: 'Institution name', key: 'institution name', width: "300px", fixed: true },
-        { title: 'State', key: 'State ', width: "130px", show: true },
-        { title: 'Sector', key: 'Sector', width: "300px", show: true },
-        { title: 'Admittance', key: '%admit', width: "80px", show: true },
-        { title: 'Calendar', key: 'Calendar', width: "180px", show: true },
-        { title: 'HBCU', key: 'HBCU', width: "60px", show: true },          
-        { title: 'Tribal', key: 'Tribal', width: "60px", show: true },          
-        { title: 'Urban-centric locale', key: 'Urban-centric locale', width: "210px", show: true },          
-        { title: '%reg DSPS', key: '%reg DSPS', width: "200px", show: true },          
-        { title: 'COA in-state students', key: 'COA in-state students', width: "250px", show: true },          
-        { title: 'COA out-of-state', key: 'COA out-of-state', width: "200px", show: true },          
-        { title: 'Size range', key: 'Size range', width: "200px", show: true },          
-        { title: 'Undergraduate enrollment', key: 'Undergraduate enrollment', width: "280px", show: true },          
-        { title: 'Graduate enrollment', key: 'Graduate enrollment', width: "280px", show: true },          
+        { title: 'Institution name', key: 'institutionName', width: "300px", fixed: true },
+        { title: 'State', key: 'state', width: "130px", show: true },
+        { title: 'Sector', key: 'sector', width: "300px", show: true },
+        { title: 'Admittance', key: 'admit', width: "80px", show: true },
+        { title: 'Calendar', key: 'calendar', width: "180px", show: true },
+        { title: 'HBCU', key: 'hbcu', width: "60px", show: true },          
+        { title: 'Tribal', key: 'tribal', width: "60px", show: true },          
+        { title: 'Urban-centric locale', key: 'urbanCentricLocale', width: "210px", show: true },          
+        { title: 'COA in-state students', key: 'coaInStateStudents', width: "250px", show: true },          
+        { title: 'COA out-of-state', key: 'coaOutOfState', width: "200px", show: true },          
+        { title: 'Size range', key: 'sizeRange', width: "200px", show: true },          
+        { title: 'Undergraduate enrollment', key: 'undergraduateEnrollment', width: "280px", show: true },          
+        { title: 'Graduate enrollment', key: 'graduateEnrollment', width: "280px", show: true },          
       ],
   }),
   actions: {
     async fetchTableData() {
       try {
-        const file = '/21-22 updated IPEDS 09-15-2023.xlsx'; 
-        fetch(file)
-          .then((res) => res.arrayBuffer())
-          .then((data) => {
-            const workbook = XLSX.read(new Uint8Array(data), { type: 'array' });
-            const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-            localStorage.setItem("institutionTable", JSON.stringify(XLSX.utils.sheet_to_json(worksheet)));
-            this.tableData = JSON.parse(localStorage.getItem("institutionTable"));
-            this.loading = false;
-          })
+        const institutions = collection(dbFireStore, 'institutions');
+        const docSnap = await getDocs(institutions);
+        this.tableData = docSnap.docs.map(doc => doc.data());
+        localStorage.setItem("institutionTable", this.tableData);
+        this.loading = false;
       } catch (error) {
         console.error('Error fetching table data:', error);
       }
