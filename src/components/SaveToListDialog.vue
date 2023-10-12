@@ -30,7 +30,7 @@
 
         </div>
         <div 
-          class="create-new-list-form"
+          class="create-new-list-form hide"
           v-if="showCreateNewListInput" 
         >
           <h2 class="text-center">Name your new list</h2>
