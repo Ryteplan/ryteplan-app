@@ -1,19 +1,26 @@
 <template>
   <v-dialog
     v-model="show"
-    width="700px"
+    width="400px"
   >
     <v-card>
       <div class="pa-8">
         <div
           v-if="!showCreateNewListInput" 
         >        
-        <h2 class="text-center">Add to list</h2>
-        <ul>
-          <li v-for="list in userLists" :key="list.id">            
-            {{ list.name }}
-          </li>
-        </ul>
+        <h2 class="mb-6 text-center">Add to list</h2>
+        {{ institutionId  }}
+        <v-list>
+          <v-list-item
+            v-for="list in userLists"
+            @click="addInstitutionToList(list.id)"
+            :key="list.id"
+          >
+            <div class="d-flex">
+              <v-list-item-title>{{ list.name }}</v-list-item-title>
+            </div>
+          </v-list-item>
+        </v-list>
         <v-btn
             class="mt-5"
             color="primary" 
@@ -40,7 +47,7 @@
           <v-btn
               class="mt-5"
               color="primary" 
-              @click="createNewList"
+              @click="addInstitutionToList(null)"
             >
             Create New List
           </v-btn>
@@ -61,14 +68,14 @@
 
 <script>
 import { dbFireStore } from "../firebase";
-import { collection, getDocs, setDoc, doc } from 'firebase/firestore'
-
+import { collection, getDocs, doc, updateDoc, arrayUnion, } from 'firebase/firestore'
+// setDoc, 
 
 export default {
   name: "SaveToListDialog",
   props: {
      value: Boolean,
-     institutionData: {},
+     institutionId: String,
   },
   beforeMount() {
     this.loadUserLists();
@@ -99,11 +106,21 @@ export default {
       const docSnap = await getDocs(lists);
       this.userLists = docSnap.docs.map(doc => doc.data());
     },
-    async createNewList() {
-      const newListName = this.createNewListName;
-      await setDoc(doc(dbFireStore, 'lists', newListName), {
-        name: newListName
-      })
+    async addInstitutionToList(listId) {
+      let listIDToSaveInstitutionTo;
+
+      if (listId == null) {
+        listIDToSaveInstitutionTo = this.createNewListName;
+      } else {
+        listIDToSaveInstitutionTo = listId
+      }
+
+      console.log(listIDToSaveInstitutionTo);
+      
+      const listRef = doc(dbFireStore, "lists", listIDToSaveInstitutionTo);
+      await updateDoc(listRef, {
+          institutions: arrayUnion(this.institutionId)
+      });
     },
     saveToList() {
       console.log()

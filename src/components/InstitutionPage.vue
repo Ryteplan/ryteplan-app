@@ -89,6 +89,7 @@
     </div>
     <SaveToListDialog 
       v-model="showSaveToListDialog" 
+      :institutionId="institutionId"
     />
   </v-container>
 </template>
@@ -172,6 +173,7 @@ export default {
   data() {
     return {
       institution: {},
+      institutionId: "",
       images: [],
       showSaveToListDialog: false,
     }
@@ -183,6 +185,7 @@ export default {
       const q = query(institutions, where("slug", "==", slugFromURL));
       const docSnap = await getDocs(q);
       docSnap.forEach((doc) => {
+        this.institutionId = doc.id;
         this.institution = doc.data();
       });
       this.getImages();
