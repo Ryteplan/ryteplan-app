@@ -15,7 +15,6 @@
       <v-col cols="6">
         <h2>{{ list.name }}</h2>
         {{ list.institutions }}
-        <p>Get list of school.id's and then query their information and place into a v-table?</p>
         <p>We'll want to customly sort this list too</p>
         <p>Also add ability to remove a school from the list</p>
       </v-col>

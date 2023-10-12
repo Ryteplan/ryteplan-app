@@ -144,7 +144,7 @@
       dense
       show-select
       return-object
-      :headers="tableStore.headers"
+      :headers="tableStore.filteredHeadersData()"
       :items="tableStore.filteredTableData()" 
       :search="tableStore.search"
       :items-per-page="50"
@@ -196,6 +196,7 @@
     </v-dialog>
     <SaveToListDialog 
       v-model="showSaveToListDialog" 
+      :selectedRows="tableStore.selectedRows"
     />
   </v-container>
 </template>

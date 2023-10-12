@@ -9,7 +9,6 @@
           v-if="!showCreateNewListInput" 
         >        
         <h2 class="mb-6 text-center">Add to list</h2>
-        {{ institutionId  }}
         <v-list>
           <v-list-item
             v-for="list in userLists"
@@ -69,6 +68,7 @@
 <script>
 import { dbFireStore } from "../firebase";
 import { collection, getDocs, doc, updateDoc, arrayUnion, } from 'firebase/firestore'
+import { toRaw } from 'vue';
 // setDoc, 
 
 export default {
@@ -76,6 +76,7 @@ export default {
   props: {
      value: Boolean,
      institutionId: String,
+     selectedRows: Object
   },
   beforeMount() {
     this.loadUserLists();
@@ -107,6 +108,7 @@ export default {
       this.userLists = docSnap.docs.map(doc => doc.data());
     },
     async addInstitutionToList(listId) {
+      
       let listIDToSaveInstitutionTo;
 
       if (listId == null) {
@@ -115,12 +117,19 @@ export default {
         listIDToSaveInstitutionTo = listId
       }
 
-      console.log(listIDToSaveInstitutionTo);
-      
       const listRef = doc(dbFireStore, "lists", listIDToSaveInstitutionTo);
-      await updateDoc(listRef, {
+
+      if (this.selectedRows) {
+        for (const institution of toRaw(this.selectedRows)) {
+          await updateDoc(listRef, {
+            institutions: arrayUnion(institution.id)
+          });
+        }
+      } else if (this.institutionId) {
+        await updateDoc(listRef, {
           institutions: arrayUnion(this.institutionId)
-      });
+        });
+      }
     },
     saveToList() {
       console.log()

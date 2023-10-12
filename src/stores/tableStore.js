@@ -17,6 +17,7 @@ export const useTableStore = defineStore('table', {
       page: 1,
       selectedRows: [],
       headers: [
+        { title: 'id', key: 'id', width: "300px", show: false, align: "d-none" },
         { title: 'Institution name', key: 'institutionName', width: "300px", fixed: true },
         { title: 'State', key: 'state', width: "130px", show: true },
         { title: 'Sector', key: 'sector', width: "300px", show: true },
@@ -37,7 +38,7 @@ export const useTableStore = defineStore('table', {
       try {
         const institutions = collection(dbFireStore, 'institutions');
         const docSnap = await getDocs(institutions);
-        this.tableData = docSnap.docs.map(doc => doc.data());
+        this.tableData = docSnap.docs.map(doc=>({...doc.data(), id:doc.id}));
         localStorage.setItem("institutionTable", this.tableData);
         this.loading = false;
       } catch (error) {
@@ -50,6 +51,9 @@ export const useTableStore = defineStore('table', {
           return this.filters[f].length < 1 || this.filters[f].includes(d[f])
         })
       })
+    },
+    filteredHeadersData(){
+      return this.headers.filter(header => header.title !== "id")
     },
     columnValueList(val) {
       return [...new Set(this.tableData.map(d => d[val]))] 
