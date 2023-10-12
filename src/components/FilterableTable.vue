@@ -166,36 +166,12 @@
         </v-row>
       </template>
     </v-data-table>
-    <!-- <div v-if="tableStore.selectedRows.length">
-      <v-text-field
-        label="Email"
-        single-line
-        hide-details
-      ></v-text-field>
-      <v-btn style="margin-top: 24px;">Send to Student</v-btn>
-      <h2 style="margin-top: 200px;">Comparison Nutrition facts</h2>
-      <div class="nutrition-facts-container">
-        <div class="institution-nutrition-column"  :key="item" v-for="item in tableStore.selectedRows">
-          <pre style="margin-top: 36px; white-space: pre-wrap;">{{ item }}</pre>
-        </div>
-      </div>
-    </div> -->
-    <v-dialog
-      v-model="shareDialog"
-      width="700px"
-    >
-      <v-card>
-        <div class="pa-8">
-          <h2>Share</h2>
-          <p>Share these results with a friend!</p>
-        </div>
-        <v-card-actions>
-          <v-btn color="primary" block @click="shareDialog = false">Close</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
     <SaveToListDialog 
       v-model="showSaveToListDialog" 
+      :selectedRows="tableStore.selectedRows"
+    />
+    <ShareDialog 
+      v-model="showShareDialog" 
       :selectedRows="tableStore.selectedRows"
     />
   </v-container>
@@ -204,6 +180,7 @@
 <script>
 import { useTableStore } from '../stores/tableStore';
 import SaveToListDialog from './SaveToListDialog'
+import ShareDialog from './ShareDialog'
 
 export default {
   setup() {
@@ -309,7 +286,8 @@ export default {
     },
   },
   components: {
-    SaveToListDialog
+    SaveToListDialog,
+    ShareDialog
   }
 };
 </script>

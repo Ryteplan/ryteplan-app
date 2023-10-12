@@ -15,7 +15,7 @@
     "vue": "^3.2.13",
     "vue-router": "^4.0.13",
     "vuefire": "^3.1.17",
-    "vuetify": "^3.3.15",
+    "vuetify": "^3.3.21",
     "xlsx": "npm:@e965/xlsx@0.20.0"
   },
   "devDependencies": {

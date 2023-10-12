@@ -21,9 +21,10 @@
           </v-list-item>
         </v-list>
         <v-btn
-            class="mt-5"
-            color="primary" 
-            @click="showCreateNewListInput = true"
+          block
+          class="mt-5"
+          color="primary" 
+          @click="showCreateNewListInput = true"
           >
           Create New List
         </v-btn>
@@ -44,9 +45,10 @@
             clearable
           ></v-text-field>
           <v-btn
-              class="mt-5"
-              color="primary" 
-              @click="addInstitutionToList(null)"
+            block
+            class="mt-5"
+            color="primary" 
+            @click="addInstitutionToList(null)"
             >
             Create New List
           </v-btn>
@@ -69,7 +71,6 @@
 import { dbFireStore } from "../firebase";
 import { collection, getDocs, doc, updateDoc, arrayUnion, } from 'firebase/firestore'
 import { toRaw } from 'vue';
-// setDoc, 
 
 export default {
   name: "SaveToListDialog",

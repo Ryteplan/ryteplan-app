@@ -1,11 +1,13 @@
 <template>
   <v-container style="padding:0 80px;">
     <div style="max-width: 1120px; margin: 36px auto 64px;">
-      <h1 class="text-center">{{ institution["institutionName"] }}</h1>
       <div class="d-flex justify-space-between mt-4">
-        <div class="stat-container">
-          <span class="stat-label">State</span>
-          <span class="stat-content">{{ institution["state"] }}</span>
+        <div>
+          <h1 class="">{{ institution["institutionName"] }}</h1>
+          <div class="stat-container">
+            <span class="stat-label">State</span>
+            <span class="stat-content">{{ institution["state"] }}</span>
+          </div>
         </div>
         <div class="d-flex flex-column align-end">
           <v-btn
@@ -15,13 +17,13 @@
           </v-btn>
         </div>
       </div>  
-      <ul class="d-flex">
+      <ul class="mt-3 d-flex header-links">
         <li><a :href="institution['admissionsLink']" target="_blank">Admissions</a></li>
         <li><a class="mt-2" :href="institution['missionStatementLink']" target="_blank">Visit mission statement</a></li>          
         <li><a class="mt-2" :href="institution['netPriceCalculatorLink']" target="_blank">Net Price Calculator</a></li>          
         <li><a class="mt-2" :href="institution['dspsLink']" target="_blank">Disability Services</a></li>          
       </ul>
-      <div class="institution-images-container mt-12">
+      <div class="institution-images-container mt-8">
         <div class="img-bg">
           <img :src="image " v-for="(image, index) in images.slice(0, 1)" class="institution-image" :key="index" />
         </div>
@@ -299,6 +301,16 @@ export default {
   .stat-content {
     font-size: 18px;
     font-weight: 600;
+  }
+
+  .header-links a {
+    padding: 8px;
+    background: rgb(230, 230, 230);
+    margin-right: 8px;
+    border-radius: 8px;
+    color: black;
+    font-size: 13px;
+    text-decoration: none;
   }
 
 </style>
