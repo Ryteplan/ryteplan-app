@@ -185,7 +185,7 @@ import ShareDialog from './ShareDialog'
 export default {
   setup() {
     let tableStore = useTableStore();
-    
+    console.log(tableStore.tableData.length);
     if (tableStore.tableData.length == 0 ) {
       tableStore.fetchTableData();
     }
@@ -207,7 +207,7 @@ export default {
     return {
       filterDialog: false,
       columnSettingsDialog: false,
-      shareDialog: false,
+      showShareDialog: false,
       showSaveToListDialog: false,
       testValue: true,
       selectedDropDown: [
