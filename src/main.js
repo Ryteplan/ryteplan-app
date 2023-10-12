@@ -18,11 +18,11 @@ import '/src/assets/css/style.scss';
 import HomeView from './components/HomeView.vue';
 import AuthenticationView from './components/AuthenticationView.vue';
 import FilterableTable from './components/FilterableTable.vue';
-// import InstitutionDetail from './components/InstitutionDetail.vue';
 import InstitutionPage from './components/InstitutionPage.vue';
 import CompareInstituion from './components/CompareInstituion.vue';
 import StudentsView from './components/StudentsView.vue';
 import ListsView from './components/ListsView.vue';
+import SingularListView from './components/SingularListView.vue';
 import AccountView from './components/AccountView.vue';
 import PlaygroundView from './components/PlaygroundView.vue';
 
@@ -75,6 +75,11 @@ const routes = [
     path: '/lists',
     name: 'ListsView',
     component: ListsView,
+  },
+  {
+    path: '/list/:id',
+    name: 'SingularListView',
+    component: SingularListView,
   },
   {
     path: '/account',

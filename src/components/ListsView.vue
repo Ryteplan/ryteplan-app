@@ -1,12 +1,14 @@
 <template>
   <v-container class="pt-8 px-8">
     <v-row class="mt-4">
-      <v-col cols="4">
+      <v-col cols="6">
         <h2>Your lists</h2>
         <ul>
-          <li class="mb-8" v-for="list in userLists" :key="list.id">
-            {{ list }}
-          </li>
+          <v-list-item class="mb-8" v-for="list in userLists" :key="list.id">
+            <router-link :to="`/list/${list.id}`">
+              {{ list.name }}
+            </router-link>
+          </v-list-item>
         </ul>
       </v-col>
       <v-col cols="4">

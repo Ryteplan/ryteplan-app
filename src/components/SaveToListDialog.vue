@@ -5,14 +5,29 @@
   >
     <v-card>
       <div class="pa-8">
+        <div
+          v-if="!showCreateNewListInput" 
+        >        
         <h2 class="text-center">Add to list</h2>
         <ul>
-          <li v-for="list in userLists" :key="list.id">
-            
+          <li v-for="list in userLists" :key="list.id">            
             {{ list.name }}
           </li>
         </ul>
-        <div class="create-new-list-form">
+        <v-btn
+            class="mt-5"
+            color="primary" 
+            @click="showCreateNewListInput = true"
+          >
+          Create New List
+        </v-btn>
+
+        </div>
+        <div 
+          class="create-new-list-form"
+          v-if="showCreateNewListInput" 
+        >
+          <h2 class="text-center">Name your new list</h2>
           <v-text-field
             v-model="newListName"
             label="Enter List Name"
@@ -22,12 +37,13 @@
             hide-details
             clearable
           ></v-text-field>
-          <v-btn 
-            color="primary" 
-            @click="createNewList"
-          >
-          Create
-        </v-btn>
+          <v-btn
+              class="mt-5"
+              color="primary" 
+              @click="createNewList"
+            >
+            Create New List
+          </v-btn>
         </div>
       </div>
       <v-card-actions>
@@ -52,7 +68,7 @@ export default {
   name: "SaveToListDialog",
   props: {
      value: Boolean,
-     institutionData: {}
+     institutionData: {},
   },
   beforeMount() {
     this.loadUserLists();
@@ -64,13 +80,17 @@ export default {
       },
       set (value) {
         this.$emit('update:modelValue', value)
+        setTimeout(()=>{
+          this.showCreateNewListInput = false;
+        },1000);
       }
     }
   },
   data() {
     return {
       newListName: "",
-      userLists: {}
+      userLists: {},
+      showCreateNewListInput: false
     }
   },
   methods: {
