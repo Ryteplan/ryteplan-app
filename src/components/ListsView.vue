@@ -3,11 +3,15 @@
     <v-row class="mt-4">
       <v-col cols="6">
         <h2>Your lists</h2>
-        <ul>
-          <v-list-item class="mb-8" v-for="list in userLists" :key="list.id">
-            <router-link :to="`/list/${list.id}`">
-              {{ list.name }}
-            </router-link>
+        <ul class="mt-4">
+          <v-list-item 
+            v-for="list in userLists" 
+            :key="list.id"
+            :to="`/list/${list.id}`"
+          >
+            <div class="d-flex">
+              <v-list-item-title>{{ list.name }}</v-list-item-title>
+            </div>
           </v-list-item>
         </ul>
       </v-col>

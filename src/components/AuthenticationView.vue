@@ -9,7 +9,7 @@
         <v-tab value="Sign Up">Sign up</v-tab>
         <v-tab value="Login">Login</v-tab>
       </v-tabs>
-      <v-window class="py-12 w-50 mx-auto" v-model="tab">
+      <v-window class="py-12 w-50 mx-auto text-center" v-model="tab">
         <v-window-item 
           class="px-6"
           value="Sign Up"
@@ -19,7 +19,7 @@
           >
             Sign up With Google
           </v-btn>
-          <form class="mt-6" @submit.prevent="login"> 
+          <form class="mt-6 d-none" @submit.prevent="login"> 
             <v-text-field       
                 type="email"       
                 placeholder="Email address"       
@@ -40,7 +40,7 @@
           </form> 
         </v-window-item>
         <v-window-item 
-          class="px-6"
+          class="px-6 text-center"
           value="Login"
         >
           <v-btn
@@ -48,7 +48,7 @@
           >
             Login With Google
           </v-btn>
-          <form class="mt-6" @submit.prevent="signIn"> 
+          <form class="mt-6 d-none" @submit.prevent="signIn"> 
             <v-text-field       
                 type="email"       
                 placeholder="Email address"       
@@ -82,6 +82,11 @@ export default {
   setup() {
   },
   mounted() {
+    if (this.$route.query.tabDestination == "Login") {
+      this.tab = "Login";
+    } else {
+      this.tab = "Sign Up";      
+    }
   },
   beforeUnmount() {
   },

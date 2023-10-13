@@ -43,19 +43,15 @@ const routes = [
   },
   {
     path: '/login',
-    name: 'Login',
+    name: 'login',
     component: AuthenticationView,
+    props: true
   },
   {
     path: '/browse',
     name: 'browse',
     component: FilterableTable,
   },
-  // {
-  //   path: '/institution/:name',
-  //   name: 'institutionDetail',
-  //   component: InstitutionDetail,
-  // },
   {
     path: '/institution/:slug',
     name: 'institutionPage',

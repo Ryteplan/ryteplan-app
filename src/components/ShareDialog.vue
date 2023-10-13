@@ -90,8 +90,7 @@ export default {
         {
           to: [
             {
-              email: 'brandon@ryteplan.com',
-              name: 'Brandon'
+              email: this.emailShareAddress,
             }
           ],
           from: {
@@ -101,7 +100,7 @@ export default {
           template_id: '351ndgwzp0qgzqx8',
           variables: [
             {
-              email: 'brandon@ryteplan.com',
+              email: this.emailShareAddress,
               substitutions:[
                 {
                   var: 'userFullName',

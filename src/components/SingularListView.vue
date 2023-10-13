@@ -35,9 +35,21 @@
     <v-row class="mt-4">
       <v-col cols="6">
         <h2>{{ list.name }}</h2>
-        {{ list.institutions }}
-        <p>We'll want to customly sort this list too</p>
-        <p>Also add ability to remove a school from the list</p>
+        <v-list class="mt-4">
+          <v-list-item
+            v-for="(item, index) in institutions"
+            :to="`/institution/${item.slug}`"
+            :key="index"
+          >
+            <div class="d-flex">
+              <v-list-item-title>{{ item.institutionName }}</v-list-item-title>
+            </div>
+          </v-list-item>
+        </v-list>
+        <div class="mt-4">
+          <p>We'll want to customly sort this list too</p>
+          <p>Also add ability to remove a school from the list</p>
+        </div>
       </v-col>
     </v-row>
   </v-container>
@@ -48,9 +60,11 @@
 <script>
 
 import { dbFireStore } from "../firebase";
-import { getDocs, query, collection, where } from 'firebase/firestore'
+import { getDoc, doc, getDocs, query, collection, where } from 'firebase/firestore'
 import { getAuth } from 'firebase/auth';
 import ShareDialog from './ShareDialog'
+import { toRaw } from 'vue';
+
 
 export default {
   beforeMount() {
@@ -69,6 +83,7 @@ export default {
     return {
       createNewListName: "",
       list: {},
+      institutions: [],
       userID: "",
       showShareDialog: false,
       selectedDropDown: [
@@ -94,6 +109,12 @@ export default {
       docSnap.forEach((doc) => {
         this.list = doc.data();
       });
+
+      const listOfInstitutionIDs = toRaw(this.list.institutions);
+      listOfInstitutionIDs.forEach(async (institutionID)=>{
+        const snap = await getDoc(doc(dbFireStore, 'institutions', institutionID));
+        this.institutions.push(snap.data());
+      })
     },
     onUpdateMenu(open) {
       if (open) {

@@ -4,14 +4,14 @@
       <v-toolbar-title class="logo"><a href="/" class="logo">RytePlan</a></v-toolbar-title>
       <div v-if="!isLoggedIn">
         <v-btn 
-          to="/login"
+          :to="{name: 'login', query: { tabDestination: 'Sign Up' }}"
           class="no-active"
         >
           Sign up
         </v-btn>
         <v-btn 
-          to="/login"
           class="no-active"
+          :to="{name: 'login', query: { tabDestination: 'Login' }}"
         >
           Login
         </v-btn>
@@ -57,7 +57,7 @@
       </v-navigation-drawer>    
 
     <v-main>
-      <router-view></router-view>
+      <router-view :key="$route.fullPath"></router-view>
     </v-main>
   </v-layout>
 </template>

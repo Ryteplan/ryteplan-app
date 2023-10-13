@@ -219,11 +219,11 @@ export default {
           icon: 'mdi-ab-testing',
           action: this.compareClicked
         },
-        { 
-          title: 'Share',
-          icon: 'mdi-account-plus',
-          action: this.shareClicked
-        }
+        // { 
+        //   title: 'Share',
+        //   icon: 'mdi-account-plus',
+        //   action: this.shareClicked
+        // }
       ],
 
     }
