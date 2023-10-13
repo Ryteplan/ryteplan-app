@@ -188,8 +188,7 @@ export default {
     console.log(tableStore.tableData.length);
     if (tableStore.tableData.length == 0 ) {
       tableStore.fetchTableData();
-    }
-  
+    }  
     return {
       tableStore,      
     };
