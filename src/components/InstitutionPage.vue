@@ -18,7 +18,7 @@
         </div>
       </div>
       <div class="mt-4">
-        <p style="font-size: 12px; font-weight: 500;">External links</p>  
+        <p style="font-size: 12px;">External links</p>  
         <ul class="mt-3 d-flex header-links">
           <li><a :href="institution['admissionsLink']" target="_blank">Admissions</a></li>
           <li><a class="mt-2" :href="institution['missionStatementLink']" target="_blank">Visit mission statement</a></li>          
