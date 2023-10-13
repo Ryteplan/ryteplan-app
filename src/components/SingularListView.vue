@@ -61,7 +61,6 @@
 
 import { dbFireStore } from "../firebase";
 import { getDoc, doc, getDocs, query, collection, where } from 'firebase/firestore'
-import { getAuth } from 'firebase/auth';
 import ShareDialog from './ShareDialog'
 import { toRaw } from 'vue';
 
@@ -70,12 +69,7 @@ export default {
   beforeMount() {
   },
   mounted() {    
-    getAuth().onAuthStateChanged((user) =>{
-      if(user) {
-        this.userID = user.uid;
-        this.loadList();
-      } 
-    });
+    this.loadList();
   },
   beforeUnmount() {
   },
@@ -84,7 +78,6 @@ export default {
       createNewListName: "",
       list: {},
       institutions: [],
-      userID: "",
       showShareDialog: false,
       selectedDropDown: [
         { 
