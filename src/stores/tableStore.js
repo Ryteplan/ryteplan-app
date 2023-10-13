@@ -35,14 +35,20 @@ export const useTableStore = defineStore('table', {
   }),
   actions: {
     async fetchTableData() {
-      try {
-        const institutions = collection(dbFireStore, 'institutions');
-        const docSnap = await getDocs(institutions);
-        this.tableData = docSnap.docs.map(doc=>({...doc.data(), id:doc.id}));
-        localStorage.setItem("institutionTable", this.tableData);
-        this.loading = false;
-      } catch (error) {
-        console.error('Error fetching table data:', error);
+      if (localStorage.getItem("institutionTable")) {
+        console.log("load from local");
+        this.tableData = JSON.parse(localStorage.getItem('institutionTable'))
+      } else {
+        try {
+          console.log("load from server");
+          const institutions = collection(dbFireStore, 'institutions');
+          const docSnap = await getDocs(institutions);
+          this.tableData = docSnap.docs.map(doc=>({...doc.data(), id:doc.id}));
+          localStorage.setItem("institutionTable", JSON.stringify(this.tableData));
+          this.loading = false;
+        } catch (error) {
+          console.error('Error fetching table data:', error);
+        }
       }
     },
     filteredTableData(){

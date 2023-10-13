@@ -63,7 +63,7 @@ export default {
     });
     const route=useRoute();
     const path = route.path;
-    this.link = "https://www.ryteplan.com/" + path;
+    this.link = "https://www.ryteplan.com" + path;
   },
   computed: {
     show: {

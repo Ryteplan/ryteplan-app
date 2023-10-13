@@ -185,8 +185,7 @@ import ShareDialog from './ShareDialog'
 export default {
   setup() {
     let tableStore = useTableStore();
-    console.log(tableStore.tableData.length);
-    if (tableStore.tableData.length == 0 ) {
+    if (tableStore.tableData.length == 0) {
       tableStore.fetchTableData();
     }  
     return {
