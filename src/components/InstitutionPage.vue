@@ -16,13 +16,16 @@
             Add to list
           </v-btn>
         </div>
-      </div>  
-      <ul class="mt-3 d-flex header-links">
-        <li><a :href="institution['admissionsLink']" target="_blank">Admissions</a></li>
-        <li><a class="mt-2" :href="institution['missionStatementLink']" target="_blank">Visit mission statement</a></li>          
-        <li><a class="mt-2" :href="institution['netPriceCalculatorLink']" target="_blank">Net Price Calculator</a></li>          
-        <li><a class="mt-2" :href="institution['dspsLink']" target="_blank">Disability Services</a></li>          
-      </ul>
+      </div>
+      <div class="mt-4">
+        <p style="font-size: 12px; font-weight: 500;">External links</p>  
+        <ul class="mt-3 d-flex header-links">
+          <li><a :href="institution['admissionsLink']" target="_blank">Admissions</a></li>
+          <li><a class="mt-2" :href="institution['missionStatementLink']" target="_blank">Visit mission statement</a></li>          
+          <li><a class="mt-2" :href="institution['netPriceCalculatorLink']" target="_blank">Net Price Calculator</a></li>          
+          <li><a class="mt-2" :href="institution['dspsLink']" target="_blank">Disability Services</a></li>          
+        </ul>
+      </div>
       <div class="institution-images-container mt-8">
         <div class="img-bg">
           <img :src="image " v-for="(image, index) in images.slice(0, 1)" class="institution-image" :key="index" />

@@ -6,18 +6,27 @@
         <ul>
           <li class="mt-4" v-for="student in userStudents" :key="student.id">
             <p><strong>{{ student.name }}</strong></p>
-            <p>{{ student.email }}</p>            
+            <p>Email: {{ student.email }}</p>            
+            <p>GPA: {{ student.gpa }}</p>            
           </li>
         </ul>
       </v-col>
       <v-col cols="4">
         <v-text-field       
-          type="text"       
+          type="text"
+          label="Name"       
           placeholder="Name"       
           v-model="newStudentName"     
         />
         <v-text-field       
+          type="text"       
+          label="GPA"
+          placeholder="3.7"       
+          v-model="newStudentGPA"     
+        />
+        <v-text-field       
           type="email"       
+          label="email"       
           placeholder="joedirt@gmail.com"       
           v-model="newStudentEmail"     
         />        <v-btn
@@ -46,6 +55,7 @@ export default {
     return {
       newStudentName: "",
       newStudentEmail: "",
+      newStudentGPA: "",
       userStudents: {}
     }
   },
@@ -58,7 +68,8 @@ export default {
     async createNewStudent() {
       await setDoc(doc(dbFireStore, 'students', this.newStudentName), {
         name: this.newStudentName,
-        email: this.newStudentEmail
+        email: this.newStudentEmail,
+        gpa: this.newStudentGPA
       })
     },
     async sendStudent() {
