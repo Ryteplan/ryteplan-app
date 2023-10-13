@@ -6,7 +6,7 @@
     <v-card>
       <div class="pa-8">
         <div>        
-          <h2 class="mb-6 text-center">Share list to</h2>
+          <h2 class="mb-6 text-center">Share List</h2>
             <v-text-field
               v-model="emailShareAddress"
               label="Enter email address"
@@ -40,15 +40,30 @@
 </template>
 
 <script>
+import { dbFireStore } from "../firebase";
+import { collection, setDoc, doc } from 'firebase/firestore'
+import { getAuth } from 'firebase/auth';
+import {useRoute} from 'vue-router'
 
 export default {
   name: "ShareDialog",
+  setup() {
+  },
   props: {
      value: Boolean,
      institutionId: String,
      selectedRows: Object
   },
-  beforeMount() {
+  mounted() {
+    getAuth().onAuthStateChanged((user) =>{
+      if(user) {
+        this.userID = user.uid;
+        this.userFullName = user.displayName;
+      } 
+    });
+    const route=useRoute();
+    const path = route.path;
+    this.link = "https://www.ryteplan.com/" + path;
   },
   computed: {
     show: {
@@ -63,12 +78,50 @@ export default {
   data() {
     return {
       emailShareAddress: "",
+      userFullName: "",
+      link: ""
     }
   },
   methods: {
-    shareList(emailAddress) {
+    async shareList(emailAddress) {
       console.log(emailAddress);
-    }
+      const newDocRef = doc(collection(dbFireStore, "emails"));
+      await setDoc(newDocRef, 
+        {
+          to: [
+            {
+              email: 'brandon@ryteplan.com',
+              name: 'Brandon'
+            }
+          ],
+          from: {
+            email: 'noreply@ryteplan.com',
+            name: 'Ryte Plan'
+          },
+          template_id: '351ndgwzp0qgzqx8',
+          variables: [
+            {
+              email: 'brandon@ryteplan.com',
+              substitutions:[
+                {
+                  var: 'userFullName',
+                  value: this.userFullName
+                },
+                {
+                  var: 'link',
+                  value: this.link
+                }
+              ]
+            }
+          ],
+          tags: ['Share List Email'],
+          reply_to: {
+            email: 'reply_to@example.com',
+            name: 'Reply to name'
+          },
+        }
+      );
+    }      
   }
 }
 </script>
