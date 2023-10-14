@@ -34,7 +34,8 @@
             title="Lists" 
             value="Saved Lists">
           </v-list-item>
-          <v-list-item 
+          <v-list-item
+            class="d-none" 
             to="/students" 
             prepend-icon="mdi-account-school" 
             title="Students" 
