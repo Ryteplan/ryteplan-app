@@ -83,6 +83,7 @@
                   >
                     <v-switch 
                       v-if="header.title !== 'Institution name'"
+                      v-show="header.title !== 'id'"
                       :label="header.title"
                       v-model="header.show"
                       @change="tableStore.updateHeaders"
