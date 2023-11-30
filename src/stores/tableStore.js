@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { dbFireStore } from "../firebase";
 import { collection, getDocs } from 'firebase/firestore'
+import { compress, decompress } from 'lz-string'
 
 
 export const useTableStore = defineStore('table', {
@@ -18,10 +19,11 @@ export const useTableStore = defineStore('table', {
       selectedRows: [],
       headers: [
         { title: 'id', key: 'id', width: "300px", show: false, align: "d-none" },
-        { title: 'Institution name', key: 'institutionName', width: "300px", fixed: true },
-        { title: 'State', key: 'state', width: "130px", show: true },
-        { title: 'Sector', key: 'sector', width: "300px", show: true },
-        { title: 'Admittance', key: 'admit', width: "80px", show: true },
+        { title: 'Institution name', key: 'name', width: "300px", fixed: true },
+        { title: 'State', key: 'stateCode', width: "130px", show: true },
+        { title: 'Country', key: 'countryCode', width: "130px", show: true },
+        { title: 'Main Type of Degree Offered', key: 'mainFunctionType', width: "300px", show: true },
+        { title: 'Type of Institution', key: 'mainInstControl', width: "80px", show: true },
         { title: 'Calendar', key: 'calendar', width: "180px", show: true },
         { title: 'HBCU', key: 'hbcu', width: "60px", show: true },          
         { title: 'Tribal', key: 'tribal', width: "60px", show: true },          
@@ -36,15 +38,15 @@ export const useTableStore = defineStore('table', {
   actions: {
     async fetchTableData() {
       if (localStorage.getItem("institutionTable")) {
-        console.log("load from local");
-        this.tableData = JSON.parse(localStorage.getItem('institutionTable'))
+        let decompressedTableData = decompress(localStorage.getItem("institutionTable"));
+        this.tableData = JSON.parse(decompressedTableData);
       } else {
         try {
-          console.log("load from server");
           const institutions = collection(dbFireStore, 'institutions');
           const docSnap = await getDocs(institutions);
           this.tableData = docSnap.docs.map(doc=>({...doc.data(), id:doc.id}));
-          localStorage.setItem("institutionTable", JSON.stringify(this.tableData));
+          let compressedTableData = compress(JSON.stringify(this.tableData));
+          localStorage.setItem("institutionTable", compressedTableData);
           this.loading = false;
         } catch (error) {
           console.error('Error fetching table data:', error);

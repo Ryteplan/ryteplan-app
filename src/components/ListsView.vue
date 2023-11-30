@@ -1,31 +1,41 @@
 <template>
   <v-container class="pt-8 px-8">
-    <v-row class="mt-4">
+    <v-row class="">
       <v-col cols="6">
-        <h2>Your lists</h2>
-        <ul class="mt-4">
-          <v-list-item 
-            v-for="list in userLists" 
-            :key="list.id"
-            :to="`/list/${list.id}`"
-          >
-            <div class="d-flex">
-              <v-list-item-title>{{ list.name }}</v-list-item-title>
-            </div>
-          </v-list-item>
-        </ul>
+        <div class="d-flex align-center justify-start">
+          <h1>Lists</h1>
+          <v-btn
+            class="ml-5"
+            @click="createNewList"
+            prepend-icon="mdi-plus"
+            density="compact"
+          > Create new list
+          </v-btn>
+        </div>
+        <div class="mt-5">
+          <h2>Your lists</h2>
+          <h2>Tab for student lists</h2>
+          <ul class="mt-4">
+            <v-list>
+            <v-list-item 
+              v-for="list in userLists" 
+              :key="list.id"
+              :to="`/list/${list.id}`"
+            >
+              <div class="d-flex">
+                <v-list-item-title>{{ list.name }}</v-list-item-title>
+              </div>
+            </v-list-item>
+          </v-list>
+          </ul>
+        </div>
       </v-col>
       <v-col cols="4">
         <v-text-field       
           type="text"       
           placeholder="Name"       
           v-model="createNewListName"     
-        />
-        <v-btn
-          @click="createNewList"
-        >
-          Create new list
-        </v-btn>     
+        />     
       </v-col>
     </v-row>
   </v-container>

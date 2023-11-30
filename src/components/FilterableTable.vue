@@ -2,7 +2,7 @@
   <v-container class="browse-institution-table-container pt-8 px-8">
     <div>
       <div style="display: flex; justify-content: center; align-items: center;">
-        <v-row class="">
+        <v-row class="align-end">
           <v-col cols="3">
             <v-text-field
               v-model="tableStore.search"
@@ -22,7 +22,6 @@
             >
               <template v-slot:activator="{ props }">
                 <v-btn
-                  class="fill-height"
                   v-bind="props"
                   append-icon="mdi-filter-variant"
                 >
@@ -65,7 +64,7 @@
             >
               <template v-slot:activator="{ props }">
                 <v-btn
-                  class="ml-5 fill-height"
+                  class="ml-5"
                   v-bind="props"
                   append-icon="mdi-table"
                 >
