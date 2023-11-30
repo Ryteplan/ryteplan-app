@@ -80,6 +80,7 @@
                   <div
                     v-for="header in tableStore.headers"
                     :key="header.title"
+                    class="mb-4"
                   >
                     <v-switch 
                       v-if="header.title !== 'Institution name'"
@@ -259,7 +260,7 @@ export default {
       const targetRowKey = institution.item.key;
       
       localStorage.setItem("lastClickedRow", targetRowKey);
-      const slug = JSON.parse(JSON.stringify(item.item.slug));
+      const slug = JSON.parse(JSON.stringify(item.item.uri));
       
       this.$router.push({ 
         name: 'institutionPage', 

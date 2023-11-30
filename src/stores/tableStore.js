@@ -21,6 +21,7 @@ export const useTableStore = defineStore('table', {
         { title: 'id', key: 'id', width: "300px", show: false, align: "d-none" },
         { title: 'Institution name', key: 'name', width: "300px", fixed: true },
         { title: 'State', key: 'stateCode', width: "130px", show: true },
+        { title: 'City', key: 'city', width: "130px", show: true },
         { title: 'Country', key: 'countryCode', width: "130px", show: true },
         { title: 'Zipcode', key: 'zipcode', width: "130px", show: true },
         { title: 'Main Type of Degree Offered', key: 'mainFunctionType', width: "300px", show: true },
@@ -72,7 +73,6 @@ export const useTableStore = defineStore('table', {
       if (localStorage.getItem("institutionTable")) {
         let decompressedTableData = decompress(localStorage.getItem("institutionTable"));
         this.tableData = JSON.parse(decompressedTableData);
-        console.log(this.tableData[0]);
       } else {
         try {
           const institutions = collection(dbFireStore, 'institutions');
@@ -106,8 +106,8 @@ export const useTableStore = defineStore('table', {
     updateSelected(selectedRows) {
       this.selectedRows = selectedRows;
     },
-    updateHeaders(){
-      const filteredArray = this.headers.map(x => (x.show === false ? { ...x, align: " d-none" } : x));
+    updateHeaders() {
+      const filteredArray = this.headers.map(x => (x.show === false ? { ...x, align: " d-none" } : { ...x, align: "" }));
       this.headers = filteredArray;
     }
   },
