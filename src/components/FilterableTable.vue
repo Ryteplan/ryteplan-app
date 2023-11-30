@@ -34,7 +34,7 @@
                   <p>Use the filters below to narrow your search.</p>
                   <div
                     class="mt-6"
-                    v-for="header in tableStore.headers"
+                    v-for="header in tableStore.tableHeaders"
                     :key="header.title"
                   >
                     <v-select 
@@ -78,7 +78,7 @@
                   <p class="mt-2">Note: I am not yet sure if we will be able to search or filter upon the data in the column if it is not appearing in the table!</p>
                   <h3 class="mt-5 mb-3">Columns</h3>
                   <div
-                    v-for="header in tableStore.headers"
+                    v-for="header in tableStore.tableHeaders"
                     :key="header.title"
                     class="mb-4"
                   >
@@ -188,7 +188,10 @@ export default {
     let tableStore = useTableStore();
     if (tableStore.tableData.length == 0) {
       tableStore.fetchTableData();
-    }  
+    }
+    if (tableStore.tableHeaders.length == 0) {
+      tableStore.loadTableHeaders();
+    }
     return {
       tableStore,      
     };
