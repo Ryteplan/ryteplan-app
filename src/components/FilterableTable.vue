@@ -135,7 +135,7 @@
     </div>
     <v-data-table
       id="dataTable"
-      class="elevation-1 mt-4"
+      class="elevation-1 mt-4 institutionDataTable"
       item-key="Institution name"
       selectable-key="Institution name"
       height="59vh"
