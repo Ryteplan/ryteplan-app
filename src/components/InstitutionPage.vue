@@ -13,7 +13,7 @@
           </v-btn>
         </div>
       </div>
-      <div class="location-links-images-container mt-2">
+      <div class="section-container location-links-images-container mt-2">
         <div class="d-flex flex-column">
           <div class="location-container d-flex flex-column" style="gap: 12px">
             <div class="stat-container">
@@ -53,7 +53,7 @@
           </div>
         </div>                        
       </div>
-      <div class="three-by-three-stat-grid mt-8">
+      <div class="section-container three-by-three-stat-grid mt-8">
         <div class="stat-container"><span class="stat-label">Sector</span> <span class="stat-content">{{ institution["mainInstControl"] }}</span></div>
         <div class="stat-container"><span class="stat-label">Undergraduate Enrollment </span> <span class="stat-content">{{ institution["grsBachInitN"] }}</span></div>
         <div class="stat-container"><span class="stat-label">Calendar </span> <span class="stat-content">{{ institution["mainCalendar"] }}</span></div>
@@ -83,7 +83,7 @@
         <div class="stat-container"><span class="stat-label">Religious </span> <span class="stat-content">{{ institution["denomCode"] }}</span></div>
       </div>
 
-      <div class="descriptions-container mt-8">
+      <div class="section-container descriptions-container mt-8">
         <div class="">
           <h3>Academics</h3>
           <p class="mt-1">{{ descriptions.academics }}</p>
@@ -98,7 +98,7 @@
         </div>
       </div>
 
-      <div class="three-by-three-stat-grid mt-8">
+      <div class="section-container three-by-three-stat-grid mt-8">
         <div class="stat-container"><span class="stat-label">Tuition Resident</span> <span class="stat-content">{{ institution["tuitState1stFtD2024"] }}</span></div>
         <div class="stat-container"><span class="stat-label">Tuition Non-Resident</span> <span class="stat-content">{{ institution["tuitNres1stFtD2024"] }}</span></div>
         <div class="multiple-stat-container">
@@ -123,9 +123,9 @@
 
       </div>
 
-      <div class="one-by-two-grid" style="margin-top: 80px;">
+      <div class="section-container one-by-two-grid" style="margin-top: 80px;">
         <div class="stat-container">
-          <p>Putting ethnic data here for now</p>
+          <h3>Putting ethnic data here for now</h3>
           <span class="stat-label">en1stAsianNonhispanicN</span> 
           <span class="stat-content">{{ institution["en1stAsianNonhispanicN"] }}</span>
           <span class="stat-label">en1stBlackNonhispanicN</span> 
@@ -153,7 +153,7 @@
           <div class="hello" ref="chartdiv"></div>
         </div>
       </div>
-      <div class="two-by-two-grid mt-8 w-25">
+      <div class="section-container two-by-two-grid mt-8 w-25">
         <h1>Testing stuff is to go here</h1>
       </div>
     </div>
@@ -329,7 +329,6 @@ export default {
   }
 
   .institution-image {
-    aspect-ratio: 1 / 1;
     animation: fadeIn ease-in 600ms;
     object-fit: cover;
     object-position: center;
@@ -397,6 +396,12 @@ export default {
   .location-links-images-container {
     display: grid;
     grid-template-columns: 1fr 2fr;
+  }
+
+  .section-container {
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
   }
 
 </style>
