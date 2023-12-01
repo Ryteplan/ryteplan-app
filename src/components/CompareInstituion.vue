@@ -157,25 +157,4 @@ export default {
     font-weight: bold;
   }
   
-  .institution-images-container {
-    margin: 24px 0;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: 8px;
-  }
-
-  .institution-images-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    column-gap: 8px;
-    row-gap: 8px;
-  }
-
-  .institution-image {
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    object-position: center;
-    width: 100%;
-  }
-
 </style>

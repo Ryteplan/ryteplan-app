@@ -4,10 +4,6 @@
       <div class="d-flex justify-space-between mt-4">
         <div>
           <h1 class="">{{ institution["name"] }}</h1>
-          <div class="stat-container">
-            <span class="stat-label">State</span>
-            <span class="stat-content">{{ institution["state"] }}</span>
-          </div>
         </div>
         <div class="d-flex flex-column align-end">
           <v-btn
@@ -17,41 +13,59 @@
           </v-btn>
         </div>
       </div>
-      <div class="mt-4">
-        <p style="font-size: 12px;">External links</p>  
-        <ul class="mt-3 d-flex header-links">
-          <li><a :href="institution['admissionsLink']" target="_blank">Admissions</a></li>
-          <li><a class="mt-2" :href="institution['missionStatementLink']" target="_blank">Visit mission statement</a></li>          
-          <li><a class="mt-2" :href="institution['netPriceCalculatorLink']" target="_blank">Net Price Calculator</a></li>          
-          <li><a class="mt-2" :href="institution['dspsLink']" target="_blank">Disability Services</a></li>          
-        </ul>
-      </div>
-      <div class="institution-images-container mt-8">
-        <div class="img-bg">
-          <img :src="image " v-for="(image, index) in images.slice(0, 1)" class="institution-image" :key="index" />
+      <div class="d-flex mt-2" style="gap: 50px;">
+        <div class="d-flex flex-column">
+          <div class="d-flex location-container ">
+            <div class="stat-container">
+              <span class="stat-label">Country</span>
+              <span class="stat-content">{{ institution["countryCode"] }}</span>
+            </div>
+            <div class="ml-4 stat-container">
+              <span class="stat-label">City</span>
+              <span class="stat-content">{{ institution["city"] }}</span>
+            </div>
+            <div class="ml-4 stat-container">
+              <span class="stat-label">State</span>
+              <span class="stat-content">{{ institution["stateCode"] }}</span>
+            </div>
+          </div>
+          <div class="external-links mt-4">
+            <p style="font-size: 12px;">External links</p>  
+            <ul class="mt-3 d-flex header-links">
+              <li><a :href="institution['urlAddress']" target="_blank">Official site</a></li>
+              <li><a :href="institution['admissionsLink']" target="_blank">Admissions</a></li>
+              <li><a class="mt-2" :href="institution['missionStatementLink']" target="_blank">Visit mission statement</a></li>          
+              <li><a class="mt-2" :href="institution['netPriceCalculatorLink']" target="_blank">Net Price Calculator</a></li>          
+              <li><a class="mt-2" :href="institution['dspsLink']" target="_blank">Disability Services</a></li>          
+            </ul>
+          </div>                  
+          <div class="descriptions-container mt-8">
+            <div class="">
+              <h3>Academics</h3>
+              <p class="mt-1">{{ descriptions.academics }}</p>
+            </div>
+            <div class="mt-8">
+              <h3>About the City</h3>
+              <p class="mt-1">{{ descriptions.aboutTheCity }}</p>
+            </div>
+            <div class="mt-8">
+              <h3>About the Culture</h3>
+              <p class="mt-1">{{ descriptions.aboutTheCulture }}</p>
+            </div>
+          </div>
         </div>
-        <div class="institution-images-grid">
-            <template v-for="(image, index) in images.slice(1, 5)" :key="index">
-              <div class="img-bg">
-                <img class="institution-image" :src="image" />
-              </div>
-            </template>
-        </div>
-      </div>      
-      <div>
-        <h2>Descriptions</h2>
-        <div class="mt-2">
-          <h3>Academics</h3>
-          <p>{{ descriptions.academics }}</p>
-        </div>
-        <div class="mt-4">
-          <h3>About the City</h3>
-          <p>{{ descriptions.aboutTheCity }}</p>
-        </div>
-        <div class="mt-4">
-          <h3>About the Culture</h3>
-          <p>{{ descriptions.aboutTheCulture }}</p>
-        </div>
+        <div class="institution-images-container mt-4">
+          <div class="img-bg">
+            <img :src="image " v-for="(image, index) in images.slice(0, 1)" class="institution-image" :key="index" />
+          </div>
+          <div class="institution-images-grid">
+              <template v-for="(image, index) in images.slice(1, 5)" :key="index">
+                <div class="img-bg">
+                  <img class="institution-image" :src="image" />
+                </div>
+              </template>
+          </div>
+        </div>      
       </div>
       <div class="three-by-three-stat-grid mt-8">
         <div class="stat-container"><span class="stat-label">Sector</span> <span class="stat-content">{{ institution["sector"] }}</span></div>
@@ -257,16 +271,10 @@ export default {
     font-weight: bold;
   }
   
-  .institution-images-container {
-    display: grid;
-    aspect-ratio: 2 / 1;
-    grid-template-columns: 1fr 1fr;
-    column-gap: 8px;
-  }
-
   .institution-images-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+    margin-top: 8px;
     column-gap: 8px;
     row-gap: 8px;
   }
@@ -282,6 +290,7 @@ export default {
     object-fit: cover;
     object-position: center;
     width: 100%;
+    height: 100%;
   }
 
   @keyframes fadeIn {
