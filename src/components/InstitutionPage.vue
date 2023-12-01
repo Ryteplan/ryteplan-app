@@ -3,7 +3,7 @@
     <div style="max-width: 1120px; margin: 36px auto 64px;">
       <div class="d-flex justify-space-between mt-4">
         <div>
-          <h1 class="">{{ institution["institutionName"] }}</h1>
+          <h1 class="">{{ institution["name"] }}</h1>
           <div class="stat-container">
             <span class="stat-label">State</span>
             <span class="stat-content">{{ institution["state"] }}</span>
@@ -38,6 +38,21 @@
             </template>
         </div>
       </div>      
+      <div>
+        <h2>Descriptions</h2>
+        <div class="mt-2">
+          <h3>Academics</h3>
+          <p>{{ descriptions.academics }}</p>
+        </div>
+        <div class="mt-4">
+          <h3>About the City</h3>
+          <p>{{ descriptions.aboutTheCity }}</p>
+        </div>
+        <div class="mt-4">
+          <h3>About the Culture</h3>
+          <p>{{ descriptions.aboutTheCulture }}</p>
+        </div>
+      </div>
       <div class="three-by-three-stat-grid mt-8">
         <div class="stat-container"><span class="stat-label">Sector</span> <span class="stat-content">{{ institution["sector"] }}</span></div>
         <div class="stat-container"><span class="stat-label">Undergraduate Enrollment </span> <span class="stat-content">{{ institution["undergraduateEnrollment"] }}</span></div>
@@ -101,7 +116,7 @@
  
 <script>
 import { dbFireStore } from "../firebase";
-import { collection, query, where, getDocs } from 'firebase/firestore'
+import { documentId, collection, query, where, getDocs } from 'firebase/firestore'
 import SaveToListDialog from './SaveToListDialog'
 
 import * as am5 from '@amcharts/amcharts5';
@@ -178,6 +193,7 @@ export default {
   data() {
     return {
       institution: {},
+      descriptions: {},
       institutionId: "",
       images: [],
       showSaveToListDialog: false,
@@ -187,13 +203,22 @@ export default {
     async loadInstitutionData() {
       const slugFromURL = this.$route.params.slug;
       const institutions = collection(dbFireStore, 'institutions');
-      const q = query(institutions, where("slug", "==", slugFromURL));
+      const q = query(institutions, where("uri", "==", slugFromURL));
       const docSnap = await getDocs(q);
       docSnap.forEach((doc) => {
         this.institutionId = doc.id;
         this.institution = doc.data();
       });
       this.getImages();
+      this.getDescriptions();
+    },
+    async getDescriptions() {
+      const descriptions = collection(dbFireStore, 'Descriptions');
+      const q = query(descriptions, where(documentId(), "==", this.institutionId));
+      const docSnap = await getDocs(q);
+      docSnap.forEach((doc) => {
+        this.descriptions = doc.data();
+      });
     },
     async getImages() {
       const institutionSearchString = encodeURIComponent(this.institution["institutionName"]) + " campus -logo";
