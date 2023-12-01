@@ -15,7 +15,7 @@
       </div>
       <div class="location-links-images-container mt-2">
         <div class="d-flex flex-column">
-          <div class="location-container">
+          <div class="location-container d-flex flex-column" style="gap: 12px">
             <div class="stat-container">
               <span class="stat-label">Country</span>
               <span class="stat-content">{{ institution["countryCode"] }}</span>
@@ -31,7 +31,6 @@
           </div>
           
           <div class="external-links mt-4">
-            <p style="font-size: 12px;">External links</p>  
             <ul class="mt-3 header-links d-flex flex-column no-wrap" style="gap: 12px;">
               <li><a :href="institution['urlAddress']" target="_blank">Official site</a></li>
               <li><a class="mt-2" :href="institution['netPriceCalculatorLink']" target="_blank">Net Price Calculator</a></li>          
@@ -273,7 +272,7 @@ export default {
       });
     },
     async getImages() {
-      const institutionSearchString = encodeURIComponent(this.institution["institutionName"]) + " campus -logo";
+      const institutionSearchString = encodeURIComponent(this.institution["name"]) + " campus -logo";
       const response = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${institutionSearchString}&num=5`);
       const data = await response.json();
       let linkArray = [];
@@ -311,24 +310,26 @@ export default {
   
   .institution-images-container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     column-gap: 8px;
   }
 
   .institution-images-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     column-gap: 8px;
     row-gap: 8px;
   }
 
   .img-bg {
-    aspect-ratio: 1 / 1;
     background: #ededed;
     line-height: 0;
+    width: 100%;
+    height: 100%;
   }
 
   .institution-image {
+    aspect-ratio: 1 / 1;
     animation: fadeIn ease-in 600ms;
     object-fit: cover;
     object-position: center;
