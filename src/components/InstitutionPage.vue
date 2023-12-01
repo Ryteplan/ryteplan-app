@@ -13,48 +13,35 @@
           </v-btn>
         </div>
       </div>
-      <div class="d-flex mt-2" style="gap: 50px;">
+      <div class="location-links-images-container mt-2">
         <div class="d-flex flex-column">
-          <div class="d-flex location-container ">
+          <div class="location-container">
             <div class="stat-container">
               <span class="stat-label">Country</span>
               <span class="stat-content">{{ institution["countryCode"] }}</span>
             </div>
-            <div class="ml-4 stat-container">
+            <div class="stat-container">
               <span class="stat-label">City</span>
               <span class="stat-content">{{ institution["city"] }}</span>
             </div>
-            <div class="ml-4 stat-container">
+            <div class="stat-container">
               <span class="stat-label">State</span>
               <span class="stat-content">{{ institution["stateCode"] }}</span>
             </div>
           </div>
+          
           <div class="external-links mt-4">
             <p style="font-size: 12px;">External links</p>  
-            <ul class="mt-3 d-flex header-links">
+            <ul class="mt-3 header-links d-flex flex-column no-wrap" style="gap: 12px;">
               <li><a :href="institution['urlAddress']" target="_blank">Official site</a></li>
+              <li><a class="mt-2" :href="institution['netPriceCalculatorLink']" target="_blank">Net Price Calculator</a></li>          
               <li><a :href="institution['admissionsLink']" target="_blank">Admissions</a></li>
               <li><a class="mt-2" :href="institution['missionStatementLink']" target="_blank">Visit mission statement</a></li>          
-              <li><a class="mt-2" :href="institution['netPriceCalculatorLink']" target="_blank">Net Price Calculator</a></li>          
               <li><a class="mt-2" :href="institution['dspsLink']" target="_blank">Disability Services</a></li>          
             </ul>
-          </div>                  
-          <div class="descriptions-container mt-8">
-            <div class="">
-              <h3>Academics</h3>
-              <p class="mt-1">{{ descriptions.academics }}</p>
-            </div>
-            <div class="mt-8">
-              <h3>About the City</h3>
-              <p class="mt-1">{{ descriptions.aboutTheCity }}</p>
-            </div>
-            <div class="mt-8">
-              <h3>About the Culture</h3>
-              <p class="mt-1">{{ descriptions.aboutTheCulture }}</p>
-            </div>
           </div>
         </div>
-        <div class="institution-images-container mt-4">
+        <div class="institution-images-container">
           <div class="img-bg">
             <img :src="image " v-for="(image, index) in images.slice(0, 1)" class="institution-image" :key="index" />
           </div>
@@ -65,60 +52,110 @@
                 </div>
               </template>
           </div>
-        </div>      
+        </div>                        
       </div>
       <div class="three-by-three-stat-grid mt-8">
-        <div class="stat-container"><span class="stat-label">Sector</span> <span class="stat-content">{{ institution["sector"] }}</span></div>
-        <div class="stat-container"><span class="stat-label">Undergraduate Enrollment </span> <span class="stat-content">{{ institution["undergraduateEnrollment"] }}</span></div>
-        <div class="stat-container"><span class="stat-label">Calendar </span> <span class="stat-content">{{ institution["calendar"] }}</span></div>
-        <div class="stat-container"><span class="stat-label">% Admit </span> <span class="stat-content">{{ institution["admit"] }}</span></div>
-        <div class="stat-container"><span class="stat-label">Graduate enrollment</span> <span class="stat-content">{{ institution["graduateEnrollment"] }}</span></div>
-        <div class="multiple-stat-container">
-          <div class="stat-container"><span class="stat-label">Men</span> <span class="stat-content">{{ institution["men"] }}</span></div>
-          <div class="stat-container"><span class="stat-label">Women</span> <span class="stat-content">{{ institution["female"] }}</span></div>
-        </div>
-
-        <div class="stat-container"><span class="stat-label">Admission Test Scores</span> <span class="stat-content">{{ institution["admissionTestScores"] }}</span></div>
-        <div class="stat-container"><span class="stat-label">Student to faculty ratio</span> <span class="stat-content">{{ institution["studentToFacultyRatio"] }}</span></div>
-        <div class="multiple-stat-container">
-          <div class="stat-container"><span class="stat-label">HBCU</span> <span class="stat-content">{{ institution["hbcu"] }}</span></div>
-          <div class="stat-container"><span class="stat-label">Tribal</span> <span class="stat-content">{{ institution["tribal"] }}</span></div>
-        </div>
-
+        <div class="stat-container"><span class="stat-label">Sector</span> <span class="stat-content">{{ institution["mainInstControl"] }}</span></div>
+        <div class="stat-container"><span class="stat-label">Undergraduate Enrollment </span> <span class="stat-content">{{ institution["grsBachInitN"] }}</span></div>
+        <div class="stat-container"><span class="stat-label">Calendar </span> <span class="stat-content">{{ institution["mainCalendar"] }}</span></div>
+        <div class="stat-container"><span class="stat-label">Freshman Applicants | Admits </span> <span class="stat-content">{{ institution["apRecd1stN"] }} | {{ institution["apAdmt1stN"] }}</span></div>
+        <div class="stat-container"><span class="stat-label">Graduate enrollment</span> <span class="stat-content">{{ institution["enTotGradN"] }}</span></div>
 
         <div class="multiple-stat-container">
-          <div class="stat-container"><span class="stat-label">SAT Combined</span> <span class="stat-content">{{ institution["satCombined50thIle"] }}</span></div>
-          <div class="stat-container"><span class="stat-label">ACT 50th%ile</span> <span class="stat-content">{{ institution["act50thIle"] }}</span></div>
+          <div class="stat-container"><span class="stat-label">Men</span> <span class="stat-content">{{ institution["enFrshFtMenN"] }}</span></div>
+          <div class="stat-container"><span class="stat-label">Women</span> <span class="stat-content">{{ institution["enFrshFtWmnN"] }}</span></div>
         </div>
-        <div class="stat-container"><span class="stat-label">Average GPA </span> <span class="stat-content">{{ institution["averageGPA"] }}</span></div>
-        <div class="stat-container"><span class="stat-label">Religious </span> <span class="stat-content">{{ institution["religiousAffiliation"] }}</span></div>
 
+        <div class="stat-container"><span class="stat-label">Testing Policy</span> <span class="stat-content">{{ institution["adTestPolicyT"] }}</span></div>
+        <div class="stat-container"><span class="stat-label"># of classes with 100+ students</span> <span class="stat-content">{{ institution["classSec7"] }}</span></div>
+
+        <div class="multiple-stat-container">
+          <div class="stat-container"><span class="stat-label">HBCU</span> <span class="stat-content">{{ institution["hbcu"] }}Coming Soon</span></div>
+          <div class="stat-container"><span class="stat-label">Tribal</span> <span class="stat-content">{{ institution["tribal"] }}Coming Soon</span></div>
+        </div>
+
+
+        <div class="multiple-stat-container">
+          <div class="stat-container"><span class="stat-label">SAT Combined</span> <span class="stat-content">{{ institution["satCombined50thIle"] }}Coming Soon</span></div>
+          <div class="stat-container"><span class="stat-label">ACT 50th%ile</span> <span class="stat-content">{{ institution["act50thIle"] }}Coming Soon</span></div>
+        </div>
+
+        <div class="stat-container"><span class="stat-label">Average GPA </span> <span class="stat-content">{{ institution["frshGpa"] }}</span></div>
+        <div class="stat-container"><span class="stat-label">Religious </span> <span class="stat-content">{{ institution["denomCode"] }}</span></div>
       </div>
+
+      <div class="descriptions-container mt-8">
+        <div class="">
+          <h3>Academics</h3>
+          <p class="mt-1">{{ descriptions.academics }}</p>
+        </div>
+        <div class="mt-8">
+          <h3>About the City</h3>
+          <p class="mt-1">{{ descriptions.aboutTheCity }}</p>
+        </div>
+        <div class="mt-8">
+          <h3>About the Culture</h3>
+          <p class="mt-1">{{ descriptions.aboutTheCulture }}</p>
+        </div>
+      </div>
+
       <div class="three-by-three-stat-grid mt-8">
-        <div class="stat-container"><span class="stat-label">COA in-state students </span> <span class="stat-content">{{ institution["coaInStateStudents"] }}</span></div>
-        <div class="stat-container"><span class="stat-label">COA out-of-state </span> <span class="stat-content">{{ institution["coaOutOfState"] }}</span></div>
-        <div class="stat-container"><span class="stat-label">% in Greek </span> <span class="stat-content">{{ institution["inGreekLife"] }}</span></div>
+        <div class="stat-container"><span class="stat-label">Tuition Resident</span> <span class="stat-content">{{ institution["tuitState1stFtD2024"] }}</span></div>
+        <div class="stat-container"><span class="stat-label">Tuition Non-Resident</span> <span class="stat-content">{{ institution["tuitNres1stFtD2024"] }}</span></div>
+        <div class="multiple-stat-container">
+          <div class="stat-container"><span class="stat-label">Male % in Greek </span> <span class="stat-content">{{ institution["fratP"] }}</span></div>
+          <div class="stat-container"><span class="stat-label">Female % in Greek </span> <span class="stat-content">{{ institution["soroP"] }}</span></div>
+        </div>
 
         <div class="stat-container"><span class="stat-label">%undergrads awarded pell </span> <span class="stat-content">{{ institution["undergraduatesAwardedPellGrants"] }}</span></div>
-        <div class="stat-container"><span class="stat-label">%undergrads awarded institutional </span> <span class="stat-content">{{ institution["undergraduatesAwardedInstitutionalGrantAid"] }}</span></div>
-        <div class="stat-container"><span class="stat-label">%undergrads in-state </span> <span class="stat-content">{{ institution["undergraduatesInState"] }}%</span></div>
+        <div class="stat-container"><span class="stat-label">%undergrads awarded institutional </span> <span class="stat-content">{{ institution["undergraduatesAwardedInstitutionalGrantAid"] }} coming soon</span></div>
+        <div class="stat-container"><span class="stat-label">%undergrads non-resident </span> <span class="stat-content">{{ institution["enNresP"] }}%</span></div>
 
-        <div class="stat-container"><span class="stat-label">% freshmen undergrads living on campus </span> <span class="stat-content">{{ institution["freshmenUndergradsLivingOnCampus"] }}</span></div>
-        <div class="stat-container"><span class="stat-label">averageAmountOfInstitutionalGrantAidAwardedToundergraduates</span> <span class="stat-content">{{ institution["averageAmountOfInstitutionalGrantAidAwardedToundergraduates"] }}</span></div>
-        <div class="stat-container"><span class="stat-label">%undergrads - foreign countries </span> <span class="stat-content">{{ institution["undergraduatesOutOfState"] }}</span></div>
+        <div class="stat-container"><span class="stat-label">% freshmen undergrads living on campus </span> <span class="stat-content">{{ institution["hous1stUgP"] }}</span></div>
+
+        <div class="stat-container"><span class="stat-label">average amount of institutional</span> <span class="stat-content">{{ institution["averageAmountOfInstitutionalGrantAidAwardedToundergraduates"] }}coming soon</span></div>
+
+        <div class="stat-container"><span class="stat-label">%undergrads - foreign countries </span> <span class="stat-content">{{ institution["undergraduatesOutOfState"] }} coming soon</span></div>
+
+        <div class="stat-container"><span class="stat-label">4-Year Graduation Rate  </span> <span class="stat-content">{{ institution["grs4YrN"] }}</span></div>
+        <div class="stat-container"><span class="stat-label">6-Year Graduation Rate  </span> <span class="stat-content">{{ institution["grsBachTotP"] }}</span></div>
+        <div class="stat-container"><span class="stat-label">Retention Rate </span> <span class="stat-content">{{ institution["retentionFrshP"] }}</span></div>
+
+
       </div>
 
-      <div class="one-by-two-grid mt-8">
+      <div class="one-by-two-grid" style="margin-top: 80px;">
+        <div class="stat-container">
+          <p>Putting ethnic data here for now</p>
+          <span class="stat-label">en1stAsianNonhispanicN</span> 
+          <span class="stat-content">{{ institution["en1stAsianNonhispanicN"] }}</span>
+          <span class="stat-label">en1stBlackNonhispanicN</span> 
+          <span class="stat-content">{{ institution["en1stBlackNonhispanicN"] }}</span>
+          <span class="stat-label">en1stHispanicEthnicityN</span> 
+          <span class="stat-content">{{ institution["en1stHispanicEthnicityN"] }}</span>
+          <span class="stat-label">en1stIslanderNonhispanicN</span> 
+          <span class="stat-content">{{ institution["en1stIslanderNonhispanicN"] }}</span>
+          <span class="stat-label">en1stMultiraceNonhispanicN</span> 
+          <span class="stat-content">{{ institution["en1stMultiraceNonhispanicN"] }}</span>
+          <span class="stat-label">en1stAsianNonhispanicN</span> 
+          <span class="stat-content">{{ institution["en1stAsianNonhispanicN"] }}</span>
+          <span class="stat-label">en1stNativeNonhispanicN</span> 
+          <span class="stat-content">{{ institution["en1stNativeNonhispanicN"] }}</span>
+          <span class="stat-label">en1stNonresAlien1stN</span> 
+          <span class="stat-content">{{ institution["en1stNonresAlien1stN"] }}</span>
+          <span class="stat-label">en1stRaceEthnicityUnknwnN</span> 
+          <span class="stat-content">{{ institution["en1stRaceEthnicityUnknwnN"] }}</span>
+          <span class="stat-label">en1stWhiteNonhispanicN</span> 
+          <span class="stat-content">{{ institution["en1stWhiteNonhispanicN"] }}</span>
+        </div>
+        
         <div>
           <span class="font-weight-bold">Ethnic background</span>
           <div class="hello" ref="chartdiv"></div>
         </div>
       </div>
       <div class="two-by-two-grid mt-8 w-25">
-        <div class="stat-container"><span class="stat-label">NCAA</span> <span class="stat-content">{{ institution["ncaa"] }}</span></div>
-        <div class="stat-container"><span class="stat-label">Retention Rate</span> <span class="stat-content">{{ institution["retentionRate"] }}%</span></div>
-        <div class="stat-container"><span class="stat-label">NAIA</span> <span class="stat-content">{{ institution["hbcu"] }}</span></div>
-        <div class="stat-container"><span class="stat-label">4 yr grad</span> <span class="stat-content">{{ institution["4YrGradRate"] }}%</span></div>
+        <h1>Testing stuff is to go here</h1>
       </div>
     </div>
     <SaveToListDialog 
@@ -222,6 +259,7 @@ export default {
       docSnap.forEach((doc) => {
         this.institutionId = doc.id;
         this.institution = doc.data();
+        console.log(doc.data());  
       });
       this.getImages();
       this.getDescriptions();
@@ -271,10 +309,15 @@ export default {
     font-weight: bold;
   }
   
+  .institution-images-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 8px;
+  }
+
   .institution-images-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    margin-top: 8px;
     column-gap: 8px;
     row-gap: 8px;
   }
@@ -348,6 +391,11 @@ export default {
     color: black;
     font-size: 13px;
     text-decoration: none;
+  }
+
+  .location-links-images-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
   }
 
 </style>
