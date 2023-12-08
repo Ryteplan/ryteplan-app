@@ -56,8 +56,11 @@
         </v-list>
       </v-navigation-drawer>    
 
-    <v-main>
+    <v-main class="flex-column">
       <router-view :key="$route.fullPath"></router-view>
+      <v-footer>
+        <p>Data Source: Peterson's Databases copyright 2023 Peterson's LLC All rights reserved</p>
+      </v-footer>
     </v-main>
   </v-layout>
 </template>

@@ -33,10 +33,8 @@
           <div class="external-links mt-4">
             <ul class="mt-3 header-links d-flex flex-column no-wrap" style="gap: 12px;">
               <li><a :href="institution['urlAddress']" target="_blank">Official site</a></li>
-              <li><a class="mt-2" :href="institution['netPriceCalculatorLink']" target="_blank">Net Price Calculator</a></li>          
+              <li><a class="mt-2" :href="institution['urlAddressPriceCalc2024']" target="_blank">Net Price Calculator</a></li>          
               <li><a :href="institution['admissionsLink']" target="_blank">Admissions</a></li>
-              <li><a class="mt-2" :href="institution['missionStatementLink']" target="_blank">Visit mission statement</a></li>          
-              <li><a class="mt-2" :href="institution['dspsLink']" target="_blank">Disability Services</a></li>          
             </ul>
           </div>
         </div>
@@ -54,19 +52,24 @@
         </div>                        
       </div>
       <div class="section-container three-by-three-stat-grid mt-8">
-        <div class="stat-container"><span class="stat-label">Sector</span> <span class="stat-content">{{ institution["mainInstControl"] }}</span></div>
+        <div class="stat-container">
+          <span class="stat-label">Sector</span> 
+          <span class="stat-content">{{ institution["mainInstControl"] }}</span>
+        </div>
         <div class="stat-container"><span class="stat-label">Undergraduate Enrollment </span> <span class="stat-content">{{ institution["grsBachInitN"] }}</span></div>
         <div class="stat-container"><span class="stat-label">Calendar </span> <span class="stat-content">{{ institution["mainCalendar"] }}</span></div>
         <div class="stat-container"><span class="stat-label">Freshman Applicants | Admits </span> <span class="stat-content">{{ institution["apRecd1stN"] }} | {{ institution["apAdmt1stN"] }}</span></div>
-        <div class="stat-container"><span class="stat-label">Graduate enrollment</span> <span class="stat-content">{{ institution["enTotGradN"] }}</span></div>
+        <div class="stat-container"><span class="stat-label">Graduate Enrollment</span> <span class="stat-content">{{ institution["enTotGradN"] }}</span></div>
 
         <div class="multiple-stat-container">
           <div class="stat-container"><span class="stat-label">Men</span> <span class="stat-content">{{ institution["enFrshFtMenN"] }}</span></div>
           <div class="stat-container"><span class="stat-label">Women</span> <span class="stat-content">{{ institution["enFrshFtWmnN"] }}</span></div>
         </div>
 
-        <div class="stat-container"><span class="stat-label">Testing Policy</span> <span class="stat-content">{{ institution["adTestPolicyT"] }}</span></div>
-        <div class="stat-container"><span class="stat-label"># of classes with 100+ students</span> <span class="stat-content">{{ institution["classSec7"] }}</span></div>
+        <div class="stat-container">
+          <span class="stat-label">Testing Policy</span> 
+          <span class="stat-content">{{ institution["adTestPolicyT"] }}</span>
+        </div>
 
         <div class="multiple-stat-container">
           <div class="stat-container"><span class="stat-label">HBCU</span> <span class="stat-content">{{ institution["hbcu"] }}Coming Soon</span></div>
@@ -75,7 +78,7 @@
 
 
         <div class="multiple-stat-container">
-          <div class="stat-container"><span class="stat-label">SAT Combined</span> <span class="stat-content">{{ institution["satCombined50thIle"] }}Coming Soon</span></div>
+          <div class="stat-container"><span class="stat-label">SAT 50th%ile</span> <span class="stat-content">{{ institution["satCombined50thIle"] }}Coming Soon</span></div>
           <div class="stat-container"><span class="stat-label">ACT 50th%ile</span> <span class="stat-content">{{ institution["act50thIle"] }}Coming Soon</span></div>
         </div>
 
@@ -86,39 +89,37 @@
       <div class="section-container descriptions-container mt-8">
         <div class="">
           <h3>Academics</h3>
-          <p class="mt-1">{{ descriptions.academics }}</p>
+          <p class="mt-1">{{ descriptions.academic }}</p>
         </div>
         <div class="mt-8">
           <h3>About the City</h3>
-          <p class="mt-1">{{ descriptions.aboutTheCity }}</p>
+          <p class="mt-1">{{ descriptions.location }}</p>
         </div>
         <div class="mt-8">
           <h3>About the Culture</h3>
-          <p class="mt-1">{{ descriptions.aboutTheCulture }}</p>
+          <p class="mt-1">{{ descriptions.culture }}</p>
         </div>
       </div>
 
       <div class="section-container three-by-three-stat-grid mt-8">
-        <div class="stat-container"><span class="stat-label">Tuition Resident</span> <span class="stat-content">{{ institution["tuitState1stFtD2024"] }}</span></div>
+        <div class="stat-container"><span class="stat-label">Tuition</span> <span class="stat-content">{{ institution["tuitState1stFtD2024"] }}</span></div>
         <div class="stat-container"><span class="stat-label">Tuition Non-Resident</span> <span class="stat-content">{{ institution["tuitNres1stFtD2024"] }}</span></div>
         <div class="multiple-stat-container">
           <div class="stat-container"><span class="stat-label">Male % in Greek </span> <span class="stat-content">{{ institution["fratP"] }}</span></div>
           <div class="stat-container"><span class="stat-label">Female % in Greek </span> <span class="stat-content">{{ institution["soroP"] }}</span></div>
         </div>
 
-        <div class="stat-container"><span class="stat-label">%undergrads awarded pell </span> <span class="stat-content">{{ institution["undergraduatesAwardedPellGrants"] }}</span></div>
-        <div class="stat-container"><span class="stat-label">%undergrads awarded institutional </span> <span class="stat-content">{{ institution["undergraduatesAwardedInstitutionalGrantAid"] }} coming soon</span></div>
-        <div class="stat-container"><span class="stat-label">%undergrads non-resident </span> <span class="stat-content">{{ institution["enNresP"] }}%</span></div>
+        <div class="stat-container"><span class="stat-label">Number of Undergraduate Pell Grant Awards</span> <span class="stat-content">{{ institution["grsBachInitPellN"] }}</span></div>
+        <div class="stat-container"><span class="stat-label">Number of Undergrads Awarded Non-Need Based Institutional Aid (excluding athletics)</span> <span class="stat-content">{{ institution["undergraduatesAwardedInstitutionalGrantAid"] }} coming soon</span></div>
+        <div class="stat-container"><span class="stat-label">% Undergraduates Non-Resident</span> <span class="stat-content">{{ institution["enNresP"] }}%</span></div>
 
-        <div class="stat-container"><span class="stat-label">% freshmen undergrads living on campus </span> <span class="stat-content">{{ institution["hous1stUgP"] }}</span></div>
+        <div class="stat-container"><span class="stat-label">Freshmen Living on Campus</span> <span class="stat-content">{{ institution["hous1stUgP"] }}%</span></div>
 
         <div class="stat-container"><span class="stat-label">average amount of institutional</span> <span class="stat-content">{{ institution["averageAmountOfInstitutionalGrantAidAwardedToundergraduates"] }}coming soon</span></div>
 
-        <div class="stat-container"><span class="stat-label">%undergrads - foreign countries </span> <span class="stat-content">{{ institution["undergraduatesOutOfState"] }} coming soon</span></div>
+        <div class="stat-container"><span class="stat-label">% Undergraduates International</span> <span class="stat-content">{{ institution["undergraduatesOutOfState"] }} coming soon</span></div>
 
-        <div class="stat-container"><span class="stat-label">4-Year Graduation Rate  </span> <span class="stat-content">{{ institution["grs4YrN"] }}</span></div>
-        <div class="stat-container"><span class="stat-label">6-Year Graduation Rate  </span> <span class="stat-content">{{ institution["grsBachTotP"] }}</span></div>
-        <div class="stat-container"><span class="stat-label">Retention Rate </span> <span class="stat-content">{{ institution["retentionFrshP"] }}</span></div>
+        <div class="stat-container"><span class="stat-label">Retention Rate </span> <span class="stat-content">{{ institution["retentionFrshP"] }}%</span></div>
 
 
       </div>
@@ -166,7 +167,7 @@
  
 <script>
 import { dbFireStore } from "../firebase";
-import { documentId, collection, query, where, getDocs } from 'firebase/firestore'
+import { collection, query, where, getDocs } from 'firebase/firestore'
 import SaveToListDialog from './SaveToListDialog'
 
 import * as am5 from '@amcharts/amcharts5';
@@ -258,16 +259,17 @@ export default {
       docSnap.forEach((doc) => {
         this.institutionId = doc.id;
         this.institution = doc.data();
-        console.log(doc.data());  
       });
       this.getImages();
       this.getDescriptions();
     },
     async getDescriptions() {
       const descriptions = collection(dbFireStore, 'Descriptions');
-      const q = query(descriptions, where(documentId(), "==", this.institutionId));
+      const q = query(descriptions, where("uri", "==", this.institutionId));
       const docSnap = await getDocs(q);
       docSnap.forEach((doc) => {
+        console.log("descriptions");
+        console.log(doc.data());
         this.descriptions = doc.data();
       });
     },

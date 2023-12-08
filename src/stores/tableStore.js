@@ -11,8 +11,8 @@ export const useTableStore = defineStore('table', {
       filteredTableDataArray: [],
       filters: {
         State: [],
-        Sector: [],
-        Calendar: []
+        Calendar: [],
+        Country: []
       },
       search: '',
       page: 1,
