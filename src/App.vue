@@ -58,8 +58,8 @@
 
     <v-main class="flex-column">
       <router-view :key="$route.fullPath"></router-view>
-      <v-footer>
-        <p>Data Source: Peterson's Databases copyright 2023 Peterson's LLC All rights reserved</p>
+      <v-footer class="flex-column justify-items-center text-center pb-4">
+        <p style="font-size: 13px">Data Source: Peterson's Databases <br/>Copyright 2023 Peterson's LLC All rights reserved</p>
       </v-footer>
     </v-main>
   </v-layout>
@@ -117,4 +117,9 @@ export default {
   a {
     color: blue;
   }
+
+  .v-footer {
+    background: transparent !important;
+  }
+
 </style>
