@@ -59,12 +59,12 @@
         </div>
         <div class="stat-container"><span class="stat-label">Undergraduate Enrollment </span> <span class="stat-content">{{ institution["grsBachInitN"] }}</span></div>
         <div class="stat-container"><span class="stat-label">Calendar </span> <span class="stat-content">{{ institution["mainCalendar"] }}</span></div>
-        <div class="stat-container"><span class="stat-label">Freshman Applicants | Admits </span> <span class="stat-content">{{ institution["apRecd1stN"] }} | {{ institution["apAdmt1stN"] }}</span></div>
-        <div class="stat-container"><span class="stat-label">Graduate Enrollment</span> <span class="stat-content">{{ institution["enTotGradN"] }}</span></div>
+        <div class="stat-container"><span class="stat-label">Freshman Applicants | Admits </span> <span class="stat-content">{{ institution["apRecd1stN"]?.toLocaleString() || '—' }} | {{ institution["apAdmt1stN"]?.toLocaleString() || '—' }}</span></div>
+        <div class="stat-container"><span class="stat-label">Graduate Enrollment</span> <span class="stat-content">{{ institution["enTotGradN"]?.toLocaleString() || '—' }}</span></div>
 
         <div class="multiple-stat-container">
-          <div class="stat-container"><span class="stat-label">Men</span> <span class="stat-content">{{ institution["enFrshFtMenN"] }}</span></div>
-          <div class="stat-container"><span class="stat-label">Women</span> <span class="stat-content">{{ institution["enFrshFtWmnN"] }}</span></div>
+          <div class="stat-container"><span class="stat-label">Men</span> <span class="stat-content">{{ institution["enFrshFtMenN"]?.toLocaleString() || '—' }}</span></div>
+          <div class="stat-container"><span class="stat-label">Women</span> <span class="stat-content">{{ institution["enFrshFtWmnN"]?.toLocaleString() || '—' }}</span></div>
         </div>
 
         <div class="stat-container">
@@ -149,14 +149,14 @@
       </div>
 
       <div class="section-container three-by-three-stat-grid mt-8">
-        <div class="stat-container"><span class="stat-label">Tuition</span> <span class="stat-content">{{ institution["tuitState1stFtD2024"] }}</span></div>
-        <div class="stat-container"><span class="stat-label">Tuition Non-Resident</span> <span class="stat-content">{{ institution["tuitNres1stFtD2024"] }}</span></div>
+        <div class="stat-container"><span class="stat-label">Tuition</span> <span class="stat-content">{{ institution["tuitState1stFtD2024"]?.toLocaleString() || '—' }}</span></div>
+        <div class="stat-container"><span class="stat-label">Tuition Non-Resident</span> <span class="stat-content">{{ institution["tuitNres1stFtD2024"]?.toLocaleString() || '—' }}</span></div>
         <div class="multiple-stat-container">
           <div class="stat-container"><span class="stat-label">Male % in Greek </span> <span class="stat-content">{{ institution["fratP"] }}</span></div>
           <div class="stat-container"><span class="stat-label">Female % in Greek </span> <span class="stat-content">{{ institution["soroP"] }}</span></div>
         </div>
 
-        <div class="stat-container"><span class="stat-label">Number of Undergraduate Pell Grant Awards</span> <span class="stat-content">{{ institution["grsBachInitPellN"] }}</span></div>
+        <div class="stat-container"><span class="stat-label">Number of Undergraduate Pell Grant Awards</span> <span class="stat-content">{{ institution["grsBachInitPellN"]?.toLocaleString() || '—' }}</span></div>
         <div class="stat-container"><span class="stat-label">Number of Undergrads Awarded Non-Need Based Institutional Aid (excluding athletics)</span> <span class="stat-content">{{ institution["undergraduatesAwardedInstitutionalGrantAid"] }} coming soon</span></div>
         <div class="stat-container"><span class="stat-label">% Undergraduates Non-Resident</span> <span class="stat-content">{{ institution["enNresP"] }}%</span></div>
 
