@@ -1,9 +1,10 @@
 <template>
-  <v-container style="padding:0 80px;">
-    <div style="max-width: 1120px; margin: 36px auto 64px;">
+  <v-container style="padding:0 16px;">
+    <div style="margin: 36px auto 64px;">
       <div class="d-flex justify-space-between mt-4">
         <div>
           <h1 class="">{{ institution["name"] }}</h1>
+          <span style="font-weight: 500;">{{ descriptions.tagline }}</span>
         </div>
         <div class="d-flex flex-column align-end">
           <v-btn
@@ -33,7 +34,7 @@
           <div class="external-links mt-4">
             <ul class="mt-3 header-links d-flex flex-column no-wrap" style="gap: 12px;">
               <li><a :href="institution['urlAddress']" target="_blank">Official site</a></li>
-              <li><a class="mt-2" :href="institution['urlAddressPriceCalc2024']" target="_blank">Net Price Calculator</a></li>          
+              <li><a :href="institution['urlAddressPriceCalc2024']" target="_blank">Net Price Calculator</a></li>          
               <li><a :href="institution['admissionsLink']" target="_blank">Admissions</a></li>
             </ul>
           </div>
@@ -87,18 +88,64 @@
       </div>
 
       <div class="section-container descriptions-container mt-8">
-        <div class="">
-          <h3>Academics</h3>
-          <p class="mt-1">{{ descriptions.academic }}</p>
-        </div>
-        <div class="mt-8">
-          <h3>About the City</h3>
-          <p class="mt-1">{{ descriptions.location }}</p>
-        </div>
-        <div class="mt-8">
-          <h3>About the Culture</h3>
-          <p class="mt-1">{{ descriptions.culture }}</p>
-        </div>
+        <v-expansion-panels>
+          <v-expansion-panel :value="0">
+            <v-expansion-panel-title>
+              <h3>Academics</h3>
+            </v-expansion-panel-title>
+            <v-expansion-panel-text>
+              <p class="">{{ descriptions.academics }}</p>
+            </v-expansion-panel-text>
+          </v-expansion-panel>
+          <v-expansion-panel>
+            <v-expansion-panel-title>
+              <h3>Surrounding Area</h3>
+            </v-expansion-panel-title>
+            <v-expansion-panel-text>
+              <p class="">{{ descriptions.surroundingArea }}</p>
+            </v-expansion-panel-text>
+          </v-expansion-panel>
+          <v-expansion-panel>
+            <v-expansion-panel-title>
+              <h3>Transportation</h3>
+            </v-expansion-panel-title>
+            <v-expansion-panel-text>
+              <p class="">{{ descriptions.transportation }}</p>
+            </v-expansion-panel-text>
+          </v-expansion-panel>
+          <v-expansion-panel>
+            <v-expansion-panel-title>
+              <h3>Social Life</h3>
+            </v-expansion-panel-title>
+            <v-expansion-panel-text>
+              <p class="">{{ descriptions.socialLife }}</p>
+            </v-expansion-panel-text>
+          </v-expansion-panel>
+          <v-expansion-panel>
+            <v-expansion-panel-title>
+              <h3>Campus</h3>
+            </v-expansion-panel-title>
+            <v-expansion-panel-text>
+              <p class="">{{ descriptions.campus }}</p>
+            </v-expansion-panel-text>
+          </v-expansion-panel>
+          <v-expansion-panel>
+            <v-expansion-panel-title>
+              <h3>Top 5 Popular Majors</h3>
+            </v-expansion-panel-title>
+            <v-expansion-panel-text>
+              <p class="">{{ descriptions.top5PopularMajors }}</p>
+            </v-expansion-panel-text>
+          </v-expansion-panel>
+          <v-expansion-panel>
+            <v-expansion-panel-title>
+              <h3>Strengths and Areas of Growth</h3>
+            </v-expansion-panel-title>
+            <v-expansion-panel-text>
+              <p class="">{{ descriptions.strengthsAndAreasOfGrowth }}</p>
+            </v-expansion-panel-text>
+          </v-expansion-panel>
+        </v-expansion-panels>
       </div>
 
       <div class="section-container three-by-three-stat-grid mt-8">
@@ -248,6 +295,7 @@ export default {
       institutionId: "",
       images: [],
       showSaveToListDialog: false,
+      descriptionPanels: [],
     }
   },
   methods: {
@@ -268,8 +316,6 @@ export default {
       const q = query(descriptions, where("uri", "==", this.institutionId));
       const docSnap = await getDocs(q);
       docSnap.forEach((doc) => {
-        console.log("descriptions");
-        console.log(doc.data());
         this.descriptions = doc.data();
       });
     },
@@ -405,5 +451,12 @@ export default {
     padding: 24px;
     border-radius: 16px;
   }
+
+  .descriptions-container {
+    background: transparent;
+    padding: 0;
+    overflow: hidden;
+  }
+
 
 </style>
