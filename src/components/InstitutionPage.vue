@@ -34,7 +34,7 @@
           <div class="external-links mt-4">
             <ul class="mt-3 header-links d-flex flex-column no-wrap" style="gap: 12px;">
               <li><a :href="institution['urlAddress']" target="_blank">Official site</a></li>
-              <li><a :href="institution['urlAddressPriceCalc2024']" target="_blank">Net Price Calculator</a></li>          
+              <li v-if="institution['urlAddressPriceCalc2023'] !== 'null'"><a :href="institution['urlAddressPriceCalc2023']" target="_blank">Net Price Calculator</a></li>          
               <li><a :href="institution['admissionsLink']" target="_blank">Admissions</a></li>
             </ul>
           </div>
@@ -149,8 +149,8 @@
       </div>
 
       <div class="section-container three-by-three-stat-grid mt-8">
-        <div class="stat-container"><span class="stat-label">Tuition</span> <span class="stat-content">{{ institution["tuitState1stFtD2024"]?.toLocaleString() || '—' }}</span></div>
-        <div class="stat-container"><span class="stat-label">Tuition Non-Resident</span> <span class="stat-content">{{ institution["tuitNres1stFtD2024"]?.toLocaleString() || '—' }}</span></div>
+        <div class="stat-container"><span class="stat-label">Tuition</span> <span class="stat-content">${{ institution["tuitState1stFtD2024"]?.toLocaleString() || '—' }}</span></div>
+        <div class="stat-container"><span class="stat-label">Tuition Non-Resident</span> <span class="stat-content">${{ institution["tuitNres1stFtD2024"]?.toLocaleString() || '—' }}</span></div>
         <div class="multiple-stat-container">
           <div class="stat-container"><span class="stat-label">Male % in Greek </span> <span class="stat-content">{{ institution["fratP"] }}</span></div>
           <div class="stat-container"><span class="stat-label">Female % in Greek </span> <span class="stat-content">{{ institution["soroP"] }}</span></div>
