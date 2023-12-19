@@ -62,6 +62,12 @@
           <span class="stat-content">{{ institution["grsBachInitN"]?.toLocaleString() || '—' }} </span>
         </div>
         <div class="stat-container"><span class="stat-label">Calendar </span> <span class="stat-content">{{ institution["mainCalendar"] }}</span></div>
+        
+        <div class="stat-container">
+          <span class="stat-label">Difficulty</span>
+          <span class="stat-content">{{ institution["adDiffAll"]?.toLocaleString() || '—' }}</span>
+        </div>
+
         <div class="stat-container">
           <span class="stat-label">Admission Rate</span>
           <span class="stat-content">{{ (institution["admitRate"]?.toLocaleString() * 100).toFixed(0) || '—' }}%</span>
@@ -78,16 +84,9 @@
         </div>
 
         <div class="stat-container"><span class="stat-label">Graduate Enrollment</span> <span class="stat-content">{{ institution["enTotGradN"]?.toLocaleString() || '—' }}</span></div>
-
-        <div class="stat-container">
-          <span class="stat-label">Testing Policy</span> 
-          <span v-if="institution['adTestPolicyT'] !== 'null'" class="stat-content">{{ institution["adTestPolicyT"]?.toLocaleString() || '—' }}</span>
-          <span v-if="institution['adTestPolicyT'] == 'null'" class="stat-content">—</span>
-        </div>
-
         <div class="multiple-stat-container">
-          <div class="stat-container"><span class="stat-label">SAT 50th%ile</span> <span class="stat-content">{{ institution["satCombined50thIle"] }}Coming Soon</span></div>
-          <div class="stat-container"><span class="stat-label">ACT 50th%ile</span> <span class="stat-content">{{ institution["act50thIle"] }}Coming Soon</span></div>
+          <div class="stat-container"><span class="stat-label">SAT 50th%ile</span> <span class="stat-content">{{ institution["satComp50thP"]?.toLocaleString() || '—' }}</span></div>
+          <div class="stat-container"><span class="stat-label">ACT 50th%ile</span> <span class="stat-content">{{ institution["actComp50thP"]?.toLocaleString() || '—' }}</span></div>
         </div>
 
         <div class="stat-container"><span class="stat-label">Average GPA </span> <span class="stat-content">{{ institution["frshGpa"]?.toLocaleString() || '—' }}</span></div>
@@ -172,19 +171,21 @@
         <div class="stat-container"><span class="stat-label">Tuition</span> <span class="stat-content">${{ institution["tuitState1stFtD2023"]?.toLocaleString() || '—' }}</span></div>
         <div class="stat-container"><span class="stat-label">Tuition Non-Resident</span> <span class="stat-content">${{ institution["tuitNresFtD2023"]?.toLocaleString() || '—' }}</span></div>
         <div class="multiple-stat-container">
-          <div class="stat-container"><span class="stat-label">Male % in Greek </span> <span class="stat-content">{{ institution["fratP"] }}</span></div>
-          <div class="stat-container"><span class="stat-label">Female % in Greek </span> <span class="stat-content">{{ institution["soroP"] }}</span></div>
+          <div class="stat-container"><span class="stat-label">Males in Greek </span> <span class="stat-content">{{ institution["fratP"] }}%</span></div>
+          <div class="stat-container"><span class="stat-label">Females in Greek </span> <span class="stat-content">{{ institution["soroP"] }}%</span></div>
         </div>
 
         <div class="stat-container"><span class="stat-label">Number of Undergraduate Pell Grant Awards</span> <span class="stat-content">{{ institution["grsBachInitPellN"]?.toLocaleString() || '—' }}</span></div>
-        <div class="stat-container"><span class="stat-label">Number of Undergrads Awarded Non-Need Based Institutional Aid (excluding athletics)</span> <span class="stat-content">{{ institution["undergraduatesAwardedInstitutionalGrantAid"] }} coming soon</span></div>
+        <div class="stat-container"><span class="stat-label">Number of Undergrads Awarded Non-Need Based Institutional Aid (excluding athletics)</span> <span class="stat-content">{{ institution["ugFtNnNoneedN"]?.toLocaleString() || '—' }}</span></div>
+        <div class="stat-container"><span class="stat-label">Average Amount of Non-Need Based Institutional Aid (excluding athletics)</span> <span class="stat-content">${{ institution["ugFtNnNoneedD"]?.toLocaleString() || '—' }}</span></div>
+        <div class="stat-container"><span class="stat-label">Average Undergrad Need Based Aid Award</span> <span class="stat-content">${{ institution["ugFtAvgNbGiftD"]?.toLocaleString() || '—' }}</span></div>
         <div class="stat-container"><span class="stat-label">% Undergraduates Non-Resident</span> <span class="stat-content">{{ institution["enNresP"] }}%</span></div>
 
         <div class="stat-container"><span class="stat-label">Freshmen Living on Campus</span> <span class="stat-content">{{ institution["hous1stUgP"] }}%</span></div>
 
-        <div class="stat-container"><span class="stat-label">average amount of institutional</span> <span class="stat-content">{{ institution["averageAmountOfInstitutionalGrantAidAwardedToundergraduates"] }}coming soon</span></div>
+        <div class="stat-container"><span class="stat-label">average amount of institutional</span> <span class="stat-content not-yet-found">{{ institution["averageAmountOfInstitutionalGrantAidAwardedToundergraduates"] }} Rya to find</span></div>
 
-        <div class="stat-container"><span class="stat-label">% Undergraduates International</span> <span class="stat-content">{{ institution["undergraduatesOutOfState"] }} Rya to find</span></div>
+        <div class="stat-container"><span class="stat-label">% Undergraduates International</span> <span class="stat-content not-yet-found">{{ institution["undergraduatesOutOfState"] }} Rya to find</span></div>
 
         <div class="stat-container"><span class="stat-label">Retention Rate </span> <span class="stat-content">{{ Math.round(institution["retentionFrshP"]) }}%</span></div>
 
@@ -193,7 +194,7 @@
 
       <div class="section-container one-by-two-grid" style="margin-top: 80px;">
         <div class="stat-container">
-          <h3>Putting ethnic data here for now</h3>
+          <h3>Student Ethnicity</h3>
           <span class="stat-label">en1stAsianNonhispanicN</span> 
           <span class="stat-content">{{ institution["en1stAsianNonhispanicN"] }}</span>
           <span class="stat-label">en1stBlackNonhispanicN</span> 
@@ -215,15 +216,41 @@
           <span class="stat-label">en1stWhiteNonhispanicN</span> 
           <span class="stat-content">{{ institution["en1stWhiteNonhispanicN"] }}</span>
         </div>
-        
         <div>
-          <span class="font-weight-bold">Ethnic background</span>
           <div class="hello" ref="chartdiv"></div>
         </div>
       </div>
-      <div class="section-container two-by-two-grid mt-8 w-25">
-        <h1>Testing stuff is to go here</h1>
+      <div class="section-container mt-8">
+        <h2>Testing</h2>
+        <div class="stat-container mt-2">
+          <span class="stat-label">Policy</span> 
+          <span v-if="institution['adTestPolicyT'] !== 'null'" class="stat-content">{{ institution["adTestPolicyT"]?.toLocaleString() || '—' }}</span>
+          <span v-if="institution['adTestPolicyT'] == 'null'" class="stat-content">—</span>
+        </div>
+
+        <div class="multiple-stat-container mt-4">
+          <div class="stat-container"><span class="stat-label">SAT 50th%ile</span> <span class="stat-content">{{ institution["satComp50thP"]?.toLocaleString() || '—' }}</span></div>
+          <div class="stat-container"><span class="stat-label">ACT 50th%ile</span> <span class="stat-content">{{ institution["actComp50thP"]?.toLocaleString() || '—' }}</span></div>
+        </div>
       </div>
+      <div class="section-container mt-8">
+        <h2>Majors</h2>
+        <p>{{ institution["acadProgDesc"] }}</p>
+      </div>
+      <div class="section-container mt-8">
+        <h2>Sports</h2>
+        <p>Put the ASSN_ATHL_NCAA, ASSN_ATHL_NAIA, ASSN_ATHL_NCCAA field stuff here</p>
+        <p>I think the below should be in a table</p>
+        <v-list v-if="sports !== null">
+          <v-list-item 
+              v-for="sport in sports" 
+              :key="sport.inunId"
+            >
+            {{ sport.descr }}
+          </v-list-item>
+        </v-list>
+      </div>
+
     </div>
     <SaveToListDialog 
       v-model="showSaveToListDialog" 
@@ -316,6 +343,7 @@ export default {
       images: [],
       showSaveToListDialog: false,
       descriptionPanels: [],
+      sports: []
     }
   },
   methods: {
@@ -327,10 +355,10 @@ export default {
       docSnap.forEach((doc) => {
         this.institutionId = doc.id;
         this.institution = doc.data();
-        console.log(this.institution);
       });
       this.getImages();
       this.getDescriptions();
+      this.getSports();
     },
     async getDescriptions() {
       const slugFromURL = this.$route.params.slug;
@@ -340,6 +368,16 @@ export default {
       docSnap.forEach((doc) => {
         this.descriptions = doc.data();
       });
+    },
+    async getSports() {
+      const sports = collection(dbFireStore, 'Sports');
+      const q = query(sports, where("inunId", "==", this.institution.inunId));
+      const docSnap = await getDocs(q);
+      let sportsArray = [];
+      docSnap.forEach((doc) => {
+        sportsArray.push(doc.data());
+      });
+      this.sports = sportsArray;
     },
     async getImages() {
       const institutionSearchString = encodeURIComponent(this.institution["name"]) + " campus -logo";
@@ -451,7 +489,13 @@ export default {
   .stat-content {
     font-size: 18px;
     font-weight: 600;
+
+    &.not-yet-found {
+      color: rgb(152, 20, 20);
+    }
   }
+
+
 
   .header-links a {
     padding: 8px;
