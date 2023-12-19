@@ -79,26 +79,32 @@
 
         <div class="stat-container"><span class="stat-label">Graduate Enrollment</span> <span class="stat-content">{{ institution["enTotGradN"]?.toLocaleString() || '—' }}</span></div>
 
-
-
         <div class="stat-container">
           <span class="stat-label">Testing Policy</span> 
-          <span class="stat-content">{{ institution["adTestPolicyT"] }}</span>
+          <span v-if="institution['adTestPolicyT'] !== 'null'" class="stat-content">{{ institution["adTestPolicyT"]?.toLocaleString() || '—' }}</span>
+          <span v-if="institution['adTestPolicyT'] == 'null'" class="stat-content">—</span>
         </div>
-
-        <div class="multiple-stat-container">
-          <div class="stat-container"><span class="stat-label">HBCU</span> <span class="stat-content">{{ institution["hbcu"] }}Coming Soon</span></div>
-          <div class="stat-container"><span class="stat-label">Tribal</span> <span class="stat-content">{{ institution["tribal"] }}Coming Soon</span></div>
-        </div>
-
 
         <div class="multiple-stat-container">
           <div class="stat-container"><span class="stat-label">SAT 50th%ile</span> <span class="stat-content">{{ institution["satCombined50thIle"] }}Coming Soon</span></div>
           <div class="stat-container"><span class="stat-label">ACT 50th%ile</span> <span class="stat-content">{{ institution["act50thIle"] }}Coming Soon</span></div>
         </div>
 
-        <div class="stat-container"><span class="stat-label">Average GPA </span> <span class="stat-content">{{ institution["frshGpa"] }}</span></div>
-        <div class="stat-container"><span class="stat-label">Religious </span> <span class="stat-content">{{ institution["denomCode"] }}</span></div>
+        <div class="stat-container"><span class="stat-label">Average GPA </span> <span class="stat-content">{{ institution["frshGpa"]?.toLocaleString() || '—' }}</span></div>
+
+        <div class="stat-container">
+          <span class="stat-label">Religious </span> 
+          <span v-if="institution['denomDesc'] !== 'null'" class="stat-content">{{ institution["denomDesc"] }}</span> 
+          <span v-if="institution['afilDesc'] !== 'null'" class="stat-content">{{ institution["afilDesc"] }}</span>
+          <span v-if="institution['denomDesc'] == 'null' && institution['afilDesc'] == 'null'" class="stat-content">—</span>
+        </div>
+
+
+        <div class="multiple-stat-container">
+          <div class="stat-container"><span class="stat-label">HBCU</span> <span class="stat-content">{{ institution["hbcu"] }}Coming Soon</span></div>
+          <div class="stat-container"><span class="stat-label">Tribal</span> <span class="stat-content">{{ institution["tribal"] }}Coming Soon</span></div>
+        </div>
+
       </div>
 
       <div class="section-container descriptions-container mt-8">
@@ -163,8 +169,8 @@
       </div>
 
       <div class="section-container three-by-three-stat-grid mt-8">
-        <div class="stat-container"><span class="stat-label">Tuition</span> <span class="stat-content">${{ institution["tuitState1stFtD2024"]?.toLocaleString() || '—' }}</span></div>
-        <div class="stat-container"><span class="stat-label">Tuition Non-Resident</span> <span class="stat-content">${{ institution["tuitNres1stFtD2024"]?.toLocaleString() || '—' }}</span></div>
+        <div class="stat-container"><span class="stat-label">Tuition</span> <span class="stat-content">${{ institution["tuitState1stFtD2023"]?.toLocaleString() || '—' }}</span></div>
+        <div class="stat-container"><span class="stat-label">Tuition Non-Resident</span> <span class="stat-content">${{ institution["tuitNresFtD2023"]?.toLocaleString() || '—' }}</span></div>
         <div class="multiple-stat-container">
           <div class="stat-container"><span class="stat-label">Male % in Greek </span> <span class="stat-content">{{ institution["fratP"] }}</span></div>
           <div class="stat-container"><span class="stat-label">Female % in Greek </span> <span class="stat-content">{{ institution["soroP"] }}</span></div>
@@ -178,9 +184,9 @@
 
         <div class="stat-container"><span class="stat-label">average amount of institutional</span> <span class="stat-content">{{ institution["averageAmountOfInstitutionalGrantAidAwardedToundergraduates"] }}coming soon</span></div>
 
-        <div class="stat-container"><span class="stat-label">% Undergraduates International</span> <span class="stat-content">{{ institution["undergraduatesOutOfState"] }} coming soon</span></div>
+        <div class="stat-container"><span class="stat-label">% Undergraduates International</span> <span class="stat-content">{{ institution["undergraduatesOutOfState"] }} Rya to find</span></div>
 
-        <div class="stat-container"><span class="stat-label">Retention Rate </span> <span class="stat-content">{{ institution["retentionFrshP"] }}%</span></div>
+        <div class="stat-container"><span class="stat-label">Retention Rate </span> <span class="stat-content">{{ Math.round(institution["retentionFrshP"]) }}%</span></div>
 
 
       </div>
