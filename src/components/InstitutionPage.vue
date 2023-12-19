@@ -27,7 +27,7 @@
             </div>
             <div class="stat-container">
               <span class="stat-label">State</span>
-              <span class="stat-content">{{ institution["stateCode"] }}</span>
+              <span class="stat-content">{{ institution["stateCleaned"] }}</span>
             </div>
           </div>
           
@@ -35,7 +35,7 @@
             <ul class="mt-3 header-links d-flex flex-column no-wrap" style="gap: 12px;">
               <li><a :href="institution['urlAddress']" target="_blank">Official site</a></li>
               <li v-if="institution['urlAddressPriceCalc2023'] !== 'null'"><a :href="institution['urlAddressPriceCalc2023']" target="_blank">Net Price Calculator</a></li>          
-              <li><a :href="institution['admissionsLink']" target="_blank">Admissions</a></li>
+              <!-- <li><a :href="institution['adEmail']" target="_blank">Admissions</a></li> -->
             </ul>
           </div>
         </div>
@@ -55,17 +55,31 @@
       <div class="section-container three-by-three-stat-grid mt-8">
         <div class="stat-container">
           <span class="stat-label">Sector</span> 
-          <span class="stat-content">{{ institution["mainInstControl"] }}</span>
+          <span class="stat-content">{{ institution["mainInstControlDesc"] }}</span>
         </div>
-        <div class="stat-container"><span class="stat-label">Undergraduate Enrollment </span> <span class="stat-content">{{ institution["grsBachInitN"] }}</span></div>
+        <div class="stat-container">
+          <span class="stat-label">Undergraduate Enrollment</span>
+          <span class="stat-content">{{ institution["grsBachInitN"]?.toLocaleString() || '—' }} </span>
+        </div>
         <div class="stat-container"><span class="stat-label">Calendar </span> <span class="stat-content">{{ institution["mainCalendar"] }}</span></div>
-        <div class="stat-container"><span class="stat-label">Freshman Applicants | Admits </span> <span class="stat-content">{{ institution["apRecd1stN"]?.toLocaleString() || '—' }} | {{ institution["apAdmt1stN"]?.toLocaleString() || '—' }}</span></div>
-        <div class="stat-container"><span class="stat-label">Graduate Enrollment</span> <span class="stat-content">{{ institution["enTotGradN"]?.toLocaleString() || '—' }}</span></div>
-
+        <div class="stat-container">
+          <span class="stat-label">Admission Rate</span>
+          <span class="stat-content">{{ (institution["admitRate"]?.toLocaleString() * 100).toFixed(0) || '—' }}%</span>
+        </div>
+        
+        <div class="multiple-stat-container">
+          <div class="stat-container"><span class="stat-label">Applicants</span> <span class="stat-content">{{ institution["apRecd1stN"]?.toLocaleString() || '—' }}</span></div>
+          <div class="stat-container"><span class="stat-label">Admits</span> <span class="stat-content">{{ institution["apAdmt1stN"]?.toLocaleString() || '—' }}</span></div>
+        </div>
+        
         <div class="multiple-stat-container">
           <div class="stat-container"><span class="stat-label">Men</span> <span class="stat-content">{{ institution["enFrshFtMenN"]?.toLocaleString() || '—' }}</span></div>
           <div class="stat-container"><span class="stat-label">Women</span> <span class="stat-content">{{ institution["enFrshFtWmnN"]?.toLocaleString() || '—' }}</span></div>
         </div>
+
+        <div class="stat-container"><span class="stat-label">Graduate Enrollment</span> <span class="stat-content">{{ institution["enTotGradN"]?.toLocaleString() || '—' }}</span></div>
+
+
 
         <div class="stat-container">
           <span class="stat-label">Testing Policy</span> 
@@ -301,19 +315,21 @@ export default {
   methods: {
     async loadInstitutionData() {
       const slugFromURL = this.$route.params.slug;
-      const institutions = collection(dbFireStore, 'institutions');
+      const institutions = collection(dbFireStore, 'Institutions');
       const q = query(institutions, where("uri", "==", slugFromURL));
       const docSnap = await getDocs(q);
       docSnap.forEach((doc) => {
         this.institutionId = doc.id;
         this.institution = doc.data();
+        console.log(this.institution);
       });
       this.getImages();
       this.getDescriptions();
     },
     async getDescriptions() {
+      const slugFromURL = this.$route.params.slug;
       const descriptions = collection(dbFireStore, 'Descriptions');
-      const q = query(descriptions, where("uri", "==", this.institutionId));
+      const q = query(descriptions, where("uri", "==", slugFromURL));
       const docSnap = await getDocs(q);
       docSnap.forEach((doc) => {
         this.descriptions = doc.data();

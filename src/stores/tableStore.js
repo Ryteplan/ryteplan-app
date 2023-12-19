@@ -26,7 +26,7 @@ export const useTableStore = defineStore('table', {
         this.tableData = JSON.parse(decompressedTableData);
       } else {
         try {
-          const institutions = collection(dbFireStore, 'institutions');
+          const institutions = collection(dbFireStore, 'Institutions');
           const docSnap = await getDocs(institutions);
           this.tableData = docSnap.docs.map(doc=>({...doc.data(), id:doc.id}));
           let compressedTableData = compress(JSON.stringify(this.tableData));
