@@ -200,25 +200,36 @@
       <div class="section-container one-by-two-grid" style="margin-top: 80px;">
         <div class="stat-container">
           <h3>Student Ethnicity</h3>
-          <span class="stat-label">en1stAsianNonhispanicN</span> 
-          <span class="stat-content">{{ institution["en1stAsianNonhispanicN"] }}</span>
-          <span class="stat-label">en1stBlackNonhispanicN</span> 
-          <span class="stat-content">{{ institution["en1stBlackNonhispanicN"] }}</span>
-          <span class="stat-label">en1stHispanicEthnicityN</span> 
-          <span class="stat-content">{{ institution["en1stHispanicEthnicityN"] }}</span>
-          <span class="stat-label">en1stIslanderNonhispanicN</span> 
-          <span class="stat-content">{{ institution["en1stIslanderNonhispanicN"] }}</span>
-          <span class="stat-label">en1stMultiraceNonhispanicN</span> 
-          <span class="stat-content">{{ institution["en1stMultiraceNonhispanicN"] }}</span>
-          <span class="stat-label">en1stAsianNonhispanicN</span> 
-          <span class="stat-content">{{ institution["en1stAsianNonhispanicN"] }}</span>
-          <span class="stat-label">en1stNativeNonhispanicN</span> 
-          <span class="stat-content">{{ institution["en1stNativeNonhispanicN"] }}</span>
-          <span class="stat-label">en1stNonresAlien1stN</span> 
+          <p class="mb-5">Below are the numbers of the listed heading that are degree seeking</p>
+
+          <span class="stat-label">nonresident aliens.</span> 
           <span class="stat-content">{{ institution["en1stNonresAlien1stN"] }}</span>
-          <span class="stat-label">en1stRaceEthnicityUnknwnN</span> 
+
+          <span class="stat-label">Asian</span> 
+          <span class="stat-content">{{ institution["en1stAsianNonhispanicN"] }}</span>
+
+
+          <span class="stat-label">Black</span> 
+          <span class="stat-content">{{ institution["en1stBlackNonhispanicN"] }}</span>
+
+          <span class="stat-label">Hispanic</span> 
+          <span class="stat-content">{{ institution["en1stHispanicEthnicityN"] }}</span>
+
+          <span class="stat-label">Native Hawaiian or other Pacific Islander</span> 
+          <span class="stat-content">{{ institution["en1stIslanderNonhispanicN"] }}</span>
+
+
+          <span class="stat-label">Multirace</span> 
+          <span class="stat-content">{{ institution["en1stMultiraceNonhispanicN"] }}</span>
+
+
+          <span class="stat-label">American Indian or Alaska Native,</span> 
+          <span class="stat-content">{{ institution["en1stNativeNonhispanicN"] }}</span>
+
+          <span class="stat-label">Unknown</span> 
           <span class="stat-content">{{ institution["en1stRaceEthnicityUnknwnN"] }}</span>
-          <span class="stat-label">en1stWhiteNonhispanicN</span> 
+
+          <span class="stat-label">White</span> 
           <span class="stat-content">{{ institution["en1stWhiteNonhispanicN"] }}</span>
         </div>
         <div>
