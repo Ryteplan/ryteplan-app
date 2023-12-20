@@ -208,7 +208,6 @@
           <span class="stat-label">Asian</span> 
           <span class="stat-content">{{ institution["en1stAsianNonhispanicN"] }}</span>
 
-
           <span class="stat-label">Black</span> 
           <span class="stat-content">{{ institution["en1stBlackNonhispanicN"] }}</span>
 
@@ -218,10 +217,8 @@
           <span class="stat-label">Native Hawaiian or other Pacific Islander</span> 
           <span class="stat-content">{{ institution["en1stIslanderNonhispanicN"] }}</span>
 
-
           <span class="stat-label">Multirace</span> 
           <span class="stat-content">{{ institution["en1stMultiraceNonhispanicN"] }}</span>
-
 
           <span class="stat-label">American Indian or Alaska Native,</span> 
           <span class="stat-content">{{ institution["en1stNativeNonhispanicN"] }}</span>
@@ -250,8 +247,17 @@
         </div>
       </div>
       <div class="section-container mt-8">
-        <h2>Majors</h2>
-        <p>{{ institution["acadProgDesc"] }}</p>
+        <h2>Majors/Fields of Study</h2>
+          <v-list v-if="majors !== null">
+            <div class="three-by-three-stat-grid">
+              <v-list-item 
+                  v-for="major in majors" 
+                  :key="major"
+                >
+                <p>{{ major }}</p>
+              </v-list-item>
+            </div>
+          </v-list>
       </div>
       <div class="section-container mt-8">
         <h2>Sports</h2>
@@ -381,6 +387,7 @@ export default {
       images: [],
       showSaveToListDialog: false,
       descriptionPanels: [],
+      majors: [],
       sports: [],
       sportsHeaders: [
       { title: 'Sport', key: 'descr', width: "300px" },
@@ -400,7 +407,8 @@ export default {
       docSnap.forEach((doc) => {
         this.institutionId = doc.id;
         this.institution = doc.data();
-        console.log(this.institution);
+        this.majors = this.institution.acadProgDesc.split(',');
+        this.majors.sort();
       });
       this.getImages();
       this.getDescriptions();
