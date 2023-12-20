@@ -57,14 +57,22 @@
           <span class="stat-label">Sector</span> 
           <span class="stat-content">{{ institution["mainInstControlDesc"] }}</span>
         </div>
+
+
         <div class="stat-container">
           <span class="stat-label">Undergraduate Enrollment</span>
           <span class="stat-content">{{ institution["grsBachInitN"]?.toLocaleString() || '—' }} </span>
         </div>
+
+        <div class="stat-container">
+          <span class="stat-label">Graduate Enrollment</span> 
+          <span class="stat-content">{{ institution["enTotGradN"]?.toLocaleString() || '—' }}</span>
+        </div>
+
         <div class="stat-container"><span class="stat-label">Calendar </span> <span class="stat-content">{{ institution["mainCalendar"] }}</span></div>
         
         <div class="stat-container">
-          <span class="stat-label">Difficulty</span>
+          <span class="stat-label">Admission Difficulty</span>
           <span class="stat-content">{{ institution["adDiffAll"]?.toLocaleString() || '—' }}</span>
         </div>
 
@@ -83,7 +91,6 @@
           <div class="stat-container"><span class="stat-label">Women</span> <span class="stat-content">{{ institution["enFrshFtWmnN"]?.toLocaleString() || '—' }}</span></div>
         </div>
 
-        <div class="stat-container"><span class="stat-label">Graduate Enrollment</span> <span class="stat-content">{{ institution["enTotGradN"]?.toLocaleString() || '—' }}</span></div>
         <div class="multiple-stat-container">
           <div class="stat-container"><span class="stat-label">SAT 50th%ile</span> <span class="stat-content">{{ institution["satComp50thP"]?.toLocaleString() || '—' }}</span></div>
           <div class="stat-container"><span class="stat-label">ACT 50th%ile</span> <span class="stat-content">{{ institution["actComp50thP"]?.toLocaleString() || '—' }}</span></div>
@@ -188,8 +195,6 @@
         <div class="stat-container"><span class="stat-label">% Undergraduates International</span> <span class="stat-content not-yet-found">{{ institution["undergraduatesOutOfState"] }} Rya to find</span></div>
 
         <div class="stat-container"><span class="stat-label">Retention Rate </span> <span class="stat-content">{{ Math.round(institution["retentionFrshP"]) }}%</span></div>
-
-
       </div>
 
       <div class="section-container one-by-two-grid" style="margin-top: 80px;">
@@ -239,16 +244,38 @@
       </div>
       <div class="section-container mt-8">
         <h2>Sports</h2>
-        <p>Put the ASSN_ATHL_NCAA, ASSN_ATHL_NAIA, ASSN_ATHL_NCCAA field stuff here</p>
-        <p>I think the below should be in a table</p>
-        <v-list v-if="sports !== null">
-          <v-list-item 
-              v-for="sport in sports" 
-              :key="sport.inunId"
-            >
-            {{ sport.descr }}
-          </v-list-item>
-        </v-list>
+        <h3 class="mt-3">Associations</h3>
+        <div class="flex" style="gap: 20px">
+          <div class="multiple-stat-container mt-2">
+            <div class="stat-container">
+              <span class="stat-label">NCAA*</span> 
+              <span class="stat-content">{{ institution["assnAthlNcaa"]?.toLocaleString() || '—' }}</span>
+            </div>
+
+              <div class="stat-container">
+              <span class="stat-label">NCCAA</span> 
+              <span class="stat-content">{{ institution["assnAthlNccaa"]?.toLocaleString() || '—' }}</span>
+            </div>
+              
+            <div class="stat-container">
+              <span class="stat-label">NAIA</span> 
+              <span class="stat-content">{{ institution["assnAthlNaia"]?.toLocaleString() || '—' }}</span>
+            </div>
+          </div>
+          <p style="font-style: italic; font-size: 14px;">* 1 = Division 1; 2 = Division 2; 3 = Division 3;</p>
+        </div>
+
+        <h3 class="mt-6">All sport offerings</h3>
+        <v-data-table 
+          v-if="sports !== null"
+          :headers="sportsHeaders"
+          :items="sports"
+          :items-per-page="-1"
+        >
+          <template #bottom></template>
+        </v-data-table>
+        <p class="mt-4" style="font-style: italic; font-size: 14px;">* 1 = Division 1; 2 = Division 2; 3 = Division 3; A = NCAA Division 1-A; B = NCAA Division 1-AA; C = intercollegiate club teams; 
+        </p>
       </div>
 
     </div>
@@ -343,7 +370,14 @@ export default {
       images: [],
       showSaveToListDialog: false,
       descriptionPanels: [],
-      sports: []
+      sports: [],
+      sportsHeaders: [
+      { title: 'Sport', key: 'descr', width: "300px" },
+      { title: 'Intramural Men', key: 'maxIntmMen', width: "200px" },
+      { title: 'Intramural Women', key: 'maxIntmWmn', width: "200px" },
+      { title: 'Intercollegiate Men', key: 'maxIntcMen', width: "200px" },
+      { title: 'Intercollegiate Women', key: 'maxIntcWmn', width: "250px" },
+      ]
     }
   },
   methods: {
@@ -355,6 +389,7 @@ export default {
       docSnap.forEach((doc) => {
         this.institutionId = doc.id;
         this.institution = doc.data();
+        console.log(this.institution);
       });
       this.getImages();
       this.getDescriptions();
@@ -378,6 +413,7 @@ export default {
         sportsArray.push(doc.data());
       });
       this.sports = sportsArray;
+      console.log(this.sports);
     },
     async getImages() {
       const institutionSearchString = encodeURIComponent(this.institution["name"]) + " campus -logo";
