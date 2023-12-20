@@ -198,13 +198,13 @@
       </div>
 
       <div class="section-container" style="margin-top: 80px;">
-        <h3>Student Ethnicity</h3>
+        <h2>Student Ethnicity (Freshman only?)</h2>
         <div>
           <div class="hello" ref="chartdiv"></div>
         </div>
         <div class="ethnic-stats">
           <h3 class="text-center">Number of enrolled students</h3>
-          <div class="three-by-three-stat-grid " style="max-width: 900px; margin: 0 auto;">
+          <div class="three-by-three-stat-grid mt-4" style="max-width: 900px; margin: 0 auto;">
             <div class="stat-container">          
               <span class="stat-label">nonresident aliens</span> 
               <span class="stat-content">{{ institution["en1stNonresAlien1stN"] }}</span>
