@@ -197,40 +197,52 @@
         <div class="stat-container"><span class="stat-label">Retention Rate </span> <span class="stat-content">{{ Math.round(institution["retentionFrshP"]) }}%</span></div>
       </div>
 
-      <div class="section-container one-by-two-grid" style="margin-top: 80px;">
-        <div class="stat-container">
-          <h3>Student Ethnicity</h3>
-          <p class="mb-5">Below are the numbers of the listed heading that are degree seeking</p>
-
-          <span class="stat-label">nonresident aliens.</span> 
-          <span class="stat-content">{{ institution["en1stNonresAlien1stN"] }}</span>
-
-          <span class="stat-label">Asian</span> 
-          <span class="stat-content">{{ institution["en1stAsianNonhispanicN"] }}</span>
-
-          <span class="stat-label">Black</span> 
-          <span class="stat-content">{{ institution["en1stBlackNonhispanicN"] }}</span>
-
-          <span class="stat-label">Hispanic</span> 
-          <span class="stat-content">{{ institution["en1stHispanicEthnicityN"] }}</span>
-
-          <span class="stat-label">Native Hawaiian or other Pacific Islander</span> 
-          <span class="stat-content">{{ institution["en1stIslanderNonhispanicN"] }}</span>
-
-          <span class="stat-label">Multirace</span> 
-          <span class="stat-content">{{ institution["en1stMultiraceNonhispanicN"] }}</span>
-
-          <span class="stat-label">American Indian or Alaska Native,</span> 
-          <span class="stat-content">{{ institution["en1stNativeNonhispanicN"] }}</span>
-
-          <span class="stat-label">Unknown</span> 
-          <span class="stat-content">{{ institution["en1stRaceEthnicityUnknwnN"] }}</span>
-
-          <span class="stat-label">White</span> 
-          <span class="stat-content">{{ institution["en1stWhiteNonhispanicN"] }}</span>
-        </div>
+      <div class="section-container" style="margin-top: 80px;">
+        <h3>Student Ethnicity</h3>
         <div>
           <div class="hello" ref="chartdiv"></div>
+        </div>
+        <div class="ethnic-stats">
+          <h3 class="text-center">Number of enrolled students</h3>
+          <div class="three-by-three-stat-grid " style="max-width: 900px; margin: 0 auto;">
+            <div class="stat-container">          
+              <span class="stat-label">nonresident aliens</span> 
+              <span class="stat-content">{{ institution["en1stNonresAlien1stN"] }}</span>
+            </div>
+            <div class="stat-container">
+              <span class="stat-label">Asian</span> 
+              <span class="stat-content">{{ institution["en1stAsianNonhispanicN"] }}</span>
+            </div>
+            <div class="stat-container">
+              <span class="stat-label">Black</span> 
+              <span class="stat-content">{{ institution["en1stBlackNonhispanicN"] }}</span>
+            </div>
+            <div class="stat-container">
+              <span class="stat-label">Hispanic</span> 
+              <span class="stat-content">{{ institution["en1stHispanicEthnicityN"] }}</span>
+            </div>
+            <div class="stat-container">
+              <span class="stat-label">Native Hawaiian or other Pacific Islander</span> 
+              <span class="stat-content">{{ institution["en1stIslanderNonhispanicN"] }}</span>
+            </div>
+            <div class="stat-container">
+              <span class="stat-label">Multirace</span> 
+              <span class="stat-content">{{ institution["en1stMultiraceNonhispanicN"] }}</span>
+            </div>
+            <div class="stat-container">
+              <span class="stat-label">American Indian or Alaska Native</span> 
+              <span class="stat-content">{{ institution["en1stNativeNonhispanicN"] }}</span>
+            </div>
+            <div class="stat-container">
+              <span class="stat-label">Unknown</span> 
+              <span class="stat-content">{{ institution["en1stRaceEthnicityUnknwnN"] }}</span>
+            </div>
+            <div class="stat-container">
+              <span class="stat-label">White</span> 
+              <span class="stat-content">{{ institution["en1stWhiteNonhispanicN"] }}</span>
+            </div>
+          </div>
+
         </div>
       </div>
       <div class="section-container mt-8">
@@ -261,25 +273,27 @@
       </div>
       <div class="section-container mt-8">
         <h2>Sports</h2>
-        <h3 class="mt-3">Associations</h3>
-        <div class="flex" style="gap: 20px">
-          <div class="multiple-stat-container mt-2">
-            <div class="stat-container">
-              <span class="stat-label">NCAA*</span> 
-              <span class="stat-content">{{ institution["assnAthlNcaa"]?.toLocaleString() || '—' }}</span>
-            </div>
-
+        <div class="flex">
+          <div class="flex" style="gap: 20px">
+            <h3 class="mt-3">Associations</h3>
+            <div class="multiple-stat-container mt-2">
               <div class="stat-container">
-              <span class="stat-label">NCCAA</span> 
-              <span class="stat-content">{{ institution["assnAthlNccaa"]?.toLocaleString() || '—' }}</span>
+                <span class="stat-label">NCAA*</span> 
+                <span class="stat-content">{{ institution["assnAthlNcaa"]?.toLocaleString() || '—' }}</span>
+              </div>
+
+                <div class="stat-container">
+                <span class="stat-label">NCCAA</span> 
+                <span class="stat-content">{{ institution["assnAthlNccaa"]?.toLocaleString() || '—' }}</span>
+              </div>
+                
+              <div class="stat-container">
+                <span class="stat-label">NAIA</span> 
+                <span class="stat-content">{{ institution["assnAthlNaia"]?.toLocaleString() || '—' }}</span>
+              </div>
             </div>
-              
-            <div class="stat-container">
-              <span class="stat-label">NAIA</span> 
-              <span class="stat-content">{{ institution["assnAthlNaia"]?.toLocaleString() || '—' }}</span>
-            </div>
+            <p style="font-style: italic; font-size: 14px;">* 1 = Division 1; 2 = Division 2; 3 = Division 3;</p>
           </div>
-          <p style="font-style: italic; font-size: 14px;">* 1 = Division 1; 2 = Division 2; 3 = Division 3;</p>
         </div>
 
         <h3 class="mt-6">All sport offerings</h3>
@@ -320,58 +334,6 @@ export default {
     this.loadInstitutionData();
   },
   mounted() {
-    let root = am5.Root.new(this.$refs.chartdiv);
-    root._logo.dispose();
-    root.setThemes([am5themes_Animated.new(root)]);
-
-    // Create chart
-    // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/
-    var chart = root.container.children.push(
-      am5percent.PieChart.new(root, {
-        endAngle: 270
-      })
-    );
-
-    // Create series
-    // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Series
-    var series = chart.series.push(
-      am5percent.PieSeries.new(root, {
-        valueField: "value",
-        categoryField: "category",
-        endAngle: 270
-      })
-    );
-
-    series.states.create("hidden", {
-      endAngle: -90
-    });
-
-    // Set data
-    // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Setting_data
-    series.data.setAll([{
-      category: "American Indian or Alaska Native",
-      value: 501.9
-    }, {
-      category: "Asian",
-      value: 301.9
-    }, {
-      category: "Black or African American",
-      value: 201.1
-    }, {
-      category: "Hispanic/Latino",
-      value: 165.8
-    }, {
-      category: "Native Hawaiian or Other Pacific Islander",
-      value: 139.9
-    }, {
-      category: "Two or more races",
-      value: 128.3
-    }, {
-      category: "Unknown",
-      value: 99
-    }]);
-
-    series.appear(1000, 100);
 
   },
   beforeUnmount() {
@@ -408,11 +370,13 @@ export default {
         this.institutionId = doc.id;
         this.institution = doc.data();
         this.majors = this.institution.acadProgDesc.split(',');
+        
         this.majors.sort();
       });
       this.getImages();
       this.getDescriptions();
       this.getSports();
+      this.makeEthnicityGraph();
     },
     async getDescriptions() {
       const slugFromURL = this.$route.params.slug;
@@ -448,6 +412,82 @@ export default {
       const percentage = Math.round(input * 100);
       return percentage;
     },
+    async makeEthnicityGraph() {
+
+      let root = am5.Root.new(this.$refs.chartdiv);
+      root._logo.dispose();
+      root.setThemes([am5themes_Animated.new(root)]);
+
+      // Create chart
+      // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/
+      var chart = root.container.children.push(
+        am5percent.PieChart.new(root, {
+          startAngle: 180,
+          endAngle: 360,
+          layout: root.verticalLayout,
+          innerRadius: am5.percent(50)
+        })
+      );
+
+      // Create series
+      // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Series
+      var series = chart.series.push(
+        am5percent.PieSeries.new(root, {
+          valueField: "value",
+          categoryField: "category",
+          startAngle: 180,
+          endAngle: 360,
+          alignLabels: true
+        })
+      );
+
+      series.states.create("hidden", {
+        endAngle: -90
+      });
+
+      // Set data
+      // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Setting_data
+      series.data.setAll([
+      {
+          category: "nonresident aliens",
+          value: this.institution.en1stNonresAlien1stN
+        }, 
+        {
+          category: "Asian",
+          value: this.institution.en1stAsianNonhispanicN
+        }, 
+        {
+          category: "Black",
+          value: this.institution.en1stBlackNonhispanicN
+        }, 
+        {
+          category: "Hispanic",
+          value: this.institution.en1stHispanicEthnicityN
+        }, 
+        {
+          category: "Native Hawaiian or Other Pacific Islander",
+          value: this.institution.en1stIslanderNonhispanicN
+        }, 
+        {
+          category: "Multirace",
+          value: this.institution.en1stMultiraceNonhispanicN
+        }, 
+        {
+          category: "American Indian or Alaska Native",
+          value: this.institution.en1stNativeNonhispanicN
+        }, 
+        {
+          category: "Unknown",
+          value: this.institution.en1stRaceEthnicityUnknwnN
+        }, 
+        {
+          category: "White",
+          value: this.institution.en1stWhiteNonhispanicN
+        }, 
+        ]);
+
+      series.appear(1000, 100);
+    }
   },
   components: {
     SaveToListDialog
@@ -579,5 +619,13 @@ export default {
     overflow: hidden;
   }
 
-
+  .ethnic-stats {
+    background: #f1f1f1;
+    padding: 24px;
+    border-radius: 24px;
+    
+    .stat-container {
+      text-align: center;
+    }
+  }
 </style>
