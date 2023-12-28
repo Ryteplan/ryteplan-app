@@ -182,19 +182,18 @@
           <div class="stat-container"><span class="stat-label">Females in Greek </span> <span class="stat-content">{{ institution["soroP"] }}%</span></div>
         </div>
 
-        <div class="stat-container"><span class="stat-label">Number of Undergraduate Pell Grant Awards</span> <span class="stat-content">{{ institution["grsBachInitPellN"]?.toLocaleString() || '—' }}</span></div>
-        <div class="stat-container"><span class="stat-label">Number of Undergrads Awarded Non-Need Based Institutional Aid (excluding athletics)</span> <span class="stat-content">{{ institution["ugFtNnNoneedN"]?.toLocaleString() || '—' }}</span></div>
-        <div class="stat-container"><span class="stat-label">Average Amount of Non-Need Based Institutional Aid (excluding athletics)</span> <span class="stat-content">${{ institution["ugFtNnNoneedD"]?.toLocaleString() || '—' }}</span></div>
-        <div class="stat-container"><span class="stat-label">Average Undergrad Need Based Aid Award</span> <span class="stat-content">${{ institution["ugFtAvgNbGiftD"]?.toLocaleString() || '—' }}</span></div>
-        <div class="stat-container"><span class="stat-label">% Undergraduates Non-Resident</span> <span class="stat-content">{{ institution["enNresP"] }}%</span></div>
+        <div class="stat-container"><span class="stat-label">Undergrad Pell Grants Awarded</span> <span class="stat-content">{{ institution["grsBachInitPellN"]?.toLocaleString() || '—' }}</span></div>
+        <div class="stat-container"><span class="stat-label">Merit Scholarships Awarded (excluding athletics)</span> <span class="stat-content">{{ institution["ugFtNnNoneedN"]?.toLocaleString() || '—' }}</span></div>
+        <div class="stat-container"><span class="stat-label">Testing Policy</span> <span class="stat-content not-yet-found">Coming soon</span></div>
+        <div class="stat-container"><span class="stat-label">Average Need-Based Scholarship</span> <span class="stat-content">${{ institution["ugFtAvgNbGiftD"]?.toLocaleString() || '—' }}</span></div>
+        <div class="stat-container"><span class="stat-label">Average Merit Scholarship (excluding athletics)</span> <span class="stat-content">${{ institution["ugFtNnNoneedD"]?.toLocaleString() || '—' }}</span></div>
 
         <div class="stat-container"><span class="stat-label">Freshmen Living on Campus</span> <span class="stat-content">{{ institution["hous1stUgP"] }}%</span></div>
+        <div class="stat-container"><span class="stat-label">Out-of-State Population</span> <span class="stat-content">{{ institution["enNresP"] }}%</span></div>
 
-        <div class="stat-container"><span class="stat-label">average amount of institutional</span> <span class="stat-content not-yet-found">{{ institution["averageAmountOfInstitutionalGrantAidAwardedToundergraduates"] }} Rya to find</span></div>
+        <div class="stat-container"><span class="stat-label">International Population</span> <span class="stat-content not-yet-found">{{ institution["undergraduatesOutOfState"] }} Rya to find</span></div>
 
-        <div class="stat-container"><span class="stat-label">% Undergraduates International</span> <span class="stat-content not-yet-found">{{ institution["undergraduatesOutOfState"] }} Rya to find</span></div>
-
-        <div class="stat-container"><span class="stat-label">Retention Rate </span> <span class="stat-content">{{ Math.round(institution["retentionFrshP"]) }}%</span></div>
+        <div class="stat-container"><span class="stat-label">Freshman Retention Rate</span> <span class="stat-content">{{ Math.round(institution["retentionFrshP"]) }}%</span></div>
       </div>
 
       <div class="section-container" style="margin-top: 80px;">
@@ -206,7 +205,7 @@
           <h3 class="text-center">Number of enrolled students</h3>
           <div class="three-by-three-stat-grid mt-4" style="max-width: 900px; margin: 0 auto;">
             <div class="stat-container">          
-              <span class="stat-label">nonresident aliens</span> 
+              <span class="stat-label">International</span> 
               <span class="stat-content">{{ institution["en1stNonresAlien1stN"] }}</span>
             </div>
             <div class="stat-container">
