@@ -3,9 +3,9 @@
     <div>
       <div style="display: flex; justify-content: center; align-items: center;">
         <v-row class="align-end">
-          <v-col cols="3">
+          <v-col cols="12" md="6">
             <v-text-field
-              v-model="tableStore.search"
+              v-model="tableStore.searchInput"
               label="Search Institutions"
               append-inner-icon="mdi-magnify"
               density="compact"
@@ -13,9 +13,17 @@
               single-line
               hide-details
               clearable
+              v-on:keyup.enter="tableStore.performSeach"
             ></v-text-field>
           </v-col>
-          <v-col cols="5">
+          <v-col class="d-none">
+            <v-btn
+              @click="tableStore.performSeach"
+            >
+              Search
+            </v-btn>
+          </v-col>
+          <v-col cols="12" md="6">
             <v-dialog
               v-model="filterDialog"
               width="700px"
@@ -75,7 +83,6 @@
                 <div class="pa-8">
                   <h2>Table settings</h2>
                   <p class="mt-2">Use the controls below to select which columns will appear on the table.</p>
-                  <p class="mt-2">Note: I am not yet sure if we will be able to search or filter upon the data in the column if it is not appearing in the table!</p>
                   <h3 class="mt-5 mb-3">Columns</h3>
                   <div
                     v-for="header in tableStore.tableHeaders"
@@ -99,7 +106,7 @@
               </v-card>
             </v-dialog>
           </v-col>
-          <v-col cols="4" class="d-flex justify-end align-center">
+          <v-col cols="6" class="d-flex justify-end align-center">
             <div v-if="tableStore.selectedRows.length" class="d-flex align-center">
               <v-btn>
                 Focus
@@ -147,7 +154,7 @@
       return-object
       :headers="tableStore.filteredHeadersData()"
       :items="tableStore.filteredTableData()" 
-      :search="tableStore.search"
+      :search="tableStore.executeSearchTerms"
       :items-per-page="50"
       :page="tableStore.page"
       @click:row="navigateToInstitution"

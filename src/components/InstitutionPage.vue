@@ -1,19 +1,19 @@
 <template>
   <v-container style="padding:0 16px;">
-    <div style="margin: 36px auto 64px;">
-      <div class="d-flex justify-space-between mt-4">
-        <div>
-          <h1 class="">{{ institution["name"] }}</h1>
+    <div style="margin: 0 auto 64px; max-width: 1236px;">
+      <v-row class="d-flex justify-space-between mt-0">
+        <v-col cols="12" md="6">
+          <h1 class="text-h6">{{ institution["name"] }}</h1>
           <span style="font-weight: 500;">{{ descriptions.tagline }}</span>
-        </div>
-        <div class="d-flex flex-column align-end">
+        </v-col>
+        <v-col cols="12" md="6" class="d-md-flex align-center justify-end pt-0">
           <v-btn
             @click="showSaveToListDialog = true"
           >
             Add to list
           </v-btn>
-        </div>
-      </div>
+        </v-col>
+      </v-row>
       <div class="section-container location-links-images-container mt-2">
         <div class="d-flex flex-column">
           <div class="location-container d-flex flex-column" style="gap: 12px">
@@ -30,7 +30,6 @@
               <span class="stat-content">{{ institution["stateCleaned"] }}</span>
             </div>
           </div>
-          
           <div class="external-links mt-4">
             <ul class="mt-3 header-links d-flex flex-column no-wrap" style="gap: 12px;">
               <li><a :href="institution['urlAddress']" target="_blank">Official site</a></li>
@@ -39,7 +38,7 @@
             </ul>
           </div>
         </div>
-        <div class="institution-images-container">
+        <div class="institution-images-container mt-xs-4 mt-sm-4">
           <div class="img-bg">
             <img :src="image " v-for="(image, index) in images.slice(0, 1)" class="institution-image" :key="index" />
           </div>
@@ -333,7 +332,6 @@ export default {
     this.loadInstitutionData();
   },
   mounted() {
-
   },
   beforeUnmount() {
     if (this.root) {
@@ -369,7 +367,6 @@ export default {
         this.institutionId = doc.id;
         this.institution = doc.data();
         this.majors = this.institution.acadProgDesc.split(',');
-        
         this.majors.sort();
       });
       this.getImages();
@@ -511,6 +508,8 @@ export default {
   }
   
   .institution-images-container {
+    margin-top: 24px;
+    @media (min-width: 960px) { margin: 0; }
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     column-gap: 8px;
@@ -524,6 +523,7 @@ export default {
   }
 
   .img-bg {
+    aspect-ratio: 1;
     background: #ededed;
     line-height: 0;
     width: 100%;
@@ -601,9 +601,11 @@ export default {
     text-decoration: none;
   }
 
-  .location-links-images-container {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
+  @media (min-width: 960px) {
+    .location-links-images-container {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+    }  
   }
 
   .section-container {
