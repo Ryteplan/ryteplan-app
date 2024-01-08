@@ -182,10 +182,10 @@
         </div>
 
         <div class="stat-container"><span class="stat-label">Undergrad Pell Grants Awarded</span> <span class="stat-content">{{ institution["grsBachInitPellN"]?.toLocaleString() || '—' }}</span></div>
-        <div class="stat-container"><span class="stat-label">Merit Scholarships Awarded (excluding athletics)</span> <span class="stat-content">{{ institution["ugFtNnNoneedN"]?.toLocaleString() || '—' }}</span></div>
+        <div class="stat-container"><span class="stat-label">Merit Scholarships Awarded <br/><span>(excluding athletics)</span> </span> <span class="stat-content">{{ institution["ugFtNnNoneedN"]?.toLocaleString() || '—' }}</span></div>
         <div class="stat-container"><span class="stat-label">Testing Policy</span> <span class="stat-content not-yet-found">Coming soon</span></div>
         <div class="stat-container"><span class="stat-label">Average Need-Based Scholarship</span> <span class="stat-content">${{ institution["ugFtAvgNbGiftD"]?.toLocaleString() || '—' }}</span></div>
-        <div class="stat-container"><span class="stat-label">Average Merit Scholarship (excluding athletics)</span> <span class="stat-content">${{ institution["ugFtNnNoneedD"]?.toLocaleString() || '—' }}</span></div>
+        <div class="stat-container"><span class="stat-label">Average Merit Scholarship <br/><span>(excluding athletics)</span> </span> <span class="stat-content">${{ institution["ugFtNnNoneedD"]?.toLocaleString() || '—' }}</span></div>
 
         <div class="stat-container"><span class="stat-label">Freshmen Living on Campus</span> <span class="stat-content">{{ institution["hous1stUgP"] }}%</span></div>
         <div class="stat-container"><span class="stat-label">Out-of-State Population</span> <span class="stat-content">{{ institution["enNresP"] }}%</span></div>
@@ -554,12 +554,19 @@ export default {
     grid-template-columns: 1fr 1fr;
     row-gap: 24px;
   }
-
-  .three-by-three-stat-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    row-gap: 24px;
+  @media (max-width: 768px) {
+    .three-by-three-stat-grid > div:not(:first-of-type) {
+      margin-top: 24px;
+    }
+  }  
+  @media (min-width: 768px) {
+    .three-by-three-stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      row-gap: 24px;
+    }    
   }
+
 
   .multiple-stat-container {
     display: flex;
@@ -578,6 +585,10 @@ export default {
     font-size: 15px;
     font-weight: 400;
     color: #2a2a2a;
+    > span {
+      font-size: 13px;
+      color: #373737;
+    }
   }
 
   .stat-content {

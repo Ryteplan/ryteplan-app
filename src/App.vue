@@ -1,20 +1,22 @@
 <template>
   <v-layout class="app-container">
-    <v-app-bar class="px-12 elevation-1">
-      <v-toolbar-title class="logo"><a href="/" class="logo">RytePlan</a></v-toolbar-title>
-      <div v-if="!isLoggedIn">
-        <v-btn 
-          :to="{name: 'login', query: { tabDestination: 'Sign Up' }}"
-          class="no-active"
-        >
-          Sign up
-        </v-btn>
-        <v-btn 
-          class="no-active"
-          :to="{name: 'login', query: { tabDestination: 'Login' }}"
-        >
-          Login
-        </v-btn>
+    <v-app-bar class="elevation-1">
+      <div class="d-flex justify-between align-center ma-auto w-100 px-3" style="max-width: 1236px;">
+        <v-toolbar-title class="logo"><a href="/" class="logo">RytePlan</a></v-toolbar-title>
+        <div v-if="!isLoggedIn">
+          <v-btn 
+            :to="{name: 'login', query: { tabDestination: 'Sign Up' }}"
+            class="no-active"
+          >
+            Sign up
+          </v-btn>
+          <v-btn 
+            class="no-active"
+            :to="{name: 'login', query: { tabDestination: 'Login' }}"
+          >
+            Login
+          </v-btn>
+        </div>
       </div>
     </v-app-bar>
       <v-navigation-drawer
