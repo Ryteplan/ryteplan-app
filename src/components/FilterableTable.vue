@@ -226,11 +226,8 @@ export default {
   },
   mounted() {
     this.$watch('tableStore.loading', (loadingState) => {
-      if (loadingState === true) {
-        console.log("initial view");
-      }
       if (loadingState === false) {
-        console.log("Table data loaded");
+        this.tableStore.saveTableDataToLS();
         setTimeout(() => {
           const dataTable = document.querySelector("#dataTable .v-table__wrapper");
           dataTable.addEventListener("scroll", this.onScroll, true);

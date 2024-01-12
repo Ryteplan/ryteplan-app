@@ -35,22 +35,18 @@ export const useTableStore = defineStore('table', {
       } else {
         try {
           this.loading = true;
-          console.log("fetch table data from firebase")
           const institutions = collection(dbFireStore, 'Institutions');
           const docSnap = await getDocs(institutions);
           this.tableData = docSnap.docs.map(doc=>({...doc.data(), id:doc.id}));
           this.loading = false;
-          this.saveTableDataToLS();
         } catch (error) {
           console.error('Error fetching table data:', error);
         }
       }
     },
     saveTableDataToLS() {
-      console.log("save table data to LS");
       let compressedTableData = compress(JSON.stringify(this.tableData));
       localStorage.setItem("institutionTable", compressedTableData);
-      this.loading = false;
     },
     filteredTableData(){
       return this.tableData.filter(d => {
