@@ -392,7 +392,6 @@ export default {
         sportsArray.push(doc.data());
       });
       this.sports = sportsArray;
-      console.log(this.sports);
     },
     async getImages() {
       const institutionSearchString = encodeURIComponent(this.institution["name"]) + " campus -logo";

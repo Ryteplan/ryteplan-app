@@ -1,179 +1,200 @@
 <template>
-  <v-container class="browse-institution-table-container pt-8 px-8">
-    <div>
-      <div style="display: flex; justify-content: center; align-items: center;">
-        <v-row class="align-end">
-          <v-col cols="12" md="6">
-            <v-text-field
-              v-model="tableStore.searchInput"
-              label="Search Institutions"
-              append-inner-icon="mdi-magnify"
-              density="compact"
-              variant="solo"
-              single-line
-              hide-details
-              clearable
-              v-on:keyup.enter="tableStore.performSeach"
-            ></v-text-field>
-          </v-col>
-          <v-col class="d-none">
-            <v-btn
-              @click="tableStore.performSeach"
-            >
-              Search
-            </v-btn>
-          </v-col>
-          <v-col cols="12" md="6">
-            <v-dialog
-              v-model="filterDialog"
-              width="700px"
-            >
-              <template v-slot:activator="{ props }">
-                <v-btn
-                  v-bind="props"
-                  append-icon="mdi-filter-variant"
-                >
-                  Filters
-                </v-btn>
-              </template>
-              <v-card>
-                <div class="pa-8">
-                  <h2>Filters</h2>
-                  <p>Use the filters below to narrow your search.</p>
-                  <div
-                    class="mt-6"
-                    v-for="header in tableStore.tableHeaders"
-                    :key="header.title"
-                  >
-                    <v-select 
-                      flat 
-                      hide-details 
-                      small 
-                      multiple 
-                      clearable 
-                      auto
-                      v-if="tableStore.filters.hasOwnProperty(header.title)"            
-                      :label="header.title"
-                      :items="tableStore.columnValueList(header.key)" 
-                      v-model="tableStore.filters[header.key]"
-                      @update:menu="onUpdateMenu"
-                    >
-                    </v-select>
-                  </div>
-                </div>
-                <v-card-actions>
-                  <v-btn color="primary" block @click="filterDialog = false">Close</v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-            <v-dialog
-              v-model="columnSettingsDialog"
-              width="700px"
-            >
-              <template v-slot:activator="{ props }">
-                <v-btn
-                  class="ml-5"
-                  v-bind="props"
-                  append-icon="mdi-table"
-                >
-                  Table Settings
-                </v-btn>
-              </template>
-              <v-card>
-                <div class="pa-8">
-                  <h2>Table settings</h2>
-                  <p class="mt-2">Use the controls below to select which columns will appear on the table.</p>
-                  <h3 class="mt-5 mb-3">Columns</h3>
-                  <div
-                    v-for="header in tableStore.tableHeaders"
-                    :key="header.title"
-                    class="mb-4"
-                  >
-                    <v-switch 
-                      v-if="header.title !== 'Institution name'"
-                      v-show="header.title !== 'id'"
-                      :label="header.title"
-                      v-model="header.show"
-                      @change="tableStore.updateHeaders"
-                      color="primary"
-                    >
-                    </v-switch>
-                  </div>
-                </div>
-                <v-card-actions>
-                  <v-btn color="primary" block @click="columnSettingsDialog = false">Close</v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-          </v-col>
-          <v-col cols="6" class="d-flex justify-end align-center">
-            <div v-if="tableStore.selectedRows.length" class="d-flex align-center">
-              <v-btn>
-                Focus
+  <v-container class="browse-institution-table-container pt-8 px-8 px-lg-0">
+    Loading: {{ tableStore.loading }}
+    <div
+      v-if="tableStore.loading === true"
+      class="d-flex align-center justify-center"
+      style="height: 59vh"
+    >
+      <v-progress-circular
+        :size="50"
+        color="primary"
+        indeterminate
+      ></v-progress-circular>
+    </div>
+    <div
+      v-if="tableStore.loading === false"
+    >
+      <div>
+        <div style="display: flex; justify-content: center; align-items: center;">
+          <v-row class="align-end">
+            <v-col cols="12" md="6">
+              <v-text-field
+                v-model="tableStore.searchInput"
+                label="Search Institutions"
+                append-inner-icon="mdi-magnify"
+                density="compact"
+                variant="solo"
+                single-line
+                hide-details
+                clearable
+                v-on:keyup.enter="tableStore.performSeach"
+              ></v-text-field>
+            </v-col>
+            <v-col class="d-none">
+              <v-btn
+                @click="tableStore.performSeach"
+              >
+                Search
               </v-btn>
-              <v-menu
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-dialog
+                v-model="filterDialog"
+                width="700px"
               >
                 <template v-slot:activator="{ props }">
                   <v-btn
-                    class="ml-3"
                     v-bind="props"
-                    @click="onUpdateMenu"
+                    append-icon="mdi-filter-variant"
                   >
-                    {{ tableStore.selectedRows.length }} Selected
+                    Filters
                   </v-btn>
                 </template>
-                <v-list>
-                  <v-list-item
-                    v-for="(item, index) in selectedDropDown"
-                    @click="item.action"
-                    :key="index"
-                  >
-                    <div class="d-flex justify-end align-center">
-                      <v-list-item-title>{{ item.title }}</v-list-item-title>
-                      <v-icon class="ml-3" :icon="item.icon"></v-icon>
+                <v-card>
+                  <div class="pa-8">
+                    <h2>Filters</h2>
+                    <p>Use the filters below to narrow your search.</p>
+                    <div
+                      class="mt-6"
+                      v-for="header in tableStore.tableHeaders"
+                      :key="header.title"
+                    >
+                      <v-select 
+                        flat 
+                        hide-details 
+                        small 
+                        multiple 
+                        clearable 
+                        auto
+                        v-if="tableStore.filters.hasOwnProperty(header.title)"            
+                        :label="header.title"
+                        :items="tableStore.columnValueList(header.key)" 
+                        v-model="tableStore.filters[header.key]"
+                        @update:menu="onUpdateMenu"
+                      >
+                      </v-select>
                     </div>
-                  </v-list-item>
-                </v-list>
-              </v-menu>
-            </div>
-          </v-col>
-        </v-row>
+                  </div>
+                  <v-card-actions>
+                    <v-btn color="primary" block @click="filterDialog = false">Close</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+              <v-dialog
+                v-model="columnSettingsDialog"
+                width="700px"
+              >
+                <template v-slot:activator="{ props }">
+                  <v-btn
+                    class="ml-5"
+                    v-bind="props"
+                    append-icon="mdi-table"
+                  >
+                    Table Settings
+                  </v-btn>
+                </template>
+                <v-card>
+                  <div class="pa-8">
+                    <h2>Table settings</h2>
+                    <p class="mt-2">Use the controls below to select which columns will appear on the table.</p>
+                    <h3 class="mt-5 mb-3">Columns</h3>
+                    <div
+                      v-for="header in tableStore.tableHeaders"
+                      :key="header.title"
+                      class="mb-4"
+                    >
+                      <v-switch 
+                        v-if="header.title !== 'Institution name'"
+                        v-show="header.title !== 'id'"
+                        :label="header.title"
+                        v-model="header.show"
+                        @change="tableStore.updateHeaders"
+                        color="primary"
+                      >
+                      </v-switch>
+                    </div>
+                  </div>
+                  <v-card-actions>
+                    <v-btn color="primary" block @click="columnSettingsDialog = false">Close</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </v-col>
+            <v-col 
+              v-if="tableStore.selectedRows.length"
+              cols="6" 
+              class="d-flex justify-end align-center"
+            >
+              <div class="d-flex align-center">
+                <v-btn>
+                  Focus
+                </v-btn>
+                <v-menu
+                >
+                  <template v-slot:activator="{ props }">
+                    <v-btn
+                      class="ml-3"
+                      v-bind="props"
+                      @click="onUpdateMenu"
+                    >
+                      {{ tableStore.selectedRows.length }} Selected
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-item
+                      v-for="(item, index) in selectedDropDown"
+                      @click="item.action"
+                      :key="index"
+                    >
+                      <div class="d-flex justify-end align-center">
+                        <v-list-item-title>{{ item.title }}</v-list-item-title>
+                        <v-icon class="ml-3" :icon="item.icon"></v-icon>
+                      </div>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </div>
+            </v-col>
+          </v-row>
+        </div>
       </div>
+      <v-data-table
+        id="dataTable"
+        class="elevation-1 mt-4 institutionDataTable"
+        item-key="Institution name"
+        selectable-key="Institution name"
+        height="59vh"
+        fixed-header
+        filterable
+        multi-sort
+        density="compact"
+        show-select
+        return-object
+        :headers="tableStore.filteredHeadersData()"
+        :items="tableStore.filteredTableData()" 
+        :search="tableStore.executeSearchTerms"
+        :items-per-page="50"
+        :page="tableStore.page"
+        @click:row="navigateToInstitution"
+        @update:page="tableStore.updatePage"
+        item-value="institution name"
+        v-model="tableStore.selectedRows"
+        v-model:sort-by="tableStore.sortBy"
+      >
+        <template v-slot:bottom="{ pagination, options, updateOptions }">
+          <v-row class="data-table-footer-container">
+            <v-col class="d-flex align-center justify-center">
+              <v-data-table-footer
+                :pagination="pagination" 
+                :options="options"
+                @update:options="updateOptions"
+              />
+            </v-col>
+          </v-row>
+        </template>
+      </v-data-table>
     </div>
-    <v-data-table
-      id="dataTable"
-      class="elevation-1 mt-4 institutionDataTable"
-      item-key="Institution name"
-      selectable-key="Institution name"
-      height="59vh"
-      fixed-header
-      filterable
-      multi-sort
-      dense
-      show-select
-      return-object
-      :headers="tableStore.filteredHeadersData()"
-      :items="tableStore.filteredTableData()" 
-      :search="tableStore.executeSearchTerms"
-      :items-per-page="50"
-      :page="tableStore.page"
-      @click:row="navigateToInstitution"
-      @update:page="tableStore.updatePage"
-      item-value="institution name"
-      v-model="tableStore.selectedRows"
-    >
-      <template v-slot:bottom="{ pagination, options, updateOptions }">
-        <v-row class="data-table-footer-container">
-          <v-col class="d-flex align-center justify-center">
-            <v-data-table-footer
-              :pagination="pagination" 
-              :options="options"
-              @update:options="updateOptions"
-            />
-          </v-col>
-        </v-row>
-      </template>
-    </v-data-table>
     <SaveToListDialog 
       v-model="showSaveToListDialog" 
       :selectedRows="tableStore.selectedRows"
@@ -199,15 +220,26 @@ export default {
     if (tableStore.tableHeaders.length == 0) {
       tableStore.loadTableHeaders();
     }
+
     return {
       tableStore,      
     };
   },
   mounted() {
-    const dataTable = document.querySelector("#dataTable .v-table__wrapper");
-    dataTable.addEventListener("scroll", this.onScroll, true);
-    this.scrollToLastKnownPosition();
-    this.highlightLastClickedRow();
+    this.$watch('tableStore.loading', (loadingState) => {
+      if (loadingState == true) {
+        console.log("initial view");
+      }
+      if (loadingState === false) {
+        console.log("Table data loaded");
+        setTimeout(() => {
+          const dataTable = document.querySelector("#dataTable .v-table__wrapper");
+          dataTable.addEventListener("scroll", this.onScroll, true);
+          this.scrollToLastKnownPosition();
+          this.highlightLastClickedRow();
+        }, 1000);
+      }
+    }, { immediate: true });
   },
   beforeUnmount() {
     window.removeEventListener("scroll", this.onScroll, true)
@@ -304,7 +336,7 @@ export default {
 <style>
 
 .browse-institution-table-container {
-  max-width: 1328px;
+  max-width: 1236px;
 }
 
 #dataTable {

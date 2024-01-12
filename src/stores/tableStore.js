@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { dbFireStore } from "../firebase";
 import { collection, getDocs } from 'firebase/firestore'
-import { compress, decompress } from 'lz-string'
+import {  compress, decompress } from 'lz-string'
 
 
 export const useTableStore = defineStore('table', {
@@ -23,24 +23,33 @@ export const useTableStore = defineStore('table', {
       page: 1,
       selectedRows: [],
       tableHeaders: [],
+      sortBy: [{ key: 'name', order: 'asc' }],
   }),
   actions: {
     async fetchTableData() {
       if (localStorage.getItem("institutionTable")) {
+        console.log("fetch table data from local storage")
         let decompressedTableData = decompress(localStorage.getItem("institutionTable"));
         this.tableData = JSON.parse(decompressedTableData);
+        this.loading = false;
       } else {
         try {
+          console.log("fetch table data from firebase")
           const institutions = collection(dbFireStore, 'Institutions');
           const docSnap = await getDocs(institutions);
           this.tableData = docSnap.docs.map(doc=>({...doc.data(), id:doc.id}));
-          let compressedTableData = compress(JSON.stringify(this.tableData));
-          localStorage.setItem("institutionTable", compressedTableData);
+          this.saveTableDataToLS();
           this.loading = false;
         } catch (error) {
           console.error('Error fetching table data:', error);
         }
       }
+    },
+    saveTableDataToLS() {
+      console.log("save table data to LS");
+      let compressedTableData = compress(JSON.stringify(this.tableData));
+      localStorage.setItem("institutionTable", compressedTableData);
+      this.loading = false;
     },
     filteredTableData(){
       return this.tableData.filter(d => {
@@ -67,9 +76,9 @@ export const useTableStore = defineStore('table', {
         this.tableHeaders = [
           { title: 'id', key: 'id', width: "300px", show: false, align: "d-none" },
           { title: 'Institution name', key: 'name', width: "300px", fixed: true },
-          { title: 'State', key: 'stateCleaned', width: "130px", show: true },
-          { title: 'City', key: 'city', width: "130px", show: true },
-          { title: 'Country', key: 'countryCode', width: "130px", show: true },
+          { title: 'State', key: 'stateCleaned', width: "130px", show: false },
+          { title: 'City', key: 'city', width: "130px", show: false },
+          { title: 'Country', key: 'countryCode', width: "130px", show: false },
           { title: 'Zipcode', key: 'zipcode', width: "130px", show: false },
           { title: 'Main Type of Degree Offered', key: 'mainFunctionType', width: "300px", show: true },
           { title: 'Type of Institution', key: 'mainInstControl', width: "80px", show: true },
