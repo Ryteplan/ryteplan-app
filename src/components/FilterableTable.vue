@@ -226,7 +226,7 @@ export default {
   },
   mounted() {
     this.$watch('tableStore.loading', (loadingState) => {
-      if (loadingState == true) {
+      if (loadingState === true) {
         console.log("initial view");
       }
       if (loadingState === false) {

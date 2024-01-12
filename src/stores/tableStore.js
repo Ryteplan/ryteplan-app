@@ -34,12 +34,13 @@ export const useTableStore = defineStore('table', {
         this.loading = false;
       } else {
         try {
+          this.loading = true;
           console.log("fetch table data from firebase")
           const institutions = collection(dbFireStore, 'Institutions');
           const docSnap = await getDocs(institutions);
           this.tableData = docSnap.docs.map(doc=>({...doc.data(), id:doc.id}));
-          this.saveTableDataToLS();
           this.loading = false;
+          this.saveTableDataToLS();
         } catch (error) {
           console.error('Error fetching table data:', error);
         }
