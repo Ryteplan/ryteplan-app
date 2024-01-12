@@ -1,6 +1,5 @@
 <template>
   <v-container class="browse-institution-table-container pt-8 px-8 px-lg-0">
-    Loading: {{ tableStore.loading }}
     <div
       v-if="tableStore.loading === true"
       class="d-flex align-center justify-center"
