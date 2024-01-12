@@ -17,7 +17,7 @@
       <div>
         <div style="display: flex; justify-content: center; align-items: center;">
           <v-row class="align-end">
-            <v-col cols="12" md="6">
+            <v-col cols="12" md="3">
               <v-text-field
                 v-model="tableStore.searchInput"
                 label="Search Institutions"
