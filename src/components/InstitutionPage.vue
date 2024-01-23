@@ -1,6 +1,6 @@
 <template>
-  <v-container style="padding:0 16px;">
-    <div style="margin: 0 auto 64px; max-width: 1236px;">
+  <v-container class="px-3 px-lg-0">
+    <div style="margin: 0 auto 64px; max-width: 1200px;">
       <v-row class="d-flex justify-space-between mt-0">
         <v-col cols="12" md="6">
           <h1 class="text-h6">{{ institution["name"] }}</h1>
@@ -56,7 +56,6 @@
           <span class="stat-label">Sector</span> 
           <span class="stat-content">{{ institution["mainInstControlDesc"] }}</span>
         </div>
-
 
         <div class="stat-container">
           <span class="stat-label">Undergraduate Enrollment</span>
@@ -189,9 +188,7 @@
 
         <div class="stat-container"><span class="stat-label">Freshmen Living on Campus</span> <span class="stat-content">{{ institution["hous1stUgP"] }}%</span></div>
         <div class="stat-container"><span class="stat-label">Out-of-State Population</span> <span class="stat-content">{{ institution["enNresP"] }}%</span></div>
-
-        <div class="stat-container"><span class="stat-label">International Population</span> <span class="stat-content not-yet-found">{{ institution["undergraduatesOutOfState"] }} Rya to find</span></div>
-
+        <div class="stat-container"><span class="stat-label">International Population</span> <span class="stat-content review-this">{{ institution["enTotNonresAlienTotN"] }}</span></div>
         <div class="stat-container"><span class="stat-label">Freshman Retention Rate</span> <span class="stat-content">{{ Math.round(institution["retentionFrshP"]) }}%</span></div>
       </div>
 
@@ -205,39 +202,39 @@
           <div class="three-by-three-stat-grid mt-4" style="max-width: 900px; margin: 0 auto;">
             <div class="stat-container">          
               <span class="stat-label">International</span> 
-              <span class="stat-content">{{ institution["en1stNonresAlien1stN"] }}</span>
+              <span class="stat-content">{{ institution["enNonresAlienN"] }}</span>
             </div>
             <div class="stat-container">
               <span class="stat-label">Asian</span> 
-              <span class="stat-content">{{ institution["en1stAsianNonhispanicN"] }}</span>
+              <span class="stat-content">{{ institution["enAsianNonhispanicN"] }}</span>
             </div>
             <div class="stat-container">
               <span class="stat-label">Black</span> 
-              <span class="stat-content">{{ institution["en1stBlackNonhispanicN"] }}</span>
+              <span class="stat-content">{{ institution["enBlackNonhispanicN"] }}</span>
             </div>
             <div class="stat-container">
               <span class="stat-label">Hispanic</span> 
-              <span class="stat-content">{{ institution["en1stHispanicEthnicityN"] }}</span>
+              <span class="stat-content">{{ institution["enHispanicEthnicityN"] }}</span>
             </div>
             <div class="stat-container">
               <span class="stat-label">Native Hawaiian or other Pacific Islander</span> 
-              <span class="stat-content">{{ institution["en1stIslanderNonhispanicN"] }}</span>
+              <span class="stat-content">{{ institution["enIslanderNonhispanicN"] }}</span>
             </div>
             <div class="stat-container">
               <span class="stat-label">Multirace</span> 
-              <span class="stat-content">{{ institution["en1stMultiraceNonhispanicN"] }}</span>
+              <span class="stat-content">{{ institution["enMultiraceNonhispanicN"] }}</span>
             </div>
             <div class="stat-container">
               <span class="stat-label">American Indian or Alaska Native</span> 
-              <span class="stat-content">{{ institution["en1stNativeNonhispanicN"] }}</span>
+              <span class="stat-content">{{ institution["enNativeNonhispanicN"] }}</span>
             </div>
             <div class="stat-container">
               <span class="stat-label">Unknown</span> 
-              <span class="stat-content">{{ institution["en1stRaceEthnicityUnknwnN"] }}</span>
+              <span class="stat-content">{{ institution["enRaceEthnicityUnknownN"] }}</span>
             </div>
             <div class="stat-container">
               <span class="stat-label">White</span> 
-              <span class="stat-content">{{ institution["en1stWhiteNonhispanicN"] }}</span>
+              <span class="stat-content">{{ institution["enWhiteNonhispanicN"] }}</span>
             </div>
           </div>
 
@@ -596,6 +593,10 @@ export default {
 
     &.not-yet-found {
       color: rgb(152, 20, 20);
+    }
+
+    &.review-this {
+      color: rgb(249, 215, 111);
     }
   }
 
