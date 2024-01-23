@@ -1,5 +1,5 @@
 <template>
-  <v-container class="browse-institution-table-container pt-8 px-8 px-lg-0">
+  <v-container class="browse-institution-table-container pt-8">
     <div
       v-if="tableStore.loading === true"
       class="d-flex align-center justify-center"
@@ -332,7 +332,7 @@ export default {
 <style>
 
 .browse-institution-table-container {
-  max-width: 1236px;
+  max-width: 1200px;
 }
 
 #dataTable {
