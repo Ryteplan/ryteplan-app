@@ -35,7 +35,7 @@ export const useTableStore = defineStore('table', {
       } else {
         try {
           this.loading = true;
-          const institutions = collection(dbFireStore, 'Institutions');
+          const institutions = collection(dbFireStore, 'institutions_v5');
           const docSnap = await getDocs(institutions);
           this.tableData = docSnap.docs.map(doc=>({...doc.data(), id:doc.id}));
           this.loading = false;
@@ -78,7 +78,7 @@ export const useTableStore = defineStore('table', {
           { title: 'Country', key: 'countryCode', width: "130px", show: false },
           { title: 'Zipcode', key: 'zipcode', width: "130px", show: false },
           { title: 'Main Type of Degree Offered', key: 'mainFunctionType', width: "300px", show: true },
-          { title: 'Type of Institution', key: 'mainInstControl', width: "80px", show: true },
+          { title: 'Type of Institution', key: 'mainInstControlDesc', width: "80px", show: true },
           { title: 'Calendar', key: 'mainCalendar', width: "200px", show: true },          
           { title: 'Number of Undergraduates', key: 'grsBachInitN', width: "180px", show: true },
           { title: 'Admission Difficulty', key: 'adDiffAll', width: "60px", show: true },          
