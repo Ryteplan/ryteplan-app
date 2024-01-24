@@ -59,12 +59,33 @@
 
         <div class="stat-container">
           <span class="stat-label">Undergraduate Enrollment</span>
-          <span class="stat-content">{{ institution["grsBachInitN"]?.toLocaleString() || '—' }} </span>
+          <span class="stat-content">
+            <span class="d-block">{{ (institution["enTotFtMenN"]) + (institution["enTotPtMenN"]) + institution["enTotFtWmnN"] + institution["enTotPtWmnN"] }}</span>
+            =
+            <span class="d-block">Men FT - {{ institution["enTotFtMenN"]?.toLocaleString() || '—' }}</span>
+            + 
+            <span class="d-block">Men PT - {{ institution["enTotPtMenN"]?.toLocaleString() || '—' }}</span>
+            + 
+            <span class="d-block">Women FT - {{ institution["enTotFtWmnN"]?.toLocaleString() || '—' }}</span>
+            + 
+            <span class="d-block">Women PT - {{ institution["enTotPtWmnN"]?.toLocaleString() || '—' }}</span>
+
+          </span>
         </div>
 
         <div class="stat-container">
           <span class="stat-label">Graduate Enrollment</span> 
-          <span class="stat-content">{{ institution["enTotGradN"]?.toLocaleString() || '—' }}</span>
+          <span class="stat-content">
+            <span class="d-block">{{ (institution["enGradFtMenN"]) + (institution["enGradPtMen"]) + institution["enGradFtWmnN"] + institution["enGradPtWmnN"] }}</span>
+            =
+            <span class="d-block">Men FT - {{ institution["enGradFtMenN"]?.toLocaleString() || '—' }}</span>
+            + 
+            <span class="d-block">Men PT - {{ institution["enGradPtMen"]?.toLocaleString() || '—' }}</span>
+            + 
+            <span class="d-block">Women FT - {{ institution["enGradFtWmnN"]?.toLocaleString() || '—' }}</span>
+            + 
+            <span class="d-block">Women PT - {{ institution["enGradPtWmnN"]?.toLocaleString() || '—' }}</span>
+          </span>
         </div>
 
         <div class="stat-container"><span class="stat-label">Calendar </span> <span class="stat-content">{{ institution["mainCalendar"] }}</span></div>
@@ -85,7 +106,7 @@
         </div>
         
         <div class="multiple-stat-container">
-          <div class="stat-container"><span class="stat-label">Men</span> <span class="stat-content">{{ institution["enFrshFtMenN"]?.toLocaleString() || '—' }}</span></div>
+          <div class="stat-container"><span class="stat-label">Men</span> <span class="stat-content">{{ institution["enTotFtMenN"]?.toLocaleString() || '—' }}</span></div>
           <div class="stat-container"><span class="stat-label">Women</span> <span class="stat-content">{{ institution["enFrshFtWmnN"]?.toLocaleString() || '—' }}</span></div>
         </div>
 
@@ -173,8 +194,16 @@
       </div>
 
       <div class="section-container three-by-three-stat-grid mt-8">
-        <div class="stat-container"><span class="stat-label">Tuition</span> <span class="stat-content">${{ institution["tuitState1stFtD2023"]?.toLocaleString() || '—' }}</span></div>
-        <div class="stat-container"><span class="stat-label">Tuition Non-Resident</span> <span class="stat-content">${{ institution["tuitNresFtD2023"]?.toLocaleString() || '—' }}</span></div>
+
+        <div class="stat-container"><span class="stat-label">Tuition In State</span> <span class="stat-content">${{ institution["tuitStateFtD2024"]?.toLocaleString() || '—' }}</span></div>
+
+        <div class="stat-container"><span class="stat-label">Tuition Out of State</span> <span class="stat-content">${{ institution["tuitNresFtD2024"]?.toLocaleString() || '—' }}</span></div>
+
+        <div class="stat-container"><span class="stat-label">Tuition International</span> <span class="stat-content">${{ institution["tuitIntlFtD2024"]?.toLocaleString() || '—' }}</span></div>
+
+        <div class="stat-container"><span class="stat-label">Tuition Overall</span> <span class="stat-content">${{ institution["tuitOverallFtD2024"]?.toLocaleString() || '—' }}</span></div>
+
+
         <div class="multiple-stat-container">
           <div class="stat-container"><span class="stat-label">Males in Greek </span> <span class="stat-content">{{ institution["fratP"] }}%</span></div>
           <div class="stat-container"><span class="stat-label">Females in Greek </span> <span class="stat-content">{{ institution["soroP"] }}%</span></div>
@@ -188,7 +217,7 @@
 
         <div class="stat-container"><span class="stat-label">Freshmen Living on Campus</span> <span class="stat-content">{{ institution["hous1stUgP"] }}%</span></div>
         <div class="stat-container"><span class="stat-label">Out-of-State Population</span> <span class="stat-content">{{ institution["enNresP"] }}%</span></div>
-        <div class="stat-container"><span class="stat-label">International Population</span> <span class="stat-content review-this">{{ institution["enTotNonresAlienTotN"] }}</span></div>
+        <div class="stat-container"><span class="stat-label">Undergrad International Population</span> <span class="stat-content review-this">{{ institution["enTotNonresAlienTotN"] }}</span></div>
         <div class="stat-container"><span class="stat-label">Freshman Retention Rate</span> <span class="stat-content">{{ Math.round(institution["retentionFrshP"]) }}%</span></div>
       </div>
 
@@ -357,7 +386,7 @@ export default {
   methods: {
     async loadInstitutionData() {
       const slugFromURL = this.$route.params.slug;
-      const institutions = collection(dbFireStore, 'Institutions');
+      const institutions = collection(dbFireStore, 'institutions_v5');
       const q = query(institutions, where("uri", "==", slugFromURL));
       const docSnap = await getDocs(q);
       docSnap.forEach((doc) => {
