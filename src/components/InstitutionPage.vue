@@ -4,6 +4,7 @@
       <v-row class="d-flex justify-space-between mt-0">
         <v-col cols="12" md="6">
           <h1 class="text-h6">{{ institution["name"] }}</h1>
+          <h2>{{ institution["inunId"] }}</h2>
           <span style="font-weight: 500;">{{ descriptions.tagline }}</span>
         </v-col>
         <v-col cols="12" md="6" class="d-md-flex align-center justify-end pt-0">
@@ -111,7 +112,7 @@
         </div>
 
         <div class="multiple-stat-container">
-          <div class="stat-container"><span class="stat-label">SAT 50th%ile</span> <span class="stat-content">{{ institution["satComp50thP"]?.toLocaleString() || '—' }}</span></div>
+          <div class="stat-container"><span class="stat-label">SAT 50th%ile</span> <span class="stat-content">{{ institution["sat1CompMean"]?.toLocaleString() || '—' }}</span></div>
           <div class="stat-container"><span class="stat-label">ACT 50th%ile</span> <span class="stat-content">{{ institution["actComp50thP"]?.toLocaleString() || '—' }}</span></div>
         </div>
 
@@ -357,8 +358,8 @@
         </div>
 
         <div class="multiple-stat-container mt-4">
-          <div class="stat-container"><span class="stat-label">SAT 50th%ile</span> <span class="stat-content">{{ institution["satComp50thP"]?.toLocaleString() || '—' }}</span></div>
-          <div class="stat-container"><span class="stat-label">ACT 50th%ile</span> <span class="stat-content">{{ institution["actComp50thP"]?.toLocaleString() || '—' }}</span></div>
+          <div class="stat-container"><span class="stat-label">SAT 50th%ile</span> <span class="stat-content">{{ institution["sat1CompMean"]?.toLocaleString() || '—' }}</span></div>
+          <div class="stat-container"><span class="stat-label">ACT 50th%ile</span> <span class="stat-content">{{ institution["actMean"]?.toLocaleString() || '—' }}</span></div>
         </div>
       </div>
       <div class="section-container mt-8">
