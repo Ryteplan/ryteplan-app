@@ -3,9 +3,9 @@
     <div style="margin: 0 auto 64px; max-width: 1200px;">
       <v-row class="d-flex justify-space-between mt-0">
         <v-col cols="12" md="6">
+          <span class="d-block">{{ institution["inunId"] }}</span>
           <h1 class="text-h6">{{ institution["name"] }}</h1>
-          <h2>{{ institution["inunId"] }}</h2>
-          <span style="font-weight: 500;">{{ descriptions.tagline }}</span>
+          <span class="d-block" style="font-weight: 500;">{{ descriptions.tagline }}</span>
         </v-col>
         <v-col cols="12" md="6" class="d-md-flex align-center justify-end pt-0">
           <v-btn
@@ -62,15 +62,16 @@
           <span class="stat-label">Undergraduate Enrollment</span>
           <span class="stat-content">
             <span class="d-block">{{ (institution["enTotFtMenN"]) + (institution["enTotPtMenN"]) + institution["enTotFtWmnN"] + institution["enTotPtWmnN"] }}</span>
-            =
-            <span class="d-block">Men FT - {{ institution["enTotFtMenN"]?.toLocaleString() || '—' }}</span>
-            + 
-            <span class="d-block">Men PT - {{ institution["enTotPtMenN"]?.toLocaleString() || '—' }}</span>
-            + 
-            <span class="d-block">Women FT - {{ institution["enTotFtWmnN"]?.toLocaleString() || '—' }}</span>
-            + 
-            <span class="d-block">Women PT - {{ institution["enTotPtWmnN"]?.toLocaleString() || '—' }}</span>
-
+            <div class="d-none">
+              =
+              <span class="d-block">Men FT - {{ institution["enTotFtMenN"]?.toLocaleString() || '—' }}</span>
+              + 
+              <span class="d-block">Men PT - {{ institution["enTotPtMenN"]?.toLocaleString() || '—' }}</span>
+              + 
+              <span class="d-block">Women FT - {{ institution["enTotFtWmnN"]?.toLocaleString() || '—' }}</span>
+              + 
+              <span class="d-block">Women PT - {{ institution["enTotPtWmnN"]?.toLocaleString() || '—' }}</span>
+            </div>
           </span>
         </div>
 
@@ -78,14 +79,16 @@
           <span class="stat-label">Graduate Enrollment</span> 
           <span class="stat-content">
             <span class="d-block">{{ (institution["enGradFtMenN"]) + (institution["enGradPtMen"]) + institution["enGradFtWmnN"] + institution["enGradPtWmnN"] }}</span>
-            =
-            <span class="d-block">Men FT - {{ institution["enGradFtMenN"]?.toLocaleString() || '—' }}</span>
-            + 
-            <span class="d-block">Men PT - {{ institution["enGradPtMen"]?.toLocaleString() || '—' }}</span>
-            + 
-            <span class="d-block">Women FT - {{ institution["enGradFtWmnN"]?.toLocaleString() || '—' }}</span>
-            + 
-            <span class="d-block">Women PT - {{ institution["enGradPtWmnN"]?.toLocaleString() || '—' }}</span>
+            <div class="d-none">
+              =
+              <span class="d-block">Men FT - {{ institution["enGradFtMenN"]?.toLocaleString() || '—' }}</span>
+              + 
+              <span class="d-block">Men PT - {{ institution["enGradPtMen"]?.toLocaleString() || '—' }}</span>
+              + 
+              <span class="d-block">Women FT - {{ institution["enGradFtWmnN"]?.toLocaleString() || '—' }}</span>
+              + 
+              <span class="d-block">Women PT - {{ institution["enGradPtWmnN"]?.toLocaleString() || '—' }}</span>
+            </div>
           </span>
         </div>
 
@@ -106,13 +109,16 @@
           <div class="stat-container"><span class="stat-label">Admits</span> <span class="stat-content">{{ institution["apAdmt1stN"]?.toLocaleString() || '—' }}</span></div>
         </div>
         
-        <div class="multiple-stat-container">
-          <div class="stat-container"><span class="stat-label">Men</span> <span class="stat-content">{{ institution["enTotFtMenN"]?.toLocaleString() || '—' }}</span></div>
-          <div class="stat-container"><span class="stat-label">Women</span> <span class="stat-content">{{ institution["enFrshFtWmnN"]?.toLocaleString() || '—' }}</span></div>
+        <div class="d-flex flex-column">
+            <span class="d-block">Full Time Undergrad Gender</span>
+            <div class="multiple-stat-container d-flex flex-row">
+              <div class="stat-container"><span class="stat-label">Men</span> <span class="stat-content">{{ institution["enTotFtMenN"]?.toLocaleString() || '—' }}</span></div>
+              <div class="stat-container"><span class="stat-label">Women</span> <span class="stat-content">{{ institution["enTotFtWmnN"]?.toLocaleString() || '—' }}</span></div>
+          </div>
         </div>
 
         <div class="multiple-stat-container">
-          <div class="stat-container"><span class="stat-label">SAT 50th%ile</span> <span class="stat-content">{{ institution["sat1CompMean"]?.toLocaleString() || '—' }}</span></div>
+          <div class="stat-container"><span class="stat-label">SAT 50th%ile</span> <span class="stat-content">{{ institution["sat1CompMean"] || '—' }}</span></div>
           <div class="stat-container"><span class="stat-label">ACT 50th%ile</span> <span class="stat-content">{{ institution["actComp50thP"]?.toLocaleString() || '—' }}</span></div>
         </div>
 
@@ -133,8 +139,8 @@
 
       </div>
 
-      <h2 class="mt-8">Admission Consideration Factors</h2>        
-      <div class="section-container three-by-three-stat-grid mt-4">
+      <h2 class="mt-8 d-none">Admission Consideration Factors</h2>        
+      <div class="section-container three-by-three-stat-grid mt-4 d-none">
         <div class="stat-container">
           <span class="stat-label">extracurricular activities</span>
           <span class="stat-content">{{ institution["activ"]?.toLocaleString() || '—' }}</span>
@@ -291,13 +297,12 @@
 
         <div class="stat-container"><span class="stat-label">Undergrad Pell Grants Awarded</span> <span class="stat-content">{{ institution["grsBachInitPellN"]?.toLocaleString() || '—' }}</span></div>
         <div class="stat-container"><span class="stat-label">Merit Scholarships Awarded <br/><span>(excluding athletics)</span> </span> <span class="stat-content">{{ institution["ugFtNnNoneedN"]?.toLocaleString() || '—' }}</span></div>
-        <div class="stat-container"><span class="stat-label">Testing Policy</span> <span class="stat-content not-yet-found">Coming soon</span></div>
         <div class="stat-container"><span class="stat-label">Average Need-Based Scholarship</span> <span class="stat-content">${{ institution["ugFtAvgNbGiftD"]?.toLocaleString() || '—' }}</span></div>
         <div class="stat-container"><span class="stat-label">Average Merit Scholarship <br/><span>(excluding athletics)</span> </span> <span class="stat-content">${{ institution["ugFtNnNoneedD"]?.toLocaleString() || '—' }}</span></div>
 
         <div class="stat-container"><span class="stat-label">Freshmen Living on Campus</span> <span class="stat-content">{{ institution["hous1stUgP"] }}%</span></div>
         <div class="stat-container"><span class="stat-label">Out-of-State Population</span> <span class="stat-content">{{ institution["enNresP"] }}%</span></div>
-        <div class="stat-container"><span class="stat-label">Undergrad International Population</span> <span class="stat-content review-this">{{ institution["enTotNonresAlienTotN"] }}</span></div>
+        <div class="stat-container"><span class="stat-label">Undergrad International Population</span> <span class="stat-content">{{ institution["enNonresAlienN"] }}</span></div>
         <div class="stat-container"><span class="stat-label">Freshman Retention Rate</span> <span class="stat-content">{{ Math.round(institution["retentionFrshP"]) }}%</span></div>
       </div>
 
@@ -306,7 +311,7 @@
         <div>
           <div class="hello" ref="chartdiv"></div>
         </div>
-        <div class="ethnic-stats">
+        <div class="ethnic-stats d-none">
           <h3 class="text-center">Number of enrolled students</h3>
           <div class="three-by-three-stat-grid mt-4" style="max-width: 900px; margin: 0 auto;">
             <div class="stat-container">          
@@ -347,19 +352,6 @@
             </div>
           </div>
 
-        </div>
-      </div>
-      <div class="section-container mt-8">
-        <h2>Testing</h2>
-        <div class="stat-container mt-2">
-          <span class="stat-label">Policy</span> 
-          <span v-if="institution['adTestPolicyT'] !== 'null'" class="stat-content">{{ institution["adTestPolicyT"]?.toLocaleString() || '—' }}</span>
-          <span v-if="institution['adTestPolicyT'] == 'null'" class="stat-content">—</span>
-        </div>
-
-        <div class="multiple-stat-container mt-4">
-          <div class="stat-container"><span class="stat-label">SAT 50th%ile</span> <span class="stat-content">{{ institution["sat1CompMean"]?.toLocaleString() || '—' }}</span></div>
-          <div class="stat-container"><span class="stat-label">ACT 50th%ile</span> <span class="stat-content">{{ institution["actMean"]?.toLocaleString() || '—' }}</span></div>
         </div>
       </div>
       <div class="section-container mt-8">
