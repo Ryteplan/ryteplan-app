@@ -644,6 +644,7 @@ export default {
     display: grid;
     grid-template-columns: 2fr 1fr;
     row-gap: 24px;
+    align-content: end;
   }
 
   .two-by-two-grid {
@@ -676,6 +677,7 @@ export default {
   .stat-container {
     display: flex;
     flex-direction: column;
+    justify-content: flex-end;
   }
 
   .stat-label {
