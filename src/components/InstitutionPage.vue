@@ -132,6 +132,85 @@
 
       </div>
 
+      <h2 class="mt-8">Admission Consideration Factors</h2>        
+      <div class="section-container three-by-three-stat-grid mt-4">
+        <div class="stat-container">
+          <span class="stat-label">extracurricular activities</span>
+          <span class="stat-content">{{ institution["activ"]?.toLocaleString() || '—' }}</span>
+        </div>
+        <div class="stat-container">
+          <span class="stat-label">alumni/ae relation</span>
+          <span class="stat-content">{{ institution["alum"]?.toLocaleString() || '—' }}</span>
+        </div>
+        <div class="stat-container">
+          <span class="stat-label">character/personal qualities</span>
+          <span class="stat-content">{{ institution["char"]?.toLocaleString() || '—' }}</span>
+        </div>
+        <div class="stat-container">
+          <span class="stat-label">application essay</span>
+          <span class="stat-content">{{ institution["essay"]?.toLocaleString() || '—' }}</span>
+        </div>
+        <div class="stat-container">
+          <span class="stat-label">first generation</span>
+          <span class="stat-content">{{ institution["first"]?.toLocaleString() || '—' }}</span>
+        </div>
+        <div class="stat-container">
+          <span class="stat-label">geographical residence</span>
+          <span class="stat-content">{{ institution["geog"]?.toLocaleString() || '—' }}</span>
+        </div>
+        <div class="stat-container">
+          <span class="stat-label">academic GPA</span>
+          <span class="stat-content">{{ institution["gpa"]?.toLocaleString() || '—' }}</span>
+        </div>
+        <div class="stat-container">
+          <span class="stat-label">interview</span>
+          <span class="stat-content">{{ institution["iview"]?.toLocaleString() || '—' }}</span>
+        </div>
+        <div class="stat-container">
+          <span class="stat-label">racial/ethnic status</span>
+          <span class="stat-content">{{ institution["minor"]?.toLocaleString() || '—' }}</span>
+        </div>
+        <div class="stat-container">
+          <span class="stat-label">class rank</span>
+          <span class="stat-content">{{ institution["rank"]?.toLocaleString() || '—' }}</span>
+        </div>
+        <div class="stat-container">
+          <span class="stat-label">recommendation(s)</span>
+          <span class="stat-content">{{ institution["recom"]?.toLocaleString() || '—' }}</span>
+        </div>
+        <div class="stat-container">
+          <span class="stat-label">religious affiliation/commitment</span>
+          <span class="stat-content">{{ institution["relig"]?.toLocaleString() || '—' }}</span>
+        </div>
+        <div class="stat-container">
+          <span class="stat-label">rigor of secondary school record</span>
+          <span class="stat-content">{{ institution["rigor"]?.toLocaleString() || '—' }}</span>
+        </div>
+        <div class="stat-container">
+          <span class="stat-label">state residency</span>
+          <span class="stat-content">{{ institution["state"]?.toLocaleString() || '—' }}</span>
+        </div>
+        <div class="stat-container">
+          <span class="stat-label">talent/ability</span>
+          <span class="stat-content">{{ institution["talnt"]?.toLocaleString() || '—' }}</span>
+        </div>
+        <div class="stat-container">
+          <span class="stat-label">standardized test scores</span>
+          <span class="stat-content">{{ institution["tstsc"]?.toLocaleString() || '—' }}</span>
+        </div>
+        <div class="stat-container">
+          <span class="stat-label">volunteer work</span>
+          <span class="stat-content">{{ institution["volun"]?.toLocaleString() || '—' }}</span>
+        </div>
+        <div class="stat-container">
+          <span class="stat-label">level of applicant's interest</span>
+          <span class="stat-content">{{ institution["apint"]?.toLocaleString() || '—' }}</span>
+        </div>
+        <div class="stat-container">
+          <span class="stat-label">work experience</span>
+          <span class="stat-content">{{ institution["work"]?.toLocaleString() || '—' }}</span>
+        </div>
+      </div>
       <div class="section-container descriptions-container mt-8">
         <v-expansion-panels>
           <v-expansion-panel :value="0">
@@ -222,7 +301,7 @@
       </div>
 
       <div class="section-container" style="margin-top: 80px;">
-        <h2>Student Ethnicity (Freshman only?)</h2>
+        <h2>Student Ethnicity</h2>
         <div>
           <div class="hello" ref="chartdiv"></div>
         </div>
