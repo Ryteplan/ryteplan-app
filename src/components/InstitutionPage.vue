@@ -142,8 +142,6 @@
         <div class="stat-container"><span class="stat-label">SAT/ACT Considered</span> <span class="stat-content">{{ institution["satActConsidered"]?.toLocaleString() || '—' }}</span></div>
 
         <div class="stat-container"><span class="stat-label">SAT/ACT Not Considered</span> <span class="stat-content">{{ institution["admsNotUsed"]?.toLocaleString() || '—' }}</span></div>
-
-
       </div>
 
       <div class="section-container mt-8">
@@ -151,34 +149,40 @@
         <div class="three-by-three-stat-grid mt-4">
           <div class="stat-container">
           <span class="stat-label">Regular Decision</span>
-          <span class="stat-content">{{ institution["apDlFrshMon"]?.toLocaleString() || '—' }}</span>
-          <span class="stat-content">{{ institution["apDlFrshDay"]?.toLocaleString() || '—' }}</span>
+          <span class="stat-content">
+            {{ new Date(1970, institution["apDlFrshMon"] - 1, 1).toLocaleString('default', { month: 'long' }) || '—' }}
+            {{ institution["apDlFrshDay"]?.toLocaleString() || '—' }}</span>
         </div>
         <div class="stat-container">
           <span class="stat-label">Early Decision</span>
-          <span class="stat-content">{{ institution["apDlEdec_1Day"]?.toLocaleString() || '—' }}</span>
-          <span class="stat-content">{{ institution["apDlEdec_1Mon"]?.toLocaleString() || '—' }}</span>
+          <span class="stat-content">
+            {{ new Date(1970, institution["apDlEdec_1Mon"] - 1, 1).toLocaleString('default', { month: 'long' }) || '—' }}
+            {{ institution["apDlEdec_1Day"]?.toLocaleString() || '—' }}
+          </span>
         </div>
         <div class="stat-container">
           <span class="stat-label">Early Decision 2</span>
-          <span class="stat-content">{{ institution["apDlEdec_2Day"]?.toLocaleString() || '—' }}</span>
-          <span class="stat-content">{{ institution["apDlEdec_2Mon"]?.toLocaleString() || '—' }}</span>
+          <span class="stat-content">
+            {{ new Date(1970, institution["apDlEdec_2Mon"] - 1, 1).toLocaleString('default', { month: 'long' }) || '—' }}
+            {{ institution["apDlEdec_2Day"]?.toLocaleString() || '—' }}
+          </span>
         </div>
         <div class="stat-container">
           <span class="stat-label">Early Action</span>
-          <span class="stat-content">{{ institution["apDlEactDay"]?.toLocaleString() || '—' }}</span>
-          <span class="stat-content">{{ institution["apDlEactMon"]?.toLocaleString() || '—' }}</span>
+          <span class="stat-content">
+            {{ new Date(1970, institution["apDlEactMon"] - 1, 1).toLocaleString('default', { month: 'long' }) || '—' }}
+            {{ institution["apDlEactDay"]?.toLocaleString() || '—' }}
+          </span>
         </div>
         <div class="stat-container">
           <span class="stat-label">Fall Freshman Priority</span>
-          <span class="stat-content">{{ institution["apDlPrioDay"]?.toLocaleString() || '—' }}</span>
-          <span class="stat-content">{{ institution["apDlPrioMon"]?.toLocaleString() || '—' }}</span>
-        </div>
+            <span class="stat-content">
+              {{ new Date(1970, institution["apDlPrioMon"] - 1, 1).toLocaleString('default', { month: 'long' }) || '—' }}
+              {{ institution["apDlPrioDay"]?.toLocaleString() || '—' }}
+            </span>
+          </div>
         </div>
       </div>
-
-
-
       <div class="section-container mt-4">
         <h2>Admission Consideration Factors</h2>        
         <div class="three-by-three-stat-grid mt-4">
