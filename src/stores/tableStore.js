@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
 import { dbFireStore } from "../firebase";
 import { collection, getDocs } from 'firebase/firestore'
-import {  compress, decompress } from 'lz-string'
 
 
 export const useTableStore = defineStore('table', {
@@ -29,13 +28,13 @@ export const useTableStore = defineStore('table', {
     async fetchTableData() {
       if (localStorage.getItem("institutionTable")) {
         console.log("fetch table data from local storage")
-        let decompressedTableData = decompress(localStorage.getItem("institutionTable"));
-        this.tableData = JSON.parse(decompressedTableData);
+        // let decompressedTableData = decompress(localStorage.getItem("institutionTable"));
+        this.tableData = JSON.parse(localStorage.getItem("institutionTable"));
         this.loading = false;
       } else {
         try {
           this.loading = true;
-          const institutions = collection(dbFireStore, 'institutions_v5');
+          const institutions = collection(dbFireStore, 'institutions_v6');
           const docSnap = await getDocs(institutions);
           this.tableData = docSnap.docs.map(doc=>({...doc.data(), id:doc.id}));
           this.loading = false;
@@ -45,8 +44,8 @@ export const useTableStore = defineStore('table', {
       }
     },
     saveTableDataToLS() {
-      let compressedTableData = compress(JSON.stringify(this.tableData));
-      localStorage.setItem("institutionTable", compressedTableData);
+      // let compressedTableData = compress(JSON.stringify(this.tableData));
+      // localStorage.setItem("institutionTable", compressedTableData);
     },
     filteredTableData(){
       return this.tableData.filter(d => {
