@@ -20,7 +20,7 @@
             <v-col cols="12" md="3">
               <v-text-field
                 v-model="tableStore.searchInput"
-                label="Search Institutions"
+                label="Search By Name"
                 append-inner-icon="mdi-magnify"
                 density="compact"
                 variant="solo"

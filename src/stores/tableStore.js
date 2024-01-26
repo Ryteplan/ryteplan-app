@@ -27,7 +27,6 @@ export const useTableStore = defineStore('table', {
   actions: {
     async fetchTableData() {
       if (localStorage.getItem("institutionTable")) {
-        console.log("fetch table data from local storage")
         this.tableData = JSON.parse(localStorage.getItem("institutionTable"));
         this.loading = false;
       } else {
