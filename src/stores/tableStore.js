@@ -28,7 +28,6 @@ export const useTableStore = defineStore('table', {
     async fetchTableData() {
       if (localStorage.getItem("institutionTable")) {
         console.log("fetch table data from local storage")
-        // let decompressedTableData = decompress(localStorage.getItem("institutionTable"));
         this.tableData = JSON.parse(localStorage.getItem("institutionTable"));
         this.loading = false;
       } else {
@@ -44,7 +43,6 @@ export const useTableStore = defineStore('table', {
       }
     },
     saveTableDataToLS() {
-      // let compressedTableData = compress(JSON.stringify(this.tableData));
       // localStorage.setItem("institutionTable", compressedTableData);
     },
     filteredTableData(){
