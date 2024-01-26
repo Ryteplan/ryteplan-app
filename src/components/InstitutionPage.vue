@@ -3,7 +3,7 @@
     <div style="margin: 0 auto 64px; max-width: 1200px;">
       <v-row class="d-flex justify-space-between mt-0">
         <v-col cols="12" md="6">
-          <span class="d-block">{{ institution["inunId"] }}</span>
+          <span class="d-none">{{ institution["inunId"] }}</span>
           <h1 class="text-h6">{{ institution["name"] }}</h1>
           <span class="d-block" style="font-weight: 500;">{{ descriptions.tagline }}</span>
         </v-col>
@@ -117,13 +117,6 @@
           </div>
         </div>
 
-        <div class="multiple-stat-container">
-          <div class="stat-container"><span class="stat-label">SAT 50th%ile</span> <span class="stat-content">{{ institution["sat1CompMean"] || '—' }}</span></div>
-          <div class="stat-container"><span class="stat-label">ACT 50th%ile</span> <span class="stat-content">{{ institution["actComp50thP"]?.toLocaleString() || '—' }}</span></div>
-        </div>
-
-        <div class="stat-container"><span class="stat-label">Average GPA </span> <span class="stat-content">{{ institution["frshGpa"]?.toLocaleString() || '—' }}</span></div>
-
         <div class="stat-container">
           <span class="stat-label">Religious </span> 
           <span v-if="institution['denomDesc'] !== 'null'" class="stat-content">{{ institution["denomDesc"] }}</span> 
@@ -131,11 +124,25 @@
           <span v-if="institution['denomDesc'] == 'null' && institution['afilDesc'] == 'null'" class="stat-content">—</span>
         </div>
 
-
         <div class="multiple-stat-container">
           <div class="stat-container"><span class="stat-label">HBCU</span> <span class="stat-content">{{ institution["hbcu"] }}Coming Soon</span></div>
           <div class="stat-container"><span class="stat-label">Tribal</span> <span class="stat-content">{{ institution["tribal"] }}Coming Soon</span></div>
         </div>
+
+        <div class="stat-container"><span class="stat-label">Average GPA </span> <span class="stat-content">{{ institution["frshGpa"]?.toLocaleString() || '—' }}</span></div>
+
+        <div class="multiple-stat-container">
+          <div class="stat-container"><span class="stat-label">SAT 50th%ile</span> <span class="stat-content">{{ institution["sat1CompMean"] || '—' }}</span></div>
+          <div class="stat-container"><span class="stat-label">ACT 50th%ile</span> <span class="stat-content">{{ institution["actComp50thP"]?.toLocaleString() || '—' }}</span></div>
+        </div>
+
+
+        <div class="stat-container"><span class="stat-label">SAT or ACT Required</span> <span class="stat-content">{{ institution["admsReq"]?.toLocaleString() || '—' }}</span></div>
+
+        <div class="stat-container"><span class="stat-label">SAT/ACT Considered</span> <span class="stat-content">{{ institution["satActConsidered"]?.toLocaleString() || '—' }}</span></div>
+
+        <div class="stat-container"><span class="stat-label">SAT/ACT Not Considered</span> <span class="stat-content">{{ institution["admsNotUsed"]?.toLocaleString() || '—' }}</span></div>
+
 
       </div>
 
@@ -458,7 +465,7 @@ export default {
   methods: {
     async loadInstitutionData() {
       const slugFromURL = this.$route.params.slug;
-      const institutions = collection(dbFireStore, 'institutions_v5');
+      const institutions = collection(dbFireStore, 'institutions_v6');
       const q = query(institutions, where("uri", "==", slugFromURL));
       const docSnap = await getDocs(q);
       docSnap.forEach((doc) => {
