@@ -110,7 +110,7 @@
         </div>
         
         <div class="d-flex flex-column">
-            <span class="d-block">Full Time Undergrad Gender</span>
+            <span class="d-block">Full Time Undergrad</span>
             <div class="multiple-stat-container d-flex flex-row">
               <div class="stat-container"><span class="stat-label">Men</span> <span class="stat-content">{{ institution["enTotFtMenN"]?.toLocaleString() || '—' }}</span></div>
               <div class="stat-container"><span class="stat-label">Women</span> <span class="stat-content">{{ institution["enTotFtWmnN"]?.toLocaleString() || '—' }}</span></div>
