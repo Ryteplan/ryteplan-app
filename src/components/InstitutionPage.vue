@@ -96,7 +96,7 @@
         
         <div class="stat-container">
           <span class="stat-label">Admission Difficulty</span>
-          <span class="stat-content">{{ institution["adDiffAll"]?.toLocaleString() || '—' }}</span>
+          <span class="stat-content">{{ toTitleCase(institution["adDiffAll"]?.toLocaleString() || '—') }}</span>
         </div>
 
         <div class="stat-container">
@@ -401,19 +401,25 @@
 
         </div>
       </div>
-      <div class="section-container mt-8">
-        <h2>Majors/Fields of Study</h2>
-          <v-list v-if="majors !== null">
-            <div class="three-by-three-stat-grid">
-              <v-list-item 
-                  v-for="major in majors" 
-                  :key="major"
-                >
-                <p>{{ major }}</p>
-              </v-list-item>
-            </div>
-          </v-list>
-      </div>
+      <v-expansion-panels class="mt-8">
+        <v-expansion-panel :value="0">
+          <v-expansion-panel-title>
+            <h3>Majors/Fields of Study</h3>
+          </v-expansion-panel-title>
+          <v-expansion-panel-text>
+            <v-list v-if="majors !== null">
+              <div class="three-by-three-stat-grid">
+                <v-list-item 
+                    v-for="major in majors" 
+                    :key="major"
+                  >
+                  <p>{{ toTitleCase(major) }}</p>
+                </v-list-item>
+              </div>
+            </v-list>
+          </v-expansion-panel-text>
+        </v-expansion-panel>
+      </v-expansion-panels>
       <div class="section-container mt-8">
         <h2>Sports</h2>
         <div class="flex">
@@ -512,7 +518,10 @@ export default {
         this.institutionId = doc.id;
         this.institution = doc.data();
         this.majors = this.institution.acadProgDesc.split(',');
-        this.majors.sort();
+        this.majors = this.majors.map(major => major.trimStart());
+        this.majors.sort((a, b) => a.localeCompare(b));
+        this.majors = this.majors.map(major => major.replace(/\//g, ' and '));
+        this.majors = this.majors.map(major => this.toTitleCase(major));
       });
       this.getImages();
       this.getDescriptions();
@@ -627,6 +636,11 @@ export default {
         ]);
 
       series.appear(1000, 100);
+    },
+    toTitleCase(str) {
+      return str.replace(/\w\S*/g, function(txt){
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+      });
     }
   },
   components: {
@@ -724,7 +738,6 @@ export default {
   .stat-container {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
   }
 
   .stat-label {

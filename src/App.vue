@@ -2,7 +2,11 @@
   <v-layout class="app-container">
     <v-app-bar class="elevation-1">
       <div class="d-flex justify-between align-center ma-auto w-100 px-3 px-lg-0" style="max-width: 1200px;">
-        <v-toolbar-title class="logo"><a href="/" class="logo">RytePlan</a></v-toolbar-title>
+        <v-toolbar-title class="logo">
+          <a href="/" class="logo">
+            RytePlan
+          </a>
+        </v-toolbar-title>
         <div v-if="!isLoggedIn">
           <v-btn 
             :to="{name: 'login', query: { tabDestination: 'Sign Up' }}"
