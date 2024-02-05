@@ -420,44 +420,48 @@
           </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
-      <div class="section-container mt-8">
-        <h2>Sports</h2>
-        <div class="flex">
-          <div class="flex" style="gap: 20px">
-            <h3 class="mt-3">Associations</h3>
-            <div class="multiple-stat-container mt-2">
-              <div class="stat-container">
-                <span class="stat-label">NCAA*</span> 
-                <span class="stat-content">{{ institution["assnAthlNcaa"]?.toLocaleString() || '—' }}</span>
-              </div>
+      <v-expansion-panels class="mt-8">
+        <v-expansion-panel :value="0">
+          <v-expansion-panel-title>
+            <h3>Sports</h3>
+          </v-expansion-panel-title>
+          <v-expansion-panel-text>
+            
+            <div class="flex">
+              <div class="flex d-none" style="gap: 20px">
+                <h3 class="mt-3">Associations</h3>
+                <div class="multiple-stat-container mt-2">
+                  <div class="stat-container">
+                    <span class="stat-label">NCAA*</span> 
+                    <span class="stat-content">{{ institution["assnAthlNcaa"]?.toLocaleString() || '—' }}</span>
+                  </div>
 
-                <div class="stat-container">
-                <span class="stat-label">NCCAA</span> 
-                <span class="stat-content">{{ institution["assnAthlNccaa"]?.toLocaleString() || '—' }}</span>
-              </div>
-                
-              <div class="stat-container">
-                <span class="stat-label">NAIA</span> 
-                <span class="stat-content">{{ institution["assnAthlNaia"]?.toLocaleString() || '—' }}</span>
+                    <div class="stat-container">
+                    <span class="stat-label">NCCAA</span> 
+                    <span class="stat-content">{{ institution["assnAthlNccaa"]?.toLocaleString() || '—' }}</span>
+                  </div>
+                    
+                  <div class="stat-container">
+                    <span class="stat-label">NAIA</span> 
+                    <span class="stat-content">{{ institution["assnAthlNaia"]?.toLocaleString() || '—' }}</span>
+                  </div>
+                </div>
               </div>
             </div>
-            <p style="font-style: italic; font-size: 14px;">* 1 = Division 1; 2 = Division 2; 3 = Division 3;</p>
-          </div>
-        </div>
+            <p class="mt-4" style="font-style: italic; font-size: 14px;">* 1 = Division 1; 2 = Division 2; 3 = Division 3; A = NCAA Division 1-A; B = NCAA Division 1-AA; C = intercollegiate club teams; 
+            </p>
+            <v-data-table 
+              v-if="sports !== null"
+              :headers="sportsHeaders"
+              :items="sports"
+              :items-per-page="-1"
+            >
+              <template #bottom></template>
+            </v-data-table>            
 
-        <h3 class="mt-6">All sport offerings</h3>
-        <v-data-table 
-          v-if="sports !== null"
-          :headers="sportsHeaders"
-          :items="sports"
-          :items-per-page="-1"
-        >
-          <template #bottom></template>
-        </v-data-table>
-        <p class="mt-4" style="font-style: italic; font-size: 14px;">* 1 = Division 1; 2 = Division 2; 3 = Division 3; A = NCAA Division 1-A; B = NCAA Division 1-AA; C = intercollegiate club teams; 
-        </p>
-      </div>
-
+          </v-expansion-panel-text>
+        </v-expansion-panel>
+      </v-expansion-panels>
     </div>
     <SaveToListDialog 
       v-model="showSaveToListDialog" 
@@ -545,6 +549,13 @@ export default {
       docSnap.forEach((doc) => {
         sportsArray.push(doc.data());
       });
+      sportsArray = sportsArray.map(sport => {
+        sport.descr = this.toTitleCase(sport.descr);
+        return sport;
+      });
+
+      sportsArray.sort((a, b) => a.descr.localeCompare(b.descr));
+
       this.sports = sportsArray;
     },
     async getImages() {
