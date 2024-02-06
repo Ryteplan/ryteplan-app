@@ -61,7 +61,7 @@
         <div class="stat-container">
           <span class="stat-label">Undergraduate Enrollment</span>
           <span class="stat-content">
-            <span class="d-block">{{ (institution["enTotFtMenN"]) + (institution["enTotPtMenN"]) + institution["enTotFtWmnN"] + institution["enTotPtWmnN"] }}</span>
+            <span class="d-block">{{ ((institution["enTotFtMenN"]) + (institution["enTotPtMenN"]) + institution["enTotFtWmnN"] + institution["enTotPtWmnN"]).toLocaleString() }}</span>
             <div class="d-none">
               =
               <span class="d-block">Men FT - {{ institution["enTotFtMenN"]?.toLocaleString() || '—' }}</span>
@@ -78,7 +78,7 @@
         <div class="stat-container">
           <span class="stat-label">Graduate Enrollment</span> 
           <span class="stat-content">
-            <span class="d-block">{{ (institution["enGradFtMenN"]) + (institution["enGradPtMen"]) + institution["enGradFtWmnN"] + institution["enGradPtWmnN"] }}</span>
+            <span class="d-block">{{ ((institution["enGradFtMenN"]) + (institution["enGradPtMen"]) + institution["enGradFtWmnN"] + institution["enGradPtWmnN"]).toLocaleString() }}</span>
             <div class="d-none">
               =
               <span class="d-block">Men FT - {{ institution["enGradFtMenN"]?.toLocaleString() || '—' }}</span>
