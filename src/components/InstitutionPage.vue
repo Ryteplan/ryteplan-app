@@ -427,29 +427,37 @@
           </v-expansion-panel-title>
           <v-expansion-panel-text>
             
-            <div class="flex">
-              <div class="flex d-none" style="gap: 20px">
+            <div class="d-flex flex-column">
+              <div class="flex">
                 <h3 class="mt-3">Associations</h3>
                 <div class="multiple-stat-container mt-2">
                   <div class="stat-container">
                     <span class="stat-label">NCAA*</span> 
-                    <span class="stat-content">{{ institution["assnAthlNcaa"]?.toLocaleString() || '—' }}</span>
+                    <span class="stat-content">{{ institution["assnAthlNcaa"] === 'NULL' || institution["assnAthlNcaa"] === 'FALSE' ? '—' : institution["assnAthlNcaa"].toLocaleString() }}</span>
                   </div>
 
                     <div class="stat-container">
                     <span class="stat-label">NCCAA</span> 
-                    <span class="stat-content">{{ institution["assnAthlNccaa"]?.toLocaleString() || '—' }}</span>
+                    <span class="stat-content">{{ institution["assnAthlNccaa"] === 'NULL' || institution["assnAthlNccaa"] === 'FALSE' ? '—' : institution["assnAthlNccaa"].toLocaleString() }}</span>
                   </div>
                     
                   <div class="stat-container">
                     <span class="stat-label">NAIA</span> 
-                    <span class="stat-content">{{ institution["assnAthlNaia"]?.toLocaleString() || '—' }}</span>
+                    <span class="stat-content">{{ institution["assnAthlNaia"] === 'NULL' || institution["assnAthlNaia"] === 'FALSE' ? '—' : institution["assnAthlNccaa"].toLocaleString() }}</span>
                   </div>
                 </div>
               </div>
+              <div class="mt-4 d-flex" style="font-size: 12px; gap: 16px;">
+                  <span>1 = Division 1</span>
+                  <span>2 = Division 2</span>
+                  <span>3 = Division 3</span>
+                  <span>A = Division 1-A</span>
+                  <span>B = Division 1-AA</span>
+                  <span>C = Club teams</span>
+                  <span>X = Yes</span>
+                </div>
+
             </div>
-            <p class="mt-4" style="font-style: italic; font-size: 14px;">* 1 = Division 1; 2 = Division 2; 3 = Division 3; A = NCAA Division 1-A; B = NCAA Division 1-AA; C = intercollegiate club teams; 
-            </p>
             <v-data-table 
               v-if="sports !== null"
               :headers="sportsHeaders"
@@ -567,7 +575,7 @@ export default {
       // const response = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${institutionSearchString}&num=5`);
       // const data = await response.json();
 
-      const arialCampusSearchString = encodeURIComponent(this.institution["name"]) + " students on campus faces photograph -source -text";
+      const arialCampusSearchString = encodeURIComponent(this.institution["name"]) + " campus -source -text -getty";
       const arialCampusResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${arialCampusSearchString}&num=1`);
       const arialCampusData = await arialCampusResponse.json();
       dataArray.push(arialCampusData);
@@ -577,7 +585,7 @@ export default {
       const buildingOnCampusData = await buildingOnCampusResponse.json();
       dataArray.push(buildingOnCampusData);
 
-      const surroundingAreaOrNeighborhoodSearchString = encodeURIComponent(this.institution["name"]) + " dining hall or cafe or restaurant";
+      const surroundingAreaOrNeighborhoodSearchString = encodeURIComponent(this.institution["name"]) + " student union cafe";
       const surroundingAreaOrNeighborhoodResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${surroundingAreaOrNeighborhoodSearchString}&num=1`);
       const surroundingAreaOrNeighborhoodData = await surroundingAreaOrNeighborhoodResponse.json();
       dataArray.push(surroundingAreaOrNeighborhoodData);
@@ -593,8 +601,6 @@ export default {
       const athleticOrLiveGameData = await athleticOrLiveGameResponse.json();
 
       dataArray.push(athleticOrLiveGameData);
-
-      console.log(dataArray);
 
       this.imagesData = dataArray;
 
@@ -650,7 +656,7 @@ export default {
       // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Setting_data
       series.data.setAll([
       {
-          category: "nonresident aliens",
+          category: "International",
           value: this.institution.en1stNonresAlien1stN
         }, 
         {
@@ -666,7 +672,7 @@ export default {
           value: this.institution.en1stHispanicEthnicityN
         }, 
         {
-          category: "Native Hawaiian or Other Pacific Islander",
+          category: "Native Hawaiian \n or Other Pacific Islander",
           value: this.institution.en1stIslanderNonhispanicN
         }, 
         {
@@ -674,7 +680,7 @@ export default {
           value: this.institution.en1stMultiraceNonhispanicN
         }, 
         {
-          category: "American Indian or Alaska Native",
+          category: "American Indian \n or Alaska Native",
           value: this.institution.en1stNativeNonhispanicN
         }, 
         {
