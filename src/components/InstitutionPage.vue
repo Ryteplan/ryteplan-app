@@ -353,7 +353,7 @@
         <div class="stat-container"><span class="stat-label">Freshman Retention Rate</span> <span class="stat-content">{{ Math.round(institution["retentionFrshP"]) }}%</span></div>
       </div>
 
-      <div class="section-container" style="margin-top: 80px;">
+      <div class="section-container mt-8">
         <h2>Student Ethnicity</h2>
         <!-- <EthnicityChart :institutionData="this.institution"></EthnicityChart> -->
         <div class="ethnic-stats">
