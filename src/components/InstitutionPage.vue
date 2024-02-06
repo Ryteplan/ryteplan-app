@@ -355,10 +355,8 @@
 
       <div class="section-container" style="margin-top: 80px;">
         <h2>Student Ethnicity</h2>
-        <div>
-          <div class="hello" ref="chartdiv"></div>
-        </div>
-        <div class="ethnic-stats d-none">
+        <EthnicityChart :institutionData="this.institution"></EthnicityChart>
+        <div class="ethnic-stats">
           <h3 class="text-center">Number of enrolled students</h3>
           <div class="three-by-three-stat-grid mt-4" style="max-width: 900px; margin: 0 auto;">
             <div class="stat-container">          
@@ -483,10 +481,7 @@ import { dbFireStore } from "../firebase";
 import { collection, query, where, getDocs } from 'firebase/firestore'
 import SaveToListDialog from './SaveToListDialog'
 
-import * as am5 from '@amcharts/amcharts5';
-import * as am5percent from "@amcharts/amcharts5/percent";
-import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
-
+import EthnicityChart from './EthnicityChart.vue';
 
 export default {
   setup() {
@@ -539,7 +534,6 @@ export default {
       this.getImages();
       this.getDescriptions();
       this.getSports();
-      this.makeEthnicityGraph();
     },
     async getDescriptions() {
       const slugFromURL = this.$route.params.slug;
@@ -569,6 +563,8 @@ export default {
     },
     async getImages() {
 
+
+  
       let dataArray = [];
 
       // const institutionSearchString = encodeURIComponent(this.institution["name"]) + " campus -logo";
@@ -619,82 +615,6 @@ export default {
       const percentage = Math.round(input * 100);
       return percentage;
     },
-    async makeEthnicityGraph() {
-
-      let root = am5.Root.new(this.$refs.chartdiv);
-      root._logo.dispose();
-      root.setThemes([am5themes_Animated.new(root)]);
-
-      // Create chart
-      // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/
-      var chart = root.container.children.push(
-        am5percent.PieChart.new(root, {
-          startAngle: 180,
-          endAngle: 360,
-          layout: root.verticalLayout,
-          innerRadius: am5.percent(50)
-        })
-      );
-
-      // Create series
-      // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Series
-      var series = chart.series.push(
-        am5percent.PieSeries.new(root, {
-          valueField: "value",
-          categoryField: "category",
-          startAngle: 180,
-          endAngle: 360,
-          alignLabels: true
-        })
-      );
-
-      series.states.create("hidden", {
-        endAngle: -90
-      });
-
-      // Set data
-      // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Setting_data
-      series.data.setAll([
-      {
-          category: "International",
-          value: this.institution.en1stNonresAlien1stN
-        }, 
-        {
-          category: "Asian",
-          value: this.institution.en1stAsianNonhispanicN
-        }, 
-        {
-          category: "Black",
-          value: this.institution.en1stBlackNonhispanicN
-        }, 
-        {
-          category: "Hispanic",
-          value: this.institution.en1stHispanicEthnicityN
-        }, 
-        {
-          category: "Native Hawaiian \n or Other Pacific Islander",
-          value: this.institution.en1stIslanderNonhispanicN
-        }, 
-        {
-          category: "Multirace",
-          value: this.institution.en1stMultiraceNonhispanicN
-        }, 
-        {
-          category: "American Indian \n or Alaska Native",
-          value: this.institution.en1stNativeNonhispanicN
-        }, 
-        {
-          category: "Unknown",
-          value: this.institution.en1stRaceEthnicityUnknwnN
-        }, 
-        {
-          category: "White",
-          value: this.institution.en1stWhiteNonhispanicN
-        }, 
-        ]);
-
-      series.appear(1000, 100);
-    },
     toTitleCase(str) {
       return str.replace(/\w\S*/g, function(txt){
         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
@@ -702,6 +622,7 @@ export default {
     }
   },
   components: {
+    EthnicityChart,
     SaveToListDialog
   }
 };
@@ -709,12 +630,6 @@ export default {
 </script>
 
 <style>
-  .hello {
-    width: 100%;
-    height: 400px;
-    margin: 0 auto;
-  }
-
   ul {
     list-style: none;
   }
