@@ -357,7 +357,6 @@
         <h2>Student Ethnicity</h2>
         <!-- <EthnicityChart :institutionData="this.institution"></EthnicityChart> -->
         <div class="ethnic-stats">
-          <h3 class="text-center">Number of enrolled students</h3>
           <div class="three-by-three-stat-grid mt-4" style="max-width: 900px; margin: 0 auto;">
             <div class="stat-container">          
               <span class="stat-label">International</span>
@@ -808,9 +807,7 @@ export default {
   }
 
   .ethnic-stats {
-    background: #f1f1f1;
     padding: 24px;
-    border-radius: 24px;
     
     .stat-container {
       text-align: center;
