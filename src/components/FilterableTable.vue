@@ -227,7 +227,6 @@ export default {
   mounted() {
     this.$watch('tableStore.loading', (loadingState) => {
       if (loadingState === false) {
-        this.tableStore.saveTableDataToLS();
         setTimeout(() => {
           const dataTable = document.querySelector("#dataTable .v-table__wrapper");
           dataTable.addEventListener("scroll", this.onScroll, true);

@@ -24,24 +24,62 @@ export const useTableStore = defineStore('table', {
       sortBy: [{ key: 'name', order: 'asc' }],
   }),
   actions: {
-    async fetchTableData() {
-      if (localStorage.getItem("institutionTable")) {
-        this.tableData = JSON.parse(localStorage.getItem("institutionTable"));
-        this.loading = false;
-      } else {
-        try {
-          this.loading = true;
-          const institutions = collection(dbFireStore, 'institutions_v6');
-          const docSnap = await getDocs(institutions);
-          this.tableData = docSnap.docs.map(doc=>({...doc.data(), id:doc.id}));
-          this.loading = false;
-        } catch (error) {
-          console.error('Error fetching table data:', error);
-        }
-      }
+    async openIndexedDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open('MyDatabase', 1);
+
+        request.onerror = (event) => {
+          console.error("IndexedDB error:", event.target.error);
+          reject(event.target.error);
+        };
+
+        request.onupgradeneeded = (event) => {
+          const db = event.target.result;
+          if (!db.objectStoreNames.contains('institutions')) {
+            db.createObjectStore('institutions', { keyPath: 'id' });
+          }
+        };
+
+        request.onsuccess = (event) => {
+          resolve(event.target.result);
+        };
+      });
     },
-    saveTableDataToLS() {
-      // localStorage.setItem("institutionTable", compressedTableData);
+    async fetchTableData() {
+      this.loading = true;
+      try {
+        const db = await this.openIndexedDB();
+        const transaction = db.transaction(['institutions'], 'readonly');
+        const store = transaction.objectStore('institutions');
+        const getAllRequest = store.getAll();
+
+        getAllRequest.onsuccess = async () => {
+          if (getAllRequest.result.length > 0) {
+            // Data is available in IndexedDB
+            this.tableData = getAllRequest.result;
+            this.loading = false;
+          } else {
+            // Fetch from Firestore and store in IndexedDB
+            const institutions = collection(dbFireStore, 'institutions_v6');
+            const docSnap = await getDocs(institutions);
+
+            const transaction = db.transaction(['institutions'], 'readwrite');
+            const store = transaction.objectStore('institutions');
+            this.tableData = [];
+
+            docSnap.docs.forEach(doc => {
+              const data = { ...doc.data(), id: doc.id };
+              this.tableData.push(data);
+              store.add(data);
+            });
+
+            this.loading = false;
+          }
+        };
+      } catch (error) {
+        console.error('Error fetching table data:', error);
+        this.loading = false;
+      }
     },
     filteredTableData(){
       return this.tableData.filter(d => {
