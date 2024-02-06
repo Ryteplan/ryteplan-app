@@ -8,6 +8,7 @@
           </a>
         </v-toolbar-title>
         <v-text-field
+          v-if="$route.path !== '/'"
           class="d-none d-md-block mx-8"
           v-model="searchInput"
           label="Search By Name"
