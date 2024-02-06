@@ -499,6 +499,7 @@ export default {
       descriptions: {},
       institutionId: "",
       images: [],
+      imagesData: [],
       showSaveToListDialog: false,
       descriptionPanels: [],
       majors: [],
@@ -559,13 +560,53 @@ export default {
       this.sports = sportsArray;
     },
     async getImages() {
-      const institutionSearchString = encodeURIComponent(this.institution["name"]) + " campus -logo";
-      const response = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${institutionSearchString}&num=5`);
-      const data = await response.json();
+
+      let dataArray = [];
+
+      // const institutionSearchString = encodeURIComponent(this.institution["name"]) + " campus -logo";
+      // const response = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${institutionSearchString}&num=5`);
+      // const data = await response.json();
+
+      const arialCampusSearchString = encodeURIComponent(this.institution["name"]) + " campus scenery photograph -source -text";
+      const arialCampusResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${arialCampusSearchString}&num=1`);
+      const arialCampusData = await arialCampusResponse.json();
+      dataArray.push(arialCampusData);
+
+      const buildingOnCampusSearchString = encodeURIComponent(this.institution["name"]) + " office of bursar building";
+      const buildingOnCampusResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${buildingOnCampusSearchString}&num=1`);
+      const buildingOnCampusData = await buildingOnCampusResponse.json();
+      dataArray.push(buildingOnCampusData);
+
+      const surroundingAreaOrNeighborhoodSearchString = encodeURIComponent(this.institution["name"]) + " cafe or restaurant";
+      const surroundingAreaOrNeighborhoodResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${surroundingAreaOrNeighborhoodSearchString}&num=1`);
+      const surroundingAreaOrNeighborhoodData = await surroundingAreaOrNeighborhoodResponse.json();
+      dataArray.push(surroundingAreaOrNeighborhoodData);
+
+      const classroomInstructionSearchString = encodeURIComponent(this.institution["name"]) + " inside classroom photograph";
+      const classroomInstructionResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${classroomInstructionSearchString}&num=1`);
+      const classroomInstructionData = await classroomInstructionResponse.json();
+      dataArray.push(classroomInstructionData);
+
+
+      const athleticOrLiveGameSearchString = encodeURIComponent(this.institution["name"]) + " sports";
+      const athleticOrLiveGameResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${athleticOrLiveGameSearchString}&num=1`);
+      const athleticOrLiveGameData = await athleticOrLiveGameResponse.json();
+
+      dataArray.push(athleticOrLiveGameData);
+
+      console.log(dataArray);
+
+      this.imagesData = dataArray;
+
+      this.addImagesToLinkArray();
+    },
+    addImagesToLinkArray() {
       let linkArray = [];
-      for (const i in data.items) {
-        linkArray.push(data.items[i].link);
+
+      for (const i in this.imagesData) {
+        linkArray.push(this.imagesData[i].items[0].link);
       }
+
       this.images = linkArray;
     },
     returnPercent(input) {
