@@ -1,12 +1,24 @@
 <template>
   <v-layout class="app-container">
     <v-app-bar class="elevation-1">
-      <div class="header-container d-flex justify-between align-center ma-auto w-100 px-3 px-lg-0">
-        <v-toolbar-title class="logo">
+      <div class="header-container d-flex align-center justify-space-between ma-auto w-100 px-3 px-lg-0">
+        <v-toolbar-title class="logo" style="flex: none;">
           <a href="/" class="logo">
             RytePlan
           </a>
         </v-toolbar-title>
+        <v-text-field
+          class="d-none d-md-block mx-8"
+          v-model="searchInput"
+          label="Search By Name"
+          append-inner-icon="mdi-magnify"
+          density="compact"
+          variant="solo"
+          single-line
+          hide-details
+          clearable
+          @keydown.enter="performSearch"
+        ></v-text-field>
         <div v-if="!isLoggedIn">
           <v-btn 
             :to="{name: 'login', query: { tabDestination: 'Sign Up' }}"
@@ -96,6 +108,17 @@ export default {
       signOut(auth).then(() =>{
         this.$router.push("/");
       })
+    },
+    performSearch() {
+      const searchQuery = encodeURIComponent(this.searchInput.trim().toLowerCase());
+
+      let route = this.$router.resolve({ 
+        name: 'home',
+        query: { "search": searchQuery },
+      });
+
+      window.open(route.href, '_blank');
+
     }
   }
 };

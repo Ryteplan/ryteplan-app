@@ -567,7 +567,7 @@ export default {
       // const response = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${institutionSearchString}&num=5`);
       // const data = await response.json();
 
-      const arialCampusSearchString = encodeURIComponent(this.institution["name"]) + " campus scenery photograph -source -text";
+      const arialCampusSearchString = encodeURIComponent(this.institution["name"]) + " students on campus faces photograph -source -text";
       const arialCampusResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${arialCampusSearchString}&num=1`);
       const arialCampusData = await arialCampusResponse.json();
       dataArray.push(arialCampusData);
@@ -577,18 +577,18 @@ export default {
       const buildingOnCampusData = await buildingOnCampusResponse.json();
       dataArray.push(buildingOnCampusData);
 
-      const surroundingAreaOrNeighborhoodSearchString = encodeURIComponent(this.institution["name"]) + " cafe or restaurant";
+      const surroundingAreaOrNeighborhoodSearchString = encodeURIComponent(this.institution["name"]) + " dining hall or cafe or restaurant";
       const surroundingAreaOrNeighborhoodResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${surroundingAreaOrNeighborhoodSearchString}&num=1`);
       const surroundingAreaOrNeighborhoodData = await surroundingAreaOrNeighborhoodResponse.json();
       dataArray.push(surroundingAreaOrNeighborhoodData);
 
-      const classroomInstructionSearchString = encodeURIComponent(this.institution["name"]) + " inside classroom photograph";
+      const classroomInstructionSearchString = encodeURIComponent(this.institution["name"]) + " student classroom or lecture hall photograph";
       const classroomInstructionResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${classroomInstructionSearchString}&num=1`);
       const classroomInstructionData = await classroomInstructionResponse.json();
       dataArray.push(classroomInstructionData);
 
 
-      const athleticOrLiveGameSearchString = encodeURIComponent(this.institution["name"]) + " sports";
+      const athleticOrLiveGameSearchString = encodeURIComponent(this.institution["name"]) + " sports game";
       const athleticOrLiveGameResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${athleticOrLiveGameSearchString}&num=1`);
       const athleticOrLiveGameData = await athleticOrLiveGameResponse.json();
 

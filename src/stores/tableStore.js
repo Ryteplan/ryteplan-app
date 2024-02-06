@@ -7,7 +7,6 @@ export const useTableStore = defineStore('table', {
   state: () => ({
       loading: true,
       tableData: [],
-      filteredTableDataArray: [],
       filters: {
         State: [],
         Calendar: [],

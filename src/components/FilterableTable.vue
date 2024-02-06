@@ -324,6 +324,17 @@ export default {
       alert("Compare Clicked");
     },
   },
+  computed: {
+    searchQuery() {
+      return this.$route.query.search;
+    }
+  },
+  created() {
+    if (this.$route.query.search) {
+      this.tableStore.searchInput = this.$route.query.search;
+      this.tableStore.performSeach();
+    }
+  },
   components: {
     SaveToListDialog,
     ShareDialog
