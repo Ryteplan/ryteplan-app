@@ -355,48 +355,83 @@
 
       <div class="section-container" style="margin-top: 80px;">
         <h2>Student Ethnicity</h2>
-        <EthnicityChart :institutionData="this.institution"></EthnicityChart>
+        <!-- <EthnicityChart :institutionData="this.institution"></EthnicityChart> -->
         <div class="ethnic-stats">
           <h3 class="text-center">Number of enrolled students</h3>
           <div class="three-by-three-stat-grid mt-4" style="max-width: 900px; margin: 0 auto;">
             <div class="stat-container">          
-              <span class="stat-label">International</span> 
-              <span class="stat-content">{{ institution["enNonresAlienN"] }}</span>
+              <span class="stat-label">International</span>
+              <div>
+                <span class="stat-content">{{ institution["enNonresAlienN"] }}</span>
+                <span class="stat-content">—</span>
+                <span class="stat-content">{{ ((institution["enNonresAlienN"] / ethnicityPopulationTotal) * 100).toFixed(2) }}%</span>
+              </div>
             </div>
             <div class="stat-container">
-              <span class="stat-label">Asian</span> 
-              <span class="stat-content">{{ institution["enAsianNonhispanicN"] }}</span>
+              <span class="stat-label">Asian</span>
+              <div>
+                <span class="stat-content">{{ institution["enAsianNonhispanicN"] }}</span>
+                <span class="stat-content">—</span>
+                <span class="stat-content">{{ ((institution["enAsianNonhispanicN"] / ethnicityPopulationTotal) * 100).toFixed(2) }}%</span>
+              </div>
             </div>
             <div class="stat-container">
-              <span class="stat-label">Black</span> 
-              <span class="stat-content">{{ institution["enBlackNonhispanicN"] }}</span>
+              <span class="stat-label">Black</span>
+              <div>
+                <span class="stat-content">{{ institution["enBlackNonhispanicN"] }}</span>
+                <span class="stat-content">—</span>
+                <span class="stat-content">{{ ((institution["enBlackNonhispanicN"] / ethnicityPopulationTotal) * 100).toFixed(2) }}%</span>
+              </div>
             </div>
             <div class="stat-container">
-              <span class="stat-label">Hispanic</span> 
-              <span class="stat-content">{{ institution["enHispanicEthnicityN"] }}</span>
+              <span class="stat-label">Hispanic</span>
+              <div>
+                <span class="stat-content">{{ institution["enHispanicEthnicityN"] }}</span>
+                <span class="stat-content">—</span>
+                <span class="stat-content">{{ ((institution["enHispanicEthnicityN"] / ethnicityPopulationTotal) * 100).toFixed(2) }}%</span>
+              </div>
             </div>
             <div class="stat-container">
-              <span class="stat-label">Native Hawaiian or other Pacific Islander</span> 
-              <span class="stat-content">{{ institution["enIslanderNonhispanicN"] }}</span>
+              <span class="stat-label">Native Hawaiian or other Pacific Islander</span>
+              <div>
+                <span class="stat-content">{{ institution["enIslanderNonhispanicN"] }}</span>
+                <span class="stat-content">—</span>
+                <span class="stat-content">{{ ((institution["enIslanderNonhispanicN"] / ethnicityPopulationTotal) * 100).toFixed(2) }}%</span>
+              </div>
             </div>
             <div class="stat-container">
-              <span class="stat-label">Multirace</span> 
-              <span class="stat-content">{{ institution["enMultiraceNonhispanicN"] }}</span>
+              <span class="stat-label">Multirace</span>
+              <div>
+                <span class="stat-content">{{ institution["enMultiraceNonhispanicN"] }}</span>
+                <span class="stat-content">—</span>
+                <span class="stat-content">{{ ((institution["enMultiraceNonhispanicN"] / ethnicityPopulationTotal) * 100).toFixed(2) }}%</span>
+              </div>
             </div>
             <div class="stat-container">
-              <span class="stat-label">American Indian or Alaska Native</span> 
-              <span class="stat-content">{{ institution["enNativeNonhispanicN"] }}</span>
+              <span class="stat-label">American Indian or Alaska Native</span>
+              <div>
+                <span class="stat-content">{{ institution["enNativeNonhispanicN"] }}</span>
+                <span class="stat-content">—</span>
+                <span class="stat-content">{{ ((institution["enNativeNonhispanicN"] / ethnicityPopulationTotal) * 100).toFixed(2) }}%</span>
+              </div>
             </div>
             <div class="stat-container">
-              <span class="stat-label">Unknown</span> 
-              <span class="stat-content">{{ institution["enRaceEthnicityUnknownN"] }}</span>
+              <span class="stat-label">Unknown</span>
+              <div>
+                <span class="stat-content">{{ institution["enRaceEthnicityUnknownN"] }}</span>
+                <span class="stat-content">—</span>
+                <span class="stat-content">{{ ((institution["enRaceEthnicityUnknownN"] / ethnicityPopulationTotal) * 100).toFixed(2) }}%</span>
+              </div>
             </div>
             <div class="stat-container">
-              <span class="stat-label">White</span> 
-              <span class="stat-content">{{ institution["enWhiteNonhispanicN"] }}</span>
+              <span class="stat-label">White</span>
+              <div>
+                <span class="stat-content">{{ institution["enWhiteNonhispanicN"] }}</span>
+                <span class="stat-content">—</span>
+                <span class="stat-content">{{ ((institution["enWhiteNonhispanicN"] / ethnicityPopulationTotal) * 100).toFixed(2) }}%</span>
+              </div>
             </div>
           </div>
-
         </div>
       </div>
       <v-expansion-panels class="mt-8">
@@ -481,7 +516,7 @@ import { dbFireStore } from "../firebase";
 import { collection, query, where, getDocs } from 'firebase/firestore'
 import SaveToListDialog from './SaveToListDialog'
 
-import EthnicityChart from './EthnicityChart.vue';
+// import EthnicityChart from './EthnicityChart2.vue';
 
 export default {
   setup() {
@@ -508,12 +543,13 @@ export default {
       majors: [],
       sports: [],
       sportsHeaders: [
-      { title: 'Sport', key: 'descr', width: "300px" },
-      { title: 'Intramural Men', key: 'maxIntmMen', width: "200px" },
-      { title: 'Intramural Women', key: 'maxIntmWmn', width: "200px" },
-      { title: 'Intercollegiate Men', key: 'maxIntcMen', width: "200px" },
-      { title: 'Intercollegiate Women', key: 'maxIntcWmn', width: "250px" },
-      ]
+        { title: 'Sport', key: 'descr', width: "300px" },
+        { title: 'Intramural Men', key: 'maxIntmMen', width: "200px" },
+        { title: 'Intramural Women', key: 'maxIntmWmn', width: "200px" },
+        { title: 'Intercollegiate Men', key: 'maxIntcMen', width: "200px" },
+        { title: 'Intercollegiate Women', key: 'maxIntcWmn', width: "250px" },
+      ],
+      ethnicityPopulationTotal: 0,
     }
   },
   methods: {
@@ -534,6 +570,7 @@ export default {
       this.getImages();
       this.getDescriptions();
       this.getSports();
+      this.getEthnicityPopulationTotal();
     },
     async getDescriptions() {
       const slugFromURL = this.$route.params.slug;
@@ -619,10 +656,13 @@ export default {
       return str.replace(/\w\S*/g, function(txt){
         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
       });
+    },
+    getEthnicityPopulationTotal() {
+      this.ethnicityPopulationTotal = this.institution["enAsianNonhispanicN"] + this.institution["enBlackNonhispanicN"] + this.institution["enHispanicEthnicityN"] + this.institution["enIslanderNonhispanicN"] + this.institution["enMultiraceNonhispanicN"] + this.institution["enNativeNonhispanicN"] + this.institution["enRaceEthnicityUnknownN"] + this.institution["enWhiteNonhispanicN"];
     }
   },
   components: {
-    EthnicityChart,
+    // EthnicityChart,
     SaveToListDialog
   }
 };
