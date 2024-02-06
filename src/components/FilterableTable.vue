@@ -300,12 +300,14 @@ export default {
       localStorage.setItem("lastClickedRow", targetRowKey);
       const slug = JSON.parse(JSON.stringify(item.item.uri));
       
-      this.$router.push({ 
+      let route = this.$router.resolve({ 
         name: 'institutionPage', 
         params: { 
           slug: slug,
         } 
-      })
+      });
+
+      window.open(route.href, '_blank');
     },
     onUpdateMenu(open) {
       if (open) {
@@ -330,10 +332,6 @@ export default {
 </script>
 
 <style>
-
-.browse-institution-table-container {
-  max-width: 1200px;
-}
 
 #dataTable {
   border-radius: 8px;
