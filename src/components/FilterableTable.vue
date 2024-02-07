@@ -330,7 +330,7 @@ export default {
   },
   created() {
     if (this.$route.query.search) {
-      this.tableStore.searchInput = this.$route.query.search;
+      this.tableStore.searchInput = decodeURIComponent(this.$route.query.search);
       this.tableStore.performSeach();
     }
   },
