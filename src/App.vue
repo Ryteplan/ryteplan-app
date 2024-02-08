@@ -118,7 +118,7 @@ export default {
         query: { "search": searchQuery },
       });
 
-      window.open(route.href, '_blank');
+      window.open(route.href, '_self');
 
     }
   }

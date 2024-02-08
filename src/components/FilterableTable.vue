@@ -306,7 +306,7 @@ export default {
         } 
       });
 
-      window.open(route.href, '_blank');
+      window.open(route.href, '_self');
     },
     onUpdateMenu(open) {
       if (open) {
