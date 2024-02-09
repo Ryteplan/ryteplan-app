@@ -533,6 +533,8 @@
 import { dbFireStore } from "../firebase";
 import { collection, documentId, query, where, getDocs, setDoc, doc } from 'firebase/firestore'
 import SaveToListDialog from './SaveToListDialog'
+import { getAuth,onAuthStateChanged } from "firebase/auth";
+
 // import EthnicityChart from './EthnicityChart2.vue';
 
 export default {
@@ -662,14 +664,21 @@ export default {
 
         this.imagesData = dataArray;
         
-
-        await setDoc(doc(dbFireStore, 'institution_images', this.institution["uri"]), {
-          "image1": image1.items[0].link,
-          "image2": image2.items[0].link,
-          "image3": image3.items[0].link,
-          "image4": image4.items[0].link,
-          "image5": image5.items[0].link,
-        })
+        const auth = getAuth();
+        onAuthStateChanged(auth, (user) => {
+        if (user) {
+          setDoc(doc(dbFireStore, 'institution_images', this.institution["uri"]), {
+            "image1": image1.items[0].link,
+            "image2": image2.items[0].link,
+            "image3": image3.items[0].link,
+            "image4": image4.items[0].link,
+            "image5": image5.items[0].link,
+          })
+        } else {
+          // User is signed out
+          // Handle the situation as you wish
+        }
+});
 
 
         this.addImagesFromSearchToLinkArray();
