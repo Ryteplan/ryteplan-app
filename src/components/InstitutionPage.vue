@@ -39,18 +39,41 @@
             </ul>
           </div>
         </div>
-        <div class="institution-images-container mt-xs-4 mt-sm-4">
-          <div class="img-bg">
-            <img :src="image " v-for="(image, index) in images.slice(0, 1)" class="institution-image" :key="index" />
+        <div v-if="Object.keys(imageURLsFromDB).length > 0">
+          <div class="institution-images-container mt-xs-4 mt-sm-4">
+            <div class="img-bg">
+              <img class="institution-image" :src="imageURLsFromDB.image1" />
+            </div>
+            <div class="institution-images-grid">
+              <div class="img-bg">
+                <img class="institution-image" :src="imageURLsFromDB.image2" />
+              </div>
+              <div class="img-bg">
+                <img class="institution-image" :src="imageURLsFromDB.image3" />
+              </div>
+              <div class="img-bg">
+                <img class="institution-image" :src="imageURLsFromDB.image4" />
+              </div>
+              <div class="img-bg">
+                <img class="institution-image" :src="imageURLsFromDB.image5" />
+              </div>
+            </div>
           </div>
-          <div class="institution-images-grid">
-              <template v-for="(image, index) in images.slice(1, 5)" :key="index">
-                <div class="img-bg">
-                  <img class="institution-image" :src="image" />
-                </div>
-              </template>
+        </div>
+        <div v-if="imagesFromGoogleSearch.length > 0">
+          <div class="institution-images-container mt-xs-4 mt-sm-4">
+            <div class="img-bg">
+              <img :src="image " v-for="(image, index) in imagesFromGoogleSearch.slice(0, 1)" class="institution-image" :key="index" />
+            </div>
+            <div class="institution-images-grid">
+                <template v-for="(image, index) in imagesFromGoogleSearch.slice(1, 5)" :key="index">
+                  <div class="img-bg">
+                    <img class="institution-image" :src="image" />
+                  </div>
+                </template>
+            </div>
           </div>
-        </div>                        
+        </div>
       </div>
       <div class="section-container three-by-three-stat-grid mt-8">
         <div class="stat-container">
@@ -143,7 +166,6 @@
 
         <div class="stat-container"><span class="stat-label">SAT/ACT Not Considered</span> <span class="stat-content">{{ institution["admsNotUsed"]?.toLocaleString() || '—' }}</span></div>
       </div>
-
       <div class="section-container mt-8">
         <h2>Deadline dates</h2>
         <div class="three-by-three-stat-grid mt-4">
@@ -264,7 +286,6 @@
           </div>
         </div>
       </div>
-
       <div class="section-container descriptions-container mt-8">
         <v-expansion-panels>
           <v-expansion-panel :value="0">
@@ -325,7 +346,6 @@
           </v-expansion-panel>
         </v-expansion-panels>
       </div>
-
       <div class="section-container three-by-three-stat-grid mt-8">
 
         <div class="stat-container"><span class="stat-label">Tuition In State</span> <span class="stat-content">${{ institution["tuitStateFtD2024"]?.toLocaleString() || '—' }}</span></div>
@@ -352,7 +372,6 @@
         <div class="stat-container"><span class="stat-label">Undergrad International Population</span> <span class="stat-content">{{ institution["enNonresAlienN"] }}</span></div>
         <div class="stat-container"><span class="stat-label">Freshman Retention Rate</span> <span class="stat-content">{{ Math.round(institution["retentionFrshP"]) }}%</span></div>
       </div>
-
       <div class="section-container mt-8">
         <h2>Student Ethnicity</h2>
         <!-- <EthnicityChart :institutionData="this.institution"></EthnicityChart> -->
@@ -512,9 +531,8 @@
  
 <script>
 import { dbFireStore } from "../firebase";
-import { collection, query, where, getDocs } from 'firebase/firestore'
+import { collection, documentId, query, where, getDocs, setDoc, doc } from 'firebase/firestore'
 import SaveToListDialog from './SaveToListDialog'
-
 // import EthnicityChart from './EthnicityChart2.vue';
 
 export default {
@@ -535,10 +553,11 @@ export default {
       institution: {},
       descriptions: {},
       institutionId: "",
-      images: [],
-      imagesData: [],
+      imagesData: {},
       showSaveToListDialog: false,
       descriptionPanels: [],
+      imagesFromGoogleSearch: [],
+      imageURLsFromDB: {},
       majors: [],
       sports: [],
       sportsHeaders: [
@@ -598,54 +617,74 @@ export default {
       this.sports = sportsArray;
     },
     async getImages() {
-
-
-  
       let dataArray = [];
 
-      // const institutionSearchString = encodeURIComponent(this.institution["name"]) + " campus -logo";
-      // const response = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${institutionSearchString}&num=5`);
-      // const data = await response.json();
+      const slugFromURL = this.$route.params.slug;
+      const imageURLsFromDB = collection(dbFireStore, 'institution_images');
+      const q = query(imageURLsFromDB, where(documentId(), "==", slugFromURL));
 
-      const arialCampusSearchString = encodeURIComponent(this.institution["name"]) + " campus -source -text -getty";
-      const arialCampusResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${arialCampusSearchString}&num=1`);
-      const arialCampusData = await arialCampusResponse.json();
-      dataArray.push(arialCampusData);
+      const docSnap = await getDocs(q);
 
-      const buildingOnCampusSearchString = encodeURIComponent(this.institution["name"]) + " office of bursar building";
-      const buildingOnCampusResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${buildingOnCampusSearchString}&num=1`);
-      const buildingOnCampusData = await buildingOnCampusResponse.json();
-      dataArray.push(buildingOnCampusData);
+      docSnap.forEach((doc) => {
+        this.imagesData = doc.data();
+      });
+      
+      if (Object.keys(this.imagesData).length > 0) { 
+        this.imageURLsFromDB = this.imagesData;
+      } else {
+        console.log('no images found in DB');
 
-      const surroundingAreaOrNeighborhoodSearchString = encodeURIComponent(this.institution["name"]) + " student union cafe";
-      const surroundingAreaOrNeighborhoodResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${surroundingAreaOrNeighborhoodSearchString}&num=1`);
-      const surroundingAreaOrNeighborhoodData = await surroundingAreaOrNeighborhoodResponse.json();
-      dataArray.push(surroundingAreaOrNeighborhoodData);
+        const arialCampusSearchString = encodeURIComponent(this.institution["name"]) + " campus -source -text -getty";
+        const arialCampusResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${arialCampusSearchString}&num=1`);
+        const image1 = await arialCampusResponse.json();
+        dataArray.push(image1);
 
-      const classroomInstructionSearchString = encodeURIComponent(this.institution["name"]) + " student classroom or lecture hall photograph";
-      const classroomInstructionResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${classroomInstructionSearchString}&num=1`);
-      const classroomInstructionData = await classroomInstructionResponse.json();
-      dataArray.push(classroomInstructionData);
+        const buildingOnCampusSearchString = encodeURIComponent(this.institution["name"]) + " office of bursar building";
+        const buildingOnCampusResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${buildingOnCampusSearchString}&num=1`);
+        const image2 = await buildingOnCampusResponse.json();
+        dataArray.push(image2);
+
+        const surroundingAreaOrNeighborhoodSearchString = encodeURIComponent(this.institution["name"]) + " student union cafe";
+        const surroundingAreaOrNeighborhoodResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${surroundingAreaOrNeighborhoodSearchString}&num=1`);
+        const image3 = await surroundingAreaOrNeighborhoodResponse.json();
+        dataArray.push(image3);
+
+        const classroomInstructionSearchString = encodeURIComponent(this.institution["name"]) + " student classroom or lecture hall photograph";
+        const classroomInstructionResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${classroomInstructionSearchString}&num=1`);
+        const image4 = await classroomInstructionResponse.json();
+        dataArray.push(image4);
 
 
-      const athleticOrLiveGameSearchString = encodeURIComponent(this.institution["name"]) + " sports game";
-      const athleticOrLiveGameResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${athleticOrLiveGameSearchString}&num=1`);
-      const athleticOrLiveGameData = await athleticOrLiveGameResponse.json();
+        const athleticOrLiveGameSearchString = encodeURIComponent(this.institution["name"]) + " sports game";
+        const athleticOrLiveGameResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${athleticOrLiveGameSearchString}&num=1`);
+        const image5 = await athleticOrLiveGameResponse.json();
+        dataArray.push(image5);
 
-      dataArray.push(athleticOrLiveGameData);
+        this.imagesData = dataArray;
+        
 
-      this.imagesData = dataArray;
+        await setDoc(doc(dbFireStore, 'institution_images', this.institution["uri"]), {
+          "image1": image1.items[0].link,
+          "image2": image2.items[0].link,
+          "image3": image3.items[0].link,
+          "image4": image4.items[0].link,
+          "image5": image5.items[0].link,
+        })
 
-      this.addImagesToLinkArray();
+
+        this.addImagesFromSearchToLinkArray();
+      }
     },
-    addImagesToLinkArray() {
+    addImagesFromSearchToLinkArray() {
       let linkArray = [];
 
       for (const i in this.imagesData) {
         linkArray.push(this.imagesData[i].items[0].link);
       }
 
-      this.images = linkArray;
+      this.imagesFromGoogleSearch = linkArray;
+
+      console.log(this.imagesFromGoogleSearch);
     },
     returnPercent(input) {
       const percentage = Math.round(input * 100);
