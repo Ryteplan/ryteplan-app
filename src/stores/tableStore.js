@@ -83,7 +83,7 @@ export const useTableStore = defineStore('table', {
     },
     filteredTableData(){
       return this.tableData.filter(d => {
-        return Object.keys(this.filters).every(f => {
+        return d.mainFunctionType !== '2YEAR' && d.mainInstControlDesc !== 'Private Proprietary' && Object.keys(this.filters).every(f => {
           return this.filters[f].length < 1 || this.filters[f].includes(d[f])
         })
       })
@@ -111,7 +111,7 @@ export const useTableStore = defineStore('table', {
           { title: 'Country', key: 'countryCode', width: "130px", show: false },
           { title: 'Zipcode', key: 'zipcode', width: "130px", show: false },
           { title: 'Main Type of Degree Offered', key: 'mainFunctionType', width: "260px", show: true },
-          { title: 'Type of Institution', key: 'mainInstControlDesc', width: "200px", show: true },
+          { title: 'Type of Institution', key: 'mainInstControlDesc', width: "300px", show: true },
           { title: 'Calendar', key: 'mainCalendar', width: "140px", show: true },          
           { title: 'Number of Undergraduates', key: 'grsBachInitN', width: "240px", show: true },
           { title: 'Admission Difficulty', key: 'adDiffAll', width: "220px", show: true },          
