@@ -5,7 +5,7 @@
         <v-col cols="12" md="6">
           <span class="d-none">{{ institution["inunId"] }}</span>
           <h1 class="text-h6">{{ institution["name"] }}</h1>
-          <span class="d-block" style="font-weight: 500;">{{ descriptions.tagline }}</span>
+          <!-- <span class="d-block" style="font-weight: 500;">{{ descriptions.tagline }}</span> -->
         </v-col>
         <v-col cols="12" md="6" class="d-md-flex align-center justify-end pt-0">
           <v-btn
