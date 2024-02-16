@@ -75,6 +75,23 @@
           </div>
         </div>
       </div>
+      <div>
+          <v-switch 
+            label="Edit image URLs"
+            v-model="editMode"
+            @change="toggleEditMode"
+            color="primary"
+          >
+          </v-switch>
+        </div>
+        <div v-if="editMode">
+          <v-text-field v-model="imageURLsFromDB.image1" label="image1" density="compact" variant="solo" single-line hide-details clearable></v-text-field>
+          <v-text-field class="mt-4" v-model="imageURLsFromDB.image2" label="image2" density="compact" variant="solo" single-line hide-details clearable></v-text-field>
+          <v-text-field class="mt-4" v-model="imageURLsFromDB.image3" label="image3" density="compact" variant="solo" single-line hide-details clearable></v-text-field>
+          <v-text-field class="mt-4" v-model="imageURLsFromDB.image4" label="image4" density="compact" variant="solo" single-line hide-details clearable></v-text-field>
+          <v-text-field class="mt-4" v-model="imageURLsFromDB.image5" label="image5" density="compact" variant="solo" single-line hide-details clearable></v-text-field>
+          <v-btn class="mt-4" @click="saveImages">Save images</v-btn>
+        </div>
       <div class="section-container three-by-three-stat-grid mt-8">
         <div class="stat-container">
           <span class="stat-label">Sector</span> 
@@ -561,7 +578,6 @@
                   <span>C = Club teams</span>
                   <span>X = Yes</span>
                 </div>
-
             </div>
             <v-data-table 
               v-if="sports !== null"
@@ -571,7 +587,6 @@
             >
               <template #bottom></template>
             </v-data-table>            
-
           </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -606,6 +621,7 @@ export default {
   },
   data() {
     return {
+      editMode: false,
       test: 25,
       institution: {},
       descriptions: {},
@@ -628,6 +644,15 @@ export default {
     }
   },
   methods: {
+    async saveImages() {
+      setDoc(doc(dbFireStore, 'institution_images', this.institution["uri"]), {
+        "image1": this.imageURLsFromDB.image1,
+        "image2": this.imageURLsFromDB.image2,
+        "image3": this.imageURLsFromDB.image3,
+        "image4": this.imageURLsFromDB.image4,
+        "image5": this.imageURLsFromDB.image5,
+      })
+    },
     async loadInstitutionData() {
       const slugFromURL = this.$route.params.slug;
       const institutions = collection(dbFireStore, 'institutions_v6');
@@ -709,7 +734,6 @@ export default {
         const image4 = await classroomInstructionResponse.json();
         dataArray.push(image4);
 
-
         const athleticOrLiveGameSearchString = encodeURIComponent(this.institution["name"]) + " sports game";
         const athleticOrLiveGameResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${athleticOrLiveGameSearchString}&num=1`);
         const image5 = await athleticOrLiveGameResponse.json();
@@ -719,21 +743,19 @@ export default {
         
         const auth = getAuth();
         onAuthStateChanged(auth, (user) => {
-        if (user) {
-          setDoc(doc(dbFireStore, 'institution_images', this.institution["uri"]), {
-            "image1": image1.items[0].link,
-            "image2": image2.items[0].link,
-            "image3": image3.items[0].link,
-            "image4": image4.items[0].link,
-            "image5": image5.items[0].link,
-          })
-        } else {
-          // User is signed out
-          // Handle the situation as you wish
-        }
-});
-
-
+          if (user) {
+            setDoc(doc(dbFireStore, 'institution_images', this.institution["uri"]), {
+              "image1": image1.items[0].link,
+              "image2": image2.items[0].link,
+              "image3": image3.items[0].link,
+              "image4": image4.items[0].link,
+              "image5": image5.items[0].link,
+            })
+          } else {
+            // User is signed out
+            // Handle the situation as you wish
+          }
+        });
         this.addImagesFromSearchToLinkArray();
       }
     },
@@ -745,8 +767,6 @@ export default {
       }
 
       this.imagesFromGoogleSearch = linkArray;
-
-      console.log(this.imagesFromGoogleSearch);
     },
     returnPercent(input) {
       const percentage = Math.round(input * 100);

@@ -1,5 +1,5 @@
 <template>
-  <v-layout class="app-container">
+  <v-layout class="app-container" :class="{ 'logged-in': isLoggedIn }">
     <v-app-bar class="elevation-1">
       <div class="header-container d-flex align-center justify-space-between ma-auto w-100 px-3 px-lg-0">
         <v-toolbar-title class="logo" style="flex: none;">
@@ -36,45 +36,44 @@
         </div>
       </div>
     </v-app-bar>
-      <v-navigation-drawer
-        v-if="isLoggedIn"
-        permanent
-      >
-        <v-list nav>
-          <v-list-item 
-            to="/" 
-            prepend-icon="mdi-magnify" 
-            title="Institutions" 
-            value="Institution Search">
-          </v-list-item>
-          <v-list-item 
-            to="/lists" 
-            prepend-icon="mdi-list-box-outline" 
-            title="Lists" 
-            value="Saved Lists">
-          </v-list-item>
-          <v-list-item
-            to="/students" 
-            prepend-icon="mdi-account-school" 
-            title="Students" 
-            value="Students">
-          </v-list-item>
-          <v-list-item 
-            to="/account" 
-            prepend-icon="mdi-cog" 
-            title="Account" 
-            value="Account">
-          </v-list-item>
-          <v-list-item 
-            prepend-icon="mdi-logout" 
-            title="Logout" 
-            value="Logout" 
-            @click="handleSignOut"
-          >
-          </v-list-item>
-        </v-list>
-      </v-navigation-drawer>    
-
+    <v-navigation-drawer
+      v-if="isLoggedIn"
+      permanent
+    >
+      <v-list nav>
+        <v-list-item 
+          to="/" 
+          prepend-icon="mdi-magnify" 
+          title="Institutions" 
+          value="Institution Search">
+        </v-list-item>
+        <v-list-item 
+          to="/lists" 
+          prepend-icon="mdi-list-box-outline" 
+          title="Lists" 
+          value="Saved Lists">
+        </v-list-item>
+        <v-list-item
+          to="/students" 
+          prepend-icon="mdi-account-school" 
+          title="Students" 
+          value="Students">
+        </v-list-item>
+        <v-list-item 
+          to="/account" 
+          prepend-icon="mdi-cog" 
+          title="Account" 
+          value="Account">
+        </v-list-item>
+        <v-list-item 
+          prepend-icon="mdi-logout" 
+          title="Logout" 
+          value="Logout" 
+          @click="handleSignOut"
+        >
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>    
     <v-main class="flex-column">
       <router-view :key="$route.fullPath"></router-view>
       <v-footer class="flex-column justify-items-center text-center pb-4">
