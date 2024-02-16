@@ -619,10 +619,10 @@ export default {
       sports: [],
       sportsHeaders: [
         { title: 'Sport', key: 'descr', width: "300px" },
-        { title: 'Intramural Men', key: 'maxIntmMen', width: "200px" },
-        { title: 'Intramural Women', key: 'maxIntmWmn', width: "200px" },
-        { title: 'Intercollegiate Men', key: 'maxIntcMen', width: "200px" },
-        { title: 'Intercollegiate Women', key: 'maxIntcWmn', width: "250px" },
+        { title: 'Intramural Men', key: 'intmMen', width: "200px" },
+        { title: 'Intramural Women', key: 'intmWmn', width: "200px" },
+        { title: 'Intercollegiate Men', key: 'intcMen', width: "200px" },
+        { title: 'Intercollegiate Women', key: 'intcWmn', width: "250px" },
       ],
       ethnicityPopulationTotal: 0,
     }
@@ -657,7 +657,7 @@ export default {
       });
     },
     async getSports() {
-      const sports = collection(dbFireStore, 'Sports');
+      const sports = collection(dbFireStore, 'sports_v3');
       const q = query(sports, where("inunId", "==", this.institution.inunId));
       const docSnap = await getDocs(q);
       let sportsArray = [];
