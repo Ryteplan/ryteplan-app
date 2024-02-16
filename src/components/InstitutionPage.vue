@@ -75,21 +75,23 @@
           </div>
         </div>
       </div>
-      <div>
+      <div v-if="isLoggedIn">
           <v-switch 
             label="Edit image URLs"
             v-model="editMode"
             @change="toggleEditMode"
             color="primary"
+            hide-details
+            dense
           >
           </v-switch>
         </div>
         <div v-if="editMode">
-          <v-text-field v-model="imageURLsFromDB.image1" label="image1" density="compact" variant="solo" single-line hide-details clearable></v-text-field>
-          <v-text-field class="mt-4" v-model="imageURLsFromDB.image2" label="image2" density="compact" variant="solo" single-line hide-details clearable></v-text-field>
-          <v-text-field class="mt-4" v-model="imageURLsFromDB.image3" label="image3" density="compact" variant="solo" single-line hide-details clearable></v-text-field>
-          <v-text-field class="mt-4" v-model="imageURLsFromDB.image4" label="image4" density="compact" variant="solo" single-line hide-details clearable></v-text-field>
-          <v-text-field class="mt-4" v-model="imageURLsFromDB.image5" label="image5" density="compact" variant="solo" single-line hide-details clearable></v-text-field>
+          <v-text-field v-model="imageURLsFromDB.image1" label="image1" density="compact" variant="solo" single-line hide-details></v-text-field>
+          <v-text-field class="mt-4" v-model="imageURLsFromDB.image2" label="image2" density="compact" variant="solo" single-line hide-details></v-text-field>
+          <v-text-field class="mt-4" v-model="imageURLsFromDB.image3" label="image3" density="compact" variant="solo" single-line hide-details></v-text-field>
+          <v-text-field class="mt-4" v-model="imageURLsFromDB.image4" label="image4" density="compact" variant="solo" single-line hide-details></v-text-field>
+          <v-text-field class="mt-4" v-model="imageURLsFromDB.image5" label="image5" density="compact" variant="solo" single-line hide-details></v-text-field>
           <v-btn class="mt-4" @click="saveImages">Save images</v-btn>
         </div>
       <div class="section-container three-by-three-stat-grid mt-8">
@@ -613,6 +615,15 @@ export default {
     this.loadInstitutionData();
   },
   mounted() {
+    let auth;
+    auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        this.isLoggedIn = true;
+      } else {
+        this.isLoggedIn = false;
+      }
+    })
   },
   beforeUnmount() {
     if (this.root) {
@@ -621,6 +632,7 @@ export default {
   },
   data() {
     return {
+      isLoggedIn: false,
       editMode: false,
       test: 25,
       institution: {},
