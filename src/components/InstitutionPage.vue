@@ -92,7 +92,7 @@
           <v-text-field class="mt-4" v-model="imageURLsFromDB.image3" label="image3" density="compact" variant="solo" single-line hide-details></v-text-field>
           <v-text-field class="mt-4" v-model="imageURLsFromDB.image4" label="image4" density="compact" variant="solo" single-line hide-details></v-text-field>
           <v-text-field class="mt-4" v-model="imageURLsFromDB.image5" label="image5" density="compact" variant="solo" single-line hide-details></v-text-field>
-          <v-btn class="mt-4" @click="saveImages">Save images</v-btn>
+          <v-btn class="mt-4" :disabled="isEditImagesSaveButtonDisabled" @click="saveImages">Save images</v-btn>
         </div>
       <div class="section-container three-by-three-stat-grid mt-8">
         <div class="stat-container">
@@ -120,7 +120,8 @@
         <div class="stat-container">
           <span class="stat-label">Graduate Enrollment</span> 
           <span class="stat-content">
-            <span class="d-block">{{ ((institution["enGradFtMenN"]) + (institution["enGradPtMen"]) + institution["enGradFtWmnN"] + institution["enGradPtWmnN"]).toLocaleString() }}</span>
+            <span class="d-block">{{ institution["enTotGradN"]?.toLocaleString() || '—' }}</span>
+            <span class="d-none">{{ ((institution["enGradFtMenN"]) + (institution["enGradPtMen"]) + institution["enGradFtWmnN"] + institution["enGradPtWmnN"]).toLocaleString() }}</span>
             <div class="d-none">
               =
               <span class="d-block">Men FT - {{ institution["enGradFtMenN"]?.toLocaleString() || '—' }}</span>
