@@ -21,12 +21,12 @@
           @keydown.enter="performSearch"
         ></v-text-field>
         <div v-if="!isLoggedIn">
-          <v-btn 
+          <!-- <v-btn 
             :to="{name: 'login', query: { tabDestination: 'Sign Up' }}"
             class="no-active"
           >
             Sign up
-          </v-btn>
+          </v-btn> -->
           <v-btn 
             class="no-active"
             :to="{name: 'login', query: { tabDestination: 'Login' }}"
