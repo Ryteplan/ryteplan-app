@@ -26,6 +26,6 @@
 </template>
 <script>
 export default {
-    name: 'LogoBlack',
+    name: 'LogoGreenBlack',
 }
 </script>
