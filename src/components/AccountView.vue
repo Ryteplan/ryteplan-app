@@ -1,7 +1,6 @@
 <template>
   <v-container>
-    <h2>List out the account name and stuff</h2>
-    
+    <h2>List out the account name and stuff</h2>    
   </v-container>
 </template>
  

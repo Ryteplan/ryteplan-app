@@ -99,7 +99,6 @@
           <span class="stat-label">Sector</span> 
           <span class="stat-content">{{ institution["mainInstControlDesc"] }}</span>
         </div>
-
         <div class="stat-container">
           <span class="stat-label">Undergraduate Enrollment</span>
           <span class="stat-content">
@@ -116,7 +115,6 @@
             </div>
           </span>
         </div>
-
         <div class="stat-container">
           <span class="stat-label">Graduate Enrollment</span> 
           <span class="stat-content">
@@ -134,24 +132,19 @@
             </div>
           </span>
         </div>
-
         <div class="stat-container"><span class="stat-label">Calendar </span> <span class="stat-content">{{ institution["mainCalendar"] }}</span></div>
-        
         <div class="stat-container">
           <span class="stat-label">Admission Difficulty</span>
           <span class="stat-content">{{ toTitleCase(institution["adDiffAll"]?.toLocaleString() || '—') }}</span>
         </div>
-
         <div class="stat-container">
           <span class="stat-label">Admission Rate</span>
           <span class="stat-content">{{ (institution["admitRate"]?.toLocaleString() * 100).toFixed(0) || '—' }}%</span>
         </div>
-        
         <div class="multiple-stat-container">
           <div class="stat-container"><span class="stat-label">Applicants</span> <span class="stat-content">{{ institution["apRecd1stN"]?.toLocaleString() || '—' }}</span></div>
           <div class="stat-container"><span class="stat-label">Admits</span> <span class="stat-content">{{ institution["apAdmt1stN"]?.toLocaleString() || '—' }}</span></div>
         </div>
-        
         <div class="d-flex flex-column">
             <span class="d-block">Full Time Undergrad</span>
             <div class="multiple-stat-container d-flex flex-row">
@@ -159,31 +152,23 @@
               <div class="stat-container"><span class="stat-label">Women</span> <span class="stat-content">{{ institution["enTotFtWmnN"]?.toLocaleString() || '—' }}</span></div>
           </div>
         </div>
-
         <div class="stat-container">
           <span class="stat-label">Religious </span> 
           <span v-if="institution['denomDesc'] !== 'null'" class="stat-content">{{ institution["denomDesc"] }}</span> 
           <span v-if="institution['afilDesc'] !== 'null'" class="stat-content">{{ institution["afilDesc"] }}</span>
           <span v-if="institution['denomDesc'] == 'null' && institution['afilDesc'] == 'null'" class="stat-content">—</span>
         </div>
-
         <div class="multiple-stat-container">
           <div class="stat-container"><span class="stat-label">HBCU</span> <span class="stat-content">{{ institution["hbcu"] }}Coming Soon</span></div>
           <div class="stat-container"><span class="stat-label">Tribal</span> <span class="stat-content">{{ institution["tribal"] }}Coming Soon</span></div>
         </div>
-
         <div class="stat-container"><span class="stat-label">Average GPA </span> <span class="stat-content">{{ institution["frshGpa"]?.toLocaleString() || '—' }}</span></div>
-
         <div class="multiple-stat-container">
           <div class="stat-container"><span class="stat-label">SAT 50th%ile</span> <span class="stat-content">{{ institution["sat1CompMean"] || '—' }}</span></div>
           <div class="stat-container"><span class="stat-label">ACT 50th%ile</span> <span class="stat-content">{{ institution["actComp50thP"]?.toLocaleString() || '—' }}</span></div>
         </div>
-
-
         <div class="stat-container"><span class="stat-label">SAT or ACT Required</span> <span class="stat-content">{{ institution["admsReq"]?.toLocaleString() || '—' }}</span></div>
-
         <div class="stat-container"><span class="stat-label">SAT/ACT Considered</span> <span class="stat-content">{{ institution["satActConsidered"]?.toLocaleString() || '—' }}</span></div>
-
         <div class="stat-container"><span class="stat-label">SAT/ACT Not Considered</span> <span class="stat-content">{{ institution["admsNotUsed"]?.toLocaleString() || '—' }}</span></div>
       </div>
       <div class="section-container mt-8">
@@ -375,7 +360,6 @@
         <div class="stat-container"><span class="stat-label">Tuition International</span> <span class="stat-content">${{ institution["tuitIntlFtD2024"]?.toLocaleString() || '—' }}</span></div>
 
         <div class="stat-container"><span class="stat-label">Tuition Overall</span> <span class="stat-content">${{ institution["tuitOverallFtD2024"]?.toLocaleString() || '—' }}</span></div>
-
 
         <div class="multiple-stat-container">
           <div class="stat-container"><span class="stat-label">Males in Greek </span> <span class="stat-content">{{ institution["fratP"] }}%</span></div>
