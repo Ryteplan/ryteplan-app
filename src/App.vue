@@ -72,6 +72,14 @@
           @click="handleSignOut"
         >
         </v-list-item>
+        <v-switch 
+          class="px-4"
+          label="Admin Mode"
+          v-model="userStore.adminMode"
+          color="primary"
+          @change="userStore.saveAdminModeState"
+        >
+        </v-switch>
       </v-list>
     </v-navigation-drawer>    
     <v-main class="flex-column">
@@ -86,9 +94,17 @@
 <script>
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth"
 import LogoBlack from "@/components/svg/LogoBlack.vue";
+import { useUserStore } from './/stores/userStore';
 
 let auth;
 export default {
+  setup() {
+    let userStore = useUserStore();
+    userStore.getAdminMode();
+    return {
+      userStore,      
+    };
+  },
   components: {
     LogoBlack
   },
@@ -123,8 +139,7 @@ export default {
       });
 
       window.open(route.href, '_self');
-
-    }
+    },
   }
 };
 

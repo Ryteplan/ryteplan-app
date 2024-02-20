@@ -75,25 +75,25 @@
           </div>
         </div>
       </div>
-      <div v-if="isLoggedIn">
-          <v-switch 
-            label="Edit image URLs"
-            v-model="editMode"
-            @change="toggleEditMode"
-            color="primary"
-            hide-details
-            dense
-          >
-          </v-switch>
-        </div>
-        <div v-if="editMode">
-          <v-text-field v-model="imageURLsFromDB.image1" label="image1" density="compact" variant="solo" single-line hide-details></v-text-field>
-          <v-text-field class="mt-4" v-model="imageURLsFromDB.image2" label="image2" density="compact" variant="solo" single-line hide-details></v-text-field>
-          <v-text-field class="mt-4" v-model="imageURLsFromDB.image3" label="image3" density="compact" variant="solo" single-line hide-details></v-text-field>
-          <v-text-field class="mt-4" v-model="imageURLsFromDB.image4" label="image4" density="compact" variant="solo" single-line hide-details></v-text-field>
-          <v-text-field class="mt-4" v-model="imageURLsFromDB.image5" label="image5" density="compact" variant="solo" single-line hide-details></v-text-field>
-          <v-btn class="mt-4" :disabled="isEditImagesSaveButtonDisabled" @click="saveImages">Save images</v-btn>
-        </div>
+      <div v-if="userStore.adminMode">
+        <v-switch 
+          label="Edit image URLs"
+          v-model="editImages"
+          @change="toggleEditImages"
+          color="primary"
+          hide-details
+          dense
+        >
+        </v-switch>
+      </div>
+      <div v-if="editImages">
+        <v-text-field v-model="imageURLsFromDB.image1" label="image1" density="compact" variant="solo" single-line hide-details></v-text-field>
+        <v-text-field class="mt-4" v-model="imageURLsFromDB.image2" label="image2" density="compact" variant="solo" single-line hide-details></v-text-field>
+        <v-text-field class="mt-4" v-model="imageURLsFromDB.image3" label="image3" density="compact" variant="solo" single-line hide-details></v-text-field>
+        <v-text-field class="mt-4" v-model="imageURLsFromDB.image4" label="image4" density="compact" variant="solo" single-line hide-details></v-text-field>
+        <v-text-field class="mt-4" v-model="imageURLsFromDB.image5" label="image5" density="compact" variant="solo" single-line hide-details></v-text-field>
+        <v-btn class="mt-4" :disabled="isEditImagesSaveButtonDisabled" @click="saveImages">Save images</v-btn>
+      </div>
       <div class="section-container three-by-three-stat-grid mt-8">
         <div class="stat-container">
           <span class="stat-label">Sector</span> 
@@ -159,17 +159,56 @@
           <span v-if="institution['denomDesc'] == 'null' && institution['afilDesc'] == 'null'" class="stat-content">—</span>
         </div>
         <div class="multiple-stat-container">
-          <div class="stat-container"><span class="stat-label">HBCU</span> <span class="stat-content">{{ institution["hbcu"] }}Coming Soon</span></div>
-          <div class="stat-container"><span class="stat-label">Tribal</span> <span class="stat-content">{{ institution["tribal"] }}Coming Soon</span></div>
+          <div class="stat-container">
+            <span class="stat-label">HBCU</span> 
+            <span v-if="!userStore.adminMode" class="stat-content">              
+              {{ manualInstitionData["hbcu"] ? '✔️' : '—' }}
+            </span>
+            <v-switch
+                v-if="userStore.adminMode"
+                label=""
+                v-model="manualInstitionData['hbcu']"
+                @change="toggleFieldTrueFalse('hbcu')"
+                color="primary"
+                hide-details
+                dense
+              >
+              </v-switch>
+          </div>
+          <div class="stat-container">
+            <span class="stat-label">Tribal</span> 
+            <span v-if="!userStore.adminMode" class="stat-content">
+              {{ manualInstitionData["tribal"] ? '✔️' : '—' }}              
+            </span>
+            <v-switch
+              v-if="userStore.adminMode"
+              label=""
+              v-model="manualInstitionData['tribal']"
+              @change="toggleFieldTrueFalse('tribal')"
+              color="primary"
+              hide-details
+              dense
+            >
+            </v-switch>
+          </div>
         </div>
         <div class="stat-container"><span class="stat-label">Average GPA </span> <span class="stat-content">{{ institution["frshGpa"]?.toLocaleString() || '—' }}</span></div>
         <div class="multiple-stat-container">
           <div class="stat-container"><span class="stat-label">SAT 50th%ile</span> <span class="stat-content">{{ institution["sat1CompMean"] || '—' }}</span></div>
           <div class="stat-container"><span class="stat-label">ACT 50th%ile</span> <span class="stat-content">{{ institution["actComp50thP"]?.toLocaleString() || '—' }}</span></div>
         </div>
-        <div class="stat-container"><span class="stat-label">SAT or ACT Required</span> <span class="stat-content">{{ institution["admsReq"]?.toLocaleString() || '—' }}</span></div>
-        <div class="stat-container"><span class="stat-label">SAT/ACT Considered</span> <span class="stat-content">{{ institution["satActConsidered"]?.toLocaleString() || '—' }}</span></div>
-        <div class="stat-container"><span class="stat-label">SAT/ACT Not Considered</span> <span class="stat-content">{{ institution["admsNotUsed"]?.toLocaleString() || '—' }}</span></div>
+        <div class="stat-container">
+          <span class="stat-label">SAT or ACT Required</span> 
+          <span class="stat-content">{{ (institution["admsReq"] && institution["admsReq"] !== 'null') ? institution["admsReq"].toLocaleString() : '—' }}</span>        
+        </div>
+        <div class="stat-container">
+          <span class="stat-label">SAT/ACT Considered</span> 
+          <span class="stat-content">{{ (institution["satActConsidered"] && institution["satActConsidered"] !== 'null') ? institution["satActConsidered"].toLocaleString() : '—' }}</span>
+        </div>
+        <div class="stat-container">
+          <span class="stat-label">SAT/ACT Not Considered</span> 
+          <span class="stat-content">{{ (institution["admsNotUsed"] && institution["admsNotUsed"] !== 'null') ? institution["admsNotUsed"].toLocaleString() : '—' }}</span>
+        </div>
       </div>
       <div class="section-container mt-8">
         <h2>Deadline dates</h2>
@@ -218,7 +257,7 @@
             <span class="stat-content">{{ institution["activ"]?.toLocaleString() || '—' }}</span>
           </div>
           <div class="stat-container">
-            <span class="stat-label">alumni/ae relation</span>
+            <span class="stat-label">alumni/AE relation</span>
             <span class="stat-content">{{ institution["alum"]?.toLocaleString() || '—' }}</span>
           </div>
           <div class="stat-container">
@@ -590,14 +629,21 @@ import { dbFireStore } from "../firebase";
 import { collection, documentId, query, where, getDocs, setDoc, doc } from 'firebase/firestore'
 import SaveToListDialog from './SaveToListDialog'
 import { getAuth,onAuthStateChanged } from "firebase/auth";
+import { useUserStore } from '../stores/userStore';
 
 // import EthnicityChart from './EthnicityChart2.vue';
 
 export default {
   setup() {
+    let userStore = useUserStore();
+    userStore.getAdminMode();
+    return {
+      userStore,      
+    };    
   },
   beforeMount() {
     this.loadInstitutionData();
+    this.loadManualInstitutionData();
   },
   mounted() {
     let auth;
@@ -618,9 +664,11 @@ export default {
   data() {
     return {
       isLoggedIn: false,
-      editMode: false,
+      isEditImagesSaveButtonDisabled: false,
+      editImages: false,
       test: 25,
       institution: {},
+      manualInstitionData: {},
       descriptions: {},
       institutionId: "",
       imagesData: {},
@@ -631,16 +679,35 @@ export default {
       majors: [],
       sports: [],
       sportsHeaders: [
-        { title: 'Sport', key: 'descr', width: "300px" },
-        { title: 'Intramural Men', key: 'intmMen', width: "200px" },
-        { title: 'Intramural Women', key: 'intmWmn', width: "200px" },
+        { title: 'Sport', key: 'descr', width: "250px" },
+        { title: 'Intramural Men', key: 'intmMen', width: "180px" },
+        { title: 'Intramural Women', key: 'intmWmn', width: "180px" },
         { title: 'Intercollegiate Men', key: 'intcMen', width: "200px" },
-        { title: 'Intercollegiate Women', key: 'intcWmn', width: "250px" },
+        { title: 'Intercollegiate Women', key: 'intcWmn', width: "230px" },
       ],
       ethnicityPopulationTotal: 0,
     }
   },
   methods: {
+    toggleFieldTrueFalse(field) {
+      console.log(field);
+      // this.manualInstitionData[field] = !this.manualInstitionData[field];
+      setDoc(doc(dbFireStore, 'manual_institution_data', this.institution["uri"]), {
+        [field]: this.manualInstitionData[field]
+      }, { merge: true });
+    },
+    // saveManualFieldState() {
+    //   this.userStore.setAdminMode();
+    // },
+    async loadManualInstitutionData() {
+      const slugFromURL = this.$route.params.slug;
+      const manual_institution_data = collection(dbFireStore, 'manual_institution_data');
+      const q = query(manual_institution_data, where(documentId(), "==", slugFromURL));
+      const docSnap = await getDocs(q);
+      docSnap.forEach((doc) => {
+        this.manualInstitionData = doc.data()
+      });
+    },
     async saveImages() {
       setDoc(doc(dbFireStore, 'institution_images', this.institution["uri"]), {
         "image1": this.imageURLsFromDB.image1,
@@ -776,6 +843,9 @@ export default {
     },
     getEthnicityPopulationTotal() {
       this.ethnicityPopulationTotal = this.institution["enAsianNonhispanicN"] + this.institution["enBlackNonhispanicN"] + this.institution["enHispanicEthnicityN"] + this.institution["enIslanderNonhispanicN"] + this.institution["enMultiraceNonhispanicN"] + this.institution["enNativeNonhispanicN"] + this.institution["enRaceEthnicityUnknownN"] + this.institution["enWhiteNonhispanicN"];
+    },
+    toggleEditImages(){
+      this.editMode = !this.editMode;
     }
   },
   components: {
@@ -873,9 +943,10 @@ export default {
   }
 
   .stat-label {
+    color: #2a2a2a;
     font-size: 15px;
     font-weight: 400;
-    color: #2a2a2a;
+
     > span {
       font-size: 13px;
       color: #373737;
