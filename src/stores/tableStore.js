@@ -110,7 +110,7 @@ export const useTableStore = defineStore('table', {
           { title: 'City', key: 'city', width: "220px", show: false },
           { title: 'Country', key: 'countryCode', width: "130px", show: false },
           { title: 'Zipcode', key: 'zipcode', width: "130px", show: false },
-          { title: 'Main Type of Degree Offered', key: 'mainFunctionType', width: "260px", show: true },
+          // { title: 'Main Type of Degree Offered', key: 'mainFunctionType', width: "260px", show: true },
           { title: 'Type of Institution', key: 'mainInstControlDesc', width: "300px", show: true },
           { title: 'Calendar', key: 'mainCalendar', width: "140px", show: true },          
           { title: 'Number of Undergraduates', key: 'grsBachInitN', width: "240px", show: true },
