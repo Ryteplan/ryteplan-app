@@ -412,7 +412,10 @@
 
         <div class="stat-container"><span class="stat-label">Freshmen Living on Campus</span> <span class="stat-content">{{ institution["hous1stUgP"] }}%</span></div>
         <div class="stat-container"><span class="stat-label">Out-of-State Population</span> <span class="stat-content">{{ institution["enNresP"] }}%</span></div>
-        <div class="stat-container"><span class="stat-label">Undergrad International Population</span> <span class="stat-content">{{ institution["enNonresAlienN"] }}</span></div>
+        <div class="stat-container">
+          <span class="stat-label">Undergrad International Population</span> 
+          <span class="stat-content">{{ institution["enNonresAlienN"] !== null ? ((institution["enNonresAlienN"] / ((institution["enTotFtMenN"]) + (institution["enTotPtMenN"]) + institution["enTotFtWmnN"] + institution["enTotPtWmnN"])) * 100).toFixed(2) + '%' : '—' }} ({{ institution["enNonresAlienN"] }})</span>
+        </div>
         <div class="stat-container"><span class="stat-label">Freshman Retention Rate</span> <span class="stat-content">{{ Math.round(institution["retentionFrshP"]) }}%</span></div>
       </div>
       <div class="section-container mt-8">
@@ -944,11 +947,11 @@ export default {
 
   .stat-label {
     color: #2a2a2a;
-    font-size: 15px;
-    font-weight: 400;
+    font-size: 14px;
 
     > span {
-      font-size: 13px;
+      font-size: 14px;
+      font-weight: 400;
       color: #373737;
     }
   }
