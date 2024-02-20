@@ -429,7 +429,7 @@
                   height="25"
                 >
                   <template v-slot:default="{ value }">
-                    <strong>{{ institution["enNonresAlienN"] }} - {{ Math.ceil(value) }}%</strong>
+                    <strong>{{ Math.ceil(value) }}% ({{ institution["enNonresAlienN"] }})</strong>
                   </template>
                 </v-progress-linear>
               </div>
@@ -443,7 +443,7 @@
                   height="25"
                 >
                   <template v-slot:default="{ value }">
-                    <strong>{{ institution["enAsianNonhispanicN"] }} - {{ Math.ceil(value) }}%</strong>
+                    <strong>{{ Math.ceil(value) }}% ({{ institution["enAsianNonhispanicN"] }})</strong>
                   </template>
                 </v-progress-linear>
               </div>
@@ -457,7 +457,7 @@
                   height="25"
                 >
                   <template v-slot:default="{ value }">
-                    <strong>{{ institution["enBlackNonhispanicN"] }} - {{ Math.ceil(value) }}%</strong>
+                    <strong>{{ Math.ceil(value) }}% ({{ institution["enBlackNonhispanicN"] }})</strong>
                   </template>
                 </v-progress-linear>                
               </div>
@@ -471,7 +471,7 @@
                   height="25"
                 >
                   <template v-slot:default="{ value }">
-                    <strong>{{ institution["enHispanicEthnicityN"] }} - {{ Math.ceil(value) }}%</strong>
+                    <strong>{{ Math.ceil(value) }}% ({{ institution["enHispanicEthnicityN"] }})</strong>
                   </template>
                 </v-progress-linear>
               </div>
@@ -485,7 +485,7 @@
                   height="25"
                 >
                   <template v-slot:default="{ value }">
-                    <strong>{{ institution["enIslanderNonhispanicN"] }} - {{ Math.ceil(value) }}%</strong>
+                    <strong>{{ Math.ceil(value) }}% ({{ institution["enIslanderNonhispanicN"] }})</strong>
                   </template>
                 </v-progress-linear>
               </div>
@@ -499,7 +499,7 @@
                   height="25"
                 >
                   <template v-slot:default="{ value }">
-                    <strong>{{ institution["enMultiraceNonhispanicN"] }} - {{ Math.ceil(value) }}%</strong>
+                    <strong>{{ Math.ceil(value) }}% ({{ institution["enMultiraceNonhispanicN"] }})</strong>
                   </template>
                 </v-progress-linear>                
               </div>
@@ -513,7 +513,7 @@
                   height="25"
                 >
                   <template v-slot:default="{ value }">
-                    <strong>{{ institution["enNativeNonhispanicN"] }} - {{ Math.ceil(value) }}%</strong>
+                    <strong>{{ Math.ceil(value) }}% ({{ institution["enNativeNonhispanicN"] }})</strong>
                   </template>
                 </v-progress-linear>
               </div>
@@ -527,7 +527,7 @@
                   height="25"
                 >
                   <template v-slot:default="{ value }">
-                    <strong>{{ institution["enRaceEthnicityUnknownN"] }} - {{ Math.ceil(value) }}%</strong>
+                    <strong>{{ Math.ceil(value) }}% ({{ institution["enRaceEthnicityUnknownN"] }})</strong>
                   </template>
                 </v-progress-linear>
               </div>
@@ -541,7 +541,7 @@
                   height="25"
                 >
                   <template v-slot:default="{ value }">
-                    <strong>{{ institution["enWhiteNonhispanicN"] }} - {{ Math.ceil(value) }}%</strong>
+                    <strong>{{ Math.ceil(value) }}% ({{ institution["enWhiteNonhispanicN"] }})</strong>
                   </template>
                 </v-progress-linear>
               </div>
@@ -998,8 +998,5 @@ export default {
   .ethnic-stats {
     padding: 24px 0;
     
-    .stat-container {
-
-    }
   }
 </style>
