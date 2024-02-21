@@ -417,14 +417,18 @@
           </v-expansion-panel-title>
           <v-expansion-panel-text>
             <v-list v-if="majors !== null">
-              <div class="three-by-three-stat-grid mt-8">
+              <div class="four-column-grid mt-4">
                 <div class="stat-container"><span class="stat-label">Tuition In State</span> <span class="stat-content">${{ institution["tuitStateFtD2024"]?.toLocaleString() || '—' }}</span></div>
                 <div class="stat-container"><span class="stat-label">Tuition Out of State</span> <span class="stat-content">${{ institution["tuitNresFtD2024"]?.toLocaleString() || '—' }}</span></div>
                 <div class="stat-container"><span class="stat-label">Tuition International</span> <span class="stat-content">${{ institution["tuitIntlFtD2024"]?.toLocaleString() || '—' }}</span></div>
                 <div class="stat-container"><span class="stat-label">Tuition Overall</span> <span class="stat-content">${{ institution["tuitOverallFtD2024"]?.toLocaleString() || '—' }}</span></div>
+              </div>
+              <div class="three-by-three-stat-grid mt-8">
                 <div class="stat-container"><span class="stat-label">Undergrad Pell Grants Awarded</span> <span class="stat-content">{{ institution["grsBachInitPellN"]?.toLocaleString() || '—' }}</span></div>
-                <div class="stat-container"><span class="stat-label">Merit Scholarships Awarded <br/><span>(excluding athletics)</span> </span> <span class="stat-content">{{ institution["ugFtNnNoneedN"]?.toLocaleString() || '—' }}</span></div>
                 <div class="stat-container"><span class="stat-label">Average Need-Based Scholarship</span> <span class="stat-content">${{ institution["ugFtAvgNbGiftD"]?.toLocaleString() || '—' }}</span></div>
+              </div>
+              <div class="three-by-three-stat-grid mt-8">
+                <div class="stat-container"><span class="stat-label">Merit Scholarships Awarded <br/><span>(excluding athletics)</span> </span> <span class="stat-content">{{ institution["ugFtNnNoneedN"]?.toLocaleString() || '—' }}</span></div>
                 <div class="stat-container"><span class="stat-label">Average Merit Scholarship <br/><span>(excluding athletics)</span> </span> <span class="stat-content">${{ institution["ugFtNnNoneedD"]?.toLocaleString() || '—' }}</span></div>
               </div>
             </v-list>
@@ -942,7 +946,14 @@ export default {
       grid-template-columns: 1fr 1fr 1fr;
       row-gap: 24px;
       column-gap: 24px
-    }    
+    }
+
+    .four-column-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr; 
+      row-gap: 24px;
+      column-gap: 16px
+    }        
   }
 
   .multiple-stat-container {
