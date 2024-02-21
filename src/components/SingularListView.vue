@@ -105,7 +105,7 @@ export default {
 
       const listOfInstitutionIDs = toRaw(this.list.institutions);
       listOfInstitutionIDs.forEach(async (institutionID)=>{
-        const snap = await getDoc(doc(dbFireStore, 'institutions_v6', institutionID));
+        const snap = await getDoc(doc(dbFireStore, 'institutions_v7', institutionID));
         this.institutions.push(snap.data());
       })
     },
