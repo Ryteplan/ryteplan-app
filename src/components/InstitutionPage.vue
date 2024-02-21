@@ -210,13 +210,6 @@
           <span class="stat-label">SAT/ACT Not Considered</span> 
           <span class="stat-content">{{ (institution["admsNotUsed"] && institution["admsNotUsed"] !== 'null') ? institution["admsNotUsed"].toLocaleString() : '—' }}</span>
         </div>
-        <div class="multiple-stat-container">
-          <div class="stat-container">
-            <span class="stat-label">Males in Greek </span> 
-            <span class="stat-content">{{ institution["fratP"] ? institution["fratP"] + '%' : '—' }}</span>
-          </div>
-          <div class="stat-container"><span class="stat-label">Females in Greek </span> <span class="stat-content">{{ institution["soroP"] ? institution["soroP"] + '%' : '—' }}</span></div>
-        </div>
 
         <div class="stat-container"><span class="stat-label">Freshmen Living on Campus</span> <span class="stat-content">{{ institution["hous1stUgP"] }}%</span></div>
         <div class="stat-container"><span class="stat-label">Out-of-State Population</span> <span class="stat-content">{{ institution["enNresP"] }}%</span></div>
@@ -226,6 +219,15 @@
           <!-- ({{ institution["enNonresAlienN"] }}) -->
         </div>
         <div class="stat-container"><span class="stat-label">Freshman Retention Rate</span> <span class="stat-content">{{ Math.round(institution["retentionFrshP"]) }}%</span></div>
+
+        <div class="multiple-stat-container">
+          <div class="stat-container">
+            <span class="stat-label">Males in Greek </span> 
+            <span class="stat-content">{{ institution["fratP"] ? institution["fratP"] + '%' : '—' }}</span>
+          </div>
+          <div class="stat-container"><span class="stat-label">Females in Greek </span> <span class="stat-content">{{ institution["soroP"] ? institution["soroP"] + '%' : '—' }}</span></div>
+        </div>
+
 
       </div>
       <div class="section-container mt-8">
