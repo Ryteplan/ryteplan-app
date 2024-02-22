@@ -650,8 +650,7 @@ import { collection, documentId, query, where, getDocs, setDoc, doc } from 'fire
 import SaveToListDialog from './SaveToListDialog'
 import { getAuth,onAuthStateChanged } from "firebase/auth";
 import { useUserStore } from '../stores/userStore';
-
-// import EthnicityChart from './EthnicityChart2.vue';
+// import EthnicityChart from './EthnicityChart.vue';
 
 export default {
   setup() {
@@ -973,6 +972,7 @@ export default {
   .stat-label {
     color: #2a2a2a;
     font-size: 14px;
+    font-weight: 600;
 
     > span {
       font-size: 14px;
@@ -983,7 +983,7 @@ export default {
 
   .stat-content {
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 400;
 
     &.not-yet-found {
       color: rgb(152, 20, 20);
