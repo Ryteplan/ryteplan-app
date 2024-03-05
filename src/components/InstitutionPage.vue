@@ -8,13 +8,44 @@
           <!-- <span class="d-block" style="font-weight: 500;">{{ descriptions.tagline }}</span> -->
         </v-col>
         <v-col cols="12" md="6" class="d-md-flex align-center justify-end pt-0">
-          <v-btn
+        <v-btn
             @click="showSaveToListDialog = true"
           >
             Add to list
           </v-btn>
         </v-col>
       </v-row>
+      <v-row v-if="userStore.adminMode">
+        <v-col cols="3" class="pa-0">
+          <v-switch 
+            label="Hidden"
+            color="primary"
+            v-model="manualInstitionData['hidden']"
+            @change="toggleFieldTrueFalse('hidden')"
+          >
+          </v-switch>         
+        </v-col>
+        <v-col cols="3" class="pa-0">
+          <v-switch 
+            label="Edit image URLs"
+            v-model="editImages"
+            @change="toggleEditImages"
+            color="primary"
+            hide-details
+            dense
+          >
+          </v-switch>
+        </v-col>
+      </v-row>
+      <div v-if="editImages">
+        <v-text-field v-model="imageURLsFromDB.image1" label="image1" density="compact" variant="solo" single-line hide-details></v-text-field>
+        <v-text-field class="mt-4" v-model="imageURLsFromDB.image2" label="image2" density="compact" variant="solo" single-line hide-details></v-text-field>
+        <v-text-field class="mt-4" v-model="imageURLsFromDB.image3" label="image3" density="compact" variant="solo" single-line hide-details></v-text-field>
+        <v-text-field class="mt-4" v-model="imageURLsFromDB.image4" label="image4" density="compact" variant="solo" single-line hide-details></v-text-field>
+        <v-text-field class="mt-4" v-model="imageURLsFromDB.image5" label="image5" density="compact" variant="solo" single-line hide-details></v-text-field>
+        <v-btn class="mt-4" :disabled="isEditImagesSaveButtonDisabled" @click="saveImages">Save images</v-btn>
+      </div>
+
       <div class="section-container location-links-images-container mt-2">
         <div class="d-flex flex-column">
           <div class="location-container d-flex flex-column" style="gap: 12px">
@@ -74,25 +105,6 @@
             </div>
           </div>
         </div>
-      </div>
-      <div v-if="userStore.adminMode">
-        <v-switch 
-          label="Edit image URLs"
-          v-model="editImages"
-          @change="toggleEditImages"
-          color="primary"
-          hide-details
-          dense
-        >
-        </v-switch>
-      </div>
-      <div v-if="editImages">
-        <v-text-field v-model="imageURLsFromDB.image1" label="image1" density="compact" variant="solo" single-line hide-details></v-text-field>
-        <v-text-field class="mt-4" v-model="imageURLsFromDB.image2" label="image2" density="compact" variant="solo" single-line hide-details></v-text-field>
-        <v-text-field class="mt-4" v-model="imageURLsFromDB.image3" label="image3" density="compact" variant="solo" single-line hide-details></v-text-field>
-        <v-text-field class="mt-4" v-model="imageURLsFromDB.image4" label="image4" density="compact" variant="solo" single-line hide-details></v-text-field>
-        <v-text-field class="mt-4" v-model="imageURLsFromDB.image5" label="image5" density="compact" variant="solo" single-line hide-details></v-text-field>
-        <v-btn class="mt-4" :disabled="isEditImagesSaveButtonDisabled" @click="saveImages">Save images</v-btn>
       </div>
       <div class="section-container three-by-three-stat-grid mt-8">
         <div class="stat-container">
@@ -437,7 +449,7 @@
       </v-expansion-panels>
       <div class="section-container mt-8">
         <h2>Student Ethnicity</h2>
-        <!-- <EthnicityChart :institutionData="this.institution"></EthnicityChart> -->
+        <EthnicityChart :institutionData="this.institution"></EthnicityChart>
         <div class="ethnic-stats">
           <div class="three-by-three-stat-grid mt-4" style="max-width: 900px; margin: 0 auto;">
             <div class="stat-container">          
@@ -650,7 +662,7 @@ import { collection, documentId, query, where, getDocs, setDoc, doc } from 'fire
 import SaveToListDialog from './SaveToListDialog'
 import { getAuth,onAuthStateChanged } from "firebase/auth";
 import { useUserStore } from '../stores/userStore';
-// import EthnicityChart from './EthnicityChart.vue';
+import EthnicityChart from './EthnicityChart.vue';
 
 export default {
   setup() {
@@ -868,7 +880,7 @@ export default {
     }
   },
   components: {
-    // EthnicityChart,
+    EthnicityChart,
     SaveToListDialog
   }
 };

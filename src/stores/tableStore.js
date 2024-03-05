@@ -7,6 +7,7 @@ export const useTableStore = defineStore('table', {
   state: () => ({
       loading: true,
       tableData: [],
+      manualTableData: [],
       filters: {
         State: [],
         Calendar: [],
@@ -38,6 +39,9 @@ export const useTableStore = defineStore('table', {
           if (!db.objectStoreNames.contains('institutions')) {
             db.createObjectStore('institutions', { keyPath: 'id' });
           }
+          if (!db.objectStoreNames.contains('institutionsManual')) {
+            db.createObjectStore('institutionsManual', { keyPath: 'id' });
+          }
         };
 
         request.onsuccess = (event) => {
@@ -47,38 +51,95 @@ export const useTableStore = defineStore('table', {
     },
     async fetchTableData() {
       this.loading = true;
-      try {
-        const db = await this.openIndexedDB();
-        const transaction = db.transaction(['institutions'], 'readonly');
-        const store = transaction.objectStore('institutions');
-        const getAllRequest = store.getAll();
+      const maxRetries = 3;
+      let retries = 0;
+      let success = false;
+      
+      while (retries < maxRetries && !success) {
+        try {
 
-        getAllRequest.onsuccess = async () => {
-          if (getAllRequest.result.length > 0) {
-            // Data is available in IndexedDB
-            this.tableData = getAllRequest.result;
-            this.loading = false;
-          } else {
-            // Fetch from Firestore and store in IndexedDB
-            const institutions = collection(dbFireStore, 'institutions_v7');
-            const docSnap = await getDocs(institutions);
+          console.log(this);
+          const db = await this.openIndexedDB();
 
-            const transaction = db.transaction(['institutions'], 'readwrite');
-            const store = transaction.objectStore('institutions');
-            this.tableData = [];
+          console.log(db);
 
-            docSnap.docs.forEach(doc => {
-              const data = { ...doc.data(), id: doc.id };
-              this.tableData.push(data);
-              store.add(data);
-            });
+          // Manual Institution Data
+          // const transactionManual = db.transaction(['institutionsManual'], 'readonly');
+          // const storeManual = transactionManual.objectStore('institutionsManual');
+          // const getAllManualRequest = new Promise((resolve, reject) => {
+          //   const request = storeManual.getAll();
+          //   request.onsuccess = () => resolve(request.result);
+          //   request.onerror = () => reject(request.error);
+          // });
+    
+          // const manualData = await getAllManualRequest;
+    
+          // if (manualData.length > 0) {
+          //   this.manualTableData = manualData;
+          // } else {
+          //   const manual_institution_data = collection(dbFireStore, 'manual_institution_data');
+          //   const manual_institution_dataSnap = await getDocs(manual_institution_data);
+    
+          //   manual_institution_dataSnap.forEach((doc) => {
+          //     const manualInstituionData = { ...doc.data(), id: doc.id };
+          //     this.manualTableData.push(manualInstituionData);
+          //     storeManual.add(manualInstituionData);
+          //   });    
+          // }
+          
+          // Petersons Institution Data
+          const transactionPetersons = db.transaction(['institutionsPetersons'], 'readwrite');
+          const storePetersons = transactionPetersons.objectStore('institutionsPetersons');
 
+          const getAllPetersonsRequest = new Promise((resolve, reject) => {
+            const request = storePetersons.getAll();
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => reject(request.error);
+          });
+
+          const petersonsData = await getAllPetersonsRequest;
+
+          console.log(petersonsData);
+
+          if (petersonsData.length > 0) {
+            if (getAllPetersonsRequest.result.length > 0) {
+              this.tableData = getAllPetersonsRequest.result;
+              this.loading = false;
+            } else {
+
+              // Petersons Institution Data
+              const institutions = collection(dbFireStore, 'institutions_v7');
+              const institutionsSnap = await getDocs(institutions);
+
+              this.tableData = [];
+
+              institutionsSnap.docs.forEach(doc => {
+                const institutionData = { ...doc.data(), id: doc.id };
+
+                // check for user hidden institutions
+                const matchingObject = this.manualTableData.find(obj => obj.id === institutionData.uri && obj.hidden === true);
+
+                if (!matchingObject) {
+                  this.tableData.push(institutionData);
+                  storePetersons.add(institutionData);
+                }
+              });
+            }
             this.loading = false;
           }
-        };
-      } catch (error) {
-        console.error('Error fetching table data:', error);
-        this.loading = false;
+          success = true;
+        } catch (error) {
+          console.error('Error fetching table data:', error);
+          retries++;
+          if (retries < maxRetries) {
+            console.log(`Retrying (${retries}/${maxRetries})...`);
+            // Optional: introduce a delay before retrying
+            // await new Promise(resolve => setTimeout(resolve, 1000));
+          } else {
+            console.error(`Maximum retries (${maxRetries}) reached.`);
+            this.loading = false;
+          }
+        }
       }
     },
     filteredTableData(){
