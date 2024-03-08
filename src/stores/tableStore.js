@@ -35,8 +35,11 @@ export const useTableStore = defineStore('table', {
 
         request.onupgradeneeded = (event) => {
           const db = event.target.result;
-          if (!db.objectStoreNames.contains('institutions')) {
-            db.createObjectStore('institutions', { keyPath: 'id' });
+          if (!db.objectStoreNames.contains('institutionsPetersons')) {
+            db.createObjectStore('institutionsPetersons', { keyPath: 'id' });
+          }
+          if (!db.objectStoreNames.contains('institutionsManual')) {
+            db.createObjectStore('institutionsManual', { keyPath: 'id' });
           }
         };
 
@@ -49,9 +52,15 @@ export const useTableStore = defineStore('table', {
       this.loading = true;
       try {
         const db = await this.openIndexedDB();
-        const transaction = db.transaction(['institutions'], 'readonly');
-        const store = transaction.objectStore('institutions');
-        const getAllRequest = store.getAll();
+
+        // Manual
+
+
+
+        // Petersons
+        const transactionPetersons = db.transaction(['institutionsPetersons'], 'readonly');
+        const storePetersons = transactionPetersons.objectStore('institutionsPetersons');
+        const getAllRequest = storePetersons.getAll();
 
         getAllRequest.onsuccess = async () => {
           if (getAllRequest.result.length > 0) {
@@ -63,14 +72,14 @@ export const useTableStore = defineStore('table', {
             const institutions = collection(dbFireStore, 'institutions_v7');
             const docSnap = await getDocs(institutions);
 
-            const transaction = db.transaction(['institutions'], 'readwrite');
-            const store = transaction.objectStore('institutions');
+            const transactionPetersons = db.transaction(['institutionsPetersons'], 'readwrite');
+            const storePetersons = transactionPetersons.objectStore('institutionsPetersons');
             this.tableData = [];
 
             docSnap.docs.forEach(doc => {
               const data = { ...doc.data(), id: doc.id };
               this.tableData.push(data);
-              store.add(data);
+              storePetersons.add(data);
             });
 
             this.loading = false;
