@@ -7,6 +7,7 @@ export const useTableStore = defineStore('table', {
   state: () => ({
       loading: true,
       tableData: [],
+      tableDataManual: [],
       filters: {
         State: [],
         Calendar: [],
@@ -25,29 +26,51 @@ export const useTableStore = defineStore('table', {
   }),
   actions: {
     async openIndexedDB() {
+      const retryCount = 3;
+      const retryDelay = 1000;
+      let attempt = 0;
+      
       return new Promise((resolve, reject) => {
-        const request = indexedDB.open('MyDatabase', 1);
-
-        request.onerror = (event) => {
-          console.error("IndexedDB error:", event.target.error);
-          reject(event.target.error);
-        };
-
-        request.onupgradeneeded = (event) => {
-          const db = event.target.result;
-          if (!db.objectStoreNames.contains('institutionsPetersons')) {
-            db.createObjectStore('institutionsPetersons', { keyPath: 'id' });
+        const tryOpenDB = async () => {
+          attempt++;
+          try {
+            const request = indexedDB.open('MyDatabase', 1);
+    
+            request.onerror = (event) => {
+              console.error("IndexedDB error:", event.target.error);
+              if (attempt <= retryCount) {
+                setTimeout(tryOpenDB, retryDelay);
+              } else {
+                reject(event.target.error);
+              }
+            };
+    
+            request.onupgradeneeded = (event) => {
+              const db = event.target.result;
+              if (!db.objectStoreNames.contains('institutionsPetersons')) {
+                db.createObjectStore('institutionsPetersons', { keyPath: 'id' });
+              }
+              if (!db.objectStoreNames.contains('institutionsManual')) {
+                db.createObjectStore('institutionsManual', { keyPath: 'id' });
+              }
+            };
+    
+            request.onsuccess = (event) => {
+              resolve(event.target.result);
+            };
+          } catch (error) {
+            console.error('Error opening IndexedDB:', error);
+            if (attempt <= retryCount) {
+              setTimeout(tryOpenDB, retryDelay);
+            } else {
+              reject(error);
+            }
           }
-          if (!db.objectStoreNames.contains('institutionsManual')) {
-            db.createObjectStore('institutionsManual', { keyPath: 'id' });
-          }
         };
-
-        request.onsuccess = (event) => {
-          resolve(event.target.result);
-        };
+    
+        tryOpenDB();
       });
-    },
+    },    
     async fetchTableData() {
       this.loading = true;
       try {
@@ -55,17 +78,42 @@ export const useTableStore = defineStore('table', {
 
         // Manual
 
+        const transactionManual = db.transaction(['institutionsManual'], 'readonly');
+        const storeManual = transactionManual.objectStore('institutionsManual');
+        const getAllRequestManual = storeManual.getAll();
 
+        getAllRequestManual.onsuccess = async () => {
+          if (getAllRequestManual.result.length > 0) {
+            // Data is available in IndexedDB
+            this.tableDataManual = getAllRequestManual.result;
+            this.loading = false;
+          } else {
+            // Fetch from Firestore and store in IndexedDB
+            const institutions = collection(dbFireStore, 'institutions_v7');
+            const docSnap = await getDocs(institutions);
+
+            const transactionManual = db.transaction(['institutionsManual'], 'readwrite');
+            const storeManual = transactionManual.objectStore('institutionsManual');
+            this.tableDataManual = [];
+
+            docSnap.docs.forEach(doc => {
+              const data = { ...doc.data(), id: doc.id };
+              this.tableDataManual.push(data);
+              storeManual.add(data);
+            });
+
+          }
+        };
 
         // Petersons
         const transactionPetersons = db.transaction(['institutionsPetersons'], 'readonly');
         const storePetersons = transactionPetersons.objectStore('institutionsPetersons');
-        const getAllRequest = storePetersons.getAll();
+        const getAllRequestPetersons = storePetersons.getAll();
 
-        getAllRequest.onsuccess = async () => {
-          if (getAllRequest.result.length > 0) {
+        getAllRequestPetersons.onsuccess = async () => {
+          if (getAllRequestPetersons.result.length > 0) {
             // Data is available in IndexedDB
-            this.tableData = getAllRequest.result;
+            this.tableData = getAllRequestPetersons.result;
             this.loading = false;
           } else {
             // Fetch from Firestore and store in IndexedDB
