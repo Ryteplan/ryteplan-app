@@ -34,6 +34,7 @@ export const useTableStore = defineStore('table', {
         const tryOpenDB = async () => {
           attempt++;
           try {
+            console.log("Opening IndexedDB - attempt: ", attempt)
             const request = indexedDB.open('MyDatabase', 1);
     
             request.onerror = (event) => {
@@ -77,7 +78,6 @@ export const useTableStore = defineStore('table', {
         const db = await this.openIndexedDB();
 
         // Manual
-
         const transactionManual = db.transaction(['institutionsManual'], 'readonly');
         const storeManual = transactionManual.objectStore('institutionsManual');
         const getAllRequestManual = storeManual.getAll();
@@ -89,7 +89,7 @@ export const useTableStore = defineStore('table', {
             this.loading = false;
           } else {
             // Fetch from Firestore and store in IndexedDB
-            const institutions = collection(dbFireStore, 'institutions_v7');
+            const institutions = collection(dbFireStore, 'manual_institution_data');
             const docSnap = await getDocs(institutions);
 
             const transactionManual = db.transaction(['institutionsManual'], 'readwrite');
@@ -101,7 +101,6 @@ export const useTableStore = defineStore('table', {
               this.tableDataManual.push(data);
               storeManual.add(data);
             });
-
           }
         };
 
@@ -138,7 +137,13 @@ export const useTableStore = defineStore('table', {
         this.loading = false;
       }
     },
-    filteredTableData(){
+    filteredTableData(){      
+      this.tableDataManual.filter(data => {
+        if (data.hidden == true) {
+          this.tableData = this.tableData.filter(item => item.uri !== data.id);
+        }
+      });
+
       return this.tableData.filter(d => {
         return d.mainFunctionType !== '2YEAR' && d.mainInstControlDesc !== 'Private Proprietary' && Object.keys(this.filters).every(f => {
           return this.filters[f].length < 1 || this.filters[f].includes(d[f])
