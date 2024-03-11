@@ -18,7 +18,7 @@
       <v-row v-if="userStore.adminMode">
         <v-col cols="3" class="pa-0">
           <v-switch 
-            label="Hidden"
+            label="Hidden from Search"
             color="primary"
             v-model="manualInstitionData['hidden']"
             @change="toggleFieldTrueFalse('hidden')"
@@ -43,7 +43,18 @@
         <v-text-field class="mt-4" v-model="imageURLsFromDB.image3" label="image3" density="compact" variant="solo" single-line hide-details></v-text-field>
         <v-text-field class="mt-4" v-model="imageURLsFromDB.image4" label="image4" density="compact" variant="solo" single-line hide-details></v-text-field>
         <v-text-field class="mt-4" v-model="imageURLsFromDB.image5" label="image5" density="compact" variant="solo" single-line hide-details></v-text-field>
-        <v-btn class="mt-4" :disabled="isEditImagesSaveButtonDisabled" @click="saveImages">Save images</v-btn>
+        <v-btn class="mt-4" :disabled="isEditImagesSaveButtonDisabled" @click="saveImages">
+          <span v-if="isEditImagesSaveButtonDisabled">
+              <v-progress-circular
+                :size="20"
+                color="primary"
+                indeterminate
+              ></v-progress-circular>
+          </span>
+          <span v-if="!isEditImagesSaveButtonDisabled">
+            Save images
+          </span>
+        </v-btn>
       </div>
       <div class="section-container location-links-images-container mt-2">
         <div class="d-flex flex-column">
@@ -739,6 +750,7 @@ export default {
       });
     },
     async saveImages() {
+      this.isEditImagesSaveButtonDisabled = true;
       setDoc(doc(dbFireStore, 'institution_images', this.institution["uri"]), {
         "image1": this.imageURLsFromDB.image1,
         "image2": this.imageURLsFromDB.image2,
@@ -746,6 +758,9 @@ export default {
         "image4": this.imageURLsFromDB.image4,
         "image5": this.imageURLsFromDB.image5,
       })
+      setTimeout(() => {
+        this.isEditImagesSaveButtonDisabled = false;
+      }, 1000);
     },
     async loadInstitutionData() {
       const slugFromURL = this.$route.params.slug;
