@@ -88,6 +88,14 @@
           @click="tableStore.refreshTableData"
         >
         </v-list-item>
+        <v-list-item
+          v-if="userStore.adminMode"
+          prepend-icon="mdi-table"
+          title="Refresh Headers"
+          value="Refresh Headers"
+          @click="tableStore.refreshTableHeaders"
+        >
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>    
     <v-main class="flex-column">

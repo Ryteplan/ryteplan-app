@@ -162,8 +162,7 @@ export const useTableStore = defineStore('table', {
         } else {
           return d.hidden !== true && d.mainFunctionType !== '2YEAR' && d.mainInstControlDesc !== 'Private Proprietary' && Object.keys(this.filters).every(f => {
             return this.filters[f].length < 1 || this.filters[f].includes(d[f])
-          })  
-
+          })
         }
       })
     },
@@ -171,6 +170,7 @@ export const useTableStore = defineStore('table', {
       return [...new Set(this.tableData.map(d => d[val]))] 
     },
     updatePage(pageNumber) {
+      console.log(pageNumber);
       this.page = pageNumber;
       document.querySelector('.v-table__wrapper').scrollTop = 0;
     },
@@ -180,14 +180,15 @@ export const useTableStore = defineStore('table', {
     async loadTableHeaders() {
       if (localStorage.getItem("tableHeaders")) {
         this.tableHeaders = JSON.parse(localStorage.getItem("tableHeaders"));
+        console.log(this.tableHeaders);
       }
       else {
         this.tableHeaders = [
           { title: 'id', key: 'id', width: "300px", show: false, align: "d-none" },
           { title: 'Institution name', key: 'name', width: "300px", fixed: true },
-          { title: 'hidden', key: 'hidden', width: "100px", show: false },
-          { title: 'hbcu', key: 'hbcu', width: "100px", show: false },
-          { title: 'tribal', key: 'tribal', width: "100px", show: false },
+          { title: 'Hidden', key: 'hidden', width: "100px", show: false, hideFromUser: true },
+          { title: 'HBCU', key: 'hbcu', width: "100px", show: false },
+          { title: 'Tribal', key: 'tribal', width: "100px", show: false },
           { title: 'State', key: 'stateCleaned', width: "130px", show: false },
           { title: 'City', key: 'city', width: "220px", show: false },
           { title: 'Country', key: 'countryCode', width: "130px", show: false },

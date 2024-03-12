@@ -104,7 +104,7 @@
                       class="mb-4"
                     >
                       <v-switch 
-                        v-if="header.title !== 'Institution name'"
+                        v-if="header.title !== 'Institution name' && header.hideFromUser !== true"
                         v-show="header.title !== 'id'"
                         :label="header.title"
                         v-model="header.show"
