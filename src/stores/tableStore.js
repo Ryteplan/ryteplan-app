@@ -180,7 +180,6 @@ export const useTableStore = defineStore('table', {
     async loadTableHeaders() {
       if (localStorage.getItem("tableHeaders")) {
         this.tableHeaders = JSON.parse(localStorage.getItem("tableHeaders"));
-        console.log(this.tableHeaders);
       }
       else {
         this.tableHeaders = [
