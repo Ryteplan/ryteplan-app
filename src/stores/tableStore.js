@@ -138,11 +138,11 @@ export const useTableStore = defineStore('table', {
       }
     },
     filteredTableData(){      
-      this.tableDataManual.filter(data => {
-        if (data.hidden == true) {
-          this.tableData = this.tableData.filter(item => item.uri !== data.id);
-        }
-      });
+      // this.tableDataManual.filter(data => {
+      //   if (data.hidden == true) {
+      //     this.tableData = this.tableData.filter(item => item.uri !== data.id);
+      //   }
+      // });
 
       return this.tableData.filter(d => {
         return d.mainFunctionType !== '2YEAR' && d.mainInstControlDesc !== 'Private Proprietary' && Object.keys(this.filters).every(f => {
