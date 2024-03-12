@@ -120,6 +120,18 @@
                 </v-card>
               </v-dialog>
             </v-col>
+            <v-col md="3" class="justify-end">
+              <v-switch 
+                v-if="userStore.adminMode"
+                label="Show hidden"
+                color="primary"
+                hide-details
+                class="inherit-height align-end"
+                v-model="tableStore.hideHidden"
+                @change="tableStore.saveHideHiddenState"
+              >
+              </v-switch>
+            </v-col>
             <v-col 
               v-if="tableStore.selectedRows.length"
               cols="6" 
@@ -206,12 +218,16 @@
 </template>
  
 <script>
+import { useUserStore } from '../stores/userStore';
 import { useTableStore } from '../stores/tableStore';
 import SaveToListDialog from './SaveToListDialog'
 import ShareDialog from './ShareDialog'
 
 export default {
   setup() {
+    let userStore = useUserStore();
+    userStore.getAdminMode();
+
     let tableStore = useTableStore();
     if (tableStore.tableData.length == 0) {
       tableStore.fetchTableData();
@@ -219,9 +235,13 @@ export default {
     if (tableStore.tableHeaders.length == 0) {
       tableStore.loadTableHeaders();
     }
+    
+    tableStore.updateHeaders();
+    tableStore.getHideHidden();
 
     return {
       tableStore,      
+      userStore
     };
   },
   mounted() {

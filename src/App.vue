@@ -80,6 +80,14 @@
           @change="userStore.saveAdminModeState"
         >
         </v-switch>
+        <v-list-item
+          v-if="userStore.adminMode"
+          prepend-icon="mdi-table"
+          title="Refresh Table"
+          value="Refresh Table"
+          @click="tableStore.refreshTableData"
+        >
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>    
     <v-main class="flex-column">
@@ -95,14 +103,18 @@
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth"
 import LogoBlack from "@/components/svg/LogoBlack.vue";
 import { useUserStore } from './/stores/userStore';
+import { useTableStore } from './/stores/tableStore';
 
 let auth;
 export default {
   setup() {
     let userStore = useUserStore();
     userStore.getAdminMode();
+
+    let tableStore = useTableStore();
     return {
-      userStore,      
+      userStore,
+      tableStore      
     };
   },
   components: {

@@ -19,3 +19,10 @@ body {
   }
 }
 
+
+.v-switch.inherit-height .v-input__control {
+  height: inherit;
+  .v-selection-control {
+    min-height: inherit;
+  }
+} 

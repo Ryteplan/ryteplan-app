@@ -8,6 +8,7 @@ export const useTableStore = defineStore('table', {
       loading: true,
       tableData: [],
       tableDataManual: [],
+      hideHidden: true,
       filters: {
         State: [],
         Calendar: [],
@@ -111,10 +112,12 @@ export const useTableStore = defineStore('table', {
 
         getAllRequestPetersons.onsuccess = async () => {
           if (getAllRequestPetersons.result.length > 0) {
+            console.log('Fetching from IndexedDB')
             // Data is available in IndexedDB
             this.tableData = getAllRequestPetersons.result;
             this.loading = false;
           } else {
+            console.log('Fetching from Firestore')
             // Fetch from Firestore and store in IndexedDB
             const institutions = collection(dbFireStore, 'institutions_v7');
             const docSnap = await getDocs(institutions);
@@ -126,7 +129,20 @@ export const useTableStore = defineStore('table', {
             docSnap.docs.forEach(doc => {
               const data = { ...doc.data(), id: doc.id };
               this.tableData.push(data);
-              storePetersons.add(data);
+            });
+
+            // Add manual data to this.tableData
+            // iterate through the manual data and add it to the Petersons data
+            this.tableDataManual.forEach(data => {
+              const index = this.tableData.findIndex(item => item.uri === data.id);
+              if (index > -1) {
+                this.tableData[index] = { ...this.tableData[index], ...data };
+              }
+            });
+  
+            this.tableData.forEach(data => {
+              const data1 = { ...data, id: data.id };
+              storePetersons.add(data1);
             });
 
             this.loading = false;
@@ -138,16 +154,17 @@ export const useTableStore = defineStore('table', {
       }
     },
     filteredTableData(){      
-      // this.tableDataManual.filter(data => {
-      //   if (data.hidden == true) {
-      //     this.tableData = this.tableData.filter(item => item.uri !== data.id);
-      //   }
-      // });
-
       return this.tableData.filter(d => {
-        return d.mainFunctionType !== '2YEAR' && d.mainInstControlDesc !== 'Private Proprietary' && Object.keys(this.filters).every(f => {
-          return this.filters[f].length < 1 || this.filters[f].includes(d[f])
-        })
+        if (this.hideHidden) {
+          return d.hidden == true && d.mainFunctionType !== '2YEAR' && d.mainInstControlDesc !== 'Private Proprietary' && Object.keys(this.filters).every(f => {
+            return this.filters[f].length < 1 || this.filters[f].includes(d[f])
+          })  
+        } else {
+          return d.hidden !== true && d.mainFunctionType !== '2YEAR' && d.mainInstControlDesc !== 'Private Proprietary' && Object.keys(this.filters).every(f => {
+            return this.filters[f].length < 1 || this.filters[f].includes(d[f])
+          })  
+
+        }
       })
     },
     columnValueList(val) {
@@ -168,6 +185,9 @@ export const useTableStore = defineStore('table', {
         this.tableHeaders = [
           { title: 'id', key: 'id', width: "300px", show: false, align: "d-none" },
           { title: 'Institution name', key: 'name', width: "300px", fixed: true },
+          { title: 'hidden', key: 'hidden', width: "100px", show: false },
+          { title: 'hbcu', key: 'hbcu', width: "100px", show: false },
+          { title: 'tribal', key: 'tribal', width: "100px", show: false },
           { title: 'State', key: 'stateCleaned', width: "130px", show: false },
           { title: 'City', key: 'city', width: "220px", show: false },
           { title: 'Country', key: 'countryCode', width: "130px", show: false },
@@ -208,6 +228,40 @@ export const useTableStore = defineStore('table', {
     },
     performSeach() {
       this.executeSearchTerms = this.searchInput;
+    },
+    async refreshTableData() {
+      this.loading = true;
+      const dbRequest = indexedDB.open('MyDatabase');
+      dbRequest.onsuccess = function(event) {
+        const db = event.target.result;
+
+        // Get the names of all object stores
+        const storeNames = db.objectStoreNames;
+
+        // Open a transaction for each object store and clear it
+        for (let i = 0; i < storeNames.length; i++) {
+          const storeName = storeNames[i];
+          const transaction = db.transaction(storeName, 'readwrite');
+          const objectStore = transaction.objectStore(storeName);
+          objectStore.clear();
+        }
+      }
+      dbRequest.onerror = function(event) {
+        console.error("Error opening database:", event.target.error);
+      };
+
+      this.fetchTableData();
+    },
+    getHideHidden() {
+      if (localStorage.getItem("hideHidden") !== null) {
+        this.hideHidden = localStorage.getItem("hideHidden") === 'true';
+      } else {
+          this.hideHidden = false;
+      }
+      return this.hideHidden;
+    },
+    saveHideHiddenState() {
+        localStorage.setItem("hideHidden", this.hideHidden);
     }
   },
 });
