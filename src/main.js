@@ -117,6 +117,16 @@ const vuetify = createVuetify({
       mdi,
     }
   },
+  theme: {
+    themes: {
+      light: {
+        dark: false,
+        colors: {
+          primary: "#000000", // #E53935
+        }
+      },
+    },
+  },
 })
 
 app.use(vuetify);
