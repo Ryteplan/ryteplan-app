@@ -90,14 +90,13 @@
                     v-bind="props"
                     append-icon="mdi-table"
                   >
-                    Table Settings
+                    Columns
                   </v-btn>
                 </template>
                 <v-card>
                   <div class="pa-8">
-                    <h2>Table settings</h2>
+                    <h2>Columns</h2>
                     <p class="mt-2">Use the controls below to select which columns will appear on the table.</p>
-                    <h3 class="mt-5 mb-3">Columns</h3>
                     <div
                       v-for="header in tableStore.tableHeaders"
                       :key="header.title"
@@ -180,7 +179,6 @@
         filterable
         multi-sort
         density="compact"
-        show-select
         return-object
         :headers="tableStore.filteredHeadersData()"
         :items="tableStore.filteredTableData()" 

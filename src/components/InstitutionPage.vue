@@ -124,7 +124,8 @@
         <div class="stat-container">
           <span class="stat-label">Undergraduate Enrollment</span>
           <span class="stat-content">
-            <span class="d-block">{{ ((institution["enTotFtMenN"]) + (institution["enTotPtMenN"]) + institution["enTotFtWmnN"] + institution["enTotPtWmnN"]).toLocaleString() }}</span>
+            <span class="d-block">{{ institution["undergradEnrollTotal"]?.toLocaleString() || '—' }}</span>
+            <span class="d-none">{{ ((institution["enTotFtMenN"]) + (institution["enTotPtMenN"]) + institution["enTotFtWmnN"] + institution["enTotPtWmnN"]).toLocaleString() }}</span>
             <div class="d-none">
               =
               <span class="d-block">Men FT - {{ institution["enTotFtMenN"]?.toLocaleString() || '—' }}</span>
@@ -731,8 +732,6 @@ export default {
   },
   methods: {
     toggleFieldTrueFalse(field) {
-      console.log(field);
-      // this.manualInstitionData[field] = !this.manualInstitionData[field];
       setDoc(doc(dbFireStore, 'manual_institution_data', this.institution["uri"]), {
         [field]: this.manualInstitionData[field]
       }, { merge: true });
@@ -887,7 +886,15 @@ export default {
       });
     },
     getEthnicityPopulationTotal() {
-      this.ethnicityPopulationTotal = this.institution["enAsianNonhispanicN"] + this.institution["enBlackNonhispanicN"] + this.institution["enHispanicEthnicityN"] + this.institution["enIslanderNonhispanicN"] + this.institution["enMultiraceNonhispanicN"] + this.institution["enNativeNonhispanicN"] + this.institution["enRaceEthnicityUnknownN"] + this.institution["enWhiteNonhispanicN"];
+      this.ethnicityPopulationTotal = 
+      this.institution["enAsianNonhispanicN"] + 
+      this.institution["enBlackNonhispanicN"] + 
+      this.institution["enHispanicEthnicityN"] + 
+      this.institution["enIslanderNonhispanicN"] + 
+      this.institution["enMultiraceNonhispanicN"] + 
+      this.institution["enNativeNonhispanicN"] + 
+      this.institution["enRaceEthnicityUnknownN"] + 
+      this.institution["enWhiteNonhispanicN"];
     },
     toggleEditImages(){
       this.editMode = !this.editMode;
