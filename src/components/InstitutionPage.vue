@@ -45,11 +45,11 @@
         <v-text-field class="mt-4" v-model="imageURLsFromDB.image5" label="image5" density="compact" variant="solo" single-line hide-details></v-text-field>
         <v-btn class="mt-4" :disabled="isEditImagesSaveButtonDisabled" @click="saveImages">
           <span v-if="isEditImagesSaveButtonDisabled">
-              <v-progress-circular
-                :size="20"
-                color="primary"
-                indeterminate
-              ></v-progress-circular>
+            <v-progress-circular
+              :size="20"
+              color="primary"
+              indeterminate
+            ></v-progress-circular>
           </span>
           <span v-if="!isEditImagesSaveButtonDisabled">
             Save images
@@ -859,9 +859,15 @@ export default {
               "image4": image4.items[0].link,
               "image5": image5.items[0].link,
             })
-          } else {
-            // User is signed out
-            // Handle the situation as you wish
+
+            this.imageURLsFromDB = {
+              "image1": image1.items[0].link,
+              "image2": image2.items[0].link,
+              "image3": image3.items[0].link,
+              "image4": image4.items[0].link,
+              "image5": image5.items[0].link,
+            }
+
           }
         });
         this.addImagesFromSearchToLinkArray();
@@ -887,14 +893,14 @@ export default {
     },
     getEthnicityPopulationTotal() {
       this.ethnicityPopulationTotal = 
-      this.institution["enAsianNonhispanicN"] + 
-      this.institution["enBlackNonhispanicN"] + 
-      this.institution["enHispanicEthnicityN"] + 
-      this.institution["enIslanderNonhispanicN"] + 
-      this.institution["enMultiraceNonhispanicN"] + 
-      this.institution["enNativeNonhispanicN"] + 
-      this.institution["enRaceEthnicityUnknownN"] + 
-      this.institution["enWhiteNonhispanicN"];
+        this.institution["enAsianNonhispanicN"] + 
+        this.institution["enBlackNonhispanicN"] + 
+        this.institution["enHispanicEthnicityN"] + 
+        this.institution["enIslanderNonhispanicN"] + 
+        this.institution["enMultiraceNonhispanicN"] + 
+        this.institution["enNativeNonhispanicN"] + 
+        this.institution["enRaceEthnicityUnknownN"] + 
+        this.institution["enWhiteNonhispanicN"];
     },
     toggleEditImages(){
       this.editMode = !this.editMode;
