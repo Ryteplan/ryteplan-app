@@ -26,3 +26,8 @@ body {
     min-height: inherit;
   }
 } 
+
+.v-table>.v-table__wrapper>table>tbody>tr>td {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
