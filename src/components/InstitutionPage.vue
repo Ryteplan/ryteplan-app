@@ -867,10 +867,10 @@ export default {
               "image4": image4.items[0].link,
               "image5": image5.items[0].link,
             }
-
+          } else {
+            this.addImagesFromSearchToLinkArray();
           }
         });
-        this.addImagesFromSearchToLinkArray();
       }
     },
     addImagesFromSearchToLinkArray() {
