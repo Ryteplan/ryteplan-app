@@ -15,8 +15,8 @@
           </v-btn>
         </v-col>
       </v-row>
-      <v-row v-if="userStore.adminMode">
-        <v-col cols="3" class="pa-0">
+      <v-row class="mx-0" v-if="userStore.adminMode">
+        <v-col cols="6" lg="3" class="pa-0">
           <v-switch 
             label="Hidden from Search"
             color="primary"
@@ -25,7 +25,7 @@
           >
           </v-switch>         
         </v-col>
-        <v-col cols="3" class="pa-0">
+        <v-col cols="6" lg="3" class="pa-0">
           <v-switch 
             label="Edit image URLs"
             v-model="editImages"
@@ -37,7 +37,7 @@
           </v-switch>
         </v-col>
       </v-row>
-      <div v-if="editImages">
+      <div class="mb-8" v-if="editImages">
         <v-text-field v-model="imageURLsFromDB.image1" label="image1" density="compact" variant="solo" single-line hide-details></v-text-field>
         <v-text-field class="mt-4" v-model="imageURLsFromDB.image2" label="image2" density="compact" variant="solo" single-line hide-details></v-text-field>
         <v-text-field class="mt-4" v-model="imageURLsFromDB.image3" label="image3" density="compact" variant="solo" single-line hide-details></v-text-field>
@@ -52,7 +52,7 @@
             ></v-progress-circular>
           </span>
           <span v-if="!isEditImagesSaveButtonDisabled">
-            Save images
+            Save
           </span>
         </v-btn>
       </div>
@@ -707,6 +707,7 @@ export default {
     return {
       isLoggedIn: false,
       isEditImagesSaveButtonDisabled: false,
+      isEditImagesSaveButtonVisible: false,
       editImages: false,
       test: 25,
       institution: {},
@@ -909,7 +910,7 @@ export default {
   components: {
     // EthnicityChart,
     SaveToListDialog
-  }
+  },
 };
 
 </script>
