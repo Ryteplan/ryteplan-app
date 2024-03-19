@@ -22,7 +22,6 @@ export const useTableStore = defineStore('table', {
       executeSearchTerms: '',
       selectedRows: [],
       tableHeaders: [],
-      sortBy: [{ key: 'name', order: 'asc' }],
   }),
   actions: {
     async openIndexedDB() {

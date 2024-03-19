@@ -170,6 +170,7 @@
         </div>
       </div>
       <v-data-table
+        dense
         id="dataTable"
         class="elevation-1 mt-4 institutionDataTable"
         item-key="Institution name"
@@ -178,7 +179,6 @@
         fixed-header
         filterable
         multi-sort
-        density="compact"
         return-object
         :headers="tableStore.filteredHeadersData()"
         :page="searchFilterSortStore.page"
@@ -189,7 +189,6 @@
         @click:row="navigateToInstitution"
         item-value="institution name"
         v-model="tableStore.selectedRows"
-        v-model:sort-by="tableStore.sortBy"
       >
         <template v-slot:bottom="{ pagination, options, updateOptions }">
           <v-row class="data-table-footer-container">
@@ -468,6 +467,11 @@ tr td {
 .v-navigation-drawer__scrim {
   top: 0;
   left: 0;
+}
+
+.v-table>.v-table__wrapper>table>tbody>tr>td {
+  padding-top: 8px;
+  padding-bottom: 8px;
 }
 
 </style>
