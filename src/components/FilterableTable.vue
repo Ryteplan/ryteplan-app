@@ -306,8 +306,7 @@ export default {
         document.querySelector('#dataTable .v-table__wrapper').scrollLeft = localStorage.getItem("tableViewScrollPositionX");
       }
     },
-    highlightLastClickedRow(){
-
+    highlightLastClickedRow(){      
       const lastClickRowKey = localStorage.getItem("lastClickedRow");
 
       document.querySelectorAll("td").forEach(function(element){
@@ -320,9 +319,10 @@ export default {
     },
     navigateToInstitution(event, item) {        
       const institution = JSON.parse(JSON.stringify(item));
-      const targetRowKey = institution.item.key;
+      const targetRowKey = institution.item.name;
       
       localStorage.setItem("lastClickedRow", targetRowKey);
+
       const slug = JSON.parse(JSON.stringify(item.item.uri));
       
       let route = this.$router.resolve({ 
@@ -447,12 +447,11 @@ tr td {
 }
 
 .v-theme--light .highlight-last-clicked td {
-  background: rgb(159, 154, 121);
-  animation: highlightLastClicked 2s normal forwards ease-out;
+  animation: highlightLastClicked 3s normal forwards ease-out;
 }
 
 @keyframes highlightLastClicked {
-  from { background: rgb(255, 225, 32); }
+  from { background: rgb(255, 247, 196); }
   to { background-color: white; }
 }
 

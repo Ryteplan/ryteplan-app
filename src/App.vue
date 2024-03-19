@@ -4,7 +4,7 @@
       <div class="header-container d-flex align-center justify-space-between ma-auto w-100 px-3 px-lg-0">
         <v-toolbar-title class="logo" style="flex: none;">
           <a href="/" class="logo">
-            <LogoBlack />
+            <LogoGreenBlack />
           </a>
         </v-toolbar-title>
         <v-text-field
@@ -109,7 +109,7 @@
 
 <script>
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth"
-import LogoBlack from "@/components/svg/LogoBlack.vue";
+import LogoGreenBlack from "@/components/svg/LogoGreenBlack.vue";
 import { useUserStore } from './/stores/userStore';
 import { useTableStore } from './/stores/tableStore';
 
@@ -126,7 +126,7 @@ export default {
     };
   },
   components: {
-    LogoBlack
+    LogoGreenBlack
   },
   mounted() {
     auth = getAuth();
