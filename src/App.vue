@@ -147,6 +147,7 @@ export default {
   methods: {
     handleSignOut() {
       signOut(auth).then(() =>{
+        localStorage.removeItem("adminMode");
         this.$router.push("/");
       })
     },
