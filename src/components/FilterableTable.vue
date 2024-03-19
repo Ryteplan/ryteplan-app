@@ -181,12 +181,12 @@
         density="compact"
         return-object
         :headers="tableStore.filteredHeadersData()"
+        :page="searchFilterSortStore.page"
+        @update:page="searchFilterSortStore.updatePage"
         :items="tableStore.filteredTableData()" 
         :search="tableStore.executeSearchTerms"
         :items-per-page="50"
-        :page="tableStore.page"
         @click:row="navigateToInstitution"
-        @update:page="tableStore.updatePage"
         item-value="institution name"
         v-model="tableStore.selectedRows"
         v-model:sort-by="tableStore.sortBy"
@@ -218,6 +218,7 @@
 <script>
 import { useUserStore } from '../stores/userStore';
 import { useTableStore } from '../stores/tableStore';
+import { useSearchFilterSortStore } from '../stores/searchFilterSortStore';
 import SaveToListDialog from './SaveToListDialog'
 import ShareDialog from './ShareDialog'
 
@@ -237,7 +238,10 @@ export default {
     tableStore.updateHeaders();
     tableStore.getHideHidden();
 
+    let searchFilterSortStore = useSearchFilterSortStore();
+
     return {
+      searchFilterSortStore,
       tableStore,      
       userStore
     };
@@ -285,6 +289,10 @@ export default {
     }
   },
   methods: {
+    handleRightClick(event, item) {
+      // do something with event and/or item
+      console.log(event, item)
+    },
     onScroll(e) {
       localStorage.setItem("tableViewScrollPositionY", e.target.scrollTop);
       localStorage.setItem("tableViewScrollPositionX", e.target.scrollLeft);

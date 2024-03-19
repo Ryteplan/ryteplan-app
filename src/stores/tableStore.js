@@ -20,7 +20,6 @@ export const useTableStore = defineStore('table', {
       },
       searchInput: '',
       executeSearchTerms: '',
-      page: 1,
       selectedRows: [],
       tableHeaders: [],
       sortBy: [{ key: 'name', order: 'asc' }],
@@ -87,7 +86,6 @@ export const useTableStore = defineStore('table', {
           if (getAllRequestManual.result.length > 0) {
             // Data is available in IndexedDB
             this.tableDataManual = getAllRequestManual.result;
-            this.loading = false;
           } else {
             // Fetch from Firestore and store in IndexedDB
             const institutions = collection(dbFireStore, 'manual_institution_data');
@@ -144,7 +142,6 @@ export const useTableStore = defineStore('table', {
               const data1 = { ...data, id: data.id };
               storePetersons.add(data1);
             });
-
             this.loading = false;
           }
         };
@@ -153,7 +150,7 @@ export const useTableStore = defineStore('table', {
         this.loading = false;
       }
     },
-    filteredTableData(){      
+    filteredTableData(){
       return this.tableData.filter(d => {
         if (this.hideHidden) {
           return d.hidden == true && d.mainFunctionType !== '2YEAR' && d.mainInstControlDesc !== 'Private Proprietary' && Object.keys(this.filters).every(f => {
@@ -168,11 +165,6 @@ export const useTableStore = defineStore('table', {
     },
     columnValueList(val) {
       return [...new Set(this.tableData.map(d => d[val]))] 
-    },
-    updatePage(pageNumber) {
-      console.log(pageNumber);
-      this.page = pageNumber;
-      document.querySelector('.v-table__wrapper').scrollTop = 0;
     },
     updateSelected(selectedRows) {
       this.selectedRows = selectedRows;

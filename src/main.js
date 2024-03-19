@@ -6,6 +6,7 @@ import * as labsComponents from 'vuetify/labs/components'
 import * as directives from 'vuetify/directives'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import { createPinia } from 'pinia'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { firebaseApp } from './firebase'
 import { VueFire } from 'vuefire'
 import App from './App.vue';
@@ -102,6 +103,7 @@ app.use(router);
 
 
 const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
 app.use(pinia);
 
 const vuetify = createVuetify({
