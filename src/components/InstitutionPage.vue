@@ -15,11 +15,13 @@
           </v-btn>
         </v-col>
       </v-row>
-      <v-row class="mx-0" v-if="userStore.adminMode">
+      <v-row class="mx-0 mt-0 mb-1" v-if="userStore.adminMode">
         <v-col cols="6" lg="3" class="pa-0">
           <v-switch 
             label="Hidden from Search"
             color="primary"
+            hide-details
+            dense
             v-model="manualInstitionData['hidden']"
             @change="toggleFieldTrueFalse('hidden')"
           >
