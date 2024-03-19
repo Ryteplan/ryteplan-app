@@ -119,7 +119,7 @@ export const useTableStore = defineStore('table', {
           } else {
             console.log('Fetching from Firestore')
             // Fetch from Firestore and store in IndexedDB
-            const institutions = collection(dbFireStore, 'institutions_v7');
+            const institutions = collection(dbFireStore, 'institutions_v9');
             const docSnap = await getDocs(institutions);
 
             const transactionPetersons = db.transaction(['institutionsPetersons'], 'readwrite');

@@ -766,7 +766,7 @@ export default {
     },
     async loadInstitutionData() {
       const slugFromURL = this.$route.params.slug;
-      const institutions = collection(dbFireStore, 'institutions_v7');
+      const institutions = collection(dbFireStore, 'institutions_v9');
       const q = query(institutions, where("uri", "==", slugFromURL));
       const docSnap = await getDocs(q);
       docSnap.forEach((doc) => {
