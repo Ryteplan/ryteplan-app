@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { dbFireStore } from "../firebase";
 import { collection, getDocs } from 'firebase/firestore'
+import { useSearchFilterSortStore } from './searchFilterSortStore';
 
 
 export const useTableStore = defineStore('table', {
@@ -9,15 +10,6 @@ export const useTableStore = defineStore('table', {
       tableData: [],
       tableDataManual: [],
       hideHidden: true,
-      filters: {
-        State: [],
-        Calendar: [],
-        Country: [],
-        "Main Type of Degree Offered": [],
-        "Type of Institution": [],
-        "Admission Difficulty": [],
-        "Campus Setting": [],
-      },
       searchInput: '',
       executeSearchTerms: '',
       selectedRows: [],
@@ -149,15 +141,26 @@ export const useTableStore = defineStore('table', {
         this.loading = false;
       }
     },
-    filteredTableData(){
-      return this.tableData.filter(d => {
+    filteredTableData() {
+      const searchFilterSort = useSearchFilterSortStore()
+
+      return this.tableData.map(d => {
+        // Iterate over each field in the object
+        for (let key in d) {
+          // If the field's value is 0, replace it with an em dash
+          if (d[key] === 0) {
+            d[key] = '—';
+          }
+        }
+        return d;
+      }).filter(d => {
         if (this.hideHidden) {
-          return d.hidden == true && d.mainFunctionType !== '2YEAR' && d.mainInstControlDesc !== 'Private Proprietary' && Object.keys(this.filters).every(f => {
-            return this.filters[f].length < 1 || this.filters[f].includes(d[f])
+          return d.hidden == true && d.mainFunctionType !== '2YEAR' && d.mainInstControlDesc !== 'Private Proprietary' && Object.keys(searchFilterSort.filters).every(f => {
+            return searchFilterSort.filters[f].length < 1 || searchFilterSort.filters[f].includes(d[f])
           })  
         } else {
-          return d.hidden !== true && d.mainFunctionType !== '2YEAR' && d.mainInstControlDesc !== 'Private Proprietary' && Object.keys(this.filters).every(f => {
-            return this.filters[f].length < 1 || this.filters[f].includes(d[f])
+          return d.hidden !== true && d.mainFunctionType !== '2YEAR' && d.mainInstControlDesc !== 'Private Proprietary' && Object.keys(searchFilterSort.filters).every(f => {
+            return searchFilterSort.filters[f].length < 1 || searchFilterSort.filters[f].includes(d[f])
           })
         }
       })

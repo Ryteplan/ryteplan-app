@@ -66,10 +66,10 @@
                         multiple 
                         clearable 
                         auto
-                        v-if="tableStore.filters.hasOwnProperty(header.title)"            
+                        v-if="searchFilterSortStore.filters.hasOwnProperty(header.title)"            
                         :label="header.title"
                         :items="tableStore.columnValueList(header.key)" 
-                        v-model="tableStore.filters[header.key]"
+                        v-model="searchFilterSortStore.filters[header.key]"
                         @update:menu="onUpdateMenu"
                       >
                       </v-select>
@@ -170,7 +170,6 @@
         </div>
       </div>
       <v-data-table
-        dense
         id="dataTable"
         class="elevation-1 mt-4 institutionDataTable"
         item-key="Institution name"
@@ -189,7 +188,7 @@
         @click:row="navigateToInstitution"
         item-value="institution name"
         v-model="tableStore.selectedRows"
-      >
+      >        
         <template v-slot:bottom="{ pagination, options, updateOptions }">
           <v-row class="data-table-footer-container">
             <v-col class="d-flex align-center justify-center">
