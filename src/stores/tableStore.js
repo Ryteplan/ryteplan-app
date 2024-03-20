@@ -163,7 +163,7 @@ export const useTableStore = defineStore('table', {
       })
     },
     columnValueList(val) {
-      return [...new Set(this.tableData.map(d => d[val]))] 
+      return [...new Set(this.tableData.map(d => d[val]))].sort();
     },
     updateSelected(selectedRows) {
       this.selectedRows = selectedRows;
