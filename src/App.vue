@@ -8,9 +8,8 @@
           </a>
         </v-toolbar-title>
         <v-text-field
-          v-if="$route.path !== '/'"
           class="d-none d-md-block mx-8"
-          v-model="searchInput"
+          v-model="searchFilterSortStore.searchInput"
           label="Search By Name"
           append-inner-icon="mdi-magnify"
           density="compact"
@@ -19,6 +18,7 @@
           hide-details
           clearable
           @keydown.enter="performSearch"
+          @click:clear="performSearch('fromClear')"
         ></v-text-field>
         <div v-if="!isLoggedIn">
           <!-- <v-btn 
@@ -112,17 +112,23 @@ import { getAuth, onAuthStateChanged, signOut } from "firebase/auth"
 import LogoGreenBlack from "@/components/svg/LogoGreenBlack.vue";
 import { useUserStore } from './/stores/userStore';
 import { useTableStore } from './/stores/tableStore';
+import { useSearchFilterSortStore } from './/stores/searchFilterSortStore';
 
 let auth;
+
 export default {
   setup() {
     let userStore = useUserStore();
     userStore.getAdminMode();
 
     let tableStore = useTableStore();
+
+    let searchFilterSortStore = useSearchFilterSortStore();
+
     return {
       userStore,
-      tableStore      
+      tableStore,
+      searchFilterSortStore
     };
   },
   components: {
@@ -140,8 +146,7 @@ export default {
   },
   data() {
     return {
-      isLoggedIn: false,
-      searchInput: ""
+      isLoggedIn: false
     }
   },
   methods: {
@@ -151,15 +156,26 @@ export default {
         this.$router.push("/");
       })
     },
-    performSearch() {
-      const searchQuery = encodeURIComponent(this.searchInput.trim().toLowerCase());
+    performSearch(source) {
+      const searchQuery = this.searchFilterSortStore.searchInput 
+        ? encodeURIComponent(this.searchFilterSortStore.searchInput.trim().toLowerCase()) 
+        : '';
+        
+      if (this.$route.path === '/') {
+        this.searchFilterSortStore.searchInput = searchQuery;
+        this.tableStore.performSeach();
+        this.$router.push({ query: { ...this.$route.query, search: searchQuery } });
+      } else {
+        // if we're coming from the clear method, do not perform the search
+        if (source === 'fromClear') return;
 
-      let route = this.$router.resolve({ 
-        name: 'home',
-        query: { "search": searchQuery },
-      });
+        let route = this.$router.resolve({ 
+          name: 'home',
+          query: { "search": searchQuery },
+        });
 
-      window.open(route.href, '_self');
+        window.open(route.href, '_self');
+      }
     },
   }
 };

@@ -13,6 +13,7 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
       "Campus Setting": [],
     },
     searchInput: '',
+    saveSearchInput: '',
     executeSearchTerms: '',
     page: 1,
     selectedRows: [],
@@ -24,5 +25,17 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
       this.page = pageNumber;
       document.querySelector('.v-table__wrapper').scrollTop = 0;
     },
+    saveThenClearSearchInput() {
+      this.saveSearchInput = this.searchInput;
+      this.searchInput = '';
+    },
+    loadSavedSearchInput() {
+      console.log('loadSavedSearchInput');
+      console.log(this.saveSearchInput);
+      if (this.saveSearchInput !== '') {
+        this.searchInput = this.saveSearchInput;
+        this.saveSearchInput = '';
+      }
+    }
   },
 });

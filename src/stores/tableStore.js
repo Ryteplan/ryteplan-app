@@ -10,7 +10,6 @@ export const useTableStore = defineStore('table', {
       tableData: [],
       tableDataManual: [],
       hideHidden: true,
-      searchInput: '',
       executeSearchTerms: '',
       selectedRows: [],
       tableHeaders: [],
@@ -221,7 +220,8 @@ export const useTableStore = defineStore('table', {
       localStorage.setItem("tableHeaders", tableHeaders);
     },
     performSeach() {
-      this.executeSearchTerms = this.searchInput;
+      const searchFilterSort = useSearchFilterSortStore()
+      this.executeSearchTerms = searchFilterSort.searchInput;
     },
     async refreshTableData() {
       this.loading = true;

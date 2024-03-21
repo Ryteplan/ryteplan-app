@@ -677,12 +677,18 @@ import { collection, documentId, query, where, getDocs, setDoc, doc } from 'fire
 import SaveToListDialog from './SaveToListDialog'
 import { getAuth,onAuthStateChanged } from "firebase/auth";
 import { useUserStore } from '../stores/userStore';
+import { useSearchFilterSortStore } from '../stores/searchFilterSortStore';
+
 // import EthnicityChart from './EthnicityChart.vue';
 
 export default {
   setup() {
     let userStore = useUserStore();
     userStore.getAdminMode();
+
+    let searchFilterSortStore = useSearchFilterSortStore();
+    searchFilterSortStore.saveThenClearSearchInput();
+
     return {
       userStore,      
     };    

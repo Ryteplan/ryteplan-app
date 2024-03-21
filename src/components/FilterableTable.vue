@@ -15,9 +15,9 @@
       v-if="tableStore.loading === false"
     >
       <div>
-        <div style="display: flex; justify-content: center; align-items: center;">
+        <div style="display: flex; justify-content: end; align-items: center;">
           <v-row class="align-end">
-            <v-col cols="12" md="3">
+            <!-- <v-col cols="12" md="3">
               <v-text-field
                 v-model="tableStore.searchInput"
                 label="Search By Name"
@@ -29,7 +29,7 @@
                 clearable
                 v-on:keyup.enter="tableStore.performSeach"
               ></v-text-field>
-            </v-col>
+            </v-col> -->
             <v-col class="d-none">
               <v-btn
                 @click="tableStore.performSeach"
@@ -171,7 +171,7 @@
       </div>
       <v-data-table
         id="dataTable"
-        class="elevation-1 mt-4 institutionDataTable"
+        class="mt-4 institutionDataTable"
         item-key="Institution name"
         selectable-key="Institution name"
         height="59vh"
@@ -188,6 +188,7 @@
         @click:row="navigateToInstitution"
         item-value="institution name"
         v-model="tableStore.selectedRows"
+        density="comfortable"
       >        
         <template v-slot:bottom="{ pagination, options, updateOptions }">
           <v-row class="data-table-footer-container">
@@ -237,6 +238,7 @@ export default {
     tableStore.getHideHidden();
 
     let searchFilterSortStore = useSearchFilterSortStore();
+    searchFilterSortStore.loadSavedSearchInput();
 
     return {
       searchFilterSortStore,
@@ -255,6 +257,10 @@ export default {
         }, 1000);
       }
     }, { immediate: true });
+    if (!this.$route.query.search) {
+      console.log("clear search");
+      this.searchFilterSortStore.searchInput = '';
+    }
   },
   beforeUnmount() {
     window.removeEventListener("scroll", this.onScroll, true)
@@ -314,6 +320,8 @@ export default {
         }
       });
 
+      localStorage.removeItem("lastClickedRow");
+
     },
     navigateToInstitution(event, item) {        
       const institution = JSON.parse(JSON.stringify(item));
@@ -354,9 +362,9 @@ export default {
   },
   created() {
     if (this.$route.query.search) {
-      this.tableStore.searchInput = decodeURIComponent(this.$route.query.search);
+      useSearchFilterSortStore.searchInput = decodeURIComponent(this.$route.query.search);
       this.tableStore.performSeach();
-    }
+    } 
   },
   components: {
     SaveToListDialog,
