@@ -145,6 +145,8 @@ export default {
       localStorage.clear();
       localStorage.setItem("versionNumber", this.versionNumberFromPackage);
       this.versionNumber = this.versionNumberFromPackage;
+    } else {
+      this.versionNumber = this.versionNumberFromPackage;
     }
 
     auth = getAuth();
