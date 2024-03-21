@@ -166,7 +166,7 @@ export default {
   },
   methods: {
     getVersionNumber() {
-      return this.versionNumberFromLocalStorage;
+      return this.versionNumber;
     },
     handleSignOut() {
       signOut(auth).then(() =>{
