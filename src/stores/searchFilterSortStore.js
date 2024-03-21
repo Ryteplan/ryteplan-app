@@ -30,8 +30,6 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
       this.searchInput = '';
     },
     loadSavedSearchInput() {
-      console.log('loadSavedSearchInput');
-      console.log(this.saveSearchInput);
       if (this.saveSearchInput !== '') {
         this.searchInput = this.saveSearchInput;
         this.saveSearchInput = '';

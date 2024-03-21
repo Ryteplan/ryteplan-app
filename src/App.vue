@@ -101,7 +101,10 @@
     <v-main class="flex-column">
       <router-view :key="$route.fullPath"></router-view>
       <v-footer class="flex-column justify-items-center text-center pb-4">
-        <p style="font-size: 13px">Data Source: Peterson's Databases <br/>Copyright 2023 Peterson's LLC All rights reserved</p>
+        <p style="font-size: 13px">
+          Version: {{ getVersionNumber() }}<br/>
+          Data Source: Peterson's Databases<br/>
+          Copyright 2023 Peterson's LLC All rights reserved</p>
       </v-footer>
     </v-main>
   </v-layout>
@@ -135,6 +138,15 @@ export default {
     LogoGreenBlack
   },
   mounted() {
+    console.log('versionNumberFromPackage', this.versionNumberFromPackage);
+    console.log('versionNumberFromLocalStorage', this.versionNumberFromLocalStorage);
+
+    if (this.versionNumberFromPackage !== this.versionNumberFromLocalStorage) {
+      localStorage.clear();
+      localStorage.setItem("versionNumber", this.versionNumberFromPackage);
+      this.versionNumber = this.versionNumberFromPackage;
+    }
+
     auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -146,10 +158,16 @@ export default {
   },
   data() {
     return {
-      isLoggedIn: false
+      isLoggedIn: false,
+      versionNumberFromPackage: process.env.node_env.PACKAGE_VERSION,
+      versionNumberFromLocalStorage: localStorage.getItem("versionNumber"),
+      versionNumber: '',
     }
   },
   methods: {
+    getVersionNumber() {
+      return this.versionNumberFromLocalStorage;
+    },
     handleSignOut() {
       signOut(auth).then(() =>{
         localStorage.removeItem("adminMode");

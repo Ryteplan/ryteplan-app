@@ -72,8 +72,12 @@ export const useTableStore = defineStore('table', {
         const storeManual = transactionManual.objectStore('institutionsManual');
         const getAllRequestManual = storeManual.getAll();
 
+        let versionMismatch = (process.env.node_env.PACKAGE_VERSION !== localStorage.getItem("versionNumber"));
+        
+
+
         getAllRequestManual.onsuccess = async () => {
-          if (getAllRequestManual.result.length > 0) {
+          if (getAllRequestManual.result.length > 0 || versionMismatch) {
             // Data is available in IndexedDB
             this.tableDataManual = getAllRequestManual.result;
           } else {

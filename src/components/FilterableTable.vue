@@ -258,7 +258,6 @@ export default {
       }
     }, { immediate: true });
     if (!this.$route.query.search) {
-      console.log("clear search");
       this.searchFilterSortStore.searchInput = '';
     }
   },
