@@ -1,5 +1,5 @@
 <template>
-  <v-container class="browse-institution-table-container pt-8">
+  <v-container class="browse-institution-table-container pt-4">
     <div
       v-if="tableStore.loading === true"
       class="d-flex align-center justify-center"
@@ -177,7 +177,6 @@
         height="59vh"
         fixed-header
         filterable
-        multi-sort
         return-object
         :headers="tableStore.filteredHeadersData()"
         :page="searchFilterSortStore.page"

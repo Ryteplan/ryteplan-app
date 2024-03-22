@@ -123,23 +123,10 @@
           <span class="stat-label">Sector</span> 
           <span class="stat-content">{{ institution["mainInstControlDesc"] }}</span>
         </div>
-        <div class="stat-container">
-          <span class="stat-label">Undergraduate Enrollment</span>
-          <span class="stat-content">
-            <span class="d-block">{{ institution["undergradEnrollTotal"]?.toLocaleString() || '—' }}</span>
-            <span class="d-none">{{ ((institution["enTotFtMenN"]) + (institution["enTotPtMenN"]) + institution["enTotFtWmnN"] + institution["enTotPtWmnN"]).toLocaleString() }}</span>
-            <div class="d-none">
-              =
-              <span class="d-block">Men FT - {{ institution["enTotFtMenN"]?.toLocaleString() || '—' }}</span>
-              + 
-              <span class="d-block">Men PT - {{ institution["enTotPtMenN"]?.toLocaleString() || '—' }}</span>
-              + 
-              <span class="d-block">Women FT - {{ institution["enTotFtWmnN"]?.toLocaleString() || '—' }}</span>
-              + 
-              <span class="d-block">Women PT - {{ institution["enTotPtWmnN"]?.toLocaleString() || '—' }}</span>
-            </div>
-          </span>
-        </div>
+        <StatDisplay
+          label="Undergraduate Enrollment" 
+          :value="institution['undergradEnrollTotal']" 
+        />
         <div class="stat-container">
           <span class="stat-label">Graduate Enrollment</span> 
           <span class="stat-content">
@@ -678,6 +665,8 @@ import SaveToListDialog from './SaveToListDialog'
 import { getAuth,onAuthStateChanged } from "firebase/auth";
 import { useUserStore } from '../stores/userStore';
 import { useSearchFilterSortStore } from '../stores/searchFilterSortStore';
+import StatDisplay from './StatDisplay.vue';
+
 
 // import EthnicityChart from './EthnicityChart.vue';
 
@@ -919,7 +908,8 @@ export default {
   },
   components: {
     // EthnicityChart,
-    SaveToListDialog
+    SaveToListDialog,
+    StatDisplay
   },
 };
 

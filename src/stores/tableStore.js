@@ -74,8 +74,6 @@ export const useTableStore = defineStore('table', {
 
         let versionMismatch = (process.env.node_env.PACKAGE_VERSION !== localStorage.getItem("versionNumber"));
         
-
-
         getAllRequestManual.onsuccess = async () => {
           if (getAllRequestManual.result.length > 0 || versionMismatch) {
             // Data is available in IndexedDB
@@ -182,23 +180,21 @@ export const useTableStore = defineStore('table', {
         this.tableHeaders = [
           { title: 'id', key: 'id', width: "300px", show: false, align: "d-none" },
           { title: 'Institution name', key: 'name', width: "300px", fixed: true },
-          { title: 'Hidden', key: 'hidden', width: "100px", show: false, hideFromUser: true },
-          { title: 'HBCU', key: 'hbcu', width: "100px", show: false },
-          { title: 'Tribal', key: 'tribal', width: "100px", show: false },
           { title: 'State', key: 'stateCleaned', width: "130px", show: false },
           { title: 'City', key: 'city', width: "220px", show: false },
           { title: 'Country', key: 'countryCode', width: "130px", show: false },
           { title: 'Zipcode', key: 'zipcode', width: "130px", show: false },
-          // { title: 'Main Type of Degree Offered', key: 'mainFunctionType', width: "260px", show: true },
-          { title: 'Type of Institution', key: 'mainInstControlDesc', width: "180px", show: true },
+          { title: 'Sector', key: 'mainInstControlDesc', width: "140px", show: true },
           { title: 'Calendar', key: 'mainCalendar', width: "140px", show: true },          
-          { title: 'Number of Undergraduates', key: 'undergradEnrollTotal', width: "240px", show: true },
-          { title: 'Admission Difficulty', key: 'adDiffAll', width: "220px", show: true },          
-          { title: 'Campus Setting', key: 'cmpsSetting', width: "180px", show: true },          
+          { title: 'Undergraduates', key: 'undergradEnrollTotal', width: "140px", show: true },
+          { title: 'Difficulty', key: 'adDiffAll', width: "140px", show: true },          
+          { title: 'Locale', key: 'cmpsSetting', width: "140px", show: true },          
           { title: 'Campus Size', key: 'cmpsSizeUnit', width: "210px", show: false },          
-          { title: 'Average GPA', key: 'frshGpa', width: "200px", show: true },          
-          { title: 'Freshman Applicants', key: 'apRecd1stN', width: "200px", show: true },          
-          { title: 'Freshman Admits', key: 'apAdmt1stN', width: "200px", show: true },          
+          { title: 'Average GPA', key: 'frshGpa', width: "160px", show: true },          
+          { title: 'Applicants', key: 'apRecd1stN', width: "140px", show: true },          
+          { title: 'Admits', key: 'apAdmt1stN', width: "140px", show: true },          
+          { title: 'HBCU', key: 'hbcu', width: "100px", show: false },
+          { title: 'Tribal', key: 'tribal', width: "100px", show: false },
           { title: 'Early Decision Applicants', key: 'apRecdEdecN', width: "240px", show: false },          
           { title: 'Early Decision Admits', key: 'apAdmtEdecN', width: "240px", show: false },          
           { title: 'Early Action Applicants', key: 'apRecdEactN', width: "240px", show: false },          
@@ -211,6 +207,8 @@ export const useTableStore = defineStore('table', {
           { title: 'Admission Consideration Factors ', key: 'adFactorCode', width: "290px", show: false },          
           { title: 'Admission Consideration Factors, Level of Importance', key: 'adFactorLevel', width: "420px", show: false },          
           { title: 'Early Action is Restrictive', key: 'apEactRestrict', width: "250px", show: false },
+          { title: 'Hidden', key: 'hidden', width: "100px", show: false, hideFromUser: true },
+          // { title: 'Main Type of Degree Offered', key: 'mainFunctionType', width: "260px", show: true },
         ];  
       }
     },

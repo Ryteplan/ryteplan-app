@@ -100,12 +100,24 @@
     </v-navigation-drawer>    
     <v-main class="flex-column">
       <router-view :key="$route.fullPath"></router-view>
-      <v-footer class="flex-column justify-items-center text-center pb-4">
-        <p style="font-size: 13px">
-          Version: {{ getVersionNumber() }}<br/>
-          Data Source: Peterson's Databases<br/>
-          Copyright 2023 Peterson's LLC All rights reserved</p>
-      </v-footer>
+      <v-container class="pt-0">
+        <v-footer class="pb-4 ml-0 mr-0 pl-0 pr-0">
+          <v-row>
+            <v-col cols="6">
+              <p style="font-size: 13px">
+              Version: {{ getVersionNumber() }}<br/>
+              Copyright 2024 Ryteplan LLC All rights reserved
+              </p>
+            </v-col>
+            <v-col cols="6" class="text-right">
+              <p style="font-size: 13px">
+                Data Source: Peterson's Databases<br/>
+                Copyright 2024 Peterson's LLC All rights reserved
+              </p>
+            </v-col>
+          </v-row>
+        </v-footer>
+      </v-container>
     </v-main>
   </v-layout>
 </template>
