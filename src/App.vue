@@ -8,7 +8,7 @@
           </a>
         </v-toolbar-title>
         <v-text-field
-          class="d-none d-md-block mx-8"
+          class="mx-8"
           v-model="searchFilterSortStore.searchInput"
           label="Search By Name"
           append-inner-icon="mdi-magnify"
@@ -190,8 +190,10 @@ export default {
     },
     performSearch(source) {
       const searchQuery = this.searchFilterSortStore.searchInput 
-        ? encodeURIComponent(this.searchFilterSortStore.searchInput.trim().toLowerCase()) 
+        ? decodeURIComponent(encodeURIComponent(this.searchFilterSortStore.searchInput.trim().toLowerCase()))
         : '';
+        
+      console.log('searchQuery', searchQuery);
         
       if (this.$route.path === '/') {
         this.searchFilterSortStore.searchInput = searchQuery;

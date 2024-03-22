@@ -237,7 +237,10 @@ export default {
     tableStore.getHideHidden();
 
     let searchFilterSortStore = useSearchFilterSortStore();
-    searchFilterSortStore.loadSavedSearchInput();
+
+    if (searchFilterSortStore.searchInput !== searchFilterSortStore.saveSearchInput) {
+      searchFilterSortStore.loadSavedSearchInput();
+    }
 
     return {
       searchFilterSortStore,

@@ -31,8 +31,11 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
     },
     loadSavedSearchInput() {
       if (this.saveSearchInput !== '') {
-        this.searchInput = this.saveSearchInput;
-        this.saveSearchInput = '';
+        if (this.saveSearchInput == this.searchInput) {
+          this.searchInput = this.saveSearchInput;
+        } else {
+          this.saveSearchInput = '';
+        }
       }
     }
   },
