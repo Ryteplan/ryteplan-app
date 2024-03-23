@@ -4,7 +4,7 @@
         <div>
         <span class="stat-label">{{ label }}</span>
         <span class="stat-content d-flex">
-          <span class="d-block">{{ value?.toLocaleString() || '—' }}</span>
+          <span class="d-block">{{ currentValue?.toLocaleString() || '—' }}</span>
         </span>
       </div>
       <v-btn
@@ -18,7 +18,7 @@
       </div>
       <div class="mt-4">
         <div 
-          v-if="editMode"
+          v-if="!editMode"
         >
           <v-text-field
             label="Manual Value"
@@ -26,7 +26,6 @@
             clearable
           >
           </v-text-field>
-
           <v-text-field
             label="Value from Petersons"
             v-model="this.valueFromPetersons"
@@ -41,35 +40,68 @@
       </div>
     </div>
   </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        editMode: false,
-        currentValue: null,
-        updateValue: null,
-        valueFromPetersons: this.value
-      }
-    },
-    methods: {
-      updateDB() {
-        console.log("whats up")
-      }
-    },
-    props: {
-      label: {
-        type: String,
-        required: true
-      },
-      value: {
-        type: [Number, String],
-        required: true
-      }
+
+<script>
+  import { dbFireStore } from "../firebase";
+  import { collection, documentId, query, where, getDocs, setDoc, doc } from 'firebase/firestore'
+
+export default {
+  setup() {
+
+  },
+  mounted() {
+
+  },
+  data() {
+    return {
+      editMode: false,
+      currentValue: null,
+      updateValue: null,
+      petersonsValue: null,
+      manualValue: null,
     }
-  }
-  </script>
+  },
+  methods: {
+    updateDB() {
+      setDoc(doc(dbFireStore, 'manual_institution_data', this.uri), {
+        [this.field]: this.updateValue
+      }, { merge: true });
+    }
+  },
+  props: {
+    label: {
+      type: String,
+    },  
+    valueFromPetersons: {
+      type: [Number, String],
+    },
+    valueFromManual: {
+      type: [Number, String],
+    },
+    uri: {
+      type: String,
+    },
+    field: {
+      type: String,
+    }
+  },
+  watch: {
+    valueFromPetersons(newVal) {
+      if (newVal) {
+        this.petersonsValue = newVal;
+        this.currentValue = this.petersonsValue
+      }
+    },
+    valueFromManual(newVal) {
+      if (newVal) {
+        this.manualValue = newVal;
+        this.currentValue = this.manualValue
+      }
+    },
+  },
+}
+</script>
   
-  <style scoped>
-  /* Add your CSS styles here */
-  </style>
+<style scoped>
+/* Add your CSS styles here */
+</style>

@@ -124,8 +124,11 @@
           <span class="stat-content">{{ institution["mainInstControlDesc"] }}</span>
         </div>
         <StatDisplay
-          label="Undergraduate Enrollment" 
-          :value="institution['undergradEnrollTotal']" 
+          label="Undergraduate Enrollment"
+          :uri="institution['uri']"
+          field="undergradEnrollTotal"
+          :valueFromPetersons="institution['undergradEnrollTotal']" 
+          :valueFromManual="manualInstitionData['undergradEnrollTotal']"
         />
         <div class="stat-container">
           <span class="stat-label">Graduate Enrollment</span> 
@@ -747,6 +750,7 @@ export default {
       docSnap.forEach((doc) => {
         this.manualInstitionData = doc.data()
       });
+      console.log(this.manualInstitionData);
     },
     async saveImages() {
       this.isEditImagesSaveButtonDisabled = true;
