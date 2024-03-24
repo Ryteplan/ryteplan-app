@@ -46,7 +46,7 @@
 
 <script>
 import { dbFireStore } from "../firebase";
-import { setDoc, doc } from 'firebase/firestore'
+import { setDoc, doc, deleteField } from 'firebase/firestore'
 import { useUserStore } from '../stores/userStore';
 
 export default {
@@ -71,9 +71,16 @@ export default {
   },
   methods: {
     updateDB() {
-      setDoc(doc(dbFireStore, 'manual_institution_data', this.uri), {
-        [this.field]: this.updateValue
-      }, { merge: true });
+      if (this.updateValue === null) {
+        setDoc(doc(dbFireStore, 'manual_institution_data', this.uri), {
+          [this.field]: deleteField()
+        }, { merge: true });
+      } else {
+        setDoc(doc(dbFireStore, 'manual_institution_data', this.uri), {
+          [this.field]: this.updateValue
+        }, { merge: true });
+      }
+
       if (this.updateValue) {
         this.currentValue = this.updateValue;
       } else {
