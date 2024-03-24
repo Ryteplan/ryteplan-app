@@ -77,9 +77,12 @@ export const useTableStore = defineStore('table', {
         const getAllRequestManual = storeManual.getAll();
 
         let versionMatch = (process.env.node_env.PACKAGE_VERSION == localStorage.getItem("versionNumber"));
+
+        console.log('Version Match:', versionMatch)
         
         getAllRequestManual.onsuccess = async () => {
           if (getAllRequestManual.result.length > 0 && versionMatch) {
+            // Fetch from IndexedDB
             this.tableDataManual = getAllRequestManual.result;
           } else {
             // Fetch from Firestore and store in IndexedDB
@@ -104,9 +107,9 @@ export const useTableStore = defineStore('table', {
         const getAllRequestPetersons = storePetersons.getAll();
 
         getAllRequestPetersons.onsuccess = async () => {
-          if (getAllRequestManual.result.length > 0 && !versionMatch) {
+          if (getAllRequestManual.result.length > 0 && versionMatch) {
+            // Fetch from IndexedDB
             console.log('Fetching from IndexedDB')
-            // Data is available in IndexedDB
             this.tableData = getAllRequestPetersons.result;
             this.tableData.sort((a, b) => a.id.localeCompare(b.id));
             this.loading = false;
