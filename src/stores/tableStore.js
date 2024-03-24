@@ -47,6 +47,10 @@ export const useTableStore = defineStore('table', {
             };
     
             request.onsuccess = (event) => {
+              const db = event.target.result;
+              db.onversionchange = () => {
+                  db.close();
+              };
               resolve(event.target.result);
             };
           } catch (error) {
@@ -72,11 +76,10 @@ export const useTableStore = defineStore('table', {
         const storeManual = transactionManual.objectStore('institutionsManual');
         const getAllRequestManual = storeManual.getAll();
 
-        let versionMismatch = (process.env.node_env.PACKAGE_VERSION !== localStorage.getItem("versionNumber"));
+        let versionMatch = (process.env.node_env.PACKAGE_VERSION == localStorage.getItem("versionNumber"));
         
         getAllRequestManual.onsuccess = async () => {
-          if (getAllRequestManual.result.length > 0 || versionMismatch) {
-            // Data is available in IndexedDB
+          if (getAllRequestManual.result.length > 0 && versionMatch) {
             this.tableDataManual = getAllRequestManual.result;
           } else {
             // Fetch from Firestore and store in IndexedDB
@@ -101,10 +104,11 @@ export const useTableStore = defineStore('table', {
         const getAllRequestPetersons = storePetersons.getAll();
 
         getAllRequestPetersons.onsuccess = async () => {
-          if (getAllRequestPetersons.result.length > 0) {
+          if (getAllRequestManual.result.length > 0 && !versionMatch) {
             console.log('Fetching from IndexedDB')
             // Data is available in IndexedDB
             this.tableData = getAllRequestPetersons.result;
+            this.tableData.sort((a, b) => a.id.localeCompare(b.id));
             this.loading = false;
           } else {
             console.log('Fetching from Firestore')
@@ -227,6 +231,7 @@ export const useTableStore = defineStore('table', {
     },
     async refreshTableData() {
       this.loading = true;
+
       const dbRequest = indexedDB.open('MyDatabase');
       dbRequest.onsuccess = function(event) {
         const db = event.target.result;
@@ -241,6 +246,8 @@ export const useTableStore = defineStore('table', {
           const objectStore = transaction.objectStore(storeName);
           objectStore.clear();
         }
+
+        db.close();
       }
       dbRequest.onerror = function(event) {
         console.error("Error opening database:", event.target.error);

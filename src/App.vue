@@ -184,6 +184,7 @@ export default {
     },
     handleSignOut() {
       signOut(auth).then(() =>{
+        this.userStore.isLoggedIn = false;
         localStorage.removeItem("adminMode");
         this.$router.push("/");
       })
@@ -192,9 +193,7 @@ export default {
       const searchQuery = this.searchFilterSortStore.searchInput 
         ? decodeURIComponent(encodeURIComponent(this.searchFilterSortStore.searchInput.trim().toLowerCase()))
         : '';
-        
-      console.log('searchQuery', searchQuery);
-        
+                
       if (this.$route.path === '/') {
         this.searchFilterSortStore.searchInput = searchQuery;
         this.tableStore.performSeach();

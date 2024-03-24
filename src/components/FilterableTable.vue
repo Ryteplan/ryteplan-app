@@ -121,7 +121,7 @@
             </v-col>
             <v-col md="3" class="justify-end">
               <v-switch 
-                v-if="userStore.adminMode"
+                v-if="userStore.isLoggedIn && userStore.adminMode"
                 label="Show hidden"
                 color="primary"
                 hide-details
@@ -188,6 +188,7 @@
         item-value="institution name"
         v-model="tableStore.selectedRows"
         density="comfortable"
+        sort-by.sync="Instituion name"
       >        
         <template v-slot:bottom="{ pagination, options, updateOptions }">
           <v-row class="data-table-footer-container">
