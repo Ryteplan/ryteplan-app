@@ -218,18 +218,25 @@
 import { useUserStore } from '../stores/userStore';
 import { useTableStore } from '../stores/tableStore';
 import { useSearchFilterSortStore } from '../stores/searchFilterSortStore';
+import { useAppVersionStore } from '../stores/appVersionStore';
 import SaveToListDialog from './SaveToListDialog'
 import ShareDialog from './ShareDialog'
 
 export default {
   setup() {
+    let appVersionStore = useAppVersionStore();
+
     let userStore = useUserStore();
     userStore.getAdminMode();
 
     let tableStore = useTableStore();
-    if (tableStore.tableData.length == 0) {
+
+    if (tableStore.tableData.length == 0 && appVersionStore.versionMatch) {
       tableStore.fetchTableData();
+    } else {
+      tableStore.refreshTableData();
     }
+
     if (tableStore.tableHeaders.length == 0) {
       tableStore.loadTableHeaders();
     }

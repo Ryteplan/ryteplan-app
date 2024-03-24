@@ -88,14 +88,14 @@
           @click="tableStore.refreshTableData"
         >
         </v-list-item>
-        <v-list-item
+        <!-- <v-list-item
           v-if="userStore.adminMode"
           prepend-icon="mdi-table"
           title="Refresh Headers"
           value="Refresh Headers"
           @click="tableStore.refreshTableHeaders"
         >
-        </v-list-item>
+        </v-list-item> -->
       </v-list>
     </v-navigation-drawer>    
     <v-main class="flex-column">
@@ -105,7 +105,7 @@
           <v-row>
             <v-col cols="6">
               <p style="font-size: 13px">
-              Version: {{ getVersionNumber() }}<br/>
+              Version: {{ appVersionStore.getVersion() }}<br/>
               Copyright 2024 Ryteplan LLC All rights reserved
               </p>
             </v-col>
@@ -125,6 +125,7 @@
 <script>
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth"
 import LogoGreenBlack from "@/components/svg/LogoGreenBlack.vue";
+import { useAppVersionStore } from './/stores/appVersionStore';
 import { useUserStore } from './/stores/userStore';
 import { useTableStore } from './/stores/tableStore';
 import { useSearchFilterSortStore } from './/stores/searchFilterSortStore';
@@ -133,6 +134,9 @@ let auth;
 
 export default {
   setup() {
+    let appVersionStore = useAppVersionStore();
+    appVersionStore.compareVersion();
+
     let userStore = useUserStore();
     userStore.getAdminMode();
 
@@ -143,23 +147,14 @@ export default {
     return {
       userStore,
       tableStore,
-      searchFilterSortStore
+      searchFilterSortStore,
+      appVersionStore
     };
   },
   components: {
     LogoGreenBlack
   },
   mounted() {
-    console.log('versionNumberFromPackage', this.versionNumberFromPackage);
-    console.log('versionNumberFromLocalStorage', this.versionNumberFromLocalStorage);
-
-    if (this.versionNumberFromPackage !== this.versionNumberFromLocalStorage) {
-      localStorage.clear();
-      localStorage.setItem("versionNumber", this.versionNumberFromPackage);
-      this.versionNumber = this.versionNumberFromPackage;
-    } else {
-      this.versionNumber = this.versionNumberFromPackage;
-    }
 
     auth = getAuth();
     onAuthStateChanged(auth, (user) => {
@@ -173,15 +168,9 @@ export default {
   data() {
     return {
       isLoggedIn: false,
-      versionNumberFromPackage: process.env.node_env.PACKAGE_VERSION,
-      versionNumberFromLocalStorage: localStorage.getItem("versionNumber"),
-      versionNumber: '',
     }
   },
   methods: {
-    getVersionNumber() {
-      return this.versionNumber;
-    },
     handleSignOut() {
       signOut(auth).then(() =>{
         this.userStore.isLoggedIn = false;

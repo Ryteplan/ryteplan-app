@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { dbFireStore } from "../firebase";
 import { collection, getDocs } from 'firebase/firestore'
 import { useSearchFilterSortStore } from './searchFilterSortStore';
-
+import { useAppVersionStore } from './appVersionStore';
 
 export const useTableStore = defineStore('table', {
   state: () => ({
@@ -67,6 +67,8 @@ export const useTableStore = defineStore('table', {
       });
     },    
     async fetchTableData() {
+      const appVersionStore = useAppVersionStore();
+
       this.loading = true;
       try {
         const db = await this.openIndexedDB();
@@ -75,17 +77,13 @@ export const useTableStore = defineStore('table', {
         const transactionManual = db.transaction(['institutionsManual'], 'readonly');
         const storeManual = transactionManual.objectStore('institutionsManual');
         const getAllRequestManual = storeManual.getAll();
-
-        let versionMatch = (process.env.node_env.PACKAGE_VERSION == localStorage.getItem("versionNumber"));
-
-        console.log('Version Match:', versionMatch)
         
         getAllRequestManual.onsuccess = async () => {
-          if (getAllRequestManual.result.length > 0 && versionMatch) {
+          if (getAllRequestManual.result.length > 0 && appVersionStore.versionMatch) {
             // Fetch from IndexedDB
             this.tableDataManual = getAllRequestManual.result;
           } else {
-            // Fetch from Firestore and store in IndexedDB
+            // Fetch from Firestore
             const institutions = collection(dbFireStore, 'manual_institution_data');
             const docSnap = await getDocs(institutions);
 
@@ -107,15 +105,15 @@ export const useTableStore = defineStore('table', {
         const getAllRequestPetersons = storePetersons.getAll();
 
         getAllRequestPetersons.onsuccess = async () => {
-          if (getAllRequestManual.result.length > 0 && versionMatch) {
+          if (getAllRequestManual.result.length > 0 && appVersionStore.versionMatch) {
             // Fetch from IndexedDB
             console.log('Fetching from IndexedDB')
             this.tableData = getAllRequestPetersons.result;
             this.tableData.sort((a, b) => a.id.localeCompare(b.id));
             this.loading = false;
           } else {
+            // Fetch from Firestore
             console.log('Fetching from Firestore')
-            // Fetch from Firestore and store in IndexedDB
             const institutions = collection(dbFireStore, 'institutions_v9');
             const docSnap = await getDocs(institutions);
 
@@ -233,6 +231,9 @@ export const useTableStore = defineStore('table', {
       this.executeSearchTerms = searchFilterSort.searchInput;
     },
     async refreshTableData() {
+      console.log('Refreshing table data');
+
+      const appVersionStore = useAppVersionStore();
       this.loading = true;
 
       const dbRequest = indexedDB.open('MyDatabase');
@@ -257,6 +258,7 @@ export const useTableStore = defineStore('table', {
       };
 
       this.fetchTableData();
+      localStorage.setItem("appVersion", appVersionStore.getVersion());
     },
     getHideHidden() {
       if (localStorage.getItem("hideHidden") !== null) {
