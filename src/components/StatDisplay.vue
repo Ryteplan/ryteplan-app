@@ -8,6 +8,7 @@
         </span>
       </div>
       <v-btn
+        v-if="userStore.adminMode"
         density="compact"
         class="ml-4"
         icon="mdi-pencil"
@@ -18,21 +19,23 @@
       </div>
       <div class="mt-4">
         <div 
-          v-if="!editMode"
+          v-if="editMode && userStore.adminMode"
         >
           <v-text-field
             label="Manual Value"
             v-model="this.updateValue"
+            @input="saveButtonVisibility"
             clearable
           >
           </v-text-field>
           <v-text-field
             label="Value from Petersons"
-            v-model="this.valueFromPetersons"
+            v-model="this.petersonsValue"
             disabled
             >
           </v-text-field>
           <v-btn
+            v-if="saveButtonVisibility"
             value="save"
             @click="this.updateDB"
           >Save</v-btn>
@@ -42,12 +45,17 @@
   </template>
 
 <script>
-  import { dbFireStore } from "../firebase";
-  import { collection, documentId, query, where, getDocs, setDoc, doc } from 'firebase/firestore'
+import { dbFireStore } from "../firebase";
+import { setDoc, doc } from 'firebase/firestore'
+import { useUserStore } from '../stores/userStore';
 
 export default {
   setup() {
-
+    let userStore = useUserStore();
+    userStore.getAdminMode();
+    return { 
+      userStore 
+    }
   },
   mounted() {
 
@@ -66,6 +74,20 @@ export default {
       setDoc(doc(dbFireStore, 'manual_institution_data', this.uri), {
         [this.field]: this.updateValue
       }, { merge: true });
+      if (this.updateValue) {
+        this.currentValue = this.updateValue;
+      } else {
+        this.currentValue = this.petersonsValue;
+      }
+    },
+    saveButtonVisibility(){
+      console.log(this.currentValue, this.updateValue);
+      console.log(this.currentValue !== this.updateValue || this.updateValue === null)
+      if (this.currentValue !== this.updateValue || this.updateValue === null) {
+        return true
+      } else {
+        return false
+      }
     }
   },
   props: {
@@ -96,6 +118,7 @@ export default {
       if (newVal) {
         this.manualValue = newVal;
         this.currentValue = this.manualValue
+        this.updateValue = this.manualValue
       }
     },
   },
