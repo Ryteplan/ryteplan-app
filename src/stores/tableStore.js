@@ -70,6 +70,7 @@ export const useTableStore = defineStore('table', {
       const appVersionStore = useAppVersionStore();
 
       this.loading = true;
+
       try {
         const db = await this.openIndexedDB();
 
@@ -77,8 +78,9 @@ export const useTableStore = defineStore('table', {
         const transactionManual = db.transaction(['institutionsManual'], 'readonly');
         const storeManual = transactionManual.objectStore('institutionsManual');
         const getAllRequestManual = storeManual.getAll();
-        
+
         getAllRequestManual.onsuccess = async () => {
+
           if (getAllRequestManual.result.length > 0 && appVersionStore.versionMatch) {
             // Fetch from IndexedDB
             this.tableDataManual = getAllRequestManual.result;
@@ -105,6 +107,7 @@ export const useTableStore = defineStore('table', {
         const getAllRequestPetersons = storePetersons.getAll();
 
         getAllRequestPetersons.onsuccess = async () => {
+
           if (getAllRequestManual.result.length > 0 && appVersionStore.versionMatch) {
             // Fetch from IndexedDB
             console.log('Fetching from IndexedDB')

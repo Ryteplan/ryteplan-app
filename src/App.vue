@@ -164,6 +164,12 @@ export default {
         this.isLoggedIn = false;
       }
     })
+
+    // Check if the URL contains a "search" parameter
+    if (this.$route.query.search) {
+      this.searchFilterSortStore.searchInput = this.$route.query.search;
+      this.performSearch(this.$route.query.search);
+    }
   },
   data() {
     return {
@@ -182,13 +188,12 @@ export default {
       const searchQuery = this.searchFilterSortStore.searchInput 
         ? decodeURIComponent(encodeURIComponent(this.searchFilterSortStore.searchInput.trim().toLowerCase()))
         : '';
-                
+        
       if (this.$route.path === '/') {
         this.searchFilterSortStore.searchInput = searchQuery;
         this.tableStore.performSeach();
         this.$router.push({ query: { ...this.$route.query, search: searchQuery } });
       } else {
-        // if we're coming from the clear method, do not perform the search
         if (source === 'fromClear') return;
 
         let route = this.$router.resolve({ 

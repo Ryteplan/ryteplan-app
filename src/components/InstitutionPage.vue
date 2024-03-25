@@ -752,7 +752,6 @@ export default {
       docSnap.forEach((doc) => {
         this.manualInstitionData = doc.data()
       });
-      console.log(this.manualInstitionData);
     },
     async saveImages() {
       this.isEditImagesSaveButtonDisabled = true;

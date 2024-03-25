@@ -231,7 +231,7 @@ export default {
 
     let tableStore = useTableStore();
 
-    if (tableStore.tableData.length == 0 && appVersionStore.versionMatch) {
+    if (appVersionStore.versionMatch) {
       tableStore.fetchTableData();
     } else {
       tableStore.refreshTableData();
