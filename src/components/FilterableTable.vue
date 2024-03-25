@@ -347,7 +347,11 @@ export default {
         } 
       });
 
-      window.open(route.href, '_self');
+      if (event.ctrlKey || event.metaKey) {
+        window.open(route.href, '_blank');
+      } else {  
+        window.open(route.href, '_self');
+      }
     },
     onUpdateMenu(open) {
       if (open) {

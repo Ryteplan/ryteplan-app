@@ -1,5 +1,5 @@
 <template>
-  <v-container class="px-3 px-lg-0">
+  <v-container class="pt-0 px-3 px-lg-0">
     <div style="margin: 0 auto 64px; max-width: 1200px;">
       <v-row class="d-flex justify-space-between mt-0">
         <v-col cols="12" md="6">
@@ -9,6 +9,7 @@
         </v-col>
         <v-col cols="12" md="6" class="d-md-flex align-center justify-end pt-0">
           <v-btn
+            class="d-none"
             @click="showSaveToListDialog = true"
           >
             Add to list
@@ -218,16 +219,19 @@
           <div class="stat-container"><span class="stat-label">ACT 50th%ile</span> <span class="stat-content">{{ institution["actComp50thP"]?.toLocaleString() || '—' }}</span></div>
         </div>
         <div class="stat-container">
-          <span class="stat-label">SAT or ACT Required</span> 
-          <span class="stat-content">{{ (institution["admsReq"] && institution["admsReq"] !== 'null') ? institution["admsReq"].toLocaleString() : '—' }}</span>        
-        </div>
-        <div class="stat-container">
-          <span class="stat-label">SAT/ACT Considered</span> 
-          <span class="stat-content">{{ (institution["satActConsidered"] && institution["satActConsidered"] !== 'null') ? institution["satActConsidered"].toLocaleString() : '—' }}</span>
-        </div>
-        <div class="stat-container">
-          <span class="stat-label">SAT/ACT Not Considered</span> 
-          <span class="stat-content">{{ (institution["admsNotUsed"] && institution["admsNotUsed"] !== 'null') ? institution["admsNotUsed"].toLocaleString() : '—' }}</span>
+          <h2>SAT/ACT Testing</h2>
+          <div class="mt-2 d-flex flex-column">
+            <span class="stat-label">Not Considered</span> 
+            <span class="stat-content">{{ (institution["admsNotUsed"] && institution["admsNotUsed"] !== 'null') ? institution["admsNotUsed"].toLocaleString() : '—' }}</span>
+          </div>
+          <div class="mt-2 d-flex flex-column">
+            <span class="stat-label">Considered</span> 
+            <span class="stat-content">{{ (institution["satActConsidered"] && institution["satActConsidered"] !== 'null') ? institution["satActConsidered"].toLocaleString() : '—' }}</span>
+          </div>
+          <div class="mt-2 d-flex flex-column">
+            <span class="stat-label">Required</span> 
+            <span class="stat-content">{{ (institution["admsReq"] && institution["admsReq"] !== 'null') ? institution["admsReq"].toLocaleString() : '—' }}</span>        
+          </div>
         </div>
 
         <div class="stat-container"><span class="stat-label">Freshmen Living on Campus</span> <span class="stat-content">{{ institution["hous1stUgP"] }}%</span></div>

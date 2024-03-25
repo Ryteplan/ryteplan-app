@@ -2,11 +2,9 @@
   <v-layout class="app-container" :class="{ 'logged-in': isLoggedIn }">
     <v-app-bar class="elevation-1">
       <div class="header-container d-flex align-center justify-space-between ma-auto w-100 px-3 px-lg-0">
-        <v-toolbar-title class="logo" style="flex: none;">
-          <a href="/" class="logo">
-            <LogoGreenBlack />
-          </a>
-        </v-toolbar-title>
+        <a href="/" class="logo">
+          <LogoGreenBlack />
+        </a>
         <v-text-field
           class="mx-8"
           v-model="searchFilterSortStore.searchInput"
@@ -210,13 +208,12 @@ export default {
 </script>
 
 <style>
-  .v-toolbar-title.logo {
-    font-weight: 700;
-  }
-
   a.logo {
     color: #000;
     text-decoration: none;
+    line-height: 1;
+    height: 23px;
+    margin-top: 4px;
   }
 
   .v-toolbar__content {
