@@ -81,7 +81,7 @@ export const useTableStore = defineStore('table', {
 
         getAllRequestManual.onsuccess = async () => {
 
-          if (getAllRequestManual.result && getAllRequestManual.result.length > 0 && appVersionStore.versionMatch) {
+          if (getAllRequestManual.result.length > 0 && appVersionStore.versionMatch) {
             // Fetch from IndexedDB
             this.tableDataManual = getAllRequestManual.result;
           } else {
@@ -107,7 +107,7 @@ export const useTableStore = defineStore('table', {
         const getAllRequestPetersons = storePetersons.getAll();
 
         getAllRequestPetersons.onsuccess = async () => {
-          if (getAllRequestPetersons.result && getAllRequestPetersons.result.length > 0 && appVersionStore.versionMatch) {
+          if (getAllRequestPetersons.result.length > 0 && appVersionStore.versionMatch) {
             // Fetch from IndexedDB
             console.log('Fetching from IndexedDB')
             this.tableData = getAllRequestPetersons.result;
