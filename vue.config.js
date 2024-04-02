@@ -7,6 +7,7 @@ const version = JSON.parse(packageJson).version || 0
 module.exports = defineConfig({
   transpileDependencies: true,
   configureWebpack: {
+    devtool: 'source-map',
     plugins: [
         new webpack.DefinePlugin({
             'process.env.node_env': {

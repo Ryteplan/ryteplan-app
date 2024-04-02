@@ -25,7 +25,7 @@ export const useTableStore = defineStore('table', {
           attempt++;
           try {
             console.log("Opening IndexedDB - attempt: ", attempt)
-            const request = indexedDB.open('MyDatabase', 1);
+            const request = indexedDB.open('MyDatabase', Date.now());
     
             request.onerror = (event) => {
               console.error("IndexedDB error:", event.target.error);
