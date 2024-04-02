@@ -119,9 +119,12 @@
                 </v-card>
               </v-dialog>
             </v-col>
-            <v-col md="3" class="justify-end">
+            <v-col
+              v-if="userStore.isLoggedIn && userStore.adminMode"
+              md="3" 
+              class="justify-end"
+            >
               <v-switch 
-                v-if="userStore.isLoggedIn && userStore.adminMode"
                 label="Show hidden"
                 color="primary"
                 hide-details

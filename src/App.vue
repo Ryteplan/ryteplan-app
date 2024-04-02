@@ -81,8 +81,8 @@
         <v-list-item
           v-if="userStore.adminMode"
           prepend-icon="mdi-table"
-          title="Refresh Table"
-          value="Refresh Table"
+          title="Sync Manual Data"
+          value="Sync Manual Data"
           @click="tableStore.refreshTableData"
         >
         </v-list-item>
