@@ -35,6 +35,7 @@
       </div>
     </v-app-bar>
     <v-navigation-drawer
+      v-show="false"
       v-if="isLoggedIn"
       permanent
     >
@@ -153,7 +154,6 @@ export default {
     LogoGreenBlack
   },
   mounted() {
-
     auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {

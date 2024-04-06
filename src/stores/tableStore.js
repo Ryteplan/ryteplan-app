@@ -116,7 +116,7 @@ export const useTableStore = defineStore('table', {
           } else {
             // Fetch from Firestore
             console.log('Fetching from Firestore')
-            const institutions = collection(dbFireStore, 'institutions_v9');
+            const institutions = collection(dbFireStore, 'institutions_v11');
             const docSnap = await getDocs(institutions);
 
             const transactionPetersons = db.transaction(['institutionsPetersons'], 'readwrite');

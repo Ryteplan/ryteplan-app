@@ -149,9 +149,10 @@ export default {
               "uid": result.user.uid,
               "email": result.user.email,
               "firstName": result._tokenResponse.firstName,
-              "lasName": result._tokenResponse.lastName,
+              "lastName": result._tokenResponse.lastName,
+              "role": "selfRegisteredUser",
               created: Timestamp.fromDate(new Date()),
-              updated: Timestamp.fromDate(new Date())
+              updated: Timestamp.fromDate(new Date()),
             }
             await setDoc(doc(dbFireStore, "users", result.user.uid), {...userData});
             this.$router.push('/')
