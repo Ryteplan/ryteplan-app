@@ -4,7 +4,10 @@
         <div>
         <span class="stat-label">{{ label }}</span>
         <span class="stat-content d-flex">
-          <span class="d-block">{{ currentValue?.toLocaleString() || '—' }}</span>
+          <span class="d-flex">
+            <span>{{processValue(currentValue, valueType)}}</span>
+            <span v-if="displayPercentage">%</span>
+          </span>
         </span>
       </div>
       <v-btn
@@ -32,7 +35,7 @@
             label="Value from Petersons"
             v-model="this.petersonsValue"
             disabled
-            >
+          >
           </v-text-field>
           <v-btn
             v-if="saveButtonVisibility"
@@ -67,6 +70,7 @@ export default {
       updateValue: null,
       petersonsValue: null,
       manualValue: null,
+      displayPercentage: false,
     }
   },
   methods: {
@@ -95,6 +99,22 @@ export default {
       } else {
         return false
       }
+    },
+    processValue(value, valueType) {
+      const numberValue = Number(value);
+      if (numberValue === 0) {
+        return '—';
+      }
+      switch (valueType) {
+        case 'percentage':
+          this.displayPercentage = true;
+          return ((value?.toLocaleString() * 100).toFixed(0) || '—' );
+        case 'percentageWholeNumbers':
+          this.displayPercentage = true;
+          return (numberValue?.toLocaleString() || '—');
+        default:
+          return (numberValue?.toLocaleString() || '—');
+      }
     }
   },
   props: {
@@ -112,7 +132,10 @@ export default {
     },
     field: {
       type: String,
-    }
+    },
+    valueType: {
+      type: String,
+    },
   },
   watch: {
     valueFromPetersons(newVal) {

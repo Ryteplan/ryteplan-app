@@ -151,10 +151,14 @@
           <span class="stat-label">Admission Difficulty</span>
           <span class="stat-content">{{ toTitleCase(institution["adDiffAll"]?.toLocaleString() || '—') }}</span>
         </div>
-        <div class="stat-container">
-          <span class="stat-label">Admission Rate</span>
-          <span class="stat-content">{{ (institution["admitRate"]?.toLocaleString() * 100).toFixed(0) || '—' }}%</span>
-        </div>
+        <StatDisplay
+          label="Admission Rate"
+          :uri="institution['uri']"
+          field="enTotGradN"
+          :valueFromPetersons="institution['admitRate']" 
+          :valueFromManual="manualInstitionData['admitRate']"
+          valueType="percentage"
+        />
         <div class="multiple-stat-container">
           <StatDisplay
             label="Applicants"
@@ -174,8 +178,20 @@
         <div class="d-flex flex-column">
             <span class="d-block stat-label">Full Time Undergrad</span>
             <div class="multiple-stat-container d-flex flex-row">
-              <div class="stat-container"><span class="stat-label">Men</span> <span class="stat-content">{{ institution["enTotFtMenN"]?.toLocaleString() || '—' }}</span></div>
-              <div class="stat-container"><span class="stat-label">Women</span> <span class="stat-content">{{ institution["enTotFtWmnN"]?.toLocaleString() || '—' }}</span></div>
+              <StatDisplay
+                label="Men"
+                :uri="institution['uri']"
+                field="enTotFtMenN"
+                :valueFromPetersons="institution['enTotFtMenN']" 
+                :valueFromManual="manualInstitionData['enTotFtMenN']"
+              />
+              <StatDisplay
+                label="Women"
+                :uri="institution['uri']"
+                field="enTotFtWmnN"
+                :valueFromPetersons="institution['enTotFtWmnN']" 
+                :valueFromManual="manualInstitionData['enTotFtWmnN']"
+              />
           </div>
         </div>
         <div class="stat-container"><span class="stat-label">Calendar </span> <span class="stat-content">{{ institution["mainCalendar"] }}</span></div>
@@ -213,11 +229,30 @@
             </v-switch>
           </div>
         </div>
-        <div class="stat-container"><span class="stat-label">Average GPA </span> <span class="stat-content">{{ institution["frshGpa"]?.toLocaleString() || '—' }}</span></div>
+        <StatDisplay
+          label="Average GPA"
+          :uri="institution['uri']"
+          field="frshGpa"
+          :valueFromPetersons="institution['frshGpa']" 
+          :valueFromManual="manualInstitionData['frshGpa']"
+        />
         <div class="multiple-stat-container">
-          <div class="stat-container"><span class="stat-label">SAT 50th%ile</span> <span class="stat-content">{{ institution["sat1CompMean"] || '—' }}</span></div>
-          <div class="stat-container"><span class="stat-label">ACT 50th%ile</span> <span class="stat-content">{{ institution["actComp50thP"]?.toLocaleString() || '—' }}</span></div>
+          <StatDisplay
+            label="SAT 50th%ile"
+            :uri="institution['uri']"
+            field="sat1CompMean"
+            :valueFromPetersons="institution['sat1CompMean']" 
+            :valueFromManual="manualInstitionData['sat1CompMean']"
+          />
+          <StatDisplay
+            label="ACT 50th%ile"
+            :uri="institution['uri']"
+            field="actComp50thP"
+            :valueFromPetersons="institution['actComp50thP']" 
+            :valueFromManual="manualInstitionData['actComp50thP']"
+          />
         </div>
+        
         <div class="stat-container">
           <h2>SAT/ACT Testing</h2>
           <div class="mt-2 d-flex flex-column">
@@ -233,22 +268,50 @@
             <span class="stat-content">{{ (institution["admsReq"] && institution["admsReq"] !== 'null') ? institution["admsReq"].toLocaleString() : '—' }}</span>        
           </div>
         </div>
-
-        <div class="stat-container"><span class="stat-label">Freshmen Living on Campus</span> <span class="stat-content">{{ institution["hous1stUgP"] }}%</span></div>
-        <div class="stat-container"><span class="stat-label">Out-of-State Population</span> <span class="stat-content">{{ institution["enNresP"] }}%</span></div>
+        <StatDisplay
+          label="Freshmen Living on Campus"
+          :uri="institution['uri']"
+          field="hous1stUgP"
+          :valueFromPetersons="institution['hous1stUgP']" 
+          :valueFromManual="manualInstitionData['hous1stUgP']"
+          valueType="percentageWholeNumbers"
+        />
+        <StatDisplay
+          label="Out-of-State Population"
+          :uri="institution['uri']"
+          field="enNresP"
+          :valueFromPetersons="institution['enNresP']" 
+          :valueFromManual="manualInstitionData['enNresP']"
+          valueType="percentageWholeNumbers"
+        />
         <div class="stat-container">
           <span class="stat-label">Undergrad International Population</span> 
           <span class="stat-content">{{ institution["enNonresAlienN"] !== null ? ((institution["enNonresAlienN"] / ((institution["enTotFtMenN"]) + (institution["enTotPtMenN"]) + institution["enTotFtWmnN"] + institution["enTotPtWmnN"])) * 100).toFixed(2) + '%' : '—' }} </span>
           <!-- ({{ institution["enNonresAlienN"] }}) -->
         </div>
-        <div class="stat-container"><span class="stat-label">Freshman Retention Rate</span> <span class="stat-content">{{ Math.round(institution["retentionFrshP"]) }}%</span></div>
-
+        <StatDisplay
+          label="Freshman Retention Rate"
+          :uri="institution['uri']"
+          field="retentionFrshP"
+          :valueFromPetersons="institution['retentionFrshP']" 
+          :valueFromManual="manualInstitionData['retentionFrshP']"
+          valueType="percentageWholeNumbers"
+        />
         <div class="multiple-stat-container">
-          <div class="stat-container">
-            <span class="stat-label">Males in Greek </span> 
-            <span class="stat-content">{{ institution["fratP"] ? institution["fratP"] + '%' : '—' }}</span>
-          </div>
-          <div class="stat-container"><span class="stat-label">Females in Greek </span> <span class="stat-content">{{ institution["soroP"] ? institution["soroP"] + '%' : '—' }}</span></div>
+          <StatDisplay
+            label="Males in Greek"
+            :uri="institution['uri']"
+            field="fratP"
+            :valueFromPetersons="institution['fratP']" 
+            :valueFromManual="manualInstitionData['fratP']"
+          />
+          <StatDisplay
+            label="Females in Greek"
+            :uri="institution['uri']"
+            field="soroP"
+            :valueFromPetersons="institution['soroP']" 
+            :valueFromManual="manualInstitionData['soroP']"
+          />
         </div>
 
 
