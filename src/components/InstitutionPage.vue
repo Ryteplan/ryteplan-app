@@ -127,9 +127,9 @@
         <StatDisplay
           label="Undergraduate Enrollment"
           :uri="institution['uri']"
-          field="undergradEnrollTotal"
-          :valueFromPetersons="institution['undergradEnrollTotal']" 
-          :valueFromManual="manualInstitionData['undergradEnrollTotal']"
+          field="enTotUgN"
+          :valueFromPetersons="institution['enTotUgN']" 
+          :valueFromManual="manualInstitionData['enTotUgN']"
         />
         <StatDisplay
           label="Graduate Enrollment"
@@ -313,8 +313,6 @@
             :valueFromManual="manualInstitionData['soroP']"
           />
         </div>
-
-
       </div>
       <div class="section-container mt-8">
         <h2>Deadline dates</h2>

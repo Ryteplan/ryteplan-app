@@ -193,7 +193,7 @@ export const useTableStore = defineStore('table', {
           { title: 'Zipcode', key: 'zipcode', width: "130px", show: false },
           { title: 'Sector', key: 'mainInstControlDesc', width: "140px", show: true },
           { title: 'Calendar', key: 'mainCalendar', width: "140px", show: true },          
-          { title: 'Undergraduates', key: 'undergradEnrollTotal', width: "140px", show: true },
+          { title: 'Undergraduates', key: 'enTotUgN', width: "140px", show: true },
           { title: 'Difficulty', key: 'adDiffAll', width: "140px", show: true },          
           { title: 'Locale', key: 'cmpsSetting', width: "140px", show: true },          
           { title: 'Campus Size', key: 'cmpsSizeUnit', width: "210px", show: false },          
