@@ -26,3 +26,18 @@ body {
     min-height: inherit;
   }
 } 
+
+.testing-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.testing-header {
+  margin-top: 6px;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.testing-body {
+  font-size: 14px;
+}

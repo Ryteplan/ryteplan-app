@@ -5,13 +5,13 @@
         <span class="stat-label">{{ label }}</span>
         <span class="stat-content d-flex">
           <span class="d-flex">
-            <span>{{processValue(currentValue, valueType)}}</span>
+            <span v-html="processValue(currentValue, valueType)"></span>
             <span v-if="displayPercentage">%</span>
           </span>
         </span>
       </div>
       <v-btn
-        v-if="userStore.adminMode"
+        v-if="showEditButton"
         density="compact"
         class="ml-4"
         icon="mdi-pencil"
@@ -101,10 +101,12 @@ export default {
       }
     },
     processValue(value, valueType) {
+
       const numberValue = Number(value);
       if (numberValue === 0) {
         return '—';
       }
+
       switch (valueType) {
         case 'percentage':
           this.displayPercentage = true;
@@ -112,6 +114,15 @@ export default {
         case 'percentageWholeNumbers':
           this.displayPercentage = true;
           return (numberValue?.toLocaleString() || '—');
+        case 'testingPolicy': {
+          let result = "";
+          for (let key in value) {
+            if (value[key] !== '—') {
+              result += `<div class="testing-container"> <span class="testing-header">${key}</span> <span class="testing-body">${value[key]}</span></div>`;
+            }
+          }
+          return result;
+        }
         default:
           return (numberValue?.toLocaleString() || '—');
       }
@@ -122,7 +133,7 @@ export default {
       type: String,
     },  
     valueFromPetersons: {
-      type: [Number, String],
+      type: [Number, String, Object],
     },
     valueFromManual: {
       type: [Number, String],
@@ -152,9 +163,18 @@ export default {
       }
     },
   },
+  computed: {
+    showEditButton() {
+      if (this.valueType !== "testingPolicy") {
+        return this.userStore.adminMode
+      } else {
+        return false;
+      }
+    }
+  }
 }
 </script>
   
 <style scoped>
-/* Add your CSS styles here */
+
 </style>

@@ -194,11 +194,14 @@
               />
           </div>
         </div>
-        <div class="stat-container"><span class="stat-label">Calendar </span> <span class="stat-content">{{ institution["mainCalendar"] }}</span></div>
+        <div class="stat-container">
+          <span class="stat-label">Calendar</span>
+          <span class="stat-content">{{ institution["mainCalendar"] }}</span>
+        </div>
         <div class="multiple-stat-container">
           <div class="stat-container">
             <span class="stat-label">HBCU</span> 
-            <span v-if="!userStore.adminMode" class="stat-content">              
+            <span v-if="!userStore.adminMode" class="stat-content">
               {{ manualInstitionData["hbcu"] ? '✔️' : '—' }}
             </span>
             <v-switch
@@ -253,7 +256,17 @@
           />
         </div>
         
-        <div class="stat-container">
+        <StatDisplay
+          label="Testing Policy"
+          :uri="institution['uri']"
+          field="testingPolicy"
+          valueType="testingPolicy"
+          :valueFromManual="manualInstitionData['testingPolicy']"
+          :valueFromPetersons="this.getTestingPolicy()"
+        />
+
+
+        <!-- <div class="stat-container">
           <h2>SAT/ACT Testing</h2>
           <div class="mt-2 d-flex flex-column">
             <span class="stat-label">Not Considered</span> 
@@ -267,7 +280,7 @@
             <span class="stat-label">Required</span> 
             <span class="stat-content">{{ (institution["admsReq"] && institution["admsReq"] !== 'null') ? institution["admsReq"].toLocaleString() : '—' }}</span>        
           </div>
-        </div>
+        </div> -->
         <StatDisplay
           label="Freshmen Living on Campus"
           :uri="institution['uri']"
@@ -974,6 +987,15 @@ export default {
     },
     toggleEditImages(){
       this.editMode = !this.editMode;
+    },
+    getTestingPolicy() {
+      let policies = {
+        "Required": this.institution["admsReq"],
+        "Considered": this.institution["admsConsider"],
+        "Not Used": this.institution["admsNotUsed"],
+      }
+    
+      return policies;
     }
   },
   components: {
