@@ -108,6 +108,12 @@ export default {
       }
 
       switch (valueType) {
+        case 'date':
+          if (value) {
+            return value;
+          } else {
+            return '—';
+          }
         case 'percentage':
           this.displayPercentage = true;
           return ((value?.toLocaleString() * 100).toFixed(0) || '—' );
@@ -121,7 +127,11 @@ export default {
               result += `<div class="testing-container"> <span class="testing-header">${key}</span> <span class="testing-body">${value[key]}</span></div>`;
             }
           }
-          return result;
+          if (result) {
+            return result;
+          } else {
+            return '—';
+          }
         }
         default:
           return (numberValue?.toLocaleString() || '—');

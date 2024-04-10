@@ -330,40 +330,46 @@
       <div class="section-container mt-8">
         <h2>Deadline dates</h2>
         <div class="three-by-three-stat-grid mt-4">
-          <div class="stat-container">
-          <span class="stat-label">Regular Decision</span>
-          <span class="stat-content">
-            {{ new Date(1970, institution["apDlFrshMon"] - 1, 1).toLocaleString('default', { month: 'long' }) || '—' }}
-            {{ institution["apDlFrshDay"]?.toLocaleString() || '—' }}</span>
-        </div>
-        <div class="stat-container">
-          <span class="stat-label">Early Decision</span>
-          <span class="stat-content">
-            {{ new Date(1970, institution["apDlEdec_1Mon"] - 1, 1).toLocaleString('default', { month: 'long' }) || '—' }}
-            {{ institution["apDlEdec_1Day"]?.toLocaleString() || '—' }}
-          </span>
-        </div>
-        <div class="stat-container">
-          <span class="stat-label">Early Decision 2</span>
-          <span class="stat-content">
-            {{ new Date(1970, institution["apDlEdec_2Mon"] - 1, 1).toLocaleString('default', { month: 'long' }) || '—' }}
-            {{ institution["apDlEdec_2Day"]?.toLocaleString() || '—' }}
-          </span>
-        </div>
-        <div class="stat-container">
-          <span class="stat-label">Early Action</span>
-          <span class="stat-content">
-            {{ new Date(1970, institution["apDlEactMon"] - 1, 1).toLocaleString('default', { month: 'long' }) || '—' }}
-            {{ institution["apDlEactDay"]?.toLocaleString() || '—' }}
-          </span>
-        </div>
-        <div class="stat-container">
-          <span class="stat-label">Fall Freshman Priority</span>
-            <span class="stat-content">
-              {{ new Date(1970, institution["apDlPrioMon"] - 1, 1).toLocaleString('default', { month: 'long' }) || '—' }}
-              {{ institution["apDlPrioDay"]?.toLocaleString() || '—' }}
-            </span>
-          </div>
+          <StatDisplay
+            label="Regular Decision"
+            :uri="institution['uri']"
+            field="regDecDead"
+            :valueFromPetersons="institution['regDecDead']" 
+            :valueFromManual="manualInstitionData['regDecDead']"
+            valueType="date"
+          />
+          <StatDisplay
+            label="Early Decision 1"
+            :uri="institution['uri']"
+            field="earlyDecision1Dead"
+            :valueFromPetersons="institution['earlyDecision1Dead']" 
+            :valueFromManual="manualInstitionData['earlyDecision1Dead']"
+            valueType="date"
+          />
+          <StatDisplay
+            label="Early Decision 2"
+            :uri="institution['uri']"
+            field="earlyDecision2Dead"
+            :valueFromPetersons="institution['earlyDecision2Dead']" 
+            :valueFromManual="manualInstitionData['earlyDecision2Dead']"
+            valueType="date"
+          />
+          <StatDisplay
+            label="Early Action"
+            :uri="institution['uri']"
+            field="earlyActionDeadline"
+            :valueFromPetersons="institution['earlyActionDeadline']" 
+            :valueFromManual="manualInstitionData['earlyActionDeadline']"
+            valueType="date"
+          />
+          <StatDisplay
+            label="Fall Freshman Priority"
+            :uri="institution['uri']"
+            field="fallFreshPrio"
+            :valueFromPetersons="institution['fallFreshPrio']" 
+            :valueFromManual="manualInstitionData['fallFreshPrio']"
+            valueType="date"
+          />
         </div>
       </div>
       <div class="section-container mt-4">
