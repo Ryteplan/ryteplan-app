@@ -118,25 +118,21 @@ export default {
   },
   methods: {
     getTestingPolicyEmptyState() {
-
       this.testingPoliciesEmptyState = true;
       if (this.testingContainers.some(container => container.header === "Not used")) {
           if (this.testingPolicySwitchVisibiltyValues.showNotUsedTestingPolicy === undefined || this.testingPolicySwitchVisibiltyValues.showNotUsedTestingPolicy === false) {
-          console.log("not empty state");
           this.testingPoliciesEmptyState = false;
         }
       }
       
       if (this.testingContainers.some(container => container.header === "Considered")) {      
         if (this.testingPolicySwitchVisibiltyValues.showConsideredTestingPolicy === undefined || this.testingPolicySwitchVisibiltyValues.showConsideredTestingPolicy === false) {
-          console.log("is it this? 123465");
           this.testingPoliciesEmptyState = false;
         }
       }
 
       if (this.testingContainers.some(container => container.header === "Required")) {
         if (this.testingPolicySwitchVisibiltyValues.showRequiredTestingPolicy === undefined || this.testingPolicySwitchVisibiltyValues.showRequiredTestingPolicy === false) {
-        console.log("is it this? 123465 7777");
         this.testingPoliciesEmptyState = false;
         }
       }

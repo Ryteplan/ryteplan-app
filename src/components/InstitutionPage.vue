@@ -759,9 +759,9 @@ export default {
       userStore,      
     };    
   },
-  beforeMount() {
-    this.loadInstitutionData();
-    this.loadManualInstitutionData();
+  async beforeMount() {
+    await this.loadInstitutionData();
+    await this.loadManualInstitutionData();
   },
   mounted() {
     let auth;
@@ -858,7 +858,6 @@ export default {
       this.getEthnicityPopulationTotal();
 
       document.title = this.institution["name"] + " | Ryteplan College Search";
-
     },
     async getDescriptions() {
       const slugFromURL = this.$route.params.slug;
