@@ -273,6 +273,7 @@ export default {
     if (!this.$route.query.search) {
       this.searchFilterSortStore.searchInput = '';
     }
+    document.title ="Browse Institutions | Ryteplan College Search"
   },
   beforeUnmount() {
     window.removeEventListener("scroll", this.onScroll, true)

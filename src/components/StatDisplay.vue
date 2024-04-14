@@ -10,7 +10,7 @@
               <span v-if="displayPercentage">%</span>
             </div>
             <div v-if="valueType === 'testingPolicy'">
-              <span v-if="this.testingPoliciesEmptyState">—</span>
+              <span v-if="this.testingPoliciesEmptyState || this.testingContainers.length == 0">—</span>
               <div 
                 v-for="(container, index) in testingContainers" 
                 :key="index"
@@ -118,7 +118,8 @@ export default {
   },
   methods: {
     getTestingPolicyEmptyState() {
-      this.testingPoliciesEmptyState  = true; 
+      this.testingPoliciesEmptyState = true;
+      
       if (this.testingPolicySwitchVisibiltyValues.showNotUsedTestingPolicy === undefined || this.testingPolicySwitchVisibiltyValues.showNotUsedTestingPolicy === false) {
         this.testingPoliciesEmptyState = false;
       }
@@ -144,10 +145,7 @@ export default {
         case 'Considered':
           return !this.testingPolicySwitchVisibiltyValues.showConsideredTestingPolicy;
         case 'Not used':
-          if (this.testingPolicySwitchVisibiltyValues.showNotUsedTestingPolicy === undefined || this.testingPolicySwitchVisibiltyValues.showNotUsedTestingPolicy === false) {
-            return true;
-          } else
-            return false;
+          return !this.testingPolicySwitchVisibiltyValues.showNotUsedTestingPolicy;
         default:
           return false
       }
@@ -162,6 +160,7 @@ export default {
       }
     },
     async getTestingPolicyVisiblilitySwitchValues() {
+      if (!this.uri) return {};      
       const docRef = doc(dbFireStore, "manual_institution_data", this.uri);
       const docSnap = await getDoc(docRef);
       this.testingPolicySwitchVisibiltyValues = {

@@ -856,6 +856,9 @@ export default {
       this.getDescriptions();
       this.getSports();
       this.getEthnicityPopulationTotal();
+
+      document.title = this.institution["name"] + " | Ryteplan College Search";
+
     },
     async getDescriptions() {
       const slugFromURL = this.$route.params.slug;
