@@ -5,8 +5,25 @@
         <span class="stat-label">{{ label }}</span>
         <span class="stat-content d-flex">
           <span class="d-flex">
-            <span v-html="processValue(currentValue, valueType)"></span>
-            <span v-if="displayPercentage">%</span>
+            <div v-if="valueType !== 'testingPolicy'">
+              <span v-html="processValue(currentValue, valueType)"></span>
+              <span v-if="displayPercentage">%</span>
+            </div>
+            <div v-if="valueType === 'testingPolicy'">
+              <span v-if="this.testingPoliciesEmptyState">—</span>
+              <div 
+                v-for="(container, index) in testingContainers" 
+                :key="index"
+                class="testing-container" 
+              >
+                <div 
+                  v-if="getPolicyVisibilityValues(container.header)"
+                >
+                  <span class="d-block testing-header">{{ container.header }}</span>
+                  <span class="d-block testing-body">{{ container.body }}</span>
+                </div>
+              </div>
+            </div>
           </span>
         </span>
       </div>
@@ -29,19 +46,37 @@
             v-model="this.updateValue"
             @input="saveButtonVisibility"
             clearable
-          >
-          </v-text-field>
-          <v-text-field
-            label="Value from Petersons"
-            v-model="this.petersonsValue"
-            disabled
-          >
-          </v-text-field>
+          />
           <v-btn
             v-if="saveButtonVisibility"
             value="save"
             @click="this.updateDB"
           >Save</v-btn>
+          <div 
+            v-if="valueType === 'testingPolicy'" 
+          >
+          <div v-for="(value, key) in getPopulatedTestingPolicies()" :key="key" >
+            <v-switch 
+              :label=key
+              color="primary"
+              hide-details
+              dense
+              :model-value="getSwitchVisibility(key)"
+              @change="toggleTestPolicyTrueFalse(key)" 
+            >
+            </v-switch>              
+          </div>
+          </div>
+          <div 
+            v-if="valueType !== 'testingPolicy'"
+            class="mt-4"
+          >
+            <v-text-field
+              label="Value from Petersons"
+              v-model="this.petersonsValue"
+              disabled
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -49,7 +84,7 @@
 
 <script>
 import { dbFireStore } from "../firebase";
-import { setDoc, doc, deleteField } from 'firebase/firestore'
+import { setDoc, doc, deleteField, getDoc } from 'firebase/firestore'
 import { useUserStore } from '../stores/userStore';
 
 export default {
@@ -61,7 +96,12 @@ export default {
     }
   },
   mounted() {
-
+    setTimeout(() => {
+      if (this.valueType === 'testingPolicy') {
+        this.getTestingPolicyVisiblilitySwitchValues();
+        this.updateTestingContainers();
+      }
+    }, 1000);
   },
   data() {
     return {
@@ -71,9 +111,111 @@ export default {
       petersonsValue: null,
       manualValue: null,
       displayPercentage: false,
+      testingPolicySwitchVisibiltyValues: {},
+      testingContainers: [],
+      testingPoliciesEmptyState: true
     }
   },
   methods: {
+    getTestingPolicyEmptyState() {
+      this.testingPoliciesEmptyState  = true; 
+      if (this.testingPolicySwitchVisibiltyValues.showNotUsedTestingPolicy === undefined || this.testingPolicySwitchVisibiltyValues.showNotUsedTestingPolicy === false) {
+        this.testingPoliciesEmptyState = false;
+      }
+      
+      if (this.testingPolicySwitchVisibiltyValues.showConsideredTestingPolicy === undefined || this.testingPolicySwitchVisibiltyValues.showConsideredTestingPolicy === false) {
+        this.testingPoliciesEmptyState = false;
+      }
+
+      if (this.testingPolicySwitchVisibiltyValues.showRequiredTestingPolicy === undefined || this.testingPolicySwitchVisibiltyValues.showRequiredTestingPolicy === false) {
+        this.testingPoliciesEmptyState = false;
+      }
+
+      if (this.testingContainers.some(container => container.header === "Rya's Note")) {
+        this.testingPoliciesEmptyState = false;
+      }
+    },
+    getPolicyVisibilityValues(header) {
+      switch (header) {
+        case "Rya's Note":
+          return true
+        case 'Required':
+          return !this.testingPolicySwitchVisibiltyValues.showRequiredTestingPolicy;
+        case 'Considered':
+          return !this.testingPolicySwitchVisibiltyValues.showConsideredTestingPolicy;
+        case 'Not used':
+          if (this.testingPolicySwitchVisibiltyValues.showNotUsedTestingPolicy === undefined || this.testingPolicySwitchVisibiltyValues.showNotUsedTestingPolicy === false) {
+            return true;
+          } else
+            return false;
+        default:
+          return false
+      }
+    },
+    updateTestingContainers() {
+      this.testingContainers = [];
+      for (let key in this.currentValue) {
+        if (this.currentValue[key] && this.currentValue[key] !== '—') {
+          let displayKey = key === 'manual' ? "Rya's Note" : key;
+          this.testingContainers.push({ header: displayKey, body: this.currentValue[key] });
+        }
+      }
+    },
+    async getTestingPolicyVisiblilitySwitchValues() {
+      const docRef = doc(dbFireStore, "manual_institution_data", this.uri);
+      const docSnap = await getDoc(docRef);
+      this.testingPolicySwitchVisibiltyValues = {
+        "showRequiredTestingPolicy": docSnap.data()?.showRequiredTestingPolicy,
+        "showConsideredTestingPolicy": docSnap.data()?.showConsideredTestingPolicy,
+        "showNotUsedTestingPolicy": docSnap.data()?.showNotUsedTestingPolicy,
+      };
+    },
+    getPopulatedTestingPolicies() {
+      if (!this.currentValue) return {};
+      let filteredObject = Object.keys(this.currentValue).reduce((obj, key) => {
+        if (key !== 'manual' && this.currentValue[key] !== '—') {
+          obj[key] = this.currentValue[key];
+        }
+        return obj;
+      }, {});
+      return filteredObject;
+    },
+    getSwitchVisibility(key) {
+      switch (key) {
+        case 'Required':
+          return !this.testingPolicySwitchVisibiltyValues.showRequiredTestingPolicy;
+        case 'Considered':
+          return !this.testingPolicySwitchVisibiltyValues.showConsideredTestingPolicy;
+        case 'Not used':
+          return !this.testingPolicySwitchVisibiltyValues.showNotUsedTestingPolicy;
+        default:
+          return false
+      }
+    },
+    toggleTestPolicyTrueFalse(key) {
+      switch (key) {
+        case 'Required':
+          this.testingPolicySwitchVisibiltyValues.showRequiredTestingPolicy = !this.testingPolicySwitchVisibiltyValues.showRequiredTestingPolicy;
+          setDoc(doc(dbFireStore, 'manual_institution_data', this.uri), {
+            showRequiredTestingPolicy: this.testingPolicySwitchVisibiltyValues.showRequiredTestingPolicy,
+          }, { merge: true });
+          break;
+        case 'Considered':
+          this.testingPolicySwitchVisibiltyValues.showConsideredTestingPolicy = !this.testingPolicySwitchVisibiltyValues.showConsideredTestingPolicy;
+          setDoc(doc(dbFireStore, 'manual_institution_data', this.uri), {
+            showConsideredTestingPolicy: this.testingPolicySwitchVisibiltyValues.showConsideredTestingPolicy,
+          }, { merge: true });
+          break;
+        case 'Not used':
+          this.testingPolicySwitchVisibiltyValues.showNotUsedTestingPolicy = !this.testingPolicySwitchVisibiltyValues.showNotUsedTestingPolicy;
+          setDoc(doc(dbFireStore, 'manual_institution_data', this.uri), {
+            showNotUsedTestingPolicy: this.testingPolicySwitchVisibiltyValues.showNotUsedTestingPolicy,
+          }, { merge: true });
+          break;
+        default:
+          break;
+      }
+    },
     updateDB() {
       if (this.updateValue === null) {
         setDoc(doc(dbFireStore, 'manual_institution_data', this.uri), {
@@ -86,14 +228,20 @@ export default {
       }
 
       if (this.updateValue) {
-        this.currentValue = this.updateValue;
+        if (this.valueType === 'testingPolicy') {
+          this.currentValue["manual"] = this.updateValue;
+        } else {
+          this.currentValue = this.updateValue;
+        }
       } else {
-        this.currentValue = this.petersonsValue;
+        if (this.valueType === 'testingPolicy') {
+          this.currentValue["manual"] = this.updateValue;
+        } else {
+          this.currentValue = this.petersonsValue;
+        }
       }
     },
     saveButtonVisibility(){
-      console.log(this.currentValue, this.updateValue);
-      console.log(this.currentValue !== this.updateValue || this.updateValue === null)
       if (this.currentValue !== this.updateValue || this.updateValue === null) {
         return true
       } else {
@@ -108,6 +256,8 @@ export default {
       }
 
       switch (valueType) {
+        case 'numberNoComma':
+          return (value || '—');
         case 'date':
           if (value) {
             return value;
@@ -116,23 +266,10 @@ export default {
           }
         case 'percentage':
           this.displayPercentage = true;
-          return ((value?.toLocaleString() * 100).toFixed(0) || '—' );
+          return ((Math.round(numberValue)?.toLocaleString() * 100) || '—' );
         case 'percentageWholeNumbers':
           this.displayPercentage = true;
-          return (numberValue?.toLocaleString() || '—');
-        case 'testingPolicy': {
-          let result = "";
-          for (let key in value) {
-            if (value[key] !== '—') {
-              result += `<div class="testing-container"> <span class="testing-header">${key}</span> <span class="testing-body">${value[key]}</span></div>`;
-            }
-          }
-          if (result) {
-            return result;
-          } else {
-            return '—';
-          }
-        }
+          return (Math.round(numberValue)?.toLocaleString() || '—');
         default:
           return (numberValue?.toLocaleString() || '—');
       }
@@ -172,15 +309,17 @@ export default {
         this.updateValue = this.manualValue
       }
     },
+    testingPolicySwitchVisibiltyValues: {
+    handler() {
+        this.getTestingPolicyEmptyState(); // Or your desired function
+      },
+      deep: true, // Deep watch for object changes
+    },
   },
   computed: {
     showEditButton() {
-      if (this.valueType !== "testingPolicy") {
-        return this.userStore.adminMode
-      } else {
-        return false;
-      }
-    }
+      return this.userStore.adminMode
+    },
   }
 }
 </script>

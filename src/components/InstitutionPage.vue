@@ -246,6 +246,7 @@
             field="sat1CompMean"
             :valueFromPetersons="institution['sat1CompMean']" 
             :valueFromManual="manualInstitionData['sat1CompMean']"
+            valueType="numberNoComma"
           />
           <StatDisplay
             label="ACT 50th%ile"
@@ -264,23 +265,6 @@
           :valueFromManual="manualInstitionData['testingPolicy']"
           :valueFromPetersons="this.getTestingPolicy()"
         />
-
-
-        <!-- <div class="stat-container">
-          <h2>SAT/ACT Testing</h2>
-          <div class="mt-2 d-flex flex-column">
-            <span class="stat-label">Not Considered</span> 
-            <span class="stat-content">{{ (institution["admsNotUsed"] && institution["admsNotUsed"] !== 'null') ? institution["admsNotUsed"].toLocaleString() : '—' }}</span>
-          </div>
-          <div class="mt-2 d-flex flex-column">
-            <span class="stat-label">Considered</span> 
-            <span class="stat-content">{{ (institution["satActConsidered"] && institution["satActConsidered"] !== 'null') ? institution["satActConsidered"].toLocaleString() : '—' }}</span>
-          </div>
-          <div class="mt-2 d-flex flex-column">
-            <span class="stat-label">Required</span> 
-            <span class="stat-content">{{ (institution["admsReq"] && institution["admsReq"] !== 'null') ? institution["admsReq"].toLocaleString() : '—' }}</span>        
-          </div>
-        </div> -->
         <StatDisplay
           label="Freshmen Living on Campus"
           :uri="institution['uri']"
@@ -299,7 +283,9 @@
         />
         <div class="stat-container">
           <span class="stat-label">Undergrad International Population</span> 
-          <span class="stat-content">{{ institution["enNonresAlienN"] !== null ? ((institution["enNonresAlienN"] / ((institution["enTotFtMenN"]) + (institution["enTotPtMenN"]) + institution["enTotFtWmnN"] + institution["enTotPtWmnN"])) * 100).toFixed(2) + '%' : '—' }} </span>
+          <span class="stat-content">
+            {{ institution["enNonresAlienN"] !== null ? Math.round((institution["enNonresAlienN"] / ((institution["enTotFtMenN"]) + (institution["enTotPtMenN"]) + institution["enTotFtWmnN"] + institution["enTotPtWmnN"])) * 100) + '%' : '—' }}
+          </span>
           <!-- ({{ institution["enNonresAlienN"] }}) -->
         </div>
         <StatDisplay
@@ -317,6 +303,7 @@
             field="fratP"
             :valueFromPetersons="institution['fratP']" 
             :valueFromManual="manualInstitionData['fratP']"
+            valueType="percentageWholeNumbers"
           />
           <StatDisplay
             label="Females in Greek"
@@ -324,6 +311,7 @@
             field="soroP"
             :valueFromPetersons="institution['soroP']" 
             :valueFromManual="manualInstitionData['soroP']"
+            valueType="percentageWholeNumbers"
           />
         </div>
       </div>
@@ -376,79 +364,79 @@
         <h2>Admission Consideration Factors</h2>        
         <div class="three-by-three-stat-grid mt-4">
           <div class="stat-container">
-            <span class="stat-label">extracurricular activities</span>
-            <span class="stat-content">{{ institution["activ"]?.toLocaleString() || '—' }}</span>
-          </div>
-          <div class="stat-container">
-            <span class="stat-label">alumni/AE relation</span>
-            <span class="stat-content">{{ institution["alum"]?.toLocaleString() || '—' }}</span>
-          </div>
-          <div class="stat-container">
-            <span class="stat-label">character/personal qualities</span>
-            <span class="stat-content">{{ institution["char"]?.toLocaleString() || '—' }}</span>
-          </div>
-          <div class="stat-container">
-            <span class="stat-label">application essay</span>
-            <span class="stat-content">{{ institution["essay"]?.toLocaleString() || '—' }}</span>
-          </div>
-          <div class="stat-container">
-            <span class="stat-label">first generation</span>
-            <span class="stat-content">{{ institution["first"]?.toLocaleString() || '—' }}</span>
-          </div>
-          <div class="stat-container">
-            <span class="stat-label">geographical residence</span>
-            <span class="stat-content">{{ institution["geog"]?.toLocaleString() || '—' }}</span>
-          </div>
-          <div class="stat-container">
-            <span class="stat-label">academic GPA</span>
+            <span class="stat-label">Academic GPA</span>
             <span class="stat-content">{{ institution["gpa"]?.toLocaleString() || '—' }}</span>
           </div>
           <div class="stat-container">
-            <span class="stat-label">interview</span>
-            <span class="stat-content">{{ institution["iview"]?.toLocaleString() || '—' }}</span>
+            <span class="stat-label">Alumni/AE relation</span>
+            <span class="stat-content">{{ institution["alum"]?.toLocaleString() || '—' }}</span>
           </div>
           <div class="stat-container">
-            <span class="stat-label">racial/ethnic status</span>
-            <span class="stat-content">{{ institution["minor"]?.toLocaleString() || '—' }}</span>
+            <span class="stat-label">Application essay</span>
+            <span class="stat-content">{{ institution["essay"]?.toLocaleString() || '—' }}</span>
           </div>
           <div class="stat-container">
-            <span class="stat-label">class rank</span>
+            <span class="stat-label">Character/Personal qualities</span>
+            <span class="stat-content">{{ institution["char"]?.toLocaleString() || '—' }}</span>
+          </div>
+          <div class="stat-container">
+            <span class="stat-label">Class rank</span>
             <span class="stat-content">{{ institution["rank"]?.toLocaleString() || '—' }}</span>
           </div>
           <div class="stat-container">
-            <span class="stat-label">recommendation(s)</span>
-            <span class="stat-content">{{ institution["recom"]?.toLocaleString() || '—' }}</span>
+            <span class="stat-label">Extracurricular activities</span>
+            <span class="stat-content">{{ institution["activ"]?.toLocaleString() || '—' }}</span>
           </div>
           <div class="stat-container">
-            <span class="stat-label">religious affiliation/commitment</span>
-            <span class="stat-content">{{ institution["relig"]?.toLocaleString() || '—' }}</span>
+            <span class="stat-label">First generation</span>
+            <span class="stat-content">{{ institution["first"]?.toLocaleString() || '—' }}</span>
           </div>
           <div class="stat-container">
-            <span class="stat-label">rigor of secondary school record</span>
-            <span class="stat-content">{{ institution["rigor"]?.toLocaleString() || '—' }}</span>
+            <span class="stat-label">Geographical residence</span>
+            <span class="stat-content">{{ institution["geog"]?.toLocaleString() || '—' }}</span>
           </div>
           <div class="stat-container">
-            <span class="stat-label">state residency</span>
-            <span class="stat-content">{{ institution["state"]?.toLocaleString() || '—' }}</span>
+            <span class="stat-label">Interview</span>
+            <span class="stat-content">{{ institution["iview"]?.toLocaleString() || '—' }}</span>
           </div>
           <div class="stat-container">
-            <span class="stat-label">talent/ability</span>
-            <span class="stat-content">{{ institution["talnt"]?.toLocaleString() || '—' }}</span>
-          </div>
-          <div class="stat-container">
-            <span class="stat-label">standardized test scores</span>
-            <span class="stat-content">{{ institution["tstsc"]?.toLocaleString() || '—' }}</span>
-          </div>
-          <div class="stat-container">
-            <span class="stat-label">volunteer work</span>
-            <span class="stat-content">{{ institution["volun"]?.toLocaleString() || '—' }}</span>
-          </div>
-          <div class="stat-container">
-            <span class="stat-label">level of applicant's interest</span>
+            <span class="stat-label">Level of applicant's interest</span>
             <span class="stat-content">{{ institution["apint"]?.toLocaleString() || '—' }}</span>
           </div>
           <div class="stat-container">
-            <span class="stat-label">work experience</span>
+            <span class="stat-label">Racial/Ethnic Status</span>
+            <span class="stat-content">{{ institution["minor"]?.toLocaleString() || '—' }}</span>
+          </div>
+          <div class="stat-container">
+            <span class="stat-label">Recommendation(s)</span>
+            <span class="stat-content">{{ institution["recom"]?.toLocaleString() || '—' }}</span>
+          </div>
+          <div class="stat-container">
+            <span class="stat-label">Religious affiliation/Commitment</span>
+            <span class="stat-content">{{ institution["relig"]?.toLocaleString() || '—' }}</span>
+          </div>
+          <div class="stat-container">
+            <span class="stat-label">Rigor of secondary school record</span>
+            <span class="stat-content">{{ institution["rigor"]?.toLocaleString() || '—' }}</span>
+          </div>
+          <div class="stat-container">
+            <span class="stat-label">Standardized test scores</span>
+            <span class="stat-content">{{ institution["tstsc"]?.toLocaleString() || '—' }}</span>
+          </div>
+          <div class="stat-container">
+            <span class="stat-label">State residency</span>
+            <span class="stat-content">{{ institution["state"]?.toLocaleString() || '—' }}</span>
+          </div>
+          <div class="stat-container">
+            <span class="stat-label">Talent/Ability</span>
+            <span class="stat-content">{{ institution["talnt"]?.toLocaleString() || '—' }}</span>
+          </div>
+          <div class="stat-container">
+            <span class="stat-label">Volunteer work</span>
+            <span class="stat-content">{{ institution["volun"]?.toLocaleString() || '—' }}</span>
+          </div>
+          <div class="stat-container">
+            <span class="stat-label">Work experience</span>
             <span class="stat-content">{{ institution["work"]?.toLocaleString() || '—' }}</span>
           </div>
         </div>
@@ -675,7 +663,7 @@
       <v-expansion-panels class="mt-8">
         <v-expansion-panel :value="0">
           <v-expansion-panel-title>
-            <h3>Majors/Fields of Study</h3>
+            <h3>Fields of Study</h3>
           </v-expansion-panel-title>
           <v-expansion-panel-text>
             <v-list v-if="majors !== null">
@@ -996,9 +984,10 @@ export default {
     },
     getTestingPolicy() {
       let policies = {
+        "manual": this.manualInstitionData["testingPolicy"],
         "Required": this.institution["admsReq"],
         "Considered": this.institution["admsConsider"],
-        "Not Used": this.institution["admsNotUsed"],
+        "Not used": this.institution["admsNotUsed"]
       }
     
       return policies;
