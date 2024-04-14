@@ -118,18 +118,27 @@ export default {
   },
   methods: {
     getTestingPolicyEmptyState() {
+
       this.testingPoliciesEmptyState = true;
-      
-      if (this.testingPolicySwitchVisibiltyValues.showNotUsedTestingPolicy === undefined || this.testingPolicySwitchVisibiltyValues.showNotUsedTestingPolicy === false) {
-        this.testingPoliciesEmptyState = false;
+      if (this.testingContainers.some(container => container.header === "Not used")) {
+          if (this.testingPolicySwitchVisibiltyValues.showNotUsedTestingPolicy === undefined || this.testingPolicySwitchVisibiltyValues.showNotUsedTestingPolicy === false) {
+          console.log("not empty state");
+          this.testingPoliciesEmptyState = false;
+        }
       }
       
-      if (this.testingPolicySwitchVisibiltyValues.showConsideredTestingPolicy === undefined || this.testingPolicySwitchVisibiltyValues.showConsideredTestingPolicy === false) {
-        this.testingPoliciesEmptyState = false;
+      if (this.testingContainers.some(container => container.header === "Considered")) {      
+        if (this.testingPolicySwitchVisibiltyValues.showConsideredTestingPolicy === undefined || this.testingPolicySwitchVisibiltyValues.showConsideredTestingPolicy === false) {
+          console.log("is it this? 123465");
+          this.testingPoliciesEmptyState = false;
+        }
       }
 
-      if (this.testingPolicySwitchVisibiltyValues.showRequiredTestingPolicy === undefined || this.testingPolicySwitchVisibiltyValues.showRequiredTestingPolicy === false) {
+      if (this.testingContainers.some(container => container.header === "Required")) {
+        if (this.testingPolicySwitchVisibiltyValues.showRequiredTestingPolicy === undefined || this.testingPolicySwitchVisibiltyValues.showRequiredTestingPolicy === false) {
+        console.log("is it this? 123465 7777");
         this.testingPoliciesEmptyState = false;
+        }
       }
 
       if (this.testingContainers.some(container => container.header === "Rya's Note")) {
@@ -155,7 +164,16 @@ export default {
       for (let key in this.currentValue) {
         if (this.currentValue[key] && this.currentValue[key] !== '—') {
           let displayKey = key === 'manual' ? "Rya's Note" : key;
-          this.testingContainers.push({ header: displayKey, body: this.currentValue[key] });
+          // detect is currentValue contains the string 'Sat or ACT' remove strings that contain 'SAT' or 'ACT'
+          if (this.currentValue[key].includes('SAT or ACT')) {
+            this.currentValue[key] = 'SAT or ACT';
+          }
+          if (this.currentValue[key].includes('Other standardized tests')) {
+            this.currentValue[key] = this.currentValue[key].replace(/Other standardized tests/g, '');
+          }
+          if (this.currentValue[key] !== '') {
+            this.testingContainers.push({ header: displayKey, body: this.currentValue[key] });
+          }
         }
       }
     },
@@ -172,7 +190,7 @@ export default {
     getPopulatedTestingPolicies() {
       if (!this.currentValue) return {};
       let filteredObject = Object.keys(this.currentValue).reduce((obj, key) => {
-        if (key !== 'manual' && this.currentValue[key] !== '—') {
+        if (key !== 'manual' && this.currentValue[key] !== '—' && this.currentValue[key] !== '') {
           obj[key] = this.currentValue[key];
         }
         return obj;
