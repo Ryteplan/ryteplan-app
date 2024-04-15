@@ -154,7 +154,7 @@
         <StatDisplay
           label="Admission Rate"
           :uri="institution['uri']"
-          field="enTotGradN"
+          field="admitRate"
           :valueFromPetersons="institution['admitRate']" 
           :valueFromManual="manualInstitionData['admitRate']"
           valueType="percentage"
@@ -795,6 +795,7 @@ export default {
       descriptionPanels: [],
       imagesFromGoogleSearch: [],
       imageURLsFromDB: {},
+      sat50thPercentile: 0,
       majors: [],
       sports: [],
       sportsHeaders: [
@@ -856,7 +857,8 @@ export default {
       this.getDescriptions();
       this.getSports();
       this.getEthnicityPopulationTotal();
-
+      this.sat50thPercentile = this.institution["SAT_VERB_50TH_P"] + this.institution["SAT_MATH_50TH_P"];
+      
       document.title = this.institution["name"] + " | Ryteplan College Search";
     },
     async getDescriptions() {

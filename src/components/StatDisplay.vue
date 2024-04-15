@@ -167,6 +167,9 @@ export default {
           if (this.currentValue[key].includes('Other standardized tests')) {
             this.currentValue[key] = this.currentValue[key].replace(/Other standardized tests/g, '');
           }
+          if (this.currentValue[key].includes('SAT Subject Tests')) {
+            this.currentValue[key] = this.currentValue[key].replace(/SAT Subject Tests/g, '');
+          }
           if (this.currentValue[key] !== '') {
             this.testingContainers.push({ header: displayKey, body: this.currentValue[key] });
           }
@@ -279,7 +282,7 @@ export default {
           }
         case 'percentage':
           this.displayPercentage = true;
-          return ((Math.round(numberValue)?.toLocaleString() * 100) || '—' );
+          return ((Math.round(numberValue  * 100)?.toLocaleString()) || '—' );
         case 'percentageWholeNumbers':
           this.displayPercentage = true;
           return (Math.round(numberValue)?.toLocaleString() || '—');

@@ -25,12 +25,12 @@
           >
             Sign up
           </v-btn> -->
-          <v-btn 
+          <!-- <v-btn 
             class="no-active"
             :to="{name: 'login', query: { tabDestination: 'Login' }}"
           >
             Login
-          </v-btn>
+          </v-btn> -->
         </div>
       </div>
     </v-app-bar>
