@@ -35,9 +35,10 @@
       </div>
     </v-app-bar>
     <v-navigation-drawer
-      v-show="false"
-      v-if="isLoggedIn"
-      permanent
+      :class="drawerClass"
+      ref="drawer"
+      v-show="isLoggedIn"
+      permanent    
     >
       <v-list nav>
         <v-list-item 
@@ -132,6 +133,15 @@ import { useSearchFilterSortStore } from './/stores/searchFilterSortStore';
 let auth;
 
 export default {
+  computed:  {
+    drawerClass() {
+     return this.isLoggedIn ? (this.drawerRendered ? '' : 'drawer--open') : 'drawer--closed';
+    },
+    drawerRendered() {
+      // Track if the drawer has been rendered at least once
+      return this.$refs.drawer ? true : false;
+    },  
+  },
   setup() {
     let appVersionStore = useAppVersionStore();
     appVersionStore.compareVersion();
@@ -153,16 +163,17 @@ export default {
   components: {
     LogoGreenBlack
   },
-  mounted() {
-    auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
+  async beforeMount() {
+    auth =  getAuth();
+    await onAuthStateChanged(auth, (user) => {
       if (user) {
         this.isLoggedIn = true;
       } else {
         this.isLoggedIn = false;
       }
     })
-
+  },
+  mounted() {
     // Check if the URL contains a "search" parameter
     if (this.$route.query.search) {
       this.searchFilterSortStore.searchInput = this.$route.query.search;
