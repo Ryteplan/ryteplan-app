@@ -18,27 +18,26 @@
           @keydown.enter="performSearch"
           @click:clear="performSearch('fromClear')"
         ></v-text-field>
-        <div v-if="!isLoggedIn">
-          <!-- <v-btn 
+        <!-- <div v-if="!isLoggedIn">
+          <v-btn 
             :to="{name: 'login', query: { tabDestination: 'Sign Up' }}"
             class="no-active"
           >
             Sign up
-          </v-btn> -->
-          <!-- <v-btn 
+          </v-btn>
+          <v-btn 
             class="no-active"
             :to="{name: 'login', query: { tabDestination: 'Login' }}"
           >
             Login
-          </v-btn> -->
-        </div>
+          </v-btn>
+        </div> -->
       </div>
     </v-app-bar>
     <v-navigation-drawer
-      :class="drawerClass"
-      ref="drawer"
-      v-show="isLoggedIn"
-      permanent    
+      v-show="false"
+      v-if="isLoggedIn"
+      permanent
     >
       <v-list nav>
         <v-list-item 
@@ -133,15 +132,6 @@ import { useSearchFilterSortStore } from './/stores/searchFilterSortStore';
 let auth;
 
 export default {
-  computed:  {
-    drawerClass() {
-     return this.isLoggedIn ? (this.drawerRendered ? '' : 'drawer--open') : 'drawer--closed';
-    },
-    drawerRendered() {
-      // Track if the drawer has been rendered at least once
-      return this.$refs.drawer ? true : false;
-    },  
-  },
   setup() {
     let appVersionStore = useAppVersionStore();
     appVersionStore.compareVersion();
@@ -163,17 +153,16 @@ export default {
   components: {
     LogoGreenBlack
   },
-  async beforeMount() {
-    auth =  getAuth();
-    await onAuthStateChanged(auth, (user) => {
+  mounted() {
+    auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
       if (user) {
         this.isLoggedIn = true;
       } else {
         this.isLoggedIn = false;
       }
     })
-  },
-  mounted() {
+
     // Check if the URL contains a "search" parameter
     if (this.$route.query.search) {
       this.searchFilterSortStore.searchInput = this.$route.query.search;

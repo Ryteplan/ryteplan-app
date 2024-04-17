@@ -17,7 +17,7 @@
           <v-btn
             @click="signInWithGoogle"
           >
-            Sign up With Google
+            Sign in with Google
           </v-btn>
           <form class="mt-6 d-none" @submit.prevent="login"> 
             <v-text-field       
