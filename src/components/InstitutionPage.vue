@@ -244,7 +244,7 @@
             label="SAT 50th%ile"
             :uri="institution['uri']"
             field="sat1CompMean"
-            :valueFromPetersons="institution['sat1CompMean']" 
+            :valueFromPetersons="sat50thPercentile"
             :valueFromManual="manualInstitionData['sat1CompMean']"
             valueType="numberNoComma"
           />
@@ -857,8 +857,8 @@ export default {
       this.getDescriptions();
       this.getSports();
       this.getEthnicityPopulationTotal();
-      this.sat50thPercentile = this.institution["SAT_VERB_50TH_P"] + this.institution["SAT_MATH_50TH_P"];
-      
+      this.sat50thPercentile = this.institution["satVerb50thP"] + this.institution["satMath50thP"];
+
       document.title = this.institution["name"] + " | Ryteplan College Search";
     },
     async getDescriptions() {

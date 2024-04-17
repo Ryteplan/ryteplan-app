@@ -35,7 +35,6 @@
       </div>
     </v-app-bar>
     <v-navigation-drawer
-      v-show="false"
       v-if="isLoggedIn"
       permanent
     >
