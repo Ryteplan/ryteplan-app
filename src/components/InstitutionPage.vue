@@ -888,7 +888,7 @@ export default {
       this.sports = sportsArray;
     },
     async getImages() {
-      let dataArray = [];
+      // let dataArray = [];
 
       const slugFromURL = this.$route.params.slug;
       const imageURLsFromDB = collection(dbFireStore, 'institution_images');
@@ -902,57 +902,58 @@ export default {
       
       if (Object.keys(this.imagesData).length > 0) { 
         this.imageURLsFromDB = this.imagesData;
-      } else {
-        const arialCampusSearchString = encodeURIComponent(this.institution["name"]) + " campus -source -text -getty";
-        const arialCampusResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${arialCampusSearchString}&num=1`);
-        const image1 = await arialCampusResponse.json();
-        dataArray.push(image1);
-
-        const buildingOnCampusSearchString = encodeURIComponent(this.institution["name"]) + " office of bursar building";
-        const buildingOnCampusResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${buildingOnCampusSearchString}&num=1`);
-        const image2 = await buildingOnCampusResponse.json();
-        dataArray.push(image2);
-
-        const surroundingAreaOrNeighborhoodSearchString = encodeURIComponent(this.institution["name"]) + " student union cafe";
-        const surroundingAreaOrNeighborhoodResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${surroundingAreaOrNeighborhoodSearchString}&num=1`);
-        const image3 = await surroundingAreaOrNeighborhoodResponse.json();
-        dataArray.push(image3);
-
-        const classroomInstructionSearchString = encodeURIComponent(this.institution["name"]) + " student classroom or lecture hall photograph";
-        const classroomInstructionResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${classroomInstructionSearchString}&num=1`);
-        const image4 = await classroomInstructionResponse.json();
-        dataArray.push(image4);
-
-        const athleticOrLiveGameSearchString = encodeURIComponent(this.institution["name"]) + " sports game";
-        const athleticOrLiveGameResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${athleticOrLiveGameSearchString}&num=1`);
-        const image5 = await athleticOrLiveGameResponse.json();
-        dataArray.push(image5);
-
-        this.imagesData = dataArray;
-        
-        const auth = getAuth();
-        onAuthStateChanged(auth, (user) => {
-          if (user) {
-            setDoc(doc(dbFireStore, 'institution_images', this.institution["uri"]), {
-              "image1": image1.items[0].link,
-              "image2": image2.items[0].link,
-              "image3": image3.items[0].link,
-              "image4": image4.items[0].link,
-              "image5": image5.items[0].link,
-            })
-
-            this.imageURLsFromDB = {
-              "image1": image1.items[0].link,
-              "image2": image2.items[0].link,
-              "image3": image3.items[0].link,
-              "image4": image4.items[0].link,
-              "image5": image5.items[0].link,
-            }
-          } else {
-            this.addImagesFromSearchToLinkArray();
-          }
-        });
       }
+      // } else {
+      //   const arialCampusSearchString = encodeURIComponent(this.institution["name"]) + " campus -source -text -getty";
+      //   const arialCampusResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${arialCampusSearchString}&num=1`);
+      //   const image1 = await arialCampusResponse.json();
+      //   dataArray.push(image1);
+
+      //   const buildingOnCampusSearchString = encodeURIComponent(this.institution["name"]) + " office of bursar building";
+      //   const buildingOnCampusResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${buildingOnCampusSearchString}&num=1`);
+      //   const image2 = await buildingOnCampusResponse.json();
+      //   dataArray.push(image2);
+
+      //   const surroundingAreaOrNeighborhoodSearchString = encodeURIComponent(this.institution["name"]) + " student union cafe";
+      //   const surroundingAreaOrNeighborhoodResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${surroundingAreaOrNeighborhoodSearchString}&num=1`);
+      //   const image3 = await surroundingAreaOrNeighborhoodResponse.json();
+      //   dataArray.push(image3);
+
+      //   const classroomInstructionSearchString = encodeURIComponent(this.institution["name"]) + " student classroom or lecture hall photograph";
+      //   const classroomInstructionResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${classroomInstructionSearchString}&num=1`);
+      //   const image4 = await classroomInstructionResponse.json();
+      //   dataArray.push(image4);
+
+      //   const athleticOrLiveGameSearchString = encodeURIComponent(this.institution["name"]) + " sports game";
+      //   const athleticOrLiveGameResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${athleticOrLiveGameSearchString}&num=1`);
+      //   const image5 = await athleticOrLiveGameResponse.json();
+      //   dataArray.push(image5);
+
+      //   this.imagesData = dataArray;
+        
+      //   const auth = getAuth();
+      //   onAuthStateChanged(auth, (user) => {
+      //     if (user) {
+      //       setDoc(doc(dbFireStore, 'institution_images', this.institution["uri"]), {
+      //         "image1": image1.items[0].link,
+      //         "image2": image2.items[0].link,
+      //         "image3": image3.items[0].link,
+      //         "image4": image4.items[0].link,
+      //         "image5": image5.items[0].link,
+      //       })
+
+      //       this.imageURLsFromDB = {
+      //         "image1": image1.items[0].link,
+      //         "image2": image2.items[0].link,
+      //         "image3": image3.items[0].link,
+      //         "image4": image4.items[0].link,
+      //         "image5": image5.items[0].link,
+      //       }
+      //     } else {
+      //       this.addImagesFromSearchToLinkArray();
+      //     }
+      //   });
+      // }
     },
     addImagesFromSearchToLinkArray() {
       let linkArray = [];
@@ -993,7 +994,6 @@ export default {
         "Considered": this.institution["admsConsider"],
         "Not used": this.institution["admsNotUsed"]
       }
-    
       return policies;
     }
   },
