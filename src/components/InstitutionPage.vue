@@ -989,7 +989,6 @@ export default {
     },
     getTestingPolicy() {
       let policies = {
-        "manual": this.manualInstitionData["testingPolicy"],
         "Required": this.institution["admsReq"],
         "Considered": this.institution["admsConsider"],
         "Not used": this.institution["admsNotUsed"]

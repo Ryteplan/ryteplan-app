@@ -10,7 +10,11 @@
               <span v-if="displayPercentage">%</span>
             </div>
             <div v-if="valueType === 'testingPolicy'">
-              <span v-if="this.testingPoliciesEmptyState || this.testingContainers.length == 0">—</span>
+              <div v-if="manualValue">
+                <span class="d-block testing-header">Rya's Note</span>
+                <span class="d-block testing-body">{{ manualValue }}</span>
+              </div>
+              <span v-if="(this.testingPoliciesEmptyState || this.testingContainers.length == 0) && !manualValue">—</span>
               <div 
                 v-for="(container, index) in testingContainers" 
                 :key="index"
@@ -55,17 +59,17 @@
           <div 
             v-if="valueType === 'testingPolicy'" 
           >
-          <div v-for="(value, key) in getPopulatedTestingPolicies()" :key="key" >
-            <v-switch 
-              :label=key
-              color="primary"
-              hide-details
-              dense
-              :model-value="getSwitchVisibility(key)"
-              @change="toggleTestPolicyTrueFalse(key)" 
-            >
-            </v-switch>              
-          </div>
+            <div v-for="(value, key) in getPopulatedTestingPolicies()" :key="key" >
+              <v-switch 
+                :label=key
+                color="primary"
+                hide-details
+                dense
+                :model-value="getSwitchVisibility(key)"
+                @change="toggleTestPolicyTrueFalse(key)" 
+              >
+              </v-switch>              
+            </div>
           </div>
           <div 
             v-if="valueType !== 'testingPolicy'"
@@ -136,15 +140,10 @@ export default {
         this.testingPoliciesEmptyState = false;
         }
       }
-
-      if (this.testingContainers.some(container => container.header === "Rya's Note")) {
-        this.testingPoliciesEmptyState = false;
-      }
     },
     getPolicyVisibilityValues(header) {
+      
       switch (header) {
-        case "Rya's Note":
-          return true
         case 'Required':
           return !this.testingPolicySwitchVisibiltyValues.showRequiredTestingPolicy;
         case 'Considered':
@@ -156,11 +155,14 @@ export default {
       }
     },
     updateTestingContainers() {
-      this.testingContainers = [];
+      // check if this.currentValue is an object
+      if (typeof this.currentValue !== 'object') return;
+
+      this.testingContainers = [];      
       for (let key in this.currentValue) {
         if (this.currentValue[key] && this.currentValue[key] !== '—') {
-          let displayKey = key === 'manual' ? "Rya's Note" : key;
-          // detect is currentValue contains the string 'Sat or ACT' remove strings that contain 'SAT' or 'ACT'
+          let displayKey = key;
+
           if (this.currentValue[key].includes('SAT or ACT')) {
             this.currentValue[key] = 'SAT or ACT';
           }
@@ -315,21 +317,23 @@ export default {
     valueFromPetersons(newVal) {
       if (newVal) {
         this.petersonsValue = newVal;
-        this.currentValue = this.petersonsValue
+        this.currentValue = newVal
       }
     },
     valueFromManual(newVal) {
       if (newVal) {
         this.manualValue = newVal;
-        this.currentValue = this.manualValue
+        if (this.valueType !== 'testingPolicy') {
+          this.currentValue = this.manualValue
+        } 
         this.updateValue = this.manualValue
       }
     },
     testingPolicySwitchVisibiltyValues: {
-    handler() {
-        this.getTestingPolicyEmptyState(); // Or your desired function
+      handler() {
+        this.getTestingPolicyEmptyState();
       },
-      deep: true, // Deep watch for object changes
+      deep: true,
     },
   },
   computed: {
@@ -339,7 +343,3 @@ export default {
   }
 }
 </script>
-  
-<style scoped>
-
-</style>
