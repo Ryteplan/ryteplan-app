@@ -70,7 +70,8 @@
               <span class="stat-label">City</span>
               <span class="stat-content">{{ institution["city"] }}</span>
             </div>
-            <div class="stat-container">
+
+            <div class="stat-container" v-if="institution['countryCode'] !== 'CAN'">
               <span class="stat-label">State</span>
               <span class="stat-content">{{ institution["stateCleaned"] }}</span>
             </div>
