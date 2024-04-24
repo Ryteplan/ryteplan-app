@@ -23,7 +23,7 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
   actions: {
     updatePage(pageNumber) {
       this.page = pageNumber;
-      document.querySelector('.v-table__wrapper').scrollTop = 0;
+      // document.querySelector('.v-table__wrapper').scrollTop = 0;
     },
     saveThenClearSearchInput() {
       this.saveSearchInput = this.searchInput;
@@ -37,6 +37,6 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
           this.saveSearchInput = '';
         }
       }
-    }
+    },
   },
 });

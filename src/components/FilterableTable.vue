@@ -184,7 +184,7 @@
         :headers="tableStore.filteredHeadersData()"
         :page="searchFilterSortStore.page"
         @update:page="searchFilterSortStore.updatePage"
-        :items="tableStore.filteredTableData()" 
+        :items="tableStore.tableData" 
         :search="tableStore.executeSearchTerms"
         :items-per-page="50"
         @click:row="navigateToInstitution"
