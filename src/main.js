@@ -9,7 +9,9 @@ import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { firebaseApp } from './firebase'
 import { VueFire } from 'vuefire'
+import InstantSearch from 'vue-instantsearch/vue3/es';
 import App from './App.vue';
+
 
 import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/dist/vuetify.min.css';
@@ -141,6 +143,7 @@ app.use(VueFire, {
   ],
 })
 
+app.use(InstantSearch);
 
 router.isReady().then(() => {
   app.mount('#app');
