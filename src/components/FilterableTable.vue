@@ -15,6 +15,27 @@
       v-if="tableStore.loading === false"
     >
       <div>
+        <div
+          class="mt-6"
+          v-for="header in tableStore.tableHeaders"
+          :key="header.title"
+        >
+          <v-select 
+            flat 
+            hide-details 
+            small 
+            multiple 
+            clearable 
+            auto
+            v-if="searchFilterSortStore.filters.hasOwnProperty(header.title)"            
+            :label="header.title"
+            :items="tableStore.columnValueList(header.key)" 
+            v-model="searchFilterSortStore.filters[header.key]"
+            @update:menu="onUpdateMenu"
+          >
+          </v-select>
+        </div>
+
         <div style="display: flex; justify-content: end; align-items: center;">
           <v-row class="align-end">
             <!-- <v-col cols="12" md="3">
@@ -38,48 +59,6 @@
               </v-btn>
             </v-col>
             <v-col cols="12" md="6">
-              <v-dialog
-                v-model="filterDialog"
-                width="700px"
-              >
-                <template v-slot:activator="{ props }">
-                  <v-btn
-                    v-bind="props"
-                    append-icon="mdi-filter-variant"
-                  >
-                    Filters
-                  </v-btn>
-                </template>
-                <v-card>
-                  <div class="pa-8">
-                    <h2>Filters</h2>
-                    <p>Use the filters below to narrow your search.</p>
-                    <div
-                      class="mt-6"
-                      v-for="header in tableStore.tableHeaders"
-                      :key="header.title"
-                    >
-                      <v-select 
-                        flat 
-                        hide-details 
-                        small 
-                        multiple 
-                        clearable 
-                        auto
-                        v-if="searchFilterSortStore.filters.hasOwnProperty(header.title)"            
-                        :label="header.title"
-                        :items="tableStore.columnValueList(header.key)" 
-                        v-model="searchFilterSortStore.filters[header.key]"
-                        @update:menu="onUpdateMenu"
-                      >
-                      </v-select>
-                    </div>
-                  </div>
-                  <v-card-actions>
-                    <v-btn color="primary" block @click="filterDialog = false">Close</v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
               <v-dialog
                 v-model="columnSettingsDialog"
                 width="700px"
