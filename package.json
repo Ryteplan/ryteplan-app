@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "@amcharts/amcharts5": "^5.4.6",
+    "ag-grid-enterprise": "^31.3.1",
+    "ag-grid-vue3": "^31.3.1",
     "core-js": "^3.8.3",
     "firebase": "^10.3.1",
     "pinia": "^2.1.6",
