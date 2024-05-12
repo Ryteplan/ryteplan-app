@@ -9,6 +9,10 @@ import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { firebaseApp } from './firebase'
 import { VueFire } from 'vuefire'
+import PrimeVue from 'primevue/config';
+import 'primevue/resources/themes/aura-light-green/theme.css'
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
 import App from './App.vue';
 
 import '@mdi/font/css/materialdesignicons.css'
@@ -141,6 +145,9 @@ app.use(VueFire, {
   ],
 })
 
+app.use(PrimeVue);
+app.component('DataTable', DataTable);
+app.component('PColumn', Column);
 
 router.isReady().then(() => {
   app.mount('#app');

@@ -16,7 +16,7 @@
     >
       <div>
         <div
-          class="mt-6"
+          class="d-none mt-6"
           v-for="header in tableStore.tableHeaders"
           :key="header.title"
         >
@@ -36,7 +36,7 @@
           </v-select>
         </div>
 
-        <div style="display: flex; justify-content: end; align-items: center;">
+        <div class="d-none" style="display: flex; justify-content: end; align-items: center;">
           <v-row class="align-end">
             <!-- <v-col cols="12" md="3">
               <v-text-field
@@ -151,14 +151,23 @@
           </v-row>
         </div>
       </div>
+      <p>Query: no search words, no filters, no sorting, no limit set</p> 
+      <p>Query result count: {{ tableStore.resultsCount }} </p>
+      <p>results to show per page: {{ tableStore.resultsPerPage }}</p>
+
+      <DataTable :value="products" tableStyle="min-width: 50rem">
+          <PColumn field="code" header="Code"></PColumn>
+          <PColumn field="name" header="Name"></PColumn>
+          <PColumn field="category" header="Category"></PColumn>
+          <PColumn field="quantity" header="Quantity"></PColumn>
+      </DataTable>
+
       <v-data-table
         id="dataTable"
-        class="mt-4 institutionDataTable"
+        class="mt-4 institutionDataTable d-none"
         item-key="Institution name"
         selectable-key="Institution name"
-        height="59vh"
         fixed-header
-        filterable
         return-object
         :headers="tableStore.filteredHeadersData()"
         :page="searchFilterSortStore.page"
@@ -171,18 +180,9 @@
         v-model="tableStore.selectedRows"
         density="comfortable"
         sort-by.sync="Instituion name"
-      >        
-        <template v-slot:bottom="{ pagination, options, updateOptions }">
-          <v-row class="data-table-footer-container">
-            <v-col class="d-flex align-center justify-center">
-              <v-data-table-footer
-                :pagination="pagination" 
-                :options="options"
-                @update:options="updateOptions"
-              />
-            </v-col>
-          </v-row>
-        </template>
+        height="59vh"
+      >
+        <template v-slot:bottom> </template>
       </v-data-table>
     </div>
     <SaveToListDialog 
@@ -203,6 +203,11 @@ import { useSearchFilterSortStore } from '../stores/searchFilterSortStore';
 import { useAppVersionStore } from '../stores/appVersionStore';
 import SaveToListDialog from './SaveToListDialog'
 import ShareDialog from './ShareDialog'
+
+import { ProductService } from '@/service/ProductService';
+
+// import ColumnGroup from 'primevue/columngroup';   // optional
+// import Row from 'primevue/row';                   // optional
 
 export default {
   setup() {
@@ -239,6 +244,8 @@ export default {
     };
   },
   mounted() {
+    ProductService.getProductsMini().then((data) => (this.products = data));
+
     this.$watch('tableStore.loading', (loadingState) => {
       if (loadingState === false) {
         setTimeout(() => {
@@ -259,6 +266,7 @@ export default {
   },
   data() {
     return {
+      products: null,
       filterDialog: false,
       columnSettingsDialog: false,
       showShareDialog: false,

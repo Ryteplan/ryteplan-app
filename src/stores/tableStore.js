@@ -12,10 +12,20 @@ export const useTableStore = defineStore('table', {
       executeSearchTerms: '',
       selectedRows: [],
       tableHeaders: [],
+      resultsCount: 0,
+      resultsPerPage: 50
   }),
   actions: {
     loadItems ({ page, itemsPerPage, sortBy }) {
       console.log('loadItems', page, itemsPerPage, sortBy);
+    },
+    async checkScroll(event){
+      const bottomOfTable = event.target.scrollHeight === event.target.scrollTop + event.target.clientHeight;
+      if (bottomOfTable) {
+        // You've scrolled to the bottom
+        console.log("Scrolled to the bottom");
+        // You can perform any action here, like loading more data
+      }
     },
     async fetchTableData() {
 
@@ -40,8 +50,6 @@ export const useTableStore = defineStore('table', {
         const first = query(collection(dbFireStore, "institutions_v11"), limit(50));
         const documentSnapshots = await getDocs(first);
 
-        console.log(documentSnapshots.docs);
-
         documentSnapshots.docs.forEach(doc => {
             const data = { ...doc.data(), id: doc.id };
             this.tableData.push(data);
@@ -51,8 +59,6 @@ export const useTableStore = defineStore('table', {
         const lastVisible = documentSnapshots.docs[documentSnapshots.docs.length-1];
         console.log("last", lastVisible);
 
-        // Construct a new query starting at this document,
-        // get the next 50 cities.
         const next = query(collection(dbFireStore, "institutions_v11"),
             startAfter(lastVisible),
             limit(25));
