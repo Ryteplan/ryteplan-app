@@ -170,7 +170,6 @@
         item-value="institution name"
         v-model="tableStore.selectedRows"
         density="comfortable"
-        sort-by.sync="Instituion name"
       >        
         <template #bottom></template>
       </v-data-table>
@@ -313,7 +312,7 @@ export default {
       const institution = JSON.parse(JSON.stringify(item));
       const targetRowKey = institution.item.name;
 
-      if (targetRowKey == "last element") {
+      if (targetRowKey == "Load more") {
         // console.log("sup");
         this.tableStore.loadItems();
       } else {

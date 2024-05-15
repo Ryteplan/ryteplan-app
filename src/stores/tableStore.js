@@ -14,6 +14,7 @@ export const useTableStore = defineStore('table', {
       tableHeaders: [],
       lastVisible: {},
   }),
+  persist: true,
   actions: {
     async loadItems () {
       console.log('loadItems');
@@ -32,7 +33,7 @@ export const useTableStore = defineStore('table', {
           this.tableData.push(data);
       });
 
-      this.tableData.push({name: "last element"});
+      this.tableData.push({name: "Load more"});
 
       // Get the last visible document
       const lastVisible = documentSnapshots.docs[documentSnapshots.docs.length-1];
@@ -69,7 +70,7 @@ export const useTableStore = defineStore('table', {
             this.tableData.push(data);
         });
 
-        this.tableData.push({name: "last element"});
+        this.tableData.push({name: "Load more"});
 
         // Get the last visible document
         const lastVisible = documentSnapshots.docs[documentSnapshots.docs.length-1];
