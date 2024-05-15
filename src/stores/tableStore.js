@@ -12,10 +12,34 @@ export const useTableStore = defineStore('table', {
       executeSearchTerms: '',
       selectedRows: [],
       tableHeaders: [],
+      lastVisible: {},
   }),
   actions: {
-    loadItems ({ page, itemsPerPage, sortBy }) {
-      console.log('loadItems', page, itemsPerPage, sortBy);
+    async loadItems () {
+      console.log('loadItems');
+      console.log("last", this.lastVisible);
+
+      // Construct a new query starting at this lastVisible,
+      // get the next 50 cities.
+      const next = query(collection(dbFireStore, "institutions_v11"),
+          startAfter(this.lastVisible),
+          limit(20));
+
+      const documentSnapshots = await getDocs(next);
+
+      documentSnapshots.docs.forEach(doc => {
+          const data = { ...doc.data(), id: doc.id };
+          this.tableData.push(data);
+      });
+
+      this.tableData.push({name: "last element"});
+
+      // Get the last visible document
+      const lastVisible = documentSnapshots.docs[documentSnapshots.docs.length-1];
+      this.lastVisible = lastVisible;
+
+      console.log(this.tableData);
+
     },
     async fetchTableData() {
 
@@ -37,27 +61,19 @@ export const useTableStore = defineStore('table', {
 
         // Fetch from Firestore
         // Query the first page of docs
-        const first = query(collection(dbFireStore, "institutions_v11"), limit(50));
+        const first = query(collection(dbFireStore, "institutions_v11"), limit(20));
         const documentSnapshots = await getDocs(first);
-
-        console.log(documentSnapshots.docs);
 
         documentSnapshots.docs.forEach(doc => {
             const data = { ...doc.data(), id: doc.id };
             this.tableData.push(data);
         });
 
+        this.tableData.push({name: "last element"});
+
         // Get the last visible document
         const lastVisible = documentSnapshots.docs[documentSnapshots.docs.length-1];
-        console.log("last", lastVisible);
-
-        // Construct a new query starting at this document,
-        // get the next 50 cities.
-        const next = query(collection(dbFireStore, "institutions_v11"),
-            startAfter(lastVisible),
-            limit(25));
-        
-        console.log(next);
+        this.lastVisible = lastVisible;
 
         // Construct a new query starting at this document.
         // Note: this will not have the desired effect if multiple

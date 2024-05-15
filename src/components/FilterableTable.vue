@@ -14,7 +14,7 @@
     <div
       v-if="tableStore.loading === false"
     >
-      <div>
+      <div class="d-none">
         <div
           class="mt-6"
           v-for="header in tableStore.tableHeaders"
@@ -37,7 +37,7 @@
         </div>
 
         <div style="display: flex; justify-content: end; align-items: center;">
-          <v-row class="align-end">
+          <v-row class="align-end" >
             <!-- <v-col cols="12" md="3">
               <v-text-field
                 v-model="tableStore.searchInput"
@@ -165,24 +165,14 @@
         @update:page="searchFilterSortStore.updatePage"
         :items="tableStore.tableData" 
         :search="tableStore.executeSearchTerms"
-        :items-per-page="50"
+        :items-per-page="-1"
         @click:row="navigateToInstitution"
         item-value="institution name"
         v-model="tableStore.selectedRows"
         density="comfortable"
         sort-by.sync="Instituion name"
       >        
-        <template v-slot:bottom="{ pagination, options, updateOptions }">
-          <v-row class="data-table-footer-container">
-            <v-col class="d-flex align-center justify-center">
-              <v-data-table-footer
-                :pagination="pagination" 
-                :options="options"
-                @update:options="updateOptions"
-              />
-            </v-col>
-          </v-row>
-        </template>
+        <template #bottom></template>
       </v-data-table>
     </div>
     <SaveToListDialog 
@@ -285,6 +275,9 @@ export default {
     }
   },
   methods: {
+    fetchMore(){
+      console.log("are we here?");
+    },
     handleRightClick(event, item) {
       // do something with event and/or item
       console.log(event, item)
@@ -315,25 +308,31 @@ export default {
       localStorage.removeItem("lastClickedRow");
 
     },
-    navigateToInstitution(event, item) {        
+    navigateToInstitution(event, item) {
+
       const institution = JSON.parse(JSON.stringify(item));
       const targetRowKey = institution.item.name;
-      
-      localStorage.setItem("lastClickedRow", targetRowKey);
 
-      const slug = JSON.parse(JSON.stringify(item.item.uri));
-      
-      let route = this.$router.resolve({ 
-        name: 'institutionPage', 
-        params: { 
-          slug: slug,
-        } 
-      });
+      if (targetRowKey == "last element") {
+        // console.log("sup");
+        this.tableStore.loadItems();
+      } else {
+        localStorage.setItem("lastClickedRow", targetRowKey);
 
-      if (event.ctrlKey || event.metaKey) {
-        window.open(route.href, '_blank');
-      } else {  
-        window.open(route.href, '_self');
+        const slug = JSON.parse(JSON.stringify(item.item.uri));
+
+        let route = this.$router.resolve({ 
+          name: 'institutionPage', 
+          params: { 
+            slug: slug,
+          } 
+        });
+
+        if (event.ctrlKey || event.metaKey) {
+          window.open(route.href, '_blank');
+        } else {  
+          window.open(route.href, '_self');
+        }
       }
     },
     onUpdateMenu(open) {
