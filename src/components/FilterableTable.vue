@@ -11,6 +11,7 @@
         indeterminate
       ></v-progress-circular>
     </div>
+    <p>number of items in table: {{ tableStore.tableData.length }}</p>
     <div
       v-if="tableStore.loading === false"
     >
@@ -153,6 +154,7 @@
       </div>
       <v-data-table
         id="dataTable"
+        ref="dataTable"
         class="mt-4 institutionDataTable"
         item-key="Institution name"
         selectable-key="Institution name"
@@ -164,7 +166,6 @@
         :page="searchFilterSortStore.page"
         @update:page="searchFilterSortStore.updatePage"
         :items="tableStore.tableData" 
-        :search="tableStore.executeSearchTerms"
         :items-per-page="-1"
         @click:row="navigateToInstitution"
         item-value="institution name"

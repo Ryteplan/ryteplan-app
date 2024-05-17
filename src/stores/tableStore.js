@@ -14,7 +14,7 @@ export const useTableStore = defineStore('table', {
       tableHeaders: [],
       lastVisible: {},
   }),
-  persist: true,
+  // persist: true,
   actions: {
     async loadItems () {
       console.log('loadItems');
@@ -46,9 +46,8 @@ export const useTableStore = defineStore('table', {
 
       this.loading = true;
 
-      // const searchFilterSort = useSearchFilterSortStore();
-
-      // console.log(searchFilterSort.searchInput);
+      const searchFilterSort = useSearchFilterSortStore();
+      console.log(searchFilterSort.searchInput);
 
         // Fetch manual from Firestore
         // const institutions = collection(dbFireStore, 'manual_institution_data');
@@ -106,29 +105,29 @@ export const useTableStore = defineStore('table', {
 
         this.loading = false;
     },
-    filteredTableData() {
-      const searchFilterSort = useSearchFilterSortStore();
-      return this.tableData.map(d => {
-        // Iterate over each field in the object
-        for (let key in d) {
-          // If the field's value is 0, replace it with an em dash
-          if (d[key] === 0) {
-            d[key] = '—';
-          }
-        }
-        return d;
-      }).filter(d => {
-        if (this.hideHidden) {
-          return d.hidden == true && d.mainFunctionType !== '2YEAR' && d.mainInstControlDesc !== 'Private Proprietary' && Object.keys(searchFilterSort.filters).every(f => {
-            return searchFilterSort.filters[f].length < 1 || searchFilterSort.filters[f].includes(d[f])
-          })  
-        } else {
-          return d.hidden !== true && d.mainFunctionType !== '2YEAR' && d.mainInstControlDesc !== 'Private Proprietary' && Object.keys(searchFilterSort.filters).every(f => {
-            return searchFilterSort.filters[f].length < 1 || searchFilterSort.filters[f].includes(d[f])
-          })
-        }
-      })
-    },
+    // filteredTableData() {
+    //   const searchFilterSort = useSearchFilterSortStore();
+    //   return this.tableData.map(d => {
+    //     // Iterate over each field in the object
+    //     for (let key in d) {
+    //       // If the field's value is 0, replace it with an em dash
+    //       if (d[key] === 0) {
+    //         d[key] = '—';
+    //       }
+    //     }
+    //     return d;
+    //   }).filter(d => {
+    //     if (this.hideHidden) {
+    //       return d.hidden == true && d.mainFunctionType !== '2YEAR' && d.mainInstControlDesc !== 'Private Proprietary' && Object.keys(searchFilterSort.filters).every(f => {
+    //         return searchFilterSort.filters[f].length < 1 || searchFilterSort.filters[f].includes(d[f])
+    //       })  
+    //     } else {
+    //       return d.hidden !== true && d.mainFunctionType !== '2YEAR' && d.mainInstControlDesc !== 'Private Proprietary' && Object.keys(searchFilterSort.filters).every(f => {
+    //         return searchFilterSort.filters[f].length < 1 || searchFilterSort.filters[f].includes(d[f])
+    //       })
+    //     }
+    //   })
+    // },
     columnValueList(val) {
       return [...new Set(this.tableData.map(d => d[val]))].sort();
     },
