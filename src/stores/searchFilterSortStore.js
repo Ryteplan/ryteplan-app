@@ -14,7 +14,6 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
     },
     searchInput: '',
     saveSearchInput: '',
-    executeSearchTerms: '',
     page: 1,
     selectedRows: [],
     sortBy: [{ key: 'name', order: 'asc' }],

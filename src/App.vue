@@ -78,14 +78,6 @@
           @change="userStore.saveAdminModeState"
         >
         </v-switch>
-        <v-list-item
-          v-if="userStore.adminMode"
-          prepend-icon="mdi-table"
-          title="Sync Manual Data"
-          value="Sync Manual Data"
-          @click="tableStore.refreshTableData"
-        >
-        </v-list-item>
         <!-- <v-list-item
           v-if="userStore.adminMode"
           prepend-icon="mdi-table"

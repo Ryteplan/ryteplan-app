@@ -46,6 +46,10 @@ export const useTableStore = defineStore('table', {
 
       this.loading = true;
 
+      // const searchFilterSort = useSearchFilterSortStore();
+
+      // console.log(searchFilterSort.searchInput);
+
         // Fetch manual from Firestore
         // const institutions = collection(dbFireStore, 'manual_institution_data');
         // const docSnap = await getDocs(institutions);
@@ -183,34 +187,6 @@ export const useTableStore = defineStore('table', {
     performSeach() {
       const searchFilterSort = useSearchFilterSortStore()
       this.executeSearchTerms = searchFilterSort.searchInput;
-    },
-    async refreshTableData() {
-      console.log('Refreshing table data');
-
-      this.loading = true;
-
-      const dbRequest = indexedDB.open('MyDatabase');
-      dbRequest.onsuccess = function(event) {
-        const db = event.target.result;
-
-        // Get the names of all object stores
-        const storeNames = db.objectStoreNames;
-
-        // Open a transaction for each object store and clear it
-        for (let i = 0; i < storeNames.length; i++) {
-          const storeName = storeNames[i];
-          const transaction = db.transaction(storeName, 'readwrite');
-          const objectStore = transaction.objectStore(storeName);
-          objectStore.clear();
-        }
-
-        db.close();
-      }
-      dbRequest.onerror = function(event) {
-        console.error("Error opening database:", event.target.error);
-      };
-
-      this.fetchTableData();
     },
     getHideHidden() {
       if (localStorage.getItem("hideHidden") !== null) {
