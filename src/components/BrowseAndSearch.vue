@@ -29,7 +29,7 @@ export default {
   async created() {
     try {
       const searchParameters = {
-        q: 'ohio',
+        q: '*',
         query_by: 'name',
         per_page: 2
       };

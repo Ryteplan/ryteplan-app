@@ -310,8 +310,7 @@ export default {
       const targetRowKey = institution.item.name;
 
       if (targetRowKey == "Load more") {
-        // console.log("sup");
-        this.tableStore.loadItems();
+        this.tableStore.loadMoreItems();
       } else {
         localStorage.setItem("lastClickedRow", targetRowKey);
 

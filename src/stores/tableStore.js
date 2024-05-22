@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
-import { dbFireStore } from "../firebase";
-import { collection, getDocs, query, limit,  startAfter } from 'firebase/firestore'
+import client from '../typesenseClient';
 import { useSearchFilterSortStore } from './searchFilterSortStore';
 
 export const useTableStore = defineStore('table', {
@@ -13,121 +12,47 @@ export const useTableStore = defineStore('table', {
       selectedRows: [],
       tableHeaders: [],
       lastVisible: {},
+      pageToFetch: 1,
   }),
   // persist: true,
   actions: {
-    async loadItems () {
-      console.log('loadItems');
-      console.log("last", this.lastVisible);
+    async loadMoreItems() {
+      this.pageToFetch++;
+      this.loading = true;
+      try {
+        const searchFilterSort = useSearchFilterSortStore()
+        searchFilterSort.searchParameters.page++;
+        const result = await client.collections('Institutions').documents().search(searchFilterSort.searchParameters);
+        // add result to existing tableData
+        this.tableData = this.tableData.concat(result.hits.map(hit => hit.document));
 
-      // Construct a new query starting at this lastVisible,
-      // get the next 50 cities.
-      const next = query(collection(dbFireStore, "institutions_v11"),
-          startAfter(this.lastVisible),
-          limit(20));
+        this.tableData.push({name: "Load more"});
 
-      const documentSnapshots = await getDocs(next);
-
-      documentSnapshots.docs.forEach(doc => {
-          const data = { ...doc.data(), id: doc.id };
-          this.tableData.push(data);
-      });
-
-      this.tableData.push({name: "Load more"});
-
-      // Get the last visible document
-      const lastVisible = documentSnapshots.docs[documentSnapshots.docs.length-1];
-      this.lastVisible = lastVisible;
-
-      console.log(this.tableData);
-
+      } catch (error) {
+        console.error('Error fetching data from Typesense:', error);
+      }      
+      this.loading = false;
     },
     async fetchTableData() {
 
       this.loading = true;
+      
+      try {
 
-      const searchFilterSort = useSearchFilterSortStore();
-      console.log(searchFilterSort.searchInput);
+        const searchFilterSort = useSearchFilterSortStore()
 
-        // Fetch manual from Firestore
-        // const institutions = collection(dbFireStore, 'manual_institution_data');
-        // const docSnap = await getDocs(institutions);
-
-        // const transactionManual = db.transaction(['institutionsManual'], 'readwrite');
-        // const storeManual = transactionManual.objectStore('institutionsManual');
-        // this.tableDataManual = [];
-
-        // docSnap.docs.forEach(doc => {
-        //   const data = { ...doc.data(), id: doc.id };
-        //   this.tableDataManual.push(data);
-        //   storeManual.add(data);
-        // });
-
-        // Fetch from Firestore
-        // Query the first page of docs
-        const first = query(collection(dbFireStore, "institutions_v11"), limit(20));
-        const documentSnapshots = await getDocs(first);
-
-        documentSnapshots.docs.forEach(doc => {
-            const data = { ...doc.data(), id: doc.id };
-            this.tableData.push(data);
-        });
+        const result = await client.collections('Institutions').documents().search(searchFilterSort.searchParameters);
+        this.tableData = result.hits.map(hit => hit.document);
 
         this.tableData.push({name: "Load more"});
 
-        // Get the last visible document
-        const lastVisible = documentSnapshots.docs[documentSnapshots.docs.length-1];
-        this.lastVisible = lastVisible;
+        console.log('Search results:', this.tableData);
+      } catch (error) {
+        console.error('Error fetching data from Typesense:', error);
+      }
 
-        // Construct a new query starting at this document.
-        // Note: this will not have the desired effect if multiple
-        // cities have the exact same population value.
-        // const next = db.collection('cities')
-        //   .orderBy('population')
-        //   .startAfter(last.data().population)
-        //   .limit(3);
-
-        // this.tableData = [];
-
-        // docSnap.docs.forEach(doc => {
-        //   const data = { ...doc.data(), id: doc.id };
-        //   this.tableData.push(data);
-        // });
-
-        // // Add manual data to this.tableData
-        // // iterate through the manual data and add it to the Petersons data
-        // this.tableDataManual.forEach(data => {
-        //   const index = this.tableData.findIndex(item => item.uri === data.id);
-        //   if (index > -1) {
-        //     this.tableData[index] = { ...this.tableData[index], ...data };
-        //   }
-        // });
-
-        this.loading = false;
+      this.loading = false;
     },
-    // filteredTableData() {
-    //   const searchFilterSort = useSearchFilterSortStore();
-    //   return this.tableData.map(d => {
-    //     // Iterate over each field in the object
-    //     for (let key in d) {
-    //       // If the field's value is 0, replace it with an em dash
-    //       if (d[key] === 0) {
-    //         d[key] = '—';
-    //       }
-    //     }
-    //     return d;
-    //   }).filter(d => {
-    //     if (this.hideHidden) {
-    //       return d.hidden == true && d.mainFunctionType !== '2YEAR' && d.mainInstControlDesc !== 'Private Proprietary' && Object.keys(searchFilterSort.filters).every(f => {
-    //         return searchFilterSort.filters[f].length < 1 || searchFilterSort.filters[f].includes(d[f])
-    //       })  
-    //     } else {
-    //       return d.hidden !== true && d.mainFunctionType !== '2YEAR' && d.mainInstControlDesc !== 'Private Proprietary' && Object.keys(searchFilterSort.filters).every(f => {
-    //         return searchFilterSort.filters[f].length < 1 || searchFilterSort.filters[f].includes(d[f])
-    //       })
-    //     }
-    //   })
-    // },
     columnValueList(val) {
       return [...new Set(this.tableData.map(d => d[val]))].sort();
     },
