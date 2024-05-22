@@ -14,11 +14,12 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
     },
     searchInput: '',
     saveSearchInput: '',
+    
     searchParameters: {
       q: '*',
       query_by: 'name',
       sort_by : 'name:asc',
-      per_page: 3,
+      per_page: 50,
       page: 1
     },
     selectedRows: [],

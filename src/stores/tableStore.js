@@ -17,7 +17,6 @@ export const useTableStore = defineStore('table', {
   actions: {
     async loadMoreItems() {
       this.loading = true;
-      // remove the "Load more" row
       this.tableData.pop();
       try {
         const searchFilterSort = useSearchFilterSortStore()
@@ -25,20 +24,35 @@ export const useTableStore = defineStore('table', {
         const result = await client.collections('Institutions').documents().search(searchFilterSort.searchParameters);
         this.tableData = this.tableData.concat(result.hits.map(hit => hit.document));
         this.tableData.push({name: "Load more"});
+
+        // save this.tableData to local storage
+        localStorage.setItem("tableData", JSON.stringify(this.tableData));
+
       } catch (error) {
         console.error('Error fetching data from Typesense:', error);
       }      
       this.loading = false;
     },
     async fetchTableData() {
-      this.loading = true;      
+      this.loading = true;
+
+      // check for local storage value
+      if (localStorage.getItem("tableData")) {
+        console.log("loading from local storage");
+        this.tableData = JSON.parse(localStorage.getItem("tableData"));
+        this.loading = false;
+        return;
+      }
+            
       try {
         const searchFilterSort = useSearchFilterSortStore()
         const result = await client.collections('Institutions').documents().search(searchFilterSort.searchParameters);
         this.tableData = result.hits.map(hit => hit.document);
-        console.log(searchFilterSort.searchParameters);
-        console.log(this.tableData);
         this.tableData.push({name: "Load more"});
+
+        // save this.tableData to local storage
+        localStorage.setItem("tableData", JSON.stringify(this.tableData));
+
       } catch (error) {
         console.error('Error fetching data from Typesense:', error);
       }

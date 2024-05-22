@@ -160,11 +160,8 @@
         selectable-key="Institution name"
         height="59vh"
         fixed-header
-        filterable
         return-object
         :headers="tableStore.filteredHeadersData()"
-        :page="searchFilterSortStore.page"
-        @update:page="searchFilterSortStore.updatePage"
         :items="tableStore.tableData" 
         :items-per-page="-1"
         @click:row="navigateToInstitution"
