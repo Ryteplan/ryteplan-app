@@ -163,7 +163,10 @@ export const useTableStore = defineStore('table', {
         return d;
       }).filter(d => {
         if (this.hideHidden) {
-          return d.hidden == true && d.mainFunctionType !== '2YEAR' && d.mainInstControlDesc !== 'Private Proprietary' && Object.keys(searchFilterSort.filters).every(f => {
+          return d.hidden == true 
+            && d.mainFunctionType !== '2YEAR' 
+            && d.mainInstControlDesc !== 'Private Proprietary' 
+            && Object.keys(searchFilterSort.filters).every(f => {
             return searchFilterSort.filters[f].length < 1 || searchFilterSort.filters[f].includes(d[f])
           })  
         } else {
