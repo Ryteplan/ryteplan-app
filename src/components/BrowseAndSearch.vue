@@ -3,7 +3,7 @@
     <h1 class="text-center">Browse and Search</h1>
     <!-- Display search results -->
     <!-- Do a loop over search results and display the name -->
-    <v-row>
+    <v-row class="mt-4">
       <v-col v-for="result in searchResults" :key="result.id" cols="12">
         <v-card>
           <v-card-title>{{ result.name }}</v-card-title>
