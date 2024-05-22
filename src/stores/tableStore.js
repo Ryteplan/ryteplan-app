@@ -1,8 +1,7 @@
 import { defineStore } from 'pinia';
 import { dbFireStore } from "../firebase";
-import { collection, getDocs } from 'firebase/firestore'
+import { collection, getDocs, query, limit,  startAfter } from 'firebase/firestore'
 import { useSearchFilterSortStore } from './searchFilterSortStore';
-import { useAppVersionStore } from './appVersionStore';
 
 export const useTableStore = defineStore('table', {
   state: () => ({
@@ -13,169 +12,122 @@ export const useTableStore = defineStore('table', {
       executeSearchTerms: '',
       selectedRows: [],
       tableHeaders: [],
+      lastVisible: {},
   }),
+  // persist: true,
   actions: {
-    async openIndexedDB() {
-      const retryCount = 3;
-      const retryDelay = 1000;
-      let attempt = 0;
-      
-      return new Promise((resolve, reject) => {
-        const tryOpenDB = async () => {
-          attempt++;
-          try {
-            console.log("Opening IndexedDB - attempt: ", attempt)
-            const request = indexedDB.open('MyDatabase', Date.now());
-    
-            request.onerror = (event) => {
-              console.error("IndexedDB error:", event.target.error);
-              if (attempt <= retryCount) {
-                setTimeout(tryOpenDB, retryDelay);
-              } else {
-                reject(event.target.error);
-              }
-            };
-    
-            request.onupgradeneeded = (event) => {
-              const db = event.target.result;
-              if (!db.objectStoreNames.contains('institutionsPetersons')) {
-                db.createObjectStore('institutionsPetersons', { keyPath: 'id' });
-              }
-              if (!db.objectStoreNames.contains('institutionsManual')) {
-                db.createObjectStore('institutionsManual', { keyPath: 'id' });
-              }
-            };
-    
-            request.onsuccess = (event) => {
-              const db = event.target.result;
-              db.onversionchange = () => {
-                  db.close();
-              };
-              resolve(event.target.result);
-            };
-          } catch (error) {
-            console.error('Error opening IndexedDB:', error);
-            if (attempt <= retryCount) {
-              setTimeout(tryOpenDB, retryDelay);
-            } else {
-              reject(error);
-            }
-          }
-        };
-    
-        tryOpenDB();
+    async loadItems () {
+      console.log('loadItems');
+      console.log("last", this.lastVisible);
+
+      // Construct a new query starting at this lastVisible,
+      // get the next 50 cities.
+      const next = query(collection(dbFireStore, "institutions_v11"),
+          startAfter(this.lastVisible),
+          limit(20));
+
+      const documentSnapshots = await getDocs(next);
+
+      documentSnapshots.docs.forEach(doc => {
+          const data = { ...doc.data(), id: doc.id };
+          this.tableData.push(data);
       });
-    },    
+
+      this.tableData.push({name: "Load more"});
+
+      // Get the last visible document
+      const lastVisible = documentSnapshots.docs[documentSnapshots.docs.length-1];
+      this.lastVisible = lastVisible;
+
+      console.log(this.tableData);
+
+    },
     async fetchTableData() {
-      const appVersionStore = useAppVersionStore();
 
       this.loading = true;
 
-      try {
-        const db = await this.openIndexedDB();
+      const searchFilterSort = useSearchFilterSortStore();
+      console.log(searchFilterSort.searchInput);
 
-        // Manual
-        const transactionManual = db.transaction(['institutionsManual'], 'readonly');
-        const storeManual = transactionManual.objectStore('institutionsManual');
-        const getAllRequestManual = storeManual.getAll();
+        // Fetch manual from Firestore
+        // const institutions = collection(dbFireStore, 'manual_institution_data');
+        // const docSnap = await getDocs(institutions);
 
-        getAllRequestManual.onsuccess = async () => {
+        // const transactionManual = db.transaction(['institutionsManual'], 'readwrite');
+        // const storeManual = transactionManual.objectStore('institutionsManual');
+        // this.tableDataManual = [];
 
-          if (getAllRequestManual.result.length > 0 && appVersionStore.versionMatch) {
-            // Fetch from IndexedDB
-            this.tableDataManual = getAllRequestManual.result;
-          } else {
-            // Fetch from Firestore
-            const institutions = collection(dbFireStore, 'manual_institution_data');
-            const docSnap = await getDocs(institutions);
+        // docSnap.docs.forEach(doc => {
+        //   const data = { ...doc.data(), id: doc.id };
+        //   this.tableDataManual.push(data);
+        //   storeManual.add(data);
+        // });
 
-            const transactionManual = db.transaction(['institutionsManual'], 'readwrite');
-            const storeManual = transactionManual.objectStore('institutionsManual');
-            this.tableDataManual = [];
+        // Fetch from Firestore
+        // Query the first page of docs
+        const first = query(collection(dbFireStore, "institutions_v11"), limit(20));
+        const documentSnapshots = await getDocs(first);
 
-            docSnap.docs.forEach(doc => {
-              const data = { ...doc.data(), id: doc.id };
-              this.tableDataManual.push(data);
-              storeManual.add(data);
-            });
-          }
-        };
+        documentSnapshots.docs.forEach(doc => {
+            const data = { ...doc.data(), id: doc.id };
+            this.tableData.push(data);
+        });
 
-        // Petersons
-        const transactionPetersons = db.transaction(['institutionsPetersons'], 'readonly');
-        const storePetersons = transactionPetersons.objectStore('institutionsPetersons');
-        const getAllRequestPetersons = storePetersons.getAll();
+        this.tableData.push({name: "Load more"});
 
-        getAllRequestPetersons.onsuccess = async () => {
-          if (getAllRequestPetersons.result.length > 0 && appVersionStore.versionMatch) {
-            // Fetch from IndexedDB
-            console.log('Fetching from IndexedDB')
-            this.tableData = getAllRequestPetersons.result;
-            this.tableData.sort((a, b) => a.id.localeCompare(b.id));
-            this.loading = false;
-          } else {
-            // Fetch from Firestore
-            console.log('Fetching from Firestore')
-            const institutions = collection(dbFireStore, 'institutions_v11');
-            const docSnap = await getDocs(institutions);
+        // Get the last visible document
+        const lastVisible = documentSnapshots.docs[documentSnapshots.docs.length-1];
+        this.lastVisible = lastVisible;
 
-            const transactionPetersons = db.transaction(['institutionsPetersons'], 'readwrite');
-            const storePetersons = transactionPetersons.objectStore('institutionsPetersons');
-            this.tableData = [];
+        // Construct a new query starting at this document.
+        // Note: this will not have the desired effect if multiple
+        // cities have the exact same population value.
+        // const next = db.collection('cities')
+        //   .orderBy('population')
+        //   .startAfter(last.data().population)
+        //   .limit(3);
 
-            docSnap.docs.forEach(doc => {
-              const data = { ...doc.data(), id: doc.id };
-              this.tableData.push(data);
-            });
+        // this.tableData = [];
 
-            // Add manual data to this.tableData
-            // iterate through the manual data and add it to the Petersons data
-            this.tableDataManual.forEach(data => {
-              const index = this.tableData.findIndex(item => item.uri === data.id);
-              if (index > -1) {
-                this.tableData[index] = { ...this.tableData[index], ...data };
-              }
-            });
-  
-            this.tableData.forEach(data => {
-              const data1 = { ...data, id: data.id };
-              storePetersons.add(data1);
-            });
-            this.loading = false;
-          }
-        };
-      } catch (error) {
-        console.error('Error fetching table data:', error);
+        // docSnap.docs.forEach(doc => {
+        //   const data = { ...doc.data(), id: doc.id };
+        //   this.tableData.push(data);
+        // });
+
+        // // Add manual data to this.tableData
+        // // iterate through the manual data and add it to the Petersons data
+        // this.tableDataManual.forEach(data => {
+        //   const index = this.tableData.findIndex(item => item.uri === data.id);
+        //   if (index > -1) {
+        //     this.tableData[index] = { ...this.tableData[index], ...data };
+        //   }
+        // });
+
         this.loading = false;
-      }
     },
-    filteredTableData() {
-      const searchFilterSort = useSearchFilterSortStore()
-
-      return this.tableData.map(d => {
-        // Iterate over each field in the object
-        for (let key in d) {
-          // If the field's value is 0, replace it with an em dash
-          if (d[key] === 0) {
-            d[key] = '—';
-          }
-        }
-        return d;
-      }).filter(d => {
-        if (this.hideHidden) {
-          return d.hidden == true 
-            && d.mainFunctionType !== '2YEAR' 
-            && d.mainInstControlDesc !== 'Private Proprietary' 
-            && Object.keys(searchFilterSort.filters).every(f => {
-            return searchFilterSort.filters[f].length < 1 || searchFilterSort.filters[f].includes(d[f])
-          })  
-        } else {
-          return d.hidden !== true && d.mainFunctionType !== '2YEAR' && d.mainInstControlDesc !== 'Private Proprietary' && Object.keys(searchFilterSort.filters).every(f => {
-            return searchFilterSort.filters[f].length < 1 || searchFilterSort.filters[f].includes(d[f])
-          })
-        }
-      })
-    },
+    // filteredTableData() {
+    //   const searchFilterSort = useSearchFilterSortStore();
+    //   return this.tableData.map(d => {
+    //     // Iterate over each field in the object
+    //     for (let key in d) {
+    //       // If the field's value is 0, replace it with an em dash
+    //       if (d[key] === 0) {
+    //         d[key] = '—';
+    //       }
+    //     }
+    //     return d;
+    //   }).filter(d => {
+    //     if (this.hideHidden) {
+    //       return d.hidden == true && d.mainFunctionType !== '2YEAR' && d.mainInstControlDesc !== 'Private Proprietary' && Object.keys(searchFilterSort.filters).every(f => {
+    //         return searchFilterSort.filters[f].length < 1 || searchFilterSort.filters[f].includes(d[f])
+    //       })  
+    //     } else {
+    //       return d.hidden !== true && d.mainFunctionType !== '2YEAR' && d.mainInstControlDesc !== 'Private Proprietary' && Object.keys(searchFilterSort.filters).every(f => {
+    //         return searchFilterSort.filters[f].length < 1 || searchFilterSort.filters[f].includes(d[f])
+    //       })
+    //     }
+    //   })
+    // },
     columnValueList(val) {
       return [...new Set(this.tableData.map(d => d[val]))].sort();
     },
@@ -234,36 +186,6 @@ export const useTableStore = defineStore('table', {
     performSeach() {
       const searchFilterSort = useSearchFilterSortStore()
       this.executeSearchTerms = searchFilterSort.searchInput;
-    },
-    async refreshTableData() {
-      console.log('Refreshing table data');
-
-      const appVersionStore = useAppVersionStore();
-      this.loading = true;
-
-      const dbRequest = indexedDB.open('MyDatabase');
-      dbRequest.onsuccess = function(event) {
-        const db = event.target.result;
-
-        // Get the names of all object stores
-        const storeNames = db.objectStoreNames;
-
-        // Open a transaction for each object store and clear it
-        for (let i = 0; i < storeNames.length; i++) {
-          const storeName = storeNames[i];
-          const transaction = db.transaction(storeName, 'readwrite');
-          const objectStore = transaction.objectStore(storeName);
-          objectStore.clear();
-        }
-
-        db.close();
-      }
-      dbRequest.onerror = function(event) {
-        console.error("Error opening database:", event.target.error);
-      };
-
-      this.fetchTableData();
-      localStorage.setItem("appVersion", appVersionStore.getVersion());
     },
     getHideHidden() {
       if (localStorage.getItem("hideHidden") !== null) {

@@ -11,12 +11,34 @@
         indeterminate
       ></v-progress-circular>
     </div>
+    <p>number of items in table: {{ tableStore.tableData.length }}</p>
     <div
       v-if="tableStore.loading === false"
     >
-      <div>
+      <div class="d-none">
+        <div
+          class="mt-6"
+          v-for="header in tableStore.tableHeaders"
+          :key="header.title"
+        >
+          <v-select 
+            flat 
+            hide-details 
+            small 
+            multiple 
+            clearable 
+            auto
+            v-if="searchFilterSortStore.filters.hasOwnProperty(header.title)"            
+            :label="header.title"
+            :items="tableStore.columnValueList(header.key)" 
+            v-model="searchFilterSortStore.filters[header.key]"
+            @update:menu="onUpdateMenu"
+          >
+          </v-select>
+        </div>
+
         <div style="display: flex; justify-content: end; align-items: center;">
-          <v-row class="align-end">
+          <v-row class="align-end" >
             <!-- <v-col cols="12" md="3">
               <v-text-field
                 v-model="tableStore.searchInput"
@@ -38,48 +60,6 @@
               </v-btn>
             </v-col>
             <v-col cols="12" md="6">
-              <v-dialog
-                v-model="filterDialog"
-                width="700px"
-              >
-                <template v-slot:activator="{ props }">
-                  <v-btn
-                    v-bind="props"
-                    append-icon="mdi-filter-variant"
-                  >
-                    Filters
-                  </v-btn>
-                </template>
-                <v-card>
-                  <div class="pa-8">
-                    <h2>Filters</h2>
-                    <p>Use the filters below to narrow your search.</p>
-                    <div
-                      class="mt-6"
-                      v-for="header in tableStore.tableHeaders"
-                      :key="header.title"
-                    >
-                      <v-select 
-                        flat 
-                        hide-details 
-                        small 
-                        multiple 
-                        clearable 
-                        auto
-                        v-if="searchFilterSortStore.filters.hasOwnProperty(header.title)"            
-                        :label="header.title"
-                        :items="tableStore.columnValueList(header.key)" 
-                        v-model="searchFilterSortStore.filters[header.key]"
-                        @update:menu="onUpdateMenu"
-                      >
-                      </v-select>
-                    </div>
-                  </div>
-                  <v-card-actions>
-                    <v-btn color="primary" block @click="filterDialog = false">Close</v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
               <v-dialog
                 v-model="columnSettingsDialog"
                 width="700px"
@@ -174,6 +154,7 @@
       </div>
       <v-data-table
         id="dataTable"
+        ref="dataTable"
         class="mt-4 institutionDataTable"
         item-key="Institution name"
         selectable-key="Institution name"
@@ -184,26 +165,14 @@
         :headers="tableStore.filteredHeadersData()"
         :page="searchFilterSortStore.page"
         @update:page="searchFilterSortStore.updatePage"
-        :items="tableStore.filteredTableData()" 
-        :search="tableStore.executeSearchTerms"
-        :items-per-page="50"
+        :items="tableStore.tableData" 
+        :items-per-page="-1"
         @click:row="navigateToInstitution"
         item-value="institution name"
         v-model="tableStore.selectedRows"
         density="comfortable"
-        sort-by.sync="Instituion name"
       >        
-        <template v-slot:bottom="{ pagination, options, updateOptions }">
-          <v-row class="data-table-footer-container">
-            <v-col class="d-flex align-center justify-center">
-              <v-data-table-footer
-                :pagination="pagination" 
-                :options="options"
-                @update:options="updateOptions"
-              />
-            </v-col>
-          </v-row>
-        </template>
+        <template #bottom></template>
       </v-data-table>
     </div>
     <SaveToListDialog 
@@ -221,24 +190,20 @@
 import { useUserStore } from '../stores/userStore';
 import { useTableStore } from '../stores/tableStore';
 import { useSearchFilterSortStore } from '../stores/searchFilterSortStore';
-import { useAppVersionStore } from '../stores/appVersionStore';
+// import { useAppVersionStore } from '../stores/appVersionStore';
 import SaveToListDialog from './SaveToListDialog'
 import ShareDialog from './ShareDialog'
 
 export default {
   setup() {
-    let appVersionStore = useAppVersionStore();
+    // let appVersionStore = useAppVersionStore();
 
     let userStore = useUserStore();
     userStore.getAdminMode();
 
     let tableStore = useTableStore();
 
-    if (appVersionStore.versionMatch) {
-      tableStore.fetchTableData();
-    } else {
-      tableStore.refreshTableData();
-    }
+    tableStore.fetchTableData();
 
     if (tableStore.tableHeaders.length == 0) {
       tableStore.loadTableHeaders();
@@ -306,6 +271,9 @@ export default {
     }
   },
   methods: {
+    fetchMore(){
+      console.log("are we here?");
+    },
     handleRightClick(event, item) {
       // do something with event and/or item
       console.log(event, item)
@@ -336,25 +304,31 @@ export default {
       localStorage.removeItem("lastClickedRow");
 
     },
-    navigateToInstitution(event, item) {        
+    navigateToInstitution(event, item) {
+
       const institution = JSON.parse(JSON.stringify(item));
       const targetRowKey = institution.item.name;
-      
-      localStorage.setItem("lastClickedRow", targetRowKey);
 
-      const slug = JSON.parse(JSON.stringify(item.item.uri));
-      
-      let route = this.$router.resolve({ 
-        name: 'institutionPage', 
-        params: { 
-          slug: slug,
-        } 
-      });
+      if (targetRowKey == "Load more") {
+        // console.log("sup");
+        this.tableStore.loadItems();
+      } else {
+        localStorage.setItem("lastClickedRow", targetRowKey);
 
-      if (event.ctrlKey || event.metaKey) {
-        window.open(route.href, '_blank');
-      } else {  
-        window.open(route.href, '_self');
+        const slug = JSON.parse(JSON.stringify(item.item.uri));
+
+        let route = this.$router.resolve({ 
+          name: 'institutionPage', 
+          params: { 
+            slug: slug,
+          } 
+        });
+
+        if (event.ctrlKey || event.metaKey) {
+          window.open(route.href, '_blank');
+        } else {  
+          window.open(route.href, '_self');
+        }
       }
     },
     onUpdateMenu(open) {
