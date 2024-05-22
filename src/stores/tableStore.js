@@ -12,45 +12,36 @@ export const useTableStore = defineStore('table', {
       selectedRows: [],
       tableHeaders: [],
       lastVisible: {},
-      pageToFetch: 1,
   }),
   // persist: true,
   actions: {
     async loadMoreItems() {
-      this.pageToFetch++;
       this.loading = true;
+      // remove the "Load more" row
+      this.tableData.pop();
       try {
         const searchFilterSort = useSearchFilterSortStore()
         searchFilterSort.searchParameters.page++;
         const result = await client.collections('Institutions').documents().search(searchFilterSort.searchParameters);
-        // add result to existing tableData
         this.tableData = this.tableData.concat(result.hits.map(hit => hit.document));
-
         this.tableData.push({name: "Load more"});
-
       } catch (error) {
         console.error('Error fetching data from Typesense:', error);
       }      
       this.loading = false;
     },
     async fetchTableData() {
-
-      this.loading = true;
-      
+      this.loading = true;      
       try {
-
         const searchFilterSort = useSearchFilterSortStore()
-
         const result = await client.collections('Institutions').documents().search(searchFilterSort.searchParameters);
         this.tableData = result.hits.map(hit => hit.document);
-
+        console.log(searchFilterSort.searchParameters);
+        console.log(this.tableData);
         this.tableData.push({name: "Load more"});
-
-        console.log('Search results:', this.tableData);
       } catch (error) {
         console.error('Error fetching data from Typesense:', error);
       }
-
       this.loading = false;
     },
     columnValueList(val) {

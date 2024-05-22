@@ -21,16 +21,9 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
       per_page: 3,
       page: 1
     },
-    page: 1,
     selectedRows: [],
-    sortBy: [{ key: 'name', order: 'asc' }],
   }),
-  persist: true,
   actions: {
-    updatePage(pageNumber) {
-      this.page = pageNumber;
-      // document.querySelector('.v-table__wrapper').scrollTop = 0;
-    },
     saveThenClearSearchInput() {
       this.saveSearchInput = this.searchInput;
       this.searchInput = '';
