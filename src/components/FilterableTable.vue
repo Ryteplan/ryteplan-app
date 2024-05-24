@@ -15,6 +15,7 @@
       <!-- <p>keyword search: {{ searchFilterSortStore.searchParameters.q }}</p> -->
       <p>results found: {{ tableStore.resultsFound }}</p>
       <p>number of items showing in table: {{ tableStore.tableData.length -1 }}</p>
+      <p>page(s) loaded: {{ searchFilterSortStore.searchParameters.page }}</p>
     </div>
     <div
       v-if="tableStore.loading === false"

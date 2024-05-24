@@ -25,7 +25,7 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
     },
     selectedRows: [],
   }),
-  // persist: true,
+  persist: true,
   actions: {
     resetPage() {
     },
