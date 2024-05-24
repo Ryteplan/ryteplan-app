@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia';
 import client from '../typesenseClient';
 import { useSearchFilterSortStore } from './searchFilterSortStore';
+// import route from 'vue-router';
+import { useRoute } from 'vue-router';
 
 export const useTableStore = defineStore('table', {
   state: () => ({
@@ -32,16 +34,31 @@ export const useTableStore = defineStore('table', {
       }      
     },
     async fetchTableData() {
-      console.log("fetchTableData");
-      console.log(this.freshSearch);
       this.loading = true;
 
+      console.log("fetchTableData");
+      console.log(this.freshSearch);
+
+      const searchFilterSortStore = useSearchFilterSortStore();
+
+      const route = useRoute();
+      const search = route.query.search;
+
+      const newSearchValue = search !== searchFilterSortStore.activeSearchTerms;
+
       // check for local storage value
-      if (localStorage.getItem("tableData") && !this.freshSearch) {
+      if (localStorage.getItem("tableData") && !this.freshSearch && !newSearchValue) {
         console.log("loading from local storage");
         this.tableData = JSON.parse(localStorage.getItem("tableData"));
         this.loading = false;
         return;
+      }
+
+      
+
+      if (search) {
+        searchFilterSortStore.searchParameters.q = search;
+        searchFilterSortStore.searchParameters.page = 1;
       }
             
       try {
@@ -129,9 +146,6 @@ export const useTableStore = defineStore('table', {
       } else {
         // this.fetchTableData();
       }
-    },
-    returnSearchTerms() {
-      return "hello world"
     },
     getHideHidden() {
       if (localStorage.getItem("hideHidden") !== null) {

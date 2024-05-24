@@ -212,10 +212,6 @@ export default {
 
     let searchFilterSortStore = useSearchFilterSortStore();
 
-    if (searchFilterSortStore.searchInput !== searchFilterSortStore.activeSearchTerms) {
-      searchFilterSortStore.loadSavedSearchInput();
-    }
-
     return {
       searchFilterSortStore,
       tableStore,      
@@ -269,9 +265,6 @@ export default {
     }
   },
   methods: {
-    fetchMore(){
-      console.log("are we here?");
-    },
     handleRightClick(event, item) {
       // do something with event and/or item
       console.log(event, item)
@@ -344,15 +337,11 @@ export default {
     },
   },
   computed: {
-    searchQuery() {
+    searchQueryFromRoute() {
       return this.$route.query.search;
     }
   },
   created() {
-    if (this.$route.query.search) {
-      useSearchFilterSortStore.activeSearchTerms = decodeURIComponent(this.$route.query.search);
-      this.tableStore.performSeach();
-    } 
   },
   components: {
     SaveToListDialog,

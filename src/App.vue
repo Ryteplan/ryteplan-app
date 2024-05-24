@@ -157,8 +157,7 @@ export default {
 
     // Check if the URL contains a "search" parameter
     if (this.$route.query.search) {
-      this.searchFilterSortStore.searchInput = this.$route.query.search;
-      this.performSearch(this.$route.query.search);
+      this.searchFilterSortStore.activeSearchTerms = this.$route.query.search;
     }
   },
   data() {
