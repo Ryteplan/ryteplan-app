@@ -53,7 +53,7 @@ export const useTableStore = defineStore('table', {
       console.log(newSearchValue);
 
       // check for local storage value
-      if (localStorage.getItem("tableData") && !this.freshSearch && !newSearchValue) {
+      if (localStorage.getItem("tableData") && !this.freshSearch && newSearchValue) {
         console.log("loading from local storage");
         this.tableData = JSON.parse(localStorage.getItem("tableData"));
         this.loading = false;
