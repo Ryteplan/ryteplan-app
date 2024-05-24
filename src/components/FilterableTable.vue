@@ -350,7 +350,7 @@ export default {
   },
   created() {
     if (this.$route.query.search) {
-      useSearchFilterSortStore.searchInput = decodeURIComponent(this.$route.query.search);
+      useSearchFilterSortStore.activeSearchTerms = decodeURIComponent(this.$route.query.search);
       this.tableStore.performSeach();
     } 
   },

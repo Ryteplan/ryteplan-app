@@ -12,8 +12,9 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
       "Admission Difficulty": [],
       "Campus Setting": [],
     },
-    searchInput: '',
     activeSearchTerms: '',
+    searchInput: '',
+    saveSearchInput: '',
     searchParameters: {
       q: '*',
       query_by: 'name',
@@ -23,18 +24,18 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
     },
     selectedRows: [],
   }),
+  persist: true,
   actions: {
+    resetPage() {
+    },
     saveThenClearSearchInput() {
-      this.activeSearchTerms = this.searchInput;
+      this.saveSearchInput = this.searchInput;
       this.searchInput = '';
     },
     loadSavedSearchInput() {
-      if (this.activeSearchTerms !== '') {
-        if (this.activeSearchTerms == this.searchInput) {
-          this.searchInput = this.activeSearchTerms;
-        } else {
-          this.activeSearchTerms = '';
-        }
+      console.log("loadSavedSearchInput", this.saveSearchInput);
+      if (this.saveSearchInput !== '') {
+          this.searchInput = this.saveSearchInput;
       }
     },
   },

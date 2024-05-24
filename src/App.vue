@@ -7,7 +7,7 @@
         </a>
         <v-text-field
           class="mx-8"
-          v-model="searchFilterSortStore.searchInput"
+          v-model="searchFilterSortStore.activeSearchTerms"
           label="Search By Name"
           append-inner-icon="mdi-magnify"
           density="compact"
@@ -175,24 +175,24 @@ export default {
       })
     },
     updateSearchBarInput() {
-      if (this.searchFilterSortStore.searchInput === '') {
+      if (this.searchFilterSortStore.activeSearchTerms === '') {
         this.searchFilterSortStore.searchParameters.q = '*';
       } else {
-        this.searchFilterSortStore.searchParameters.q = this.searchFilterSortStore.searchInput;
+        this.searchFilterSortStore.searchParameters.q = this.searchFilterSortStore.activeSearchTerms;
       }
     },
     performSearch(source) {
-      const searchQuery = this.searchFilterSortStore.searchInput 
-        ? decodeURIComponent(encodeURIComponent(this.searchFilterSortStore.searchInput.trim().toLowerCase()))
+      const searchQuery = this.searchFilterSortStore.activeSearchTerms
+        ? decodeURIComponent(encodeURIComponent(this.searchFilterSortStore.activeSearchTerms.trim().toLowerCase()))
         : '';
         
       if (this.$route.path === '/') {
-        this.searchFilterSortStore.searchInput = searchQuery;
+        this.searchFilterSortStore.activeSearchTerms = searchQuery;
         this.tableStore.performSeach();
         this.$router.push({ query: { ...this.$route.query, search: searchQuery } });
       } else {
         if (source === 'fromClear') return;
-
+        console.log('performSearch', searchQuery);
         let route = this.$router.resolve({ 
           name: 'home',
           query: { "search": searchQuery },

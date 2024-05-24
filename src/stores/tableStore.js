@@ -13,7 +13,7 @@ export const useTableStore = defineStore('table', {
       tableHeaders: [],
       lastVisible: {},
   }),
-  // persist: true,
+  persist: true,
   actions: {
     async loadMoreItems() {
       this.tableData.pop();
@@ -32,6 +32,8 @@ export const useTableStore = defineStore('table', {
       }      
     },
     async fetchTableData() {
+      console.log("fetchTableData");
+      console.log(this.freshSearch);
       this.loading = true;
 
       // check for local storage value
@@ -44,6 +46,7 @@ export const useTableStore = defineStore('table', {
             
       try {
         const searchFilterSort = useSearchFilterSortStore()
+        console.log("searchFilterSort.searchParameters", searchFilterSort.searchParameters);
         const result = await client.collections('Institutions').documents().search(searchFilterSort.searchParameters);
         this.tableData = result.hits.map(hit => hit.document);
         this.tableData.push({name: "Load more"});
@@ -115,15 +118,20 @@ export const useTableStore = defineStore('table', {
       localStorage.setItem("tableHeaders", tableHeaders);
     },
     performSeach() {
+      console.log("performSeach")
       this.freshSearch = true;
       const searchFilterSort = useSearchFilterSortStore();
+      searchFilterSort.searchParameters.page = 1;
       if (searchFilterSort.searchInput !== '') {
         searchFilterSort.saveThenClearSearchInput();
         searchFilterSort.searchParameters.q = searchFilterSort.activeSearchTerms;
-        this.fetchTableData();
+        // this.fetchTableData();
       } else {
-        this.fetchTableData();
+        // this.fetchTableData();
       }
+    },
+    returnSearchTerms() {
+      return "hello world"
     },
     getHideHidden() {
       if (localStorage.getItem("hideHidden") !== null) {
