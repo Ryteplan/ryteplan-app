@@ -232,9 +232,6 @@ export default {
         }, 1000);
       }
     }, { immediate: true });
-    if (!this.$route.query.search) {
-      this.searchFilterSortStore.searchInput = '';
-    }
     document.title ="Browse Institutions | Ryteplan College Search"
   },
   beforeUnmount() {
