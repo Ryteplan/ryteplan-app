@@ -17,7 +17,7 @@
           clearable
           @keydown="updateSearchBarInput"
           @keydown.enter="performSearch"
-          @click:clear="performSearch('fromClear')"
+          @click:clear="updateSearchBarInput"
         ></v-text-field>
         <!-- <div v-if="!isLoggedIn">
           <v-btn 
@@ -176,6 +176,7 @@ export default {
     updateSearchBarInput() {
       if (this.searchFilterSortStore.activeSearchTerms === '') {
         this.searchFilterSortStore.searchParameters.q = '*';
+        this.searchFilterSortStore.searchParameters.activeSearchTerms = '*';
       } else {
         this.searchFilterSortStore.searchParameters.q = this.searchFilterSortStore.activeSearchTerms;
       }
@@ -191,7 +192,7 @@ export default {
         this.$router.push({ query: { ...this.$route.query, search: searchQuery } });
       } else {
         if (source === 'fromClear') return;
-        console.log('performSearch', searchQuery);
+        
         let route = this.$router.resolve({ 
           name: 'home',
           query: { "search": searchQuery },
