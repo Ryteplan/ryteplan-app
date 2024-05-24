@@ -12,36 +12,77 @@
 
 <script>
 import { dbFireStore } from "../firebase";
-import { collection, query, getDocs, setDoc, limit, doc } from 'firebase/firestore'
+import { collection, query, getDocs, setDoc, doc } from 'firebase/firestore'
 
 export default {
   name: 'DataIntegration',
   data() {
     return {
-      data: []
+      petersonsData: [],
+      manualData: [],
     }
   },
   methods: {
     async doDataIntegration() {
       console.log('doing data integration')
-      const querySnapshot = query(collection(dbFireStore, "institutions_v11"),
-          limit(5));
       
-      const documentSnapshots = await getDocs(querySnapshot);
+      const petersonsDataQuery = query(collection(dbFireStore, "institutions_v11"));      
+      const petersonsSnapshots = await getDocs(petersonsDataQuery);
 
-      documentSnapshots.forEach(doc => {
-        this.data.push(doc.data())
-      })
+      petersonsSnapshots.docs.forEach(doc => {
+        const data = { ...doc.data(), id: doc.id };
+        this.petersonsData.push(data);
+      });
+
 
       // do manual replacements integration
+      const manualDataQuery = query(collection(dbFireStore, "manual_institution_data"));
+      const manualSnapshots = await getDocs(manualDataQuery);
 
-      // remove 
+      manualSnapshots.docs.forEach(doc => {
+        const data = { ...doc.data(), id: doc.id };
+        this.manualData.push(data);
+      });
 
-      // add all the things to the institutions_MASTER collection
-      this.data.forEach(async (institution) => {
+
+      this.manualData.forEach(data => {
+        console.log(data);
+        console.log(data.id);
+        const index = this.petersonsData.findIndex(item => item.uri === data.id);
+        if (index > -1) {
+          console.log(this.petersonsData[index])
+          this.petersonsData[index] = { ...this.petersonsData[index], ...data };
+        }
+      });
+
+      // // If the field's value is 0, replace it with an em dash
+      // this.petersonsData.map(d => {
+      //   for (let key in d) {
+      //     if (d[key] === 0) {
+      //       d[key] = '—';
+      //     }
+      //   }
+      // });
+
+      // // Remove 2YEAR and Private Proprietary
+
+      this.petersonsData = this.petersonsData.filter(d => {
+        return d.mainFunctionType !== "2YEAR" && d.mainFunctionType !== "Private Proprietary";
+      });
+
+      // iterate over all items in petersonsData and if the item does not have a hidden field add it and make it false
+      this.petersonsData.forEach(item => {
+        if (!item.hidden) {
+          item.hidden = false;
+        }
+      });
+
+      // add all the things to the institutions_integrated collection
+      this.petersonsData.forEach(async (institution) => {
         setDoc(doc(dbFireStore, 'institutions_integrated', institution["uri"]), {
           ...institution
         }, { merge: true })
+
         console.log('done adding: ' + institution.name);
       })
     }

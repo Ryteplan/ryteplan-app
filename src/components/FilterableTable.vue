@@ -12,7 +12,7 @@
       ></v-progress-circular>
     </div>
     <div class="d-flex" style="gap: 40px">
-      <p>keyword search: {{ searchFilterSortStore.searchParameters.q }}</p>
+      <!-- <p>keyword search: {{ searchFilterSortStore.searchParameters.q }}</p> -->
       <p>results found: {{ tableStore.resultsFound }}</p>
       <p>number of items showing in table: {{ tableStore.tableData.length -1 }}</p>
     </div>

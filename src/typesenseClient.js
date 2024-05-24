@@ -8,7 +8,7 @@ const client = new Typesense.Client({
       protocol: "https",
 }
   ],
-  apiKey: 'ft3WP2RCmRa2c7bsleaE8CeDzOCOyXI3',
+  apiKey: 'FWcZRbFG8NgnblvJnsG65XMvpt0H1vPr',
   connectionTimeoutSeconds: 2
 });
 

@@ -18,13 +18,14 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
     searchParameters: {
       q: '*',
       query_by: 'name',
+      filter_by: 'hidden:false',
       sort_by : 'name:asc',
       per_page: 50,
       page: 1
     },
     selectedRows: [],
   }),
-  persist: true,
+  // persist: true,
   actions: {
     resetPage() {
     },

@@ -841,11 +841,14 @@ export default {
       }, 1000);
     },
     async loadInstitutionData() {
+      console.log('loadInstitutionData');
       const slugFromURL = this.$route.params.slug;
-      const institutions = collection(dbFireStore, 'institutions_v11');
+      const institutions = collection(dbFireStore, 'institutions_integrated');
+      console.log(institutions);
       const q = query(institutions, where("uri", "==", slugFromURL));
       const docSnap = await getDocs(q);
       docSnap.forEach((doc) => {
+        console.log(doc.data());
         this.institutionId = doc.id;
         this.institution = doc.data();
         this.majors = this.institution.acadProgDesc.split(',');

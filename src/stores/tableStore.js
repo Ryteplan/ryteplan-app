@@ -23,7 +23,7 @@ export const useTableStore = defineStore('table', {
       try {
         const searchFilterSort = useSearchFilterSortStore()
         searchFilterSort.searchParameters.page++;
-        const result = await client.collections('Institutions').documents().search(searchFilterSort.searchParameters);
+        const result = await client.collections('institutions_integratedv2').documents().search(searchFilterSort.searchParameters);
         this.tableData = this.tableData.concat(result.hits.map(hit => hit.document));
         this.tableData.push({name: "Load more"});
 
@@ -39,13 +39,18 @@ export const useTableStore = defineStore('table', {
 
       console.log("fetchTableData");
       console.log(this.freshSearch);
-
+      
       const searchFilterSortStore = useSearchFilterSortStore();
+      
+      if (this.freshSearch) {
+        searchFilterSortStore.searchParameters.page = 1;
+      }
 
       const route = useRoute();
       const search = route.query.search;
 
-      const newSearchValue = search !== searchFilterSortStore.activeSearchTerms;
+      const newSearchValue = search == searchFilterSortStore.activeSearchTerms;
+      console.log(newSearchValue);
 
       // check for local storage value
       if (localStorage.getItem("tableData") && !this.freshSearch && !newSearchValue) {
@@ -53,28 +58,28 @@ export const useTableStore = defineStore('table', {
         this.tableData = JSON.parse(localStorage.getItem("tableData"));
         this.loading = false;
         return;
+      } else {
+        if (search) {
+          searchFilterSortStore.searchParameters.q = search;
+          searchFilterSortStore.searchParameters.page = 1;
+        }
+              
+        try {
+          const searchFilterSort = useSearchFilterSortStore()
+          console.log("searchFilterSort.searchParameters", searchFilterSort.searchParameters);
+          const result = await client.collections('institutions_integratedv2').documents().search(searchFilterSort.searchParameters);
+          this.resultsFound = result.found;
+          this.tableData = result.hits.map(hit => hit.document);
+          this.tableData.push({name: "Load more"});
+  
+          // save this.tableData to local storage
+          localStorage.setItem("tableData", JSON.stringify(this.tableData));
+  
+        } catch (error) {
+          console.error('Error fetching data from Typesense:', error);
+        }
+  
       }
-
-      if (search) {
-        searchFilterSortStore.searchParameters.q = search;
-        searchFilterSortStore.searchParameters.page = 1;
-      }
-            
-      try {
-        const searchFilterSort = useSearchFilterSortStore()
-        console.log("searchFilterSort.searchParameters", searchFilterSort.searchParameters);
-        const result = await client.collections('Institutions').documents().search(searchFilterSort.searchParameters);
-        this.resultsFound = result.found;
-        this.tableData = result.hits.map(hit => hit.document);
-        this.tableData.push({name: "Load more"});
-
-        // save this.tableData to local storage
-        localStorage.setItem("tableData", JSON.stringify(this.tableData));
-
-      } catch (error) {
-        console.error('Error fetching data from Typesense:', error);
-      }
-
       this.freshSearch = false;
 
       this.loading = false;
