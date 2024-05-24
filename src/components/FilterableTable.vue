@@ -11,7 +11,8 @@
         indeterminate
       ></v-progress-circular>
     </div>
-    <p>number of items in table: {{ tableStore.tableData.length }}</p>
+    <p>results found: {{ tableStore.resultsFound }}</p>
+    <p>number of items in table: {{ tableStore.tableData.length -1 }}</p>
     <p>keyword search: {{ searchFilterSortStore.searchParameters.q }}</p>
     <div
       v-if="tableStore.loading === false"

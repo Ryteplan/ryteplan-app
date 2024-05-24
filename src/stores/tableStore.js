@@ -14,6 +14,7 @@ export const useTableStore = defineStore('table', {
       selectedRows: [],
       tableHeaders: [],
       lastVisible: {},
+      resultsFound: 0,
   }),
   persist: true,
   actions: {
@@ -54,8 +55,6 @@ export const useTableStore = defineStore('table', {
         return;
       }
 
-      
-
       if (search) {
         searchFilterSortStore.searchParameters.q = search;
         searchFilterSortStore.searchParameters.page = 1;
@@ -65,6 +64,7 @@ export const useTableStore = defineStore('table', {
         const searchFilterSort = useSearchFilterSortStore()
         console.log("searchFilterSort.searchParameters", searchFilterSort.searchParameters);
         const result = await client.collections('Institutions').documents().search(searchFilterSort.searchParameters);
+        this.resultsFound = result.found;
         this.tableData = result.hits.map(hit => hit.document);
         this.tableData.push({name: "Load more"});
 
