@@ -12,6 +12,7 @@
       ></v-progress-circular>
     </div>
     <p>number of items in table: {{ tableStore.tableData.length }}</p>
+    <p>keyword search: {{ searchFilterSortStore.searchParameters.q }}</p>
     <div
       v-if="tableStore.loading === false"
     >
@@ -211,7 +212,7 @@ export default {
 
     let searchFilterSortStore = useSearchFilterSortStore();
 
-    if (searchFilterSortStore.searchInput !== searchFilterSortStore.saveSearchInput) {
+    if (searchFilterSortStore.searchInput !== searchFilterSortStore.activeSearchTerms) {
       searchFilterSortStore.loadSavedSearchInput();
     }
 

@@ -15,6 +15,7 @@
           single-line
           hide-details
           clearable
+          @keydown="updateSearchBarInput"
           @keydown.enter="performSearch"
           @click:clear="performSearch('fromClear')"
         ></v-text-field>
@@ -172,6 +173,13 @@ export default {
         localStorage.removeItem("adminMode");
         this.$router.push("/");
       })
+    },
+    updateSearchBarInput() {
+      if (this.searchFilterSortStore.searchInput === '') {
+        this.searchFilterSortStore.searchParameters.q = '*';
+      } else {
+        this.searchFilterSortStore.searchParameters.q = this.searchFilterSortStore.searchInput;
+      }
     },
     performSearch(source) {
       const searchQuery = this.searchFilterSortStore.searchInput 

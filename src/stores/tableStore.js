@@ -8,7 +8,7 @@ export const useTableStore = defineStore('table', {
       tableData: [],
       tableDataManual: [],
       hideHidden: true,
-      executeSearchTerms: '',
+      freshSearch: true,
       selectedRows: [],
       tableHeaders: [],
       lastVisible: {},
@@ -16,7 +16,6 @@ export const useTableStore = defineStore('table', {
   // persist: true,
   actions: {
     async loadMoreItems() {
-      this.loading = true;
       this.tableData.pop();
       try {
         const searchFilterSort = useSearchFilterSortStore()
@@ -31,13 +30,12 @@ export const useTableStore = defineStore('table', {
       } catch (error) {
         console.error('Error fetching data from Typesense:', error);
       }      
-      this.loading = false;
     },
     async fetchTableData() {
       this.loading = true;
 
       // check for local storage value
-      if (localStorage.getItem("tableData")) {
+      if (localStorage.getItem("tableData") && !this.freshSearch) {
         console.log("loading from local storage");
         this.tableData = JSON.parse(localStorage.getItem("tableData"));
         this.loading = false;
@@ -56,6 +54,9 @@ export const useTableStore = defineStore('table', {
       } catch (error) {
         console.error('Error fetching data from Typesense:', error);
       }
+
+      this.freshSearch = false;
+
       this.loading = false;
     },
     columnValueList(val) {
@@ -114,8 +115,15 @@ export const useTableStore = defineStore('table', {
       localStorage.setItem("tableHeaders", tableHeaders);
     },
     performSeach() {
-      const searchFilterSort = useSearchFilterSortStore()
-      this.executeSearchTerms = searchFilterSort.searchInput;
+      this.freshSearch = true;
+      const searchFilterSort = useSearchFilterSortStore();
+      if (searchFilterSort.searchInput !== '') {
+        searchFilterSort.saveThenClearSearchInput();
+        searchFilterSort.searchParameters.q = searchFilterSort.activeSearchTerms;
+        this.fetchTableData();
+      } else {
+        this.fetchTableData();
+      }
     },
     getHideHidden() {
       if (localStorage.getItem("hideHidden") !== null) {
