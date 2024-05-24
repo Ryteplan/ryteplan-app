@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { dbFireStore } from "../firebase";
-import { collection, getDocs, addDoc } from 'firebase/firestore'
+import { collection, getDocs } from 'firebase/firestore'
 import { useSearchFilterSortStore } from './searchFilterSortStore';
 import { useAppVersionStore } from './appVersionStore';
 
@@ -140,11 +140,6 @@ export const useTableStore = defineStore('table', {
             this.tableData.forEach(data => {
               const data1 = { ...data, id: data.id };
               storePetersons.add(data1);
-
-              // add each item to a collection in Firestore
-              addDoc(collection(dbFireStore, 'institutions_MASTER'), data1);
-
-
             });
             this.loading = false;
           }
