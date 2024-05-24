@@ -25,7 +25,9 @@ export const useTableStore = defineStore('table', {
         searchFilterSort.searchParameters.page++;
         const result = await client.collections('institutions_integratedv2').documents().search(searchFilterSort.searchParameters);
         this.tableData = this.tableData.concat(result.hits.map(hit => hit.document));
-        this.tableData.push({name: "Load more"});
+        if (this.tableData.length < this.resultsFound) {
+          this.tableData.push({name: "Load more"});
+        }
 
         // save this.tableData to local storage
         localStorage.setItem("tableData", JSON.stringify(this.tableData));
@@ -70,7 +72,9 @@ export const useTableStore = defineStore('table', {
           const result = await client.collections('institutions_integratedv2').documents().search(searchFilterSort.searchParameters);
           this.resultsFound = result.found;
           this.tableData = result.hits.map(hit => hit.document);
-          this.tableData.push({name: "Load more"});
+          if (this.tableData.length < this.resultsFound) {
+            this.tableData.push({name: "Load more"});
+          }
   
           // save this.tableData to local storage
           localStorage.setItem("tableData", JSON.stringify(this.tableData));
