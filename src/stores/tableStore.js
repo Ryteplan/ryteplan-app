@@ -49,11 +49,11 @@ export const useTableStore = defineStore('table', {
       const route = useRoute();
       const search = route.query.search;
 
-      const newSearchValue = search == searchFilterSortStore.activeSearchTerms;
+      const newSearchValue = search !== searchFilterSortStore.activeSearchTerms;
       console.log(newSearchValue);
 
       // check for local storage value
-      if (localStorage.getItem("tableData") && !this.freshSearch && newSearchValue) {
+      if (localStorage.getItem("tableData") && !this.freshSearch) {
         console.log("loading from local storage");
         this.tableData = JSON.parse(localStorage.getItem("tableData"));
         this.loading = false;
@@ -79,7 +79,9 @@ export const useTableStore = defineStore('table', {
           console.error('Error fetching data from Typesense:', error);
         }
   
+
       }
+
       this.freshSearch = false;
 
       this.loading = false;

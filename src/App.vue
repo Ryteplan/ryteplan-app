@@ -185,6 +185,8 @@ export default {
       const searchQuery = this.searchFilterSortStore.activeSearchTerms
         ? decodeURIComponent(encodeURIComponent(this.searchFilterSortStore.activeSearchTerms.trim().toLowerCase()))
         : '';
+
+      this.tableStore.freshSearch = true;
         
       if (this.$route.path === '/') {
         this.searchFilterSortStore.activeSearchTerms = searchQuery;
