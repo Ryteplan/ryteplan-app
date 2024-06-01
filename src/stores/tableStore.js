@@ -155,6 +155,7 @@ export const useTableStore = defineStore('table', {
         searchFilterSort.searchParameters.q = searchFilterSort.activeSearchTerms;
         // this.fetchTableData();
       } else {
+        searchFilterSort.searchParameters.q = "*";
         // this.fetchTableData();
       }
     },

@@ -14,7 +14,6 @@
           variant="solo"
           single-line
           hide-details
-          clearable
           @keydown="updateSearchBarInput"
           @keydown.enter="performSearch"
           @click:clear="updateSearchBarInput"
