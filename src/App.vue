@@ -189,7 +189,8 @@ export default {
         
       if (this.$route.path === '/') {
         this.searchFilterSortStore.activeSearchTerms = searchQuery;
-        this.tableStore.performSeach();
+        this.tableStore.performSearch();
+        console.log("right before router push");
         this.$router.push({ query: { ...this.$route.query, search: searchQuery } });
       } else {
         if (source === 'fromClear') return;

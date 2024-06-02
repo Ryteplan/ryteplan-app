@@ -11,6 +11,7 @@ export const useTableStore = defineStore('table', {
       tableDataManual: [],
       hideHidden: true,
       freshSearch: true,
+      searchFromRoute: '',
       selectedRows: [],
       tableHeaders: [],
       lastVisible: {},
@@ -40,7 +41,8 @@ export const useTableStore = defineStore('table', {
       this.loading = true;
 
       console.log("fetchTableData");
-      console.log(this.freshSearch);
+
+      console.log("this.freshSearch: " + this.freshSearch);
       
       const searchFilterSortStore = useSearchFilterSortStore();
       
@@ -48,11 +50,11 @@ export const useTableStore = defineStore('table', {
         searchFilterSortStore.searchParameters.page = 1;
       }
 
+      
       const route = useRoute();
-      const search = route.query.search;
-
-      const newSearchValue = search !== searchFilterSortStore.activeSearchTerms;
-      console.log(newSearchValue);
+      this.searchFromRoute = route.query.search;
+      const newSearchValue = this.searchFromRoute !== searchFilterSortStore.activeSearchTerms;
+      console.log("newSearchValue: " + newSearchValue);
 
       // check for local storage value
       if (localStorage.getItem("tableData") && !this.freshSearch) {
@@ -61,13 +63,15 @@ export const useTableStore = defineStore('table', {
         this.loading = false;
         return;
       } else {
-        if (search) {
-          searchFilterSortStore.searchParameters.q = search;
+        if (this.searchFromRoute) {
+          searchFilterSortStore.searchParameters.q = this.search;
           searchFilterSortStore.searchParameters.page = 1;
         }
               
         try {
           const searchFilterSort = useSearchFilterSortStore()
+          searchFilterSort.searchParameters.q = searchFilterSort.activeSearchTerms;
+          searchFilterSort.searchParameters.filter_by = searchFilterSort.filterByString;
           console.log("searchFilterSort.searchParameters", searchFilterSort.searchParameters);
           const result = await client.collections('institutions_integratedv2').documents().search(searchFilterSort.searchParameters);
           this.resultsFound = result.found;
@@ -82,13 +86,31 @@ export const useTableStore = defineStore('table', {
         } catch (error) {
           console.error('Error fetching data from Typesense:', error);
         }
-  
-
       }
 
       this.freshSearch = false;
 
       this.loading = false;
+    },
+    async applyNewFilterSearch(){
+        try {
+          const searchFilterSort = useSearchFilterSortStore()
+          searchFilterSort.searchParameters.page = 1;
+          searchFilterSort.searchParameters.filter_by = searchFilterSort.filterByString;
+          console.log("searchFilterSort.searchParameters", searchFilterSort.searchParameters);
+          const result = await client.collections('institutions_integratedv2').documents().search(searchFilterSort.searchParameters);
+          this.resultsFound = result.found;
+          this.tableData = result.hits.map(hit => hit.document);
+          if (this.tableData.length < this.resultsFound) {
+            this.tableData.push({name: "Load more"});
+          }
+  
+          // save this.tableData to local storage
+          localStorage.setItem("tableData", JSON.stringify(this.tableData));
+  
+        } catch (error) {
+          console.error('Error fetching data from Typesense:', error);
+        }
     },
     columnValueList(val) {
       return [...new Set(this.tableData.map(d => d[val]))].sort();
@@ -104,19 +126,19 @@ export const useTableStore = defineStore('table', {
         this.tableHeaders = [
           { title: 'id', key: 'id', width: "300px", show: false, align: "d-none" },
           { title: 'Institution name', key: 'name', width: "300px", fixed: true, sortable: false },
-          { title: 'State', key: 'stateCleaned', width: "130px", show: false },
+          { title: 'State', key: 'stateCleaned', width: "130px", show: true },
+          { title: 'Sector', key: 'mainInstControlDesc', width: "140px", show: true, sortable: false },
+          { title: 'Calendar', key: 'mainCalendar', width: "140px", show: true, sortable: false },          
+          { title: 'Difficulty', key: 'adDiffAll', width: "140px", show: true, sortable: false },          
+          { title: 'Undergraduates', key: 'enTotUgN', width: "140px", show: true, sortable: false },
+          { title: 'Locale', key: 'cmpsSetting', width: "140px", show: true, sortable: false },          
           { title: 'City', key: 'city', width: "220px", show: false },
           { title: 'Country', key: 'countryCode', width: "130px", show: false },
           { title: 'Zipcode', key: 'zipcode', width: "130px", show: false },
-          { title: 'Sector', key: 'mainInstControlDesc', width: "140px", show: true, sortable: false },
-          { title: 'Calendar', key: 'mainCalendar', width: "140px", show: true, sortable: false },          
-          { title: 'Undergraduates', key: 'enTotUgN', width: "140px", show: true, sortable: false },
-          { title: 'Difficulty', key: 'adDiffAll', width: "140px", show: true, sortable: false },          
-          { title: 'Locale', key: 'cmpsSetting', width: "140px", show: true, sortable: false },          
           { title: 'Campus Size', key: 'cmpsSizeUnit', width: "210px", show: false },          
-          { title: 'Average GPA', key: 'frshGpa', width: "160px", show: true, sortable: false },          
-          { title: 'Applicants', key: 'apRecd1stN', width: "140px", show: true, sortable: false },          
-          { title: 'Admits', key: 'apAdmt1stN', width: "140px", show: true, sortable: false },          
+          { title: 'Average GPA', key: 'frshGpa', width: "160px", show: false, sortable: false },          
+          { title: 'Applicants', key: 'apRecd1stN', width: "140px", show: false, sortable: false },          
+          { title: 'Admits', key: 'apAdmt1stN', width: "140px", show: false, sortable: false },          
           { title: 'HBCU', key: 'hbcu', width: "100px", show: false },
           { title: 'Tribal', key: 'tribal', width: "100px", show: false },
           { title: 'Early Decision Applicants', key: 'apRecdEdecN', width: "240px", show: false },          
@@ -145,8 +167,8 @@ export const useTableStore = defineStore('table', {
       let tableHeaders = JSON.stringify(filteredArray);
       localStorage.setItem("tableHeaders", tableHeaders);
     },
-    performSeach() {
-      console.log("performSeach")
+    performSearch() {
+      console.log("performSearch")
       this.freshSearch = true;
       const searchFilterSort = useSearchFilterSortStore();
       searchFilterSort.searchParameters.page = 1;

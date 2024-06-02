@@ -11,12 +11,6 @@
         indeterminate
       ></v-progress-circular>
     </div>
-    <div class="d-flex" style="gap: 40px">
-      <!-- <p>keyword search: {{ searchFilterSortStore.searchParameters.q }}</p> -->
-      <p>results found: {{ tableStore.resultsFound }}</p>
-      <p>number of items showing in table: {{ tableStore.tableData.length - 1 }}</p>
-      <p>page(s) loaded: {{ searchFilterSortStore.searchParameters.page }}</p>
-    </div>
     <div
       v-if="tableStore.loading === false"
     >
@@ -54,12 +48,12 @@
                 single-line
                 hide-details
                 clearable
-                v-on:keyup.enter="tableStore.performSeach"
+                v-on:keyup.enter="tableStore.performSearch"
               ></v-text-field>
             </v-col> -->
             <v-col class="d-none">
               <v-btn
-                @click="tableStore.performSeach"
+                @click="tableStore.performSearch"
               >
                 Search
               </v-btn>
@@ -156,6 +150,32 @@
             </v-col>
           </v-row>
         </div>
+      </div>
+
+      <v-select 
+        flat 
+        hide-details 
+        small 
+        multiple 
+        clearable 
+        auto
+        label="State(s)"
+        :items="searchFilterSortStore.StatesList" 
+        v-model="searchFilterSortStore.filters.State"
+        @update:menu="onUpdateMenu"
+      >
+      </v-select>
+
+      <v-btn
+      class="mt-4 mb-8"
+      @click="tableStore.applyNewFilterSearch()"
+      >Apply filters</v-btn>
+
+      <div class="d-flex" style="gap: 40px">
+        <!-- <p>keyword search: {{ searchFilterSortStore.searchParameters.q }}</p> -->
+        <p>results found: {{ tableStore.resultsFound }}</p>
+        <p>number of items showing in table: {{ tableStore.tableData.length - 1 }}</p>
+        <p>page(s) loaded: {{ searchFilterSortStore.searchParameters.page }}</p>
       </div>
       <v-data-table
         id="dataTable"
