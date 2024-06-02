@@ -166,15 +166,28 @@
       >
       </v-select>
 
+      <v-select 
+        class="mt-4"
+        flat 
+        hide-details 
+        small 
+        multiple 
+        clearable 
+        auto
+        label="Country"
+        :items="searchFilterSortStore.CountryList" 
+        v-model="searchFilterSortStore.filters.Country"
+        @update:menu="onUpdateMenu"
+      >
+      </v-select>
+
       <v-btn
       class="mt-4 mb-8"
       @click="tableStore.applyNewFilterSearch()"
       >Apply filters</v-btn>
 
       <div class="d-flex" style="gap: 40px">
-        <!-- <p>keyword search: {{ searchFilterSortStore.searchParameters.q }}</p> -->
         <p>results found: {{ tableStore.resultsFound }}</p>
-        <p>number of items showing in table: {{ tableStore.tableData.length - 1 }}</p>
         <p>page(s) loaded: {{ searchFilterSortStore.searchParameters.page }}</p>
       </div>
       <v-data-table

@@ -5,6 +5,7 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
   state: () => ({
     hideHidden: false,
     StatesList: states,
+    CountryList: ["United States", "International"],
     filters: {
       State: [],
       Calendar: [],
@@ -27,7 +28,7 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
     },
     selectedRows: [],
   }),
-  persist: true,
+  // persist: true,
   actions: {
     resetPage() {
     },
@@ -46,16 +47,32 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
     filterByString: (state) => {
 
       let hiddenFilter = '';
-      if (state.hideHidden) {
-        hiddenFilter = 'hidden:false';
+
+      if (!state.hideHidden) {
+        hiddenFilter = 'hidden:false ';
       }
+
+      let countryFilter = '';
+      if (state.filters.Country.length > 0) {
+        countryFilter = "&& countryCode:[";
+
+        if (state.filters.Country.includes("United States")) {
+          countryFilter = countryFilter+"USA,"          
+        }
+
+        if (state.filters.Country.includes("International")) {
+          countryFilter = countryFilter+"ARE,BGR,CAN,GRC,IRL,LBN"          
+        }
+        countryFilter = countryFilter + "]";
+      }
+
 
       let stateFilter = '';
       if (state.filters.State.length > 0) {
         stateFilter = "&& stateCleaned:[" + state.filters.State.join(',') + "]"; 
       }
 
-      let filterByString = hiddenFilter + stateFilter;
+      let filterByString = hiddenFilter + countryFilter + stateFilter;
 
       return filterByString;
     },
