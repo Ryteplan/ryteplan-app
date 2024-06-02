@@ -126,7 +126,7 @@ export const useTableStore = defineStore('table', {
         this.tableHeaders = [
           { title: 'id', key: 'id', width: "300px", show: false, align: "d-none" },
           { title: 'Institution name', key: 'name', width: "300px", fixed: true, sortable: false },
-          { title: 'State', key: 'stateCleaned', width: "130px", show: true },
+          { title: 'State', key: 'stateCleaned', width: "130px", show: true, sortable: false },
           { title: 'Sector', key: 'mainInstControlDesc', width: "140px", show: true, sortable: false },
           { title: 'Calendar', key: 'mainCalendar', width: "140px", show: true, sortable: false },          
           { title: 'Difficulty', key: 'adDiffAll', width: "140px", show: true, sortable: false },          
