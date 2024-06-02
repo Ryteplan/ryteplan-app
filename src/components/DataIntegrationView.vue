@@ -1,13 +1,27 @@
 <template>
-  <div class="data-integration">
-    <h1>Data Integration</h1>
-    <v-btn
-      @click="doDataIntegration"
-      color="primary"
-    >
-        Do integration
-    </v-btn>
-  </div>
+  <v-container class="pt-4">
+    <div class="data-integration">
+      <h1>Data Integration</h1>
+      <p>When we update data using the UI we need to press this button to make sure that the main table gets updated.</p>
+      <v-btn
+        @click="doDataIntegration"
+        color="primary"
+      >
+          Integrate Data
+      </v-btn>
+    </div>
+    <div class="data-updated-container">
+      <v-card v-for="item in petersonsData" :key="item.uri">
+        <v-card-title>
+          <h2>{{ item.name }}</h2>
+        </v-card-title>
+        <v-card-text>
+          <p>{{ item.city }}, {{ item.stateCleaned }}</p>
+          <p>{{ item.mainFunctionType }}</p>
+        </v-card-text>
+      </v-card>
+    </div>
+  </v-container>
 </template>
 
 <script>

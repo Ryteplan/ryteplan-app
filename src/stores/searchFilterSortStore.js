@@ -3,7 +3,7 @@ import { states } from '../data/states';
 
 export const useSearchFilterSortStore = defineStore('searchFilterSort', {
   state: () => ({
-    hideHidden: true,
+    hideHidden: false,
     StatesList: states,
     filters: {
       State: [],
@@ -19,7 +19,7 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
     saveSearchInput: '',
     searchParameters: {
       q: '*',
-      query_by: 'name',
+      query_by: 'name, stateCleaned, city',
       filter_by: 'getsReplacedByFetchTableData',
       sort_by : 'name:asc',
       per_page: 50,
@@ -44,13 +44,18 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
   },
   getters: {
     filterByString: (state) => {
-      let stateFilter = '';
 
+      let hiddenFilter = '';
+      if (state.hideHidden) {
+        hiddenFilter = 'hidden:false';
+      }
+
+      let stateFilter = '';
       if (state.filters.State.length > 0) {
         stateFilter = "&& stateCleaned:[" + state.filters.State.join(',') + "]"; 
       }
 
-      let filterByString = 'hidden:false ' + stateFilter;
+      let filterByString = hiddenFilter + stateFilter;
 
       return filterByString;
     },

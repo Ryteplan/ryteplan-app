@@ -51,6 +51,12 @@
           title="Lists" 
           value="Saved Lists">
         </v-list-item>
+        <v-list-item 
+          to="/data-integration" 
+          prepend-icon="mdi-call-merge" 
+          title="Data Integration" 
+          value="Data Integration">
+        </v-list-item>
         <v-list-item
           to="/students" 
           prepend-icon="mdi-account-school" 
