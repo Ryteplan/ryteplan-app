@@ -6,12 +6,12 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
     hideHidden: false,
     StatesList: states,
     CountryList: ["United States", "International"],
+    TypeList: ["Private", "Public"],
     filters: {
       State: [],
       Calendar: [],
       Country: [],
-      "Main Type of Degree Offered": [],
-      "Type of Institution": [],
+      Type: [],
       "Admission Difficulty": [],
       "Campus Setting": [],
     },
@@ -66,13 +66,27 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
         countryFilter = countryFilter + "]";
       }
 
+      let TypeFilter = '';
+      if (state.filters.Type.length > 0) {
+        TypeFilter = "&& mainInstControlDesc:[";
+
+        if (state.filters.Type.includes("Private")) {
+          TypeFilter = TypeFilter+"Private,"          
+        }
+
+        if (state.filters.Type.includes("Public")) {
+          TypeFilter = TypeFilter+"Public"          
+        }
+        TypeFilter = TypeFilter + "]";
+      }
+
 
       let stateFilter = '';
       if (state.filters.State.length > 0) {
         stateFilter = "&& stateCleaned:[" + state.filters.State.join(',') + "]"; 
       }
 
-      let filterByString = hiddenFilter + countryFilter + stateFilter;
+      let filterByString = hiddenFilter + countryFilter + stateFilter + TypeFilter;
 
       return filterByString;
     },

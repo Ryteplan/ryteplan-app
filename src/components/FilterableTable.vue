@@ -181,6 +181,21 @@
       >
       </v-select>
 
+      <v-select 
+        class="mt-4"
+        flat 
+        hide-details 
+        small 
+        multiple 
+        clearable 
+        auto
+        label="Type"
+        :items="searchFilterSortStore.TypeList" 
+        v-model="searchFilterSortStore.filters.Type"
+        @update:menu="onUpdateMenu"
+      >
+      </v-select>
+
       <v-btn
       class="mt-4 mb-8"
       @click="tableStore.applyNewFilterSearch()"
