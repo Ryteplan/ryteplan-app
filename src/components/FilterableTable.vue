@@ -151,59 +151,86 @@
           </v-row>
         </div>
       </div>
-
-      <v-select 
-        flat 
-        hide-details 
-        small 
-        multiple 
-        clearable 
-        auto
-        label="State(s)"
-        :items="searchFilterSortStore.StatesList" 
-        v-model="searchFilterSortStore.filters.State"
-        @update:menu="onUpdateMenu"
-      >
-      </v-select>
-
-      <v-select 
-        class="mt-4"
-        flat 
-        hide-details 
-        small 
-        multiple 
-        clearable 
-        auto
-        label="Country"
-        :items="searchFilterSortStore.CountryList" 
-        v-model="searchFilterSortStore.filters.Country"
-        @update:menu="onUpdateMenu"
-      >
-      </v-select>
-
-      <v-select 
-        class="mt-4"
-        flat 
-        hide-details 
-        small 
-        multiple 
-        clearable 
-        auto
-        label="Type"
-        :items="searchFilterSortStore.TypeList" 
-        v-model="searchFilterSortStore.filters.Type"
-        @update:menu="onUpdateMenu"
-      >
-      </v-select>
-
-      <v-btn
-      class="mt-4 mb-8"
-      @click="tableStore.applyNewFilterSearch()"
-      >Apply filters</v-btn>
-
-      <div class="d-flex" style="gap: 40px">
-        <p>results found: {{ tableStore.resultsFound }}</p>
-        <p>page(s) loaded: {{ searchFilterSortStore.searchParameters.page }}</p>
+      <div class="d-flex mt-4 align-center justify-space-between pr-4" style="gap: 40px">
+        <v-dialog
+          v-model="filterDialog"
+          width="700px"
+        >
+          <template v-slot:activator="{ props }">
+            <v-btn
+              v-bind="props"
+              append-icon="mdi-filter-variant"
+            >
+              Filter
+            </v-btn>
+          </template>
+          <v-card>
+            <div class="pa-8">
+              <h2>Narrow down your search</h2>
+              <div class="mt-4">
+                <v-select 
+                  class="mt-4"
+                  flat 
+                  hide-details 
+                  small 
+                  multiple 
+                  clearable 
+                  auto
+                  label="Country"
+                  :items="searchFilterSortStore.CountryList" 
+                  v-model="searchFilterSortStore.filters.Country"
+                  @update:menu="onUpdateMenu"
+                >
+                </v-select>
+                <v-select 
+                  :disabled="!searchFilterSortStore.filters.Country.includes('United States') && searchFilterSortStore.filters.Country.length !== 0"
+                  class="mt-4"
+                  flat 
+                  hide-details 
+                  small 
+                  multiple 
+                  clearable 
+                  auto
+                  label="State(s)"
+                  :items="searchFilterSortStore.StatesList" 
+                  v-model="searchFilterSortStore.filters.State"
+                  @update:menu="onUpdateMenu"
+                >
+                </v-select>
+                <v-select 
+                  class="mt-4"
+                  flat 
+                  hide-details 
+                  small 
+                  multiple 
+                  clearable 
+                  auto
+                  label="Type"
+                  :items="searchFilterSortStore.TypeList" 
+                  v-model="searchFilterSortStore.filters.Type"
+                  @update:menu="onUpdateMenu"
+                >
+                </v-select>
+              </div>
+            </div>
+            <v-card-actions>
+              <v-btn 
+                color="primary" 
+                block 
+                @click="
+                    tableStore.applyNewFilterSearch();
+                    filterDialog = false;
+                  "
+                >
+                Apply filters
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <div class="d-flex" style="gap: 40px">
+          <p>results found: {{ tableStore.resultsFound }}</p>
+          <p>page(s) loaded: {{ searchFilterSortStore.searchParameters.page }}</p>
+        </div>
       </div>
       <v-data-table
         id="dataTable"

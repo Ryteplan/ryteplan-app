@@ -24,6 +24,8 @@ export const useTableStore = defineStore('table', {
       try {
         const searchFilterSort = useSearchFilterSortStore()
         searchFilterSort.searchParameters.page++;
+        searchFilterSort.searchParameters.q = searchFilterSort.activeSearchTerms;
+        searchFilterSort.searchParameters.filter_by = searchFilterSort.filterByString;
         const result = await client.collections('institutions_integratedv2').documents().search(searchFilterSort.searchParameters);
         this.tableData = this.tableData.concat(result.hits.map(hit => hit.document));
         if (this.tableData.length < this.resultsFound) {
