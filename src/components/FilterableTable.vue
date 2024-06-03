@@ -245,6 +245,20 @@
                   @update:menu="onUpdateMenu"
                 >
                 </v-select>
+                <v-select 
+                  class="mt-4"
+                  flat 
+                  hide-details 
+                  small 
+                  multiple 
+                  clearable 
+                  auto
+                  label="Campus Setting"
+                  :items="searchFilterSortStore.campusSettingList" 
+                  v-model="searchFilterSortStore.filters.campusSetting"
+                  @update:menu="onUpdateMenu"
+                >
+                </v-select>
               </div>
             </div>
             <v-card-actions>

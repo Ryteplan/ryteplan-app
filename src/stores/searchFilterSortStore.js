@@ -8,13 +8,15 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
     CountryList: ["United States", "International"],
     TypeList: ["Private", "Public"],
     admissionDifficultyList: ["—", "Noncompetitive", "Minimal", "Moderate", "Most", "Very"],
+    campusSettingList: ["Rural", "Small", "Suburb", "Urban"],
     filters: {
       State: [],
       Country: [],
       Type: [],
       UndergraduatesMin: 0,
       UndergraduatesMax: 0,
-      admissionDifficulty: []
+      admissionDifficulty: [],
+      campusSetting: []
     },
     activeSearchTerms: '',
     searchInput: '',
@@ -106,7 +108,12 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
         admissionDifficultyFilter = "&& adDiffAll:[" + state.filters.admissionDifficulty.join(',') + "]"; 
       }
 
-      let filterByString = hiddenFilter + countryFilter + stateFilter + TypeFilter + UndergraduatesFilter + admissionDifficultyFilter;
+      let campusSettingFilter = '';
+      if (state.filters.campusSetting.length > 0) {
+        campusSettingFilter = "&& cmpsSetting:[" + state.filters.campusSetting.join(',') + "]"; 
+      }
+
+      let filterByString = hiddenFilter + countryFilter + stateFilter + TypeFilter + UndergraduatesFilter + admissionDifficultyFilter + campusSettingFilter;
 
       return filterByString;
     },
