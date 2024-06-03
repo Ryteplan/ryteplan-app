@@ -168,6 +168,7 @@
             <div class="pa-8">
               <h2>Narrow down your search</h2>
               <div class="mt-4">
+                <span>Location</span>
                 <v-select 
                   class="mt-4"
                   flat 
@@ -197,6 +198,7 @@
                   @update:menu="onUpdateMenu"
                 >
                 </v-select>
+                <span class="d-block mt-8">Public or Private</span>
                 <v-select 
                   class="mt-4"
                   flat 
@@ -211,6 +213,23 @@
                   @update:menu="onUpdateMenu"
                 >
                 </v-select>
+                <div class="mt-8">
+                  <span>Undergraduates</span>
+                  <div class="d-flex mt-4" style="gap: 40px;">
+                    <v-text-field
+                      v-model="searchFilterSortStore.filters.UndergraduatesMin"
+                      label="Minimum"
+                      type="number"
+                      clearable
+                    />
+                    <v-text-field
+                      v-model="searchFilterSortStore.filters.UndergraduatesMax"
+                      label="Maximum"
+                      type="number"
+                      clearable
+                    />
+                  </div>
+                </div>
               </div>
             </div>
             <v-card-actions>

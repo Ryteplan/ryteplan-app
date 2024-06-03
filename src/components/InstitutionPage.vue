@@ -316,7 +316,7 @@
           />
         </div>
       </div>
-      <div class="section-container mt-8">
+      <div class="section-container mt-8 d-none">
         <h2>Deadline dates</h2>
         <div class="three-by-three-stat-grid mt-4">
           <StatDisplay
@@ -361,7 +361,7 @@
           />
         </div>
       </div>
-      <div class="section-container mt-4">
+      <div class="section-container mt-4 d-none">
         <h2>Admission Consideration Factors</h2>        
         <div class="three-by-three-stat-grid mt-4">
           <div class="stat-container">

@@ -9,11 +9,10 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
     TypeList: ["Private", "Public"],
     filters: {
       State: [],
-      Calendar: [],
       Country: [],
       Type: [],
-      "Admission Difficulty": [],
-      "Campus Setting": [],
+      UndergraduatesMin: 0,
+      UndergraduatesMax: 0,
     },
     activeSearchTerms: '',
     searchInput: '',
@@ -66,6 +65,12 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
         countryFilter = countryFilter + "]";
       }
 
+      let stateFilter = '';
+      if (state.filters.State.length > 0) {
+        stateFilter = "&& stateCleaned:[" + state.filters.State.join(',') + "]"; 
+      }
+
+
       let TypeFilter = '';
       if (state.filters.Type.length > 0) {
         TypeFilter = "&& mainInstControlDesc:[";
@@ -80,13 +85,23 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
         TypeFilter = TypeFilter + "]";
       }
 
+      let UndergraduatesFilter = '';
+      if (state.filters.UndergraduatesMin.length > 0 || state.filters.UndergraduatesMax.length > 0) {
 
-      let stateFilter = '';
-      if (state.filters.State.length > 0) {
-        stateFilter = "&& stateCleaned:[" + state.filters.State.join(',') + "]"; 
+        UndergraduatesFilter = "&& enTotUgN:";
+
+        if (state.filters.UndergraduatesMin > 0 && state.filters.UndergraduatesMax > 0) {
+          UndergraduatesFilter = UndergraduatesFilter + "[" + state.filters.UndergraduatesMin + ".." + state.filters.UndergraduatesMax + "]";          
+        } else if(state.filters.UndergraduatesMin > 0 && state.filters.UndergraduatesMax == 0) {
+          UndergraduatesFilter = UndergraduatesFilter + ">" + state.filters.UndergraduatesMin;          
+
+        } else if(state.filters.UndergraduatesMin == 0 && state.filters.UndergraduatesMax > 0) {
+          UndergraduatesFilter = UndergraduatesFilter + "<" + state.filters.UndergraduatesMax;          
+        }
       }
 
-      let filterByString = hiddenFilter + countryFilter + stateFilter + TypeFilter;
+
+      let filterByString = hiddenFilter + countryFilter + stateFilter + TypeFilter + UndergraduatesFilter;
 
       return filterByString;
     },
