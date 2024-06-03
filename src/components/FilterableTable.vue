@@ -230,6 +230,21 @@
                     />
                   </div>
                 </div>
+                <span class="d-block mt-8">Other stuff</span>
+                <v-select 
+                  class="mt-4"
+                  flat 
+                  hide-details 
+                  small 
+                  multiple 
+                  clearable 
+                  auto
+                  label="Difficulty"
+                  :items="searchFilterSortStore.admissionDifficultyList" 
+                  v-model="searchFilterSortStore.filters.admissionDifficulty"
+                  @update:menu="onUpdateMenu"
+                >
+                </v-select>
               </div>
             </div>
             <v-card-actions>
