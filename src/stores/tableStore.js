@@ -26,6 +26,8 @@ export const useTableStore = defineStore('table', {
         searchFilterSort.searchParameters.page++;
         searchFilterSort.searchParameters.q = searchFilterSort.activeSearchTerms;
         searchFilterSort.searchParameters.filter_by = searchFilterSort.filterByString;
+        searchFilterSort.searchParameters.sort_by = searchFilterSort.customSortString;
+
         const result = await client.collections('institutions_integratedv2').documents().search(searchFilterSort.searchParameters);
         this.tableData = this.tableData.concat(result.hits.map(hit => hit.document));
         if (this.tableData.length < this.resultsFound) {
@@ -74,6 +76,7 @@ export const useTableStore = defineStore('table', {
           const searchFilterSort = useSearchFilterSortStore()
           searchFilterSort.searchParameters.q = searchFilterSort.activeSearchTerms;
           searchFilterSort.searchParameters.filter_by = searchFilterSort.filterByString;
+          searchFilterSort.searchParameters.sort_by = searchFilterSort.customSortString;
           console.log("searchFilterSort.searchParameters", searchFilterSort.searchParameters);
           const result = await client.collections('institutions_integratedv2').documents().search(searchFilterSort.searchParameters);
           this.resultsFound = result.found;
@@ -94,11 +97,12 @@ export const useTableStore = defineStore('table', {
 
       this.loading = false;
     },
-    async applyNewFilterSearch(){
+    async applyNewSearch(){
         try {
           const searchFilterSort = useSearchFilterSortStore()
           searchFilterSort.searchParameters.page = 1;
           searchFilterSort.searchParameters.filter_by = searchFilterSort.filterByString;
+          searchFilterSort.searchParameters.sort_by = searchFilterSort.customSortString;
           console.log("searchFilterSort.searchParameters", searchFilterSort.searchParameters);
           const result = await client.collections('institutions_integratedv2').documents().search(searchFilterSort.searchParameters);
           this.resultsFound = result.found;
@@ -193,6 +197,19 @@ export const useTableStore = defineStore('table', {
     },
     saveHideHiddenState() {
         localStorage.setItem("hideHidden", this.hideHidden);
-    }
+    },
+    customSort(column){
+      console.log(column)
+      const searchFilterSort = useSearchFilterSortStore();
+
+      if (column.key == searchFilterSort.customSortColumn) {
+        searchFilterSort.customSortDirection = searchFilterSort.customSortDirection === 'asc' ? 'desc' : 'asc';
+      }
+      searchFilterSort.customSortColumn = column.key;
+      searchFilterSort.customSortString = column.key + ":" + searchFilterSort.customSortDirection + ", " + "name:" + searchFilterSort.nameSortDirection;
+      console.log(searchFilterSort.customSortString);
+      this.applyNewSearch();
+    },
+
   },
 });

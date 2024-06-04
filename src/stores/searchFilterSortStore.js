@@ -4,6 +4,7 @@ import { states } from '../data/states';
 export const useSearchFilterSortStore = defineStore('searchFilterSort', {
   state: () => ({
     hideHidden: false,
+    selectedRows: [],
     StatesList: states,
     CountryList: ["United States", "International"],
     TypeList: ["Private", "Public"],
@@ -25,16 +26,17 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
       q: '*',
       query_by: 'name, stateCleaned, city',
       filter_by: 'getsReplacedByFetchTableData',
-      sort_by : 'name:asc',
+      sort_by : 'name:desc',
       per_page: 50,
       page: 1
     },
-    selectedRows: [],
+    nameSortDirection: 'asc',
+    customSortColumn: '',
+    customSortDirection: 'asc',
+    customSortString: '',
   }),
   // persist: true,
   actions: {
-    resetPage() {
-    },
     saveThenClearSearchInput() {
       this.saveSearchInput = this.searchInput;
       this.searchInput = '';

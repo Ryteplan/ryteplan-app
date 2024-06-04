@@ -266,7 +266,7 @@
                 color="primary" 
                 block 
                 @click="
-                    tableStore.applyNewFilterSearch();
+                    tableStore.applyNewSearch();
                     filterDialog = false;
                   "
                 >
@@ -296,7 +296,28 @@
         item-value="institution name"
         v-model="tableStore.selectedRows"
         density="comfortable"
-      >        
+      >
+        <template v-slot:headers="{ columns, isSorted, getSortIcon }">
+          <tr>
+            <template v-for="(column, index) in columns" :key="column.key">
+              <th 
+                v-if="column.show !== false" 
+                :class="thClasses(index)" 
+                :style="thStyle(column.width)"
+                @click="tableStore.customSort(column)"
+              >
+                <div class="v-data-table-header__content">
+                  <span>
+                    {{ column.title }}
+                  </span>
+                  <template v-if="isSorted(column)">
+                    <v-icon :icon="getSortIcon(column)"></v-icon>
+                  </template>
+                </div>
+              </th>
+            </template>
+          </tr>
+        </template>
         <template #bottom></template>
       </v-data-table>
     </div>
@@ -459,6 +480,16 @@ export default {
     compareClicked() {
       alert("Compare Clicked");
     },
+    thClasses(index) {
+      if (index === 0) {
+        return 'v-data-table__td v-data-table-column--last-fixed v-data-table-column--align- v-data-table__th v-data-table__th';
+      } else {
+        return 'v-data-table__td v-data-table-column--align- v-data-table__th v-data-table__th'
+      }
+    },
+    thStyle(width) {      
+      return `width: ${width}; left: 0px; min-width: ${width}; position: sticky; z-index: 4;`;
+    }
   },
   computed: {
     searchQueryFromRoute() {
@@ -479,6 +510,11 @@ export default {
 #dataTable {
   border-radius: 8px;
   overflow: hidden;
+
+  th:hover {
+    cursor: pointer;
+    background: #d8d8d8;
+  }
 }
 
 .data-table-footer-container {
