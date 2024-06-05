@@ -77,11 +77,22 @@ export const useTableStore = defineStore('table', {
             console.log("searchFromRoute: " + this.searchFromRoute);
             searchFilterSortStore.searchParameters.q = this.searchFromRoute;
             searchFilterSortStore.searchParameters.page = 1;
+          }  
+
+          console.log(searchFilterSort.searchInput.q);
+
+          if (searchFilterSort.searchParameters.q == '') {
+            searchFilterSort.searchParameters.q = "*";
           }
-  
 
           searchFilterSort.searchParameters.filter_by = searchFilterSort.filterByString;
-          searchFilterSort.searchParameters.sort_by = searchFilterSort.customSortString;
+
+          if (searchFilterSort.customSortString !== '') {
+            searchFilterSort.searchParameters.sort_by = searchFilterSort.customSortString;
+          } else {
+            searchFilterSort.searchParameters.sort_by = 'name:asc';
+          }
+          
           console.log("searchFilterSort.searchParameters", searchFilterSort.searchParameters);
 
           const result = await client.collections('institutions_integratedv2').documents().search(searchFilterSort.searchParameters);
