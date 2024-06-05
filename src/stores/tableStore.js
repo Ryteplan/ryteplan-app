@@ -67,17 +67,23 @@ export const useTableStore = defineStore('table', {
         this.loading = false;
         return;
       } else {
-        if (this.searchFromRoute) {
-          searchFilterSortStore.searchParameters.q = this.search;
-          searchFilterSortStore.searchParameters.page = 1;
-        }
+
               
         try {
           const searchFilterSort = useSearchFilterSortStore()
           searchFilterSort.searchParameters.q = searchFilterSort.activeSearchTerms;
+
+          if (this.searchFromRoute) {
+            console.log("searchFromRoute: " + this.searchFromRoute);
+            searchFilterSortStore.searchParameters.q = this.searchFromRoute;
+            searchFilterSortStore.searchParameters.page = 1;
+          }
+  
+
           searchFilterSort.searchParameters.filter_by = searchFilterSort.filterByString;
           searchFilterSort.searchParameters.sort_by = searchFilterSort.customSortString;
           console.log("searchFilterSort.searchParameters", searchFilterSort.searchParameters);
+
           const result = await client.collections('institutions_integratedv2').documents().search(searchFilterSort.searchParameters);
           this.resultsFound = result.found;
           this.tableData = result.hits.map(hit => hit.document);

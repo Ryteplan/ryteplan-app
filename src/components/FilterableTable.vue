@@ -98,21 +98,6 @@
                 </v-card>
               </v-dialog>
             </v-col>
-            <v-col
-              v-if="userStore.isLoggedIn && userStore.adminMode"
-              md="3" 
-              class="justify-end"
-            >
-              <v-switch 
-                label="Show hidden"
-                color="primary"
-                hide-details
-                class="inherit-height align-end"
-                v-model="tableStore.hideHidden"
-                @change="tableStore.saveHideHiddenState"
-              >
-              </v-switch>
-            </v-col>
             <v-col 
               v-if="tableStore.selectedRows.length"
               cols="6" 
@@ -276,6 +261,16 @@
           </v-card>
         </v-dialog>
         <div class="d-flex" style="gap: 40px">
+          <v-switch 
+            v-if="userStore.isLoggedIn && userStore.adminMode"
+            label="Show hidden"
+            color="primary"
+            hide-details
+            class="inherit-height align-end"
+            v-model="tableStore.hideHidden"
+            @change="tableStore.saveHideHiddenState"
+          >
+          </v-switch>
           <p>results found: {{ tableStore.resultsFound }}</p>
           <p>page(s) loaded: {{ searchFilterSortStore.searchParameters.page }}</p>
         </div>
@@ -586,6 +581,7 @@ tr td:nth-child(2) {
 }
 
 tr td {
+  line-height: 1.3em;
   color: #232323;
 }
 
