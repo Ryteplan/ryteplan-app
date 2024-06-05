@@ -260,7 +260,7 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-        <div class="d-flex" style="gap: 40px">
+        <div class="d-flex align-center" style="gap: 40px">
           <v-switch 
             v-if="userStore.isLoggedIn && userStore.adminMode"
             label="Show hidden"

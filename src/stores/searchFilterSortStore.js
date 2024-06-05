@@ -52,9 +52,11 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
     filterByString: (state) => {
 
       let hiddenFilter = '';
-
+      console.log("state.hideHidden", state.hideHidden);
       if (!state.hideHidden) {
         hiddenFilter = 'hidden:false ';
+      } else {
+        hiddenFilter = 'hidden:true ';
       }
 
       let countryFilter = '';

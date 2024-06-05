@@ -25,8 +25,17 @@ export const useTableStore = defineStore('table', {
         const searchFilterSort = useSearchFilterSortStore()
         searchFilterSort.searchParameters.page++;
         searchFilterSort.searchParameters.q = searchFilterSort.activeSearchTerms;
+        if (searchFilterSort.searchParameters.q == '') {
+          searchFilterSort.searchParameters.q = "*";
+        }
+
         searchFilterSort.searchParameters.filter_by = searchFilterSort.filterByString;
-        searchFilterSort.searchParameters.sort_by = searchFilterSort.customSortString;
+
+        if (searchFilterSort.customSortString !== '') {
+          searchFilterSort.searchParameters.sort_by = searchFilterSort.customSortString;
+        } else {
+          searchFilterSort.searchParameters.sort_by = 'name:asc';
+        }
 
         const result = await client.collections('institutions_integratedv2').documents().search(searchFilterSort.searchParameters);
         this.tableData = this.tableData.concat(result.hits.map(hit => hit.document));
@@ -53,10 +62,11 @@ export const useTableStore = defineStore('table', {
       if (this.freshSearch) {
         searchFilterSortStore.searchParameters.page = 1;
       }
-
       
       const route = useRoute();
-      this.searchFromRoute = route.query.search;
+      if (route) {
+        this.searchFromRoute = route.query.search;
+      }
       const newSearchValue = this.searchFromRoute !== searchFilterSortStore.activeSearchTerms;
       console.log("newSearchValue: " + newSearchValue);
 
@@ -66,9 +76,7 @@ export const useTableStore = defineStore('table', {
         this.tableData = JSON.parse(localStorage.getItem("tableData"));
         this.loading = false;
         return;
-      } else {
-
-              
+      } else {              
         try {
           const searchFilterSort = useSearchFilterSortStore()
           searchFilterSort.searchParameters.q = searchFilterSort.activeSearchTerms;
@@ -213,7 +221,12 @@ export const useTableStore = defineStore('table', {
       return this.hideHidden;
     },
     saveHideHiddenState() {
-        localStorage.setItem("hideHidden", this.hideHidden);
+      console.log("saveHideHiddenState", this.hideHidden)
+      const searchFilterSort = useSearchFilterSortStore();
+      searchFilterSort.hideHidden = this.hideHidden;
+      localStorage.setItem("hideHidden", this.hideHidden);
+      this.freshSearch = true;
+      this.fetchTableData();
     },
     customSort(column){
       console.log(column)

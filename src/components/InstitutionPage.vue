@@ -3,7 +3,11 @@
     <div style="margin: 0 auto 64px; max-width: 1200px;">
       <v-row class="d-flex justify-space-between mt-0">
         <v-col cols="12" md="6">
-          <span class="d-none">{{ institution["inunId"] }}</span>
+          <span 
+            v-if="userStore.adminMode"
+          >
+            {{ institution["inunId"] }}
+          </span>
           <h1 class="text-h6">{{ institution["name"] }}</h1>
           <!-- <StatDisplay
             label="Name"
