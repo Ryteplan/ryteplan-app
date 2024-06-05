@@ -76,7 +76,7 @@
             class="mt-4"
           >
             <v-text-field
-              label="Value from Petersons"
+              label="Value from Integrated Database"
               v-model="this.petersonsValue"
               disabled
             />
@@ -243,6 +243,9 @@ export default {
         setDoc(doc(dbFireStore, 'manual_institution_data', this.uri), {
           [this.field]: this.updateValue
         }, { merge: true });
+        setDoc(doc(dbFireStore, 'institutions_integrated', this.uri), {
+          [this.field]: this.updateValue
+        }, { merge: true });
       }
 
       if (this.updateValue) {
@@ -267,13 +270,16 @@ export default {
       }
     },
     processValue(value, valueType) {
-
+      console.log(value);
+      console.log(valueType);
       const numberValue = Number(value);
       if (numberValue === 0) {
         return '—';
       }
 
       switch (valueType) {
+        case 'string':
+          return (value || '—');
         case 'numberNoComma':
           return (value || '—');
         case 'date':
