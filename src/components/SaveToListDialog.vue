@@ -28,7 +28,6 @@
           >
           Create New List
         </v-btn>
-
         </div>
         <div 
           class="create-new-list-form hide"

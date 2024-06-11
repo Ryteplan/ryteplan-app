@@ -249,6 +249,7 @@
             <v-card-actions>
               <v-btn 
                 color="primary" 
+                variant="flat"
                 block 
                 @click="
                     tableStore.applyNewSearch();

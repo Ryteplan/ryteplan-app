@@ -18,6 +18,20 @@
           @keydown.enter="performSearch"
           @click:clear="updateSearchBarInput"
         ></v-text-field>
+        <div>
+          <v-btn
+          cols="2"
+          block
+          class="max-w-24"
+          color="primary" 
+          variant="flat"
+          href="https://forms.gle/TkssoDbsbAaiuSnA6" 
+          target="_blank"
+        >
+          Submit feedback
+        </v-btn>
+
+        </div>
         <!-- <div v-if="!isLoggedIn">
           <v-btn 
             :to="{name: 'login', query: { tabDestination: 'Sign Up' }}"
