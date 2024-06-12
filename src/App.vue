@@ -24,7 +24,7 @@
           block
           class="max-w-24"
           color="primary" 
-          variant="flat"
+          variant="outlined"
           href="https://forms.gle/TkssoDbsbAaiuSnA6" 
           target="_blank"
         >
