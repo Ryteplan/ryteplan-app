@@ -18,19 +18,18 @@
           @keydown.enter="performSearch"
           @click:clear="updateSearchBarInput"
         ></v-text-field>
-        <div>
+        <div class="d-none d-md-block">
           <v-btn
-          cols="2"
-          block
-          class="max-w-24"
-          color="primary" 
-          variant="outlined"
-          href="https://forms.gle/TkssoDbsbAaiuSnA6" 
-          target="_blank"
-        >
-          Submit feedback
-        </v-btn>
-
+            cols="2"
+            block
+            class="max-w-24"
+            color="primary" 
+            variant="outlined"
+            href="https://forms.gle/TkssoDbsbAaiuSnA6" 
+            target="_blank"
+          >
+            Submit feedback
+          </v-btn>
         </div>
         <!-- <div v-if="!isLoggedIn">
           <v-btn 
