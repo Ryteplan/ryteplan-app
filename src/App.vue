@@ -6,7 +6,7 @@
           <LogoGreenBlack />
         </a>
         <v-text-field
-          class="mx-8"
+          class="ml-8 mr-md-8"
           v-model="searchFilterSortStore.activeSearchTerms"
           label="Search By Name"
           append-inner-icon="mdi-magnify"

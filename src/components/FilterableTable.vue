@@ -136,7 +136,7 @@
           </v-row>
         </div>
       </div>
-      <div class="d-flex mt-4 align-center justify-space-between pr-4" style="gap: 40px">
+      <div class="d-flex align-center-md justify-space-between pr-4-md" style="gap: 40px">
         <v-dialog
           v-model="filterDialog"
           width="700px"
@@ -261,7 +261,7 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-        <div class="d-flex align-center" style="gap: 40px">
+        <div class="d-flex align-center " style="gap: 40px">
           <v-switch 
             v-if="userStore.isLoggedIn && userStore.adminMode"
             label="Show hidden"
@@ -272,8 +272,10 @@
             @change="tableStore.saveHideHiddenState"
           >
           </v-switch>
-          <p>results found: {{ tableStore.resultsFound }}</p>
-          <p>page(s) loaded: {{ searchFilterSortStore.searchParameters.page }}</p>
+          <div class="d-flex flex-column flex-md-row text-right">
+            <p class="text-subtitle-2 mr-md-4">results found: {{ tableStore.resultsFound }}</p>
+            <p class="text-subtitle-2">page(s) loaded: {{ searchFilterSortStore.searchParameters.page }}</p>
+          </div>
         </div>
       </div>
       <v-data-table

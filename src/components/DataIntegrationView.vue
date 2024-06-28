@@ -1,6 +1,14 @@
 <template>
   <v-container class="pt-4">
     <div class="data-integration">
+      <!-- <h1>Data Backup</h1>
+      <v-btn
+        @click="duplicateCollection"
+        color="primary"
+      >
+        Backup Data
+      </v-btn> -->
+      
       <h1>Data Integration</h1>
       <p>When we update data using the UI we need to press this button to make sure that the main table gets updated.</p>
       <v-btn
@@ -34,13 +42,32 @@ export default {
     return {
       petersonsData: [],
       manualData: [],
+      integratedData: []
     }
   },
   methods: {
+    async duplicateCollection() {
+      const integratedDataQuery = query(collection(dbFireStore, "institutions_integrated"));      
+      const integratedDataSnapshots = await getDocs(integratedDataQuery);
+
+      integratedDataSnapshots.docs.forEach(doc => {
+        const data = { ...doc.data(), id: doc.id };
+        this.integratedData.push(data);
+      });
+
+      this.integratedData.forEach(async (institution) => {
+        setDoc(doc(dbFireStore, 'institutions_integrated_v11_backup', institution["uri"]), {
+          ...institution
+        }, { merge: true })
+        console.log('done adding: ' + institution.name + ' to institutions_integrated_v11_backup');
+      })
+
+
+    },
     async doDataIntegration() {
       console.log('doing data integration')
       
-      const petersonsDataQuery = query(collection(dbFireStore, "institutions_v11"));      
+      const petersonsDataQuery = query(collection(dbFireStore, "institutions_petersons_processed_v12"));      
       const petersonsSnapshots = await getDocs(petersonsDataQuery);
 
       petersonsSnapshots.docs.forEach(doc => {
