@@ -52,12 +52,20 @@ export default {
   },
   methods: {
     async getManualAndPetersonsData() {
-      const manualDataQuery = query(collection(dbFireStore, "manual_institution_data"), limit(20));
+      const manualDataQuery = query(collection(dbFireStore, "manual_institution_data"));
       const manualSnapshots = await getDocs(manualDataQuery);
 
       manualSnapshots.docs.forEach(doc => {
         const data = { ...doc.data(), id: doc.id };
         this.manualData.push(data);
+      });
+
+      this.manualData.forEach(school => {
+        Object.keys(school).sort().forEach(key => {
+          const value = school[key];
+          delete school[key];
+          school[key] = value;
+        });
       });
 
       const petersonsDataQuery = query(collection(dbFireStore, "institutions_petersons_processed_v12"));      
