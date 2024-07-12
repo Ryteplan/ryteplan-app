@@ -9,14 +9,16 @@
         v-for="school in manualData" 
         :key="school.id"
       >
-        <h2>{{ school.id }}</h2>
-        <div class="three-col-grid-container field-headers">
-          <h3>field name</h3>
-          <h3>petersons value</h3>
-          <h3>manual value</h3>
+        <a :href=getSchoolUrl(school.id) target="_blank">
+          <h3>{{ school.id }}</h3>
+        </a>
+        <div class="three-col-grid-container field-headers mt-2 mb-2">
+          <h4>field name</h4>
+          <h4>petersons value</h4>
+          <h4>manual value</h4>
         </div>
         <div 
-          class="three-col-grid-container field-container mt-2"
+          class="three-col-grid-container field-container py-2"
           v-for="(field, fieldName) in school" 
           :key="field.id"
         >
@@ -83,6 +85,9 @@ export default {
         return petersonsRecord[fieldName];
       }
       return null;
+    },
+    getSchoolUrl(schoolId) {
+      return '/institution/' + schoolId
     }
   }
 }
@@ -91,5 +96,9 @@ export default {
   .three-col-grid-container {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .field-container {
+    border-top: 1px solid #e3e3e3;
   }
 </style>
