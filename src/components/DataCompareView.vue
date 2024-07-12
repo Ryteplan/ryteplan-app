@@ -20,9 +20,8 @@
         <div 
           class="three-col-grid-container field-container py-2"
           v-for="(field, fieldName) in school" 
-          :key="field.id"
+          :key='field.id'
         >
-          <!-- get field key -->
           <p>{{ fieldName }}</p>
           <p>{{ this.getPetersonsField(school.id, fieldName) }}</p>
           <p>{{ field }}</p>
@@ -55,11 +54,14 @@ export default {
   methods: {
     async getManualAndPetersonsData() {
       const manualDataQuery = query(collection(dbFireStore, "manual_institution_data"));
+      // const manualDataQuery = query(collection(dbFireStore, "manual_institution_data"), limit(10));
       const manualSnapshots = await getDocs(manualDataQuery);
 
       manualSnapshots.docs.forEach(doc => {
         const data = { ...doc.data(), id: doc.id };
-        this.manualData.push(data);
+        if (data.hidden !== true) {
+          this.manualData.push(data);
+        }
       });
 
       this.manualData.forEach(school => {

@@ -65,6 +65,12 @@
           value="Saved Lists">
         </v-list-item>
         <v-list-item 
+          to="/data-compare" 
+          prepend-icon="mdi-compare-horizontal" 
+          title="Data Compare" 
+          value="Data Compare">
+        </v-list-item>
+        <v-list-item 
           to="/data-integration" 
           prepend-icon="mdi-call-merge" 
           title="Data Integration" 
