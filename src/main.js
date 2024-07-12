@@ -28,6 +28,7 @@ import SingularListView from './components/SingularListView.vue';
 import AccountView from './components/AccountView.vue';
 import PlaygroundView from './components/PlaygroundView.vue';
 import DataIntegrationView from './components/DataIntegrationView.vue';
+import DataCompareView from './components/DataCompareView.vue';
 
 const app = createApp(App);
 
@@ -43,6 +44,11 @@ const routes = [
     path: '/data-integration',
     name: 'DataIntegration',
     component: DataIntegrationView,
+  },
+  {
+    path: '/data-compare',
+    name: 'DataCompare',
+    component: DataCompareView,
   },
   {
     path: '/',

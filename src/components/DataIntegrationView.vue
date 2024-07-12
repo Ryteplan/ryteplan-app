@@ -76,7 +76,6 @@ export default {
       });
 
 
-      // do manual replacements integration
       const manualDataQuery = query(collection(dbFireStore, "manual_institution_data"));
       const manualSnapshots = await getDocs(manualDataQuery);
 
@@ -85,7 +84,7 @@ export default {
         this.manualData.push(data);
       });
 
-
+      // do manual replacements integration
       this.manualData.forEach(data => {
         console.log(data);
         console.log(data.id);
