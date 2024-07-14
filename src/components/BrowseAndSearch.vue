@@ -36,7 +36,6 @@ export default {
 
       const result = await client.collections('Institutions').documents().search(searchParameters);
       this.searchResults = result.hits.map(hit => hit.document);
-      console.log('Search results:', this.searchResults);
     } catch (error) {
       console.error('Error fetching data from Typesense:', error);
     }

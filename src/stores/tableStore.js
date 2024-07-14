@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
 import client from '../typesenseClient';
 import { useSearchFilterSortStore } from './searchFilterSortStore';
-// import route from 'vue-router';
 import { useRoute } from 'vue-router';
 
 export const useTableStore = defineStore('table', {
@@ -67,8 +66,6 @@ export const useTableStore = defineStore('table', {
       if (route) {
         this.searchFromRoute = route.query.search;
       }
-
-      console.log('searchFilterSortStore.activeSearchTerms', searchFilterSortStore.searchParameters.q);
 
       // check for local storage value
       if (localStorage.getItem("tableData") && !this.freshSearch && searchFilterSortStore.searchParameters.q !== '') {

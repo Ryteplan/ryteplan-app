@@ -18,6 +18,8 @@ export const useAppVersionStore = defineStore('appVersion', {
           this.versionMatch = true;
       } else {
           this.versionMatch = false;
+          localStorage.clear();
+          localStorage.setItem("appVersion", this.version);
       }
       return this.versionMatch;
     },
