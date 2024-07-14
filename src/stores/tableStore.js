@@ -67,11 +67,11 @@ export const useTableStore = defineStore('table', {
       if (route) {
         this.searchFromRoute = route.query.search;
       }
-      const newSearchValue = this.searchFromRoute !== searchFilterSortStore.activeSearchTerms;
-      console.log("newSearchValue: " + newSearchValue);
+
+      console.log('searchFilterSortStore.activeSearchTerms', searchFilterSortStore.searchParameters.q);
 
       // check for local storage value
-      if (localStorage.getItem("tableData") && !this.freshSearch) {
+      if (localStorage.getItem("tableData") && !this.freshSearch && searchFilterSortStore.searchParameters.q !== '') {
         console.log("loading from local storage");
         this.tableData = JSON.parse(localStorage.getItem("tableData"));
         this.loading = false;
