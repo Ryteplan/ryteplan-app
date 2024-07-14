@@ -42,7 +42,6 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
       this.searchInput = '';
     },
     loadSavedSearchInput() {
-      console.log("loadSavedSearchInput", this.saveSearchInput);
       if (this.saveSearchInput !== '') {
           this.searchInput = this.saveSearchInput;
       }
@@ -52,7 +51,6 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
     filterByString: (state) => {
 
       let hiddenFilter = '';
-      console.log("state.hideHidden", state.hideHidden);
       if (!state.hideHidden) {
         hiddenFilter = 'hidden:false ';
       } else {

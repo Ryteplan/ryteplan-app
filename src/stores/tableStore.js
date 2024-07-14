@@ -51,10 +51,6 @@ export const useTableStore = defineStore('table', {
     },
     async fetchTableData() {
       this.loading = true;
-
-      console.log("fetchTableData");
-
-      console.log("this.freshSearch: " + this.freshSearch);
       
       const searchFilterSortStore = useSearchFilterSortStore();
       
@@ -68,8 +64,12 @@ export const useTableStore = defineStore('table', {
       }
 
       // check for local storage value
-      if (localStorage.getItem("tableData") && !this.freshSearch && searchFilterSortStore.searchParameters.q !== '') {
-        console.log("loading from local storage");
+      if (
+        localStorage.getItem("tableData") && 
+        !this.freshSearch && 
+        searchFilterSortStore.searchParameters.q !== '' &&
+        searchFilterSortStore.searchParameters.q !== '*'
+      ) {
         this.tableData = JSON.parse(localStorage.getItem("tableData"));
         this.loading = false;
         return;
@@ -79,12 +79,9 @@ export const useTableStore = defineStore('table', {
           searchFilterSort.searchParameters.q = searchFilterSort.activeSearchTerms;
 
           if (this.searchFromRoute) {
-            console.log("searchFromRoute: " + this.searchFromRoute);
             searchFilterSortStore.searchParameters.q = this.searchFromRoute;
             searchFilterSortStore.searchParameters.page = 1;
           }  
-
-          console.log(searchFilterSort.searchInput.q);
 
           if (searchFilterSort.searchParameters.q == '') {
             searchFilterSort.searchParameters.q = "*";
@@ -98,8 +95,6 @@ export const useTableStore = defineStore('table', {
             searchFilterSort.searchParameters.sort_by = 'name:asc';
           }
           
-          console.log("searchFilterSort.searchParameters", searchFilterSort.searchParameters);
-
           const result = await client.collections('institutions_integratedv2').documents().search(searchFilterSort.searchParameters);
           this.resultsFound = result.found;
           this.tableData = result.hits.map(hit => hit.document);
@@ -125,7 +120,6 @@ export const useTableStore = defineStore('table', {
           searchFilterSort.searchParameters.page = 1;
           searchFilterSort.searchParameters.filter_by = searchFilterSort.filterByString;
           searchFilterSort.searchParameters.sort_by = searchFilterSort.customSortString;
-          console.log("searchFilterSort.searchParameters", searchFilterSort.searchParameters);
           const result = await client.collections('institutions_integratedv2').documents().search(searchFilterSort.searchParameters);
           this.resultsFound = result.found;
           this.tableData = result.hits.map(hit => hit.document);
@@ -196,7 +190,6 @@ export const useTableStore = defineStore('table', {
       localStorage.setItem("tableHeaders", tableHeaders);
     },
     performSearch() {
-      console.log("performSearch")
       this.freshSearch = true;
       const searchFilterSort = useSearchFilterSortStore();
       searchFilterSort.searchParameters.page = 1;
@@ -218,7 +211,6 @@ export const useTableStore = defineStore('table', {
       return this.hideHidden;
     },
     saveHideHiddenState() {
-      console.log("saveHideHiddenState", this.hideHidden)
       const searchFilterSort = useSearchFilterSortStore();
       searchFilterSort.hideHidden = this.hideHidden;
       localStorage.setItem("hideHidden", this.hideHidden);
@@ -226,7 +218,6 @@ export const useTableStore = defineStore('table', {
       this.fetchTableData();
     },
     customSort(column){
-      console.log(column)
       const searchFilterSort = useSearchFilterSortStore();
 
       if (column.key == searchFilterSort.customSortColumn) {
@@ -234,7 +225,6 @@ export const useTableStore = defineStore('table', {
       }
       searchFilterSort.customSortColumn = column.key;
       searchFilterSort.customSortString = column.key + ":" + searchFilterSort.customSortDirection + ", " + "name:" + searchFilterSort.nameSortDirection;
-      console.log(searchFilterSort.customSortString);
       this.applyNewSearch();
     },
 
