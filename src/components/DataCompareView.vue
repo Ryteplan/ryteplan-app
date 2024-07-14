@@ -19,12 +19,12 @@
         </div>
         <div 
           class="three-col-grid-container field-container py-2"
-          v-for="(field, fieldName) in school" 
+          v-for="field in getFilteredFields(school)" 
           :key='field.id'
         >
-          <p>{{ fieldName }}</p>
-          <p>{{ this.getPetersonsField(school.id, fieldName) }}</p>
-          <p>{{ field }}</p>
+          <p>{{ field.name }}</p>
+          <p>{{ this.getPetersonsField(school.id, field.name) }}</p>
+          <p>{{ field.value }}</p>
         </div>
       </v-card>
     </div>
@@ -90,6 +90,15 @@ export default {
     },
     getSchoolUrl(schoolId) {
       return '/institution/' + schoolId
+    },
+    getFilteredFields(school) {
+      return Object.keys(school)
+        .filter(key => 
+          key !== 'id' && 
+          key !== 'undergradEnrollTotal' &&
+          key !== 'undergrad_enroll_total'
+        )
+        .map(key => ({ name: key, value: school[key] }));
     }
   }
 }
