@@ -29,12 +29,18 @@ import AccountView from './components/AccountView.vue';
 import PlaygroundView from './components/PlaygroundView.vue';
 import DataIntegrationView from './components/DataIntegrationView.vue';
 import DataCompareView from './components/DataCompareView.vue';
+import ImageWorkView from './components/ImageWorkView.vue';
 
 const app = createApp(App);
 
 // const analytics = getAnalytics(app);
 
 const routes = [
+  {
+    path: '/image-work',
+    name: 'ImageWork',
+    component: ImageWorkView,
+  },
   {
     path: '/playground',
     name: 'Playground',
