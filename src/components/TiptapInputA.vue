@@ -1,5 +1,26 @@
 <template>
-  <editor-content :editor="editor" />
+  <div v-if="editor" class="tiptap-container">
+    <div class="control-group mb-3">
+      <div class="button-group">
+        <v-btn 
+          size="small"
+          @click="setLink" 
+          :class="{ 'is-active': editor.isActive('link') }"
+        >
+          Set link
+        </v-btn>
+        <v-btn
+          size="small"
+          class="ml-4"
+          @click="editor.chain().focus().unsetLink().run()" 
+          :disabled="!editor.isActive('link')"
+        >
+          Unset link
+        </v-btn>
+      </div>
+    </div>
+    <editor-content :editor="editor" />
+  </div>
 </template>
 
 <script>
@@ -11,7 +32,6 @@ export default {
   components: {
     EditorContent,
   },
-
   props: {
     modelValue: {
       type: String,
@@ -20,7 +40,6 @@ export default {
   },
 
   emits: ['update:modelValue'],
-
   data() {
     return {
       editor: null,
@@ -62,7 +81,37 @@ export default {
       },
     })
   },
+  methods: {
+    setLink() {
+      const previousUrl = this.editor.getAttributes('link').href
+      const url = window.prompt('URL', previousUrl)
 
+      // cancelled
+      if (url === null) {
+        return
+      }
+
+      // empty
+      if (url === '') {
+        this.editor
+          .chain()
+          .focus()
+          .extendMarkRange('link')
+          .unsetLink()
+          .run()
+
+        return
+      }
+
+      // update link
+      this.editor
+        .chain()
+        .focus()
+        .extendMarkRange('link')
+        .setLink({ href: url })
+        .run()
+    },
+  },
   beforeUnmount() {
     this.editor.destroy()
   },
@@ -70,8 +119,13 @@ export default {
 </script>
 
 <style lang="scss">
+
+.tiptap-container {
+}
 /* Basic editor styles */
 .tiptap {
+  background: white;
+
   :first-child {
     margin-top: 0;
   }

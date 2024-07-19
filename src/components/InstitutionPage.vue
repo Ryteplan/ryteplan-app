@@ -52,13 +52,66 @@
           </v-switch>
         </v-col>
       </v-row>
-      <div class="mb-8" v-if="editImages">
-        <v-text-field v-model="imageURLsFromDB.image1" label="image1" density="compact" variant="solo" single-line hide-details></v-text-field>
-        <v-text-field class="mt-4" v-model="imageURLsFromDB.image2" label="image2" density="compact" variant="solo" single-line hide-details></v-text-field>
-        <v-text-field class="mt-4" v-model="imageURLsFromDB.image3" label="image3" density="compact" variant="solo" single-line hide-details></v-text-field>
-        <v-text-field class="mt-4" v-model="imageURLsFromDB.image4" label="image4" density="compact" variant="solo" single-line hide-details></v-text-field>
-        <v-text-field class="mt-4" v-model="imageURLsFromDB.image5" label="image5" density="compact" variant="solo" single-line hide-details></v-text-field>
-        <v-btn class="mt-4" :disabled="isEditImagesSaveButtonDisabled" @click="saveImages">
+      <div class="mb-12" v-if="editImages">
+        <div class="mt-4 pa-4" style="background: #eee;">
+          <span class="font-weight-bold">Image 1</span>
+          <div class="mt-2">
+            <span class="font-weight-bold">URL</span>
+            <v-text-field v-model="imageURLsFromDB.image1" class="mt-2" label="image1" density="compact" variant="solo" single-line hide-details></v-text-field>
+          </div>
+          <div class="mt-4">
+            <span class="font-weight-bold">Image Credit</span>
+            <TiptapInputA v-model="imageCredits.image1" class="mt-4"/>
+          </div>
+        </div>
+        <div class="mt-4 pa-4" style="background: #eee;">
+          <span class="font-weight-bold">Image 2</span>
+          <div class="mt-2">
+            <span class="font-weight-bold">URL</span>
+            <v-text-field v-model="imageURLsFromDB.image2" class="mt-2" label="image1" density="compact" variant="solo" single-line hide-details></v-text-field>
+          </div>
+          <div class="mt-4">
+            <span class="font-weight-bold">Image Credit</span>
+            <TiptapInputA v-model="imageCredits.image2" class="mt-4"/>
+          </div>
+        </div>
+        <div class="mt-4 pa-4" style="background: #eee;">
+          <span class="font-weight-bold">Image 3</span>
+          <div class="mt-2">
+            <span class="font-weight-bold">URL</span>
+            <v-text-field v-model="imageURLsFromDB.image3" class="mt-2" label="image1" density="compact" variant="solo" single-line hide-details></v-text-field>
+          </div>
+          <div class="mt-4">
+            <span class="font-weight-bold">Image Credit</span>
+            <TiptapInputA v-model="imageCredits.image3" class="mt-4"/>
+          </div>
+        </div>
+        <div class="mt-4 pa-4" style="background: #eee;">
+          <span class="font-weight-bold">Image 4</span>
+          <div class="mt-2">
+            <span class="font-weight-bold">URL</span>
+            <v-text-field v-model="imageURLsFromDB.image4" class="mt-2" label="image1" density="compact" variant="solo" single-line hide-details></v-text-field>
+          </div>
+          <div class="mt-4">
+            <span class="font-weight-bold">Image Credit</span>
+            <TiptapInputA v-model="imageCredits.image4" class="mt-4"/>
+          </div>
+        </div>
+
+        <div class="mt-4 pa-4" style="background: #eee;">
+          <span class="font-weight-bold">Image 5</span>
+          <div class="mt-2">
+            <span class="font-weight-bold">URL</span>
+            <v-text-field v-model="imageURLsFromDB.image5" class="mt-2" label="image1" density="compact" variant="solo" single-line hide-details></v-text-field>
+          </div>
+          <div class="mt-4">
+            <span class="font-weight-bold">Image Credit</span>
+            <TiptapInputA v-model="imageCredits.image5" class="mt-4"/>
+          </div>
+        </div>
+
+
+        <v-btn class="mt-4" :disabled="isEditImagesSaveButtonDisabled" color="primary" @click="saveImages">
           <span v-if="isEditImagesSaveButtonDisabled">
             <v-progress-circular
               :size="20"
@@ -756,6 +809,7 @@ import { getAuth,onAuthStateChanged } from "firebase/auth";
 import { useUserStore } from '../stores/userStore';
 import { useSearchFilterSortStore } from '../stores/searchFilterSortStore';
 import StatDisplay from './StatDisplay.vue';
+import TiptapInputA from "./TiptapInputA.vue"
 
 
 // import EthnicityChart from './EthnicityChart.vue';
@@ -797,7 +851,7 @@ export default {
       isLoggedIn: false,
       isEditImagesSaveButtonDisabled: false,
       isEditImagesSaveButtonVisible: false,
-      editImages: false,
+      editImages: true,
       test: 25,
       institution: {},
       manualInstitionData: {},
@@ -807,7 +861,20 @@ export default {
       showSaveToListDialog: false,
       descriptionPanels: [],
       imagesFromGoogleSearch: [],
-      imageURLsFromDB: {},
+      imageURLsFromDB: {
+        image1: "",
+        image2: "",
+        image3: "",
+        image4: "",
+        image5: "",
+      },
+      imageCredits: {
+        image1: "",
+        image2: "",
+        image3: "",
+        image4: "",
+        image5: "",
+      },
       sat50thPercentile: 0,
       majors: [],
       sports: [],
@@ -847,6 +914,13 @@ export default {
         "image3": this.imageURLsFromDB.image3,
         "image4": this.imageURLsFromDB.image4,
         "image5": this.imageURLsFromDB.image5,
+      })
+      setDoc(doc(dbFireStore, 'image_credits', this.institution["uri"]), {
+        "image1": this.imageCredits.image1,
+        "image2": this.imageCredits.image2,
+        "image3": this.imageCredits.image3,
+        "image4": this.imageCredits.image4,
+        "image5": this.imageCredits.image5,
       })
       setTimeout(() => {
         this.isEditImagesSaveButtonDisabled = false;
@@ -902,9 +976,10 @@ export default {
       this.sports = sportsArray;
     },
     async getImages() {
-      // let dataArray = [];
-
       const slugFromURL = this.$route.params.slug;
+
+      // get image URLs
+
       const imageURLsFromDB = collection(dbFireStore, 'institution_images');
       const q = query(imageURLsFromDB, where(documentId(), "==", slugFromURL));
 
@@ -917,66 +992,17 @@ export default {
       if (Object.keys(this.imagesData).length > 0) { 
         this.imageURLsFromDB = this.imagesData;
       }
-      // } else {
-      //   const arialCampusSearchString = encodeURIComponent(this.institution["name"]) + " campus -source -text -getty";
-      //   const arialCampusResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${arialCampusSearchString}&num=1`);
-      //   const image1 = await arialCampusResponse.json();
-      //   dataArray.push(image1);
 
-      //   const buildingOnCampusSearchString = encodeURIComponent(this.institution["name"]) + " office of bursar building";
-      //   const buildingOnCampusResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${buildingOnCampusSearchString}&num=1`);
-      //   const image2 = await buildingOnCampusResponse.json();
-      //   dataArray.push(image2);
+      // get Image Credits
 
-      //   const surroundingAreaOrNeighborhoodSearchString = encodeURIComponent(this.institution["name"]) + " student union cafe";
-      //   const surroundingAreaOrNeighborhoodResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${surroundingAreaOrNeighborhoodSearchString}&num=1`);
-      //   const image3 = await surroundingAreaOrNeighborhoodResponse.json();
-      //   dataArray.push(image3);
+      const imageCredits = collection(dbFireStore, 'image_credits');
+      const qIC = query(imageCredits, where(documentId(), "==", slugFromURL));
 
-      //   const classroomInstructionSearchString = encodeURIComponent(this.institution["name"]) + " student classroom or lecture hall photograph";
-      //   const classroomInstructionResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${classroomInstructionSearchString}&num=1`);
-      //   const image4 = await classroomInstructionResponse.json();
-      //   dataArray.push(image4);
+      const docSnapIc = await getDocs(qIC);
 
-      //   const athleticOrLiveGameSearchString = encodeURIComponent(this.institution["name"]) + " sports game";
-      //   const athleticOrLiveGameResponse = await fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyArmaIMqQveUnRimtLUb8nFZNNvzqVjFfk&cx=17808ea58f81d4de4&searchType=IMAGE&imgSize=large&q=${athleticOrLiveGameSearchString}&num=1`);
-      //   const image5 = await athleticOrLiveGameResponse.json();
-      //   dataArray.push(image5);
-
-      //   this.imagesData = dataArray;
-        
-      //   const auth = getAuth();
-      //   onAuthStateChanged(auth, (user) => {
-      //     if (user) {
-      //       setDoc(doc(dbFireStore, 'institution_images', this.institution["uri"]), {
-      //         "image1": image1.items[0].link,
-      //         "image2": image2.items[0].link,
-      //         "image3": image3.items[0].link,
-      //         "image4": image4.items[0].link,
-      //         "image5": image5.items[0].link,
-      //       })
-
-      //       this.imageURLsFromDB = {
-      //         "image1": image1.items[0].link,
-      //         "image2": image2.items[0].link,
-      //         "image3": image3.items[0].link,
-      //         "image4": image4.items[0].link,
-      //         "image5": image5.items[0].link,
-      //       }
-      //     } else {
-      //       this.addImagesFromSearchToLinkArray();
-      //     }
-      //   });
-      // }
-    },
-    addImagesFromSearchToLinkArray() {
-      let linkArray = [];
-
-      for (const i in this.imagesData) {
-        linkArray.push(this.imagesData[i].items[0].link);
-      }
-
-      this.imagesFromGoogleSearch = linkArray;
+      docSnapIc.forEach((doc) => {
+        this.imageCredits = doc.data();
+      });
     },
     returnPercent(input) {
       const percentage = Math.round(input * 100);
@@ -1013,7 +1039,8 @@ export default {
   components: {
     // EthnicityChart,
     SaveToListDialog,
-    StatDisplay
+    StatDisplay,
+    TiptapInputA,
   },
 };
 

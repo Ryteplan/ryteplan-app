@@ -2,9 +2,10 @@
   <v-container class="pt-8 px-8">
     <h1>Playground</h1>
     <div>
-      <TiptapInputA v-model="content"/>
-      <div v-html="content">
-      </div>
+      <TiptapInputA 
+        v-model="content"
+      />
+      <div v-html="content" class="mt-4" />
     </div>
   </v-container>
  </template>
@@ -21,7 +22,8 @@ export default {
   },
   data() {
     return {
-      content:'hello world :)'
+      
+      content:' '
     }
   },
   methods: {
