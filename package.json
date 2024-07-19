@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@amcharts/amcharts5": "^5.4.6",
+    "@tiptap/extension-link": "^2.5.4",
     "@tiptap/pm": "^2.5.4",
     "@tiptap/starter-kit": "^2.5.4",
     "@tiptap/vue-3": "^2.5.4",
