@@ -65,6 +65,12 @@
           value="Saved Lists">
         </v-list-item>
         <v-list-item 
+          to="/playground"
+          prepend-icon="mdi-slide" 
+          title="Playground" 
+          value="Playground">
+        </v-list-item>
+        <v-list-item 
           to="/data-compare" 
           prepend-icon="mdi-compare-horizontal" 
           title="Data Compare" 

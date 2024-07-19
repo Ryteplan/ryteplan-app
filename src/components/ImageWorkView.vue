@@ -10,10 +10,15 @@
     >
       {{ school.id }}
       <div 
-        v-for="image in getFilteredFields(school)" 
+        v-for="image in getImages(school)" 
         :key='image.id'
+        style="gap: 20px; display: flex;"        
       >
-        <p>{{ image }}</p>
+        <img 
+          :src="image"
+          height="100"
+          width="100"
+        />
       </div>
     </v-card>
   </v-container>
@@ -43,16 +48,13 @@ export default {
       const imagesSnapshots = await getDocs(imagesDataQuery);
     
       imagesSnapshots.docs.forEach(doc => {
-        const data = { ...doc.data(), id: doc.id };
-        if (data.hidden !== true) {
-          this.imagesData.push(data);
-        }
+        const data = { ...doc.data() };
+        this.imagesData.push(data);
+        console.log(data);
       });
     },   
-    getFilteredFields(school) {
-      return Object.keys(school)
-      .map(key => ({ name: key, value: school[key] }));
-
+    getImages(school) {
+      return school
     } 
   }
 }

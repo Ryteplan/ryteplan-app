@@ -1,16 +1,14 @@
 <template>
   <v-container class="pt-8 px-8">
-    <p>Lets get stuff from the firestore </p>
-    <!-- {{ institutions }} -->
-    <!-- <ul>
-      <li v-for="institution in institutions" :key="institution.id">{{ institution.name }}</li>
-    </ul> -->
+    <h1>Playground</h1>
+    <div>
+      <TiptapInputA />
+    </div>
   </v-container>
  </template>
  
 <script>
-
-import 'firebase/database'
+import TiptapInputA from "./TiptapInputA.vue"
 
 export default {
   setup() {
@@ -21,14 +19,14 @@ export default {
   },
   data() {
     return {
-      institutions: 123
+      content:''
     }
   },
   methods: {
-    getData() {
-      // this.institutions = useDatabaseList(dbRef(db, 'institutions'))
-    }
   },
+  components: {
+    TiptapInputA,
+  }
 };
 </script>
 
