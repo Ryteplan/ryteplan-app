@@ -3,12 +3,12 @@
     <div style="margin: 0 auto 64px; max-width: 1200px;">
       <v-row class="d-flex justify-space-between mt-0">
         <v-col cols="12" md="6">
-          <span 
-            v-if="userStore.adminMode"
-          >
-            {{ institution["inunId"] }}
-          </span>
-          <h1 class="text-h6">{{ institution["name"] }}</h1>
+          <h1 class="text-h6">{{ institution["name"] }}
+            <span v-if="userStore.adminMode">
+              — {{ institution["inunId"] }}
+            </span>
+
+          </h1>
           <!-- <StatDisplay
             label="Name"
             :uri="institution['uri']"
@@ -54,7 +54,7 @@
       </v-row>
       <div class="mb-12" v-if="editImages">
         <div class="mt-4 pa-4" style="background: #eee;">
-          <span class="font-weight-bold">Image 1</span>
+          <span class="font-size-s font-weight-bold">Image 1</span>
           <div class="mt-2">
             <span class="font-weight-bold">URL</span>
             <v-text-field v-model="imageURLsFromDB.image1" class="mt-2" label="image1" density="compact" variant="solo" single-line hide-details></v-text-field>
@@ -168,6 +168,23 @@
                 <img class="institution-image" :src="imageURLsFromDB.image5" />
               </div>
             </div>
+          </div>
+          <v-btn
+            @click="toggleImageCredits"
+            class="mt-4"
+            size="small"
+          >
+            Show Image credits
+          </v-btn>
+          <div 
+            v-if="showImageCredits"
+            class="mt-3"
+          >
+            <div v-html="imageCredits.image1" />
+            <div v-html="imageCredits.image2" />
+            <div v-html="imageCredits.image3" />
+            <div v-html="imageCredits.image4" />
+            <div v-html="imageCredits.image5" />
           </div>
         </div>
         <div v-if="imagesFromGoogleSearch.length > 0">
@@ -851,7 +868,7 @@ export default {
       isLoggedIn: false,
       isEditImagesSaveButtonDisabled: false,
       isEditImagesSaveButtonVisible: false,
-      editImages: true,
+      editImages: false,
       test: 25,
       institution: {},
       manualInstitionData: {},
@@ -875,6 +892,7 @@ export default {
         image4: "",
         image5: "",
       },
+      showImageCredits: false,
       sat50thPercentile: 0,
       majors: [],
       sports: [],
@@ -889,6 +907,9 @@ export default {
     }
   },
   methods: {
+    toggleImageCredits() {
+      this.showImageCredits = !this.showImageCredits
+    },
     toggleFieldTrueFalse(field) {
       setDoc(doc(dbFireStore, 'manual_institution_data', this.institution["uri"]), {
         [field]: this.manualInstitionData[field]
@@ -924,6 +945,7 @@ export default {
       })
       setTimeout(() => {
         this.isEditImagesSaveButtonDisabled = false;
+        this.editImages = false
       }, 1000);
     },
     async loadInstitutionData() {
