@@ -2,7 +2,9 @@
   <v-container class="pt-8 px-8">
     <h1>Playground</h1>
     <div>
-      <TiptapInputA />
+      <TiptapInputA v-model="content"/>
+
+      {{  content  }}
     </div>
   </v-container>
  </template>
@@ -19,7 +21,7 @@ export default {
   },
   data() {
     return {
-      content:''
+      content:'hello world :)'
     }
   },
   methods: {
