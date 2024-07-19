@@ -3,8 +3,8 @@
     <h1>Playground</h1>
     <div>
       <TiptapInputA v-model="content"/>
-
-      {{  content  }}
+      <div v-html="content">
+      </div>
     </div>
   </v-container>
  </template>
