@@ -20,7 +20,7 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
       UndergraduatesMax: 0,
       admissionDifficulty: [],
       campusSetting: [],
-      cipCodes: []
+      cipCode: []
     },
     activeSearchTerms: '',
     searchInput: '',
@@ -118,7 +118,13 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
         campusSettingFilter = "&& cmpsSetting:[" + state.filters.campusSetting.join(',') + "]"; 
       }
 
-      let filterByString = hiddenFilter + countryFilter + stateFilter + TypeFilter + UndergraduatesFilter + admissionDifficultyFilter + campusSettingFilter;
+      let cipCodeFilter = '';
+      if (state.filters.cipCode.length > 0) {
+        console.log("cipCodeFilter", state.filters.cipCode)
+        cipCodeFilter = "&& cipCode:[" + state.filters.cipCode.join(',') + "]"; 
+      }
+
+      let filterByString = hiddenFilter + countryFilter + stateFilter + TypeFilter + UndergraduatesFilter + admissionDifficultyFilter + campusSettingFilter + cipCodeFilter;
 
       return filterByString;
     },

@@ -228,8 +228,7 @@
                   :items="searchFilterSortStore.cipCodes" 
                   item-value="cipCode" 
                   item-title="major"
-                  v-model="searchFilterSortStore.filters.cipCodes"
-                  return-object
+                  v-model="searchFilterSortStore.filters.cipCode"
                   @update:menu="onUpdateMenu"
                 >
                 </v-autocomplete>

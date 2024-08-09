@@ -119,7 +119,11 @@ export const useTableStore = defineStore('table', {
           const searchFilterSort = useSearchFilterSortStore()
           searchFilterSort.searchParameters.page = 1;
           searchFilterSort.searchParameters.filter_by = searchFilterSort.filterByString;
-          searchFilterSort.searchParameters.sort_by = searchFilterSort.customSortString;
+          if (searchFilterSort.customSortString !== '') {
+            searchFilterSort.searchParameters.sort_by = searchFilterSort.customSortString;
+          } else {
+            searchFilterSort.searchParameters.sort_by = 'name:asc';
+          }
           const result = await client.collections('institutions_integratedv2').documents().search(searchFilterSort.searchParameters);
           this.resultsFound = result.found;
           this.tableData = result.hits.map(hit => hit.document);
