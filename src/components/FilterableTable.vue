@@ -215,6 +215,24 @@
                     />
                   </div>
                 </div>
+                <span class="d-block mt-8">Academics</span>
+                <v-autocomplete 
+                  class="mt-4"
+                  flat 
+                  hide-details 
+                  small 
+                  multiple 
+                  clearable 
+                  auto
+                  label="Majors"
+                  :items="searchFilterSortStore.cipCodes" 
+                  item-value="cipCode" 
+                  item-title="major"
+                  v-model="searchFilterSortStore.filters.cipCodes"
+                  return-object
+                  @update:menu="onUpdateMenu"
+                >
+                </v-autocomplete>
                 <span class="d-block mt-8">Other stuff</span>
                 <v-select 
                   class="mt-4"

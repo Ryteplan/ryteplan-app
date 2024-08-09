@@ -762,6 +762,8 @@
           </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
+      <h2>Majors</h2>
+      {{ institution["cipCode"] }}
       <v-expansion-panels class="mt-8">
         <v-expansion-panel :value="0">
           <v-expansion-panel-title>

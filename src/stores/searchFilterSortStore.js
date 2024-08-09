@@ -1,8 +1,10 @@
 import { defineStore } from 'pinia';
 import { states } from '../data/states';
+import { cipCodes } from '../data/cipCodes';
 
 export const useSearchFilterSortStore = defineStore('searchFilterSort', {
   state: () => ({
+    cipCodes: cipCodes,
     hideHidden: false,
     selectedRows: [],
     StatesList: states,
@@ -17,7 +19,8 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
       UndergraduatesMin: 0,
       UndergraduatesMax: 0,
       admissionDifficulty: [],
-      campusSetting: []
+      campusSetting: [],
+      cipCodes: []
     },
     activeSearchTerms: '',
     searchInput: '',

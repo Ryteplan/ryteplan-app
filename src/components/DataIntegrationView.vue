@@ -2,6 +2,7 @@
   <v-container class="pt-4">
     <div class="data-integration">
       <!-- <h1>Data Backup</h1>
+       <p>Note to developer: Update the setDoc for versioning of the backup</p>
       <v-btn
         @click="duplicateCollection"
         color="primary"
@@ -9,14 +10,22 @@
         Backup Data
       </v-btn> -->
       
-      <h1>Data Integration</h1>
+      <!-- <h1>Data Integration</h1>
       <p>When we update data using the UI we need to press this button to make sure that the main table gets updated.</p>
       <v-btn
         @click="doDataIntegration"
         color="primary"
       >
           Integrate Data
-      </v-btn>
+      </v-btn> -->
+      <!-- <h1>Adding majors to the mix</h1>
+      <p>When we update data using the UI we need to press this button to make sure that the main table gets updated.</p>
+      <v-btn
+        @click="updateWithMajors"
+        color="primary"
+      >
+          Update data with majors
+      </v-btn> -->
     </div>
     <div class="data-updated-container">
       <v-card v-for="item in petersonsData" :key="item.uri">
@@ -34,7 +43,7 @@
 
 <script>
 import { dbFireStore } from "../firebase";
-import { collection, query, getDocs, setDoc, doc } from 'firebase/firestore'
+import { collection, query, getDocs, setDoc, doc, where, documentId } from 'firebase/firestore'
 
 export default {
   name: 'DataIntegration',
@@ -46,6 +55,31 @@ export default {
     }
   },
   methods: {
+    async updateWithMajors() {
+      const integratedDataQuery = query(collection(dbFireStore, "institutions_integrated"));      
+      const integratedDataSnapshots = await getDocs(integratedDataQuery);
+
+      integratedDataSnapshots.docs.forEach(doc => {
+        const data = { ...doc.data(), id: doc.id };
+        this.integratedData.push(data);
+      });
+      
+      this.integratedData.forEach(async (institution) => {
+        const inunId = institution.inunId.toString();
+        console.log(inunId);
+        const majorsTable = collection(dbFireStore, 'test_for_arrays');
+        const q = query(majorsTable, where(documentId(), "==",inunId));
+        const docSnap = await getDocs(q);
+        docSnap.forEach((doc) => {
+          institution.cipCode = doc.data().cipCode
+        });
+        console.log(institution);
+        setDoc(doc(dbFireStore, 'institutions_integrated', institution.uri), {
+          ...institution
+        }, { merge: true })
+        console.log('done adding major codes to: ' + institution.name + ' to institutions_integrated');
+      })
+    },
     async duplicateCollection() {
       const integratedDataQuery = query(collection(dbFireStore, "institutions_integrated"));      
       const integratedDataSnapshots = await getDocs(integratedDataQuery);
@@ -56,10 +90,10 @@ export default {
       });
 
       this.integratedData.forEach(async (institution) => {
-        setDoc(doc(dbFireStore, 'institutions_integrated_v11_backup', institution["uri"]), {
+        setDoc(doc(dbFireStore, 'institutions_integrated_v12_backup_1', institution["uri"]), {
           ...institution
         }, { merge: true })
-        console.log('done adding: ' + institution.name + ' to institutions_integrated_v11_backup');
+        console.log('done adding: ' + institution.name + ' to institutions_integrated_v12_backup_1');
       })
 
 
