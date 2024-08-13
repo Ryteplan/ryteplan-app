@@ -151,9 +151,9 @@
           </template>
           <v-card>
             <div class="pa-8">
-              <h2>Narrow down your search</h2>
+              <h4>Narrow down your search</h4>
               <div class="mt-4">
-                <span>Location</span>
+                <span class="">Location</span>
                 <v-select 
                   class="mt-4"
                   flat 
@@ -214,6 +214,53 @@
                       clearable
                     />
                   </div>
+                </div>
+                <div class="mt-8">
+                   <span>Admit Range (in percentages)</span>
+                  <v-range-slider
+                    v-model="searchFilterSortStore.filters.admitRateRange"
+                    :max="100"
+                    :min="0"
+                    :step="1"
+                    class="align-center"
+                    hide-details
+                  >
+                    <template v-slot:prepend>
+                      <v-text-field
+                        v-model="searchFilterSortStore.filters.admitRateRange[0]"
+                        density="compact"
+                        type="number"
+                        variant="outlined"
+                        hide-details
+                        single-line
+                      ></v-text-field>
+                    </template>
+                    <template v-slot:append>
+                      <v-text-field
+                        v-model="searchFilterSortStore.filters.admitRateRange[1]"
+                        density="compact"
+                        type="number"
+                        variant="outlined"
+                        hide-details
+                        single-line
+                      ></v-text-field>
+                    </template>
+                  </v-range-slider>
+                  <!-- <span>Admit Range (in percentages)</span>
+                  <div class="d-flex mt-4" style="gap: 40px;">
+                    <v-text-field
+                      v-model="searchFilterSortStore.filters.admitRateMin"
+                      label="Minimum"
+                      type="number"
+                      clearable
+                    />
+                    <v-text-field
+                      v-model="searchFilterSortStore.filters.admitRateMax"
+                      label="Maximum"
+                      type="number"
+                      clearable
+                    />
+                  </div> -->
                 </div>
                 <span class="d-block mt-8">Academics</span>
                 <v-autocomplete 

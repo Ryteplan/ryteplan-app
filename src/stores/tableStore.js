@@ -119,6 +119,7 @@ export const useTableStore = defineStore('table', {
           const searchFilterSort = useSearchFilterSortStore()
           searchFilterSort.searchParameters.page = 1;
           searchFilterSort.searchParameters.filter_by = searchFilterSort.filterByString;
+
           if (searchFilterSort.customSortString !== '') {
             searchFilterSort.searchParameters.sort_by = searchFilterSort.customSortString;
           } else {

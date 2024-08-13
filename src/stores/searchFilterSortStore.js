@@ -20,7 +20,10 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
       UndergraduatesMax: 0,
       admissionDifficulty: [],
       campusSetting: [],
-      cipCode: []
+      cipCode: [],
+      admitRateRange: [0, 100],
+      admitRateMin: 0,
+      admitRateMax: 1
     },
     activeSearchTerms: '',
     searchInput: '',
@@ -108,6 +111,21 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
         }
       }
 
+      let admitRateFilter = '';
+      if (state.filters.admitRateRange[0] > 0 || state.filters.admitRateRange[1] < 100) {
+        state.filters.admitRateMin = state.filters.admitRateRange[0]/100;
+        state.filters.admitRateMax = state.filters.admitRateRange[1]/100;
+        admitRateFilter = " && admitRate:";
+
+        if (state.filters.admitRateRange[0] > 0 && state.filters.admitRateRange[1] < 100) {
+          admitRateFilter = admitRateFilter + "[" + state.filters.admitRateMin + ".." + state.filters.admitRateMax + "]";          
+        } else if(state.filters.admitRateRange[0] > 0 && state.filters.admitRateRange[1] == 100) {
+          admitRateFilter = admitRateFilter + ">" + state.filters.admitRateMin;          
+        } else if(state.filters.admitRateRange[0] == 0 && state.filters.admitRateRange[1] < 100) {
+          admitRateFilter = admitRateFilter + "<" +state.filters.admitRateMax;          
+        }
+      }
+
       let admissionDifficultyFilter = '';
       if (state.filters.admissionDifficulty.length > 0) {
         admissionDifficultyFilter = "&& adDiffAll:[" + state.filters.admissionDifficulty.join(',') + "]"; 
@@ -120,11 +138,20 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
 
       let cipCodeFilter = '';
       if (state.filters.cipCode.length > 0) {
-        console.log("cipCodeFilter", state.filters.cipCode)
         cipCodeFilter = "&& cipCode:[" + state.filters.cipCode.join(',') + "]"; 
       }
 
-      let filterByString = hiddenFilter + countryFilter + stateFilter + TypeFilter + UndergraduatesFilter + admissionDifficultyFilter + campusSettingFilter + cipCodeFilter;
+      let filterByString = 
+        hiddenFilter + 
+        countryFilter + 
+        stateFilter + 
+        TypeFilter + 
+        UndergraduatesFilter + 
+        admitRateFilter + 
+        admissionDifficultyFilter + 
+        campusSettingFilter + 
+        cipCodeFilter
+      ;
 
       return filterByString;
     },
