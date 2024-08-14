@@ -136,6 +136,7 @@
           </v-row>
         </div>
       </div>
+      {{ searchFilterSortStore.filters }}
       <div class="d-flex align-center-md justify-space-between pr-4-md" style="gap: 40px">
         <v-dialog
           v-model="filterDialog"
@@ -276,6 +277,21 @@
                   item-value="cipCode" 
                   item-title="major"
                   v-model="searchFilterSortStore.filters.cipCode"
+                  @update:menu="onUpdateMenu"
+                >
+                </v-autocomplete>
+                <span class="d-block mt-8">Religion</span>
+                <v-autocomplete 
+                  class="mt-4"
+                  flat 
+                  hide-details 
+                  small 
+                  multiple 
+                  clearable 
+                  auto
+                  label="Denomination"
+                  :items="searchFilterSortStore.denomsList" 
+                  v-model="searchFilterSortStore.filters.denom"
                   @update:menu="onUpdateMenu"
                 >
                 </v-autocomplete>
@@ -446,7 +462,7 @@ export default {
   },
   data() {
     return {
-      filterDialog: false,
+      filterDialog: true,
       columnSettingsDialog: false,
       showShareDialog: false,
       showSaveToListDialog: false,

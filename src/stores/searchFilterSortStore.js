@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { states } from '../data/states';
 import { cipCodes } from '../data/cipCodes';
+import { denomsList } from '../data/denominations';
 
 export const useSearchFilterSortStore = defineStore('searchFilterSort', {
   state: () => ({
@@ -8,6 +9,7 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
     hideHidden: false,
     selectedRows: [],
     StatesList: states,
+    denomsList: denomsList,
     CountryList: ["United States", "International"],
     TypeList: ["Private", "Public"],
     admissionDifficultyList: ["—", "Noncompetitive", "Minimal", "Moderate", "Most", "Very"],
@@ -16,6 +18,7 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
       State: [],
       Country: [],
       Type: [],
+      denom: [],
       UndergraduatesMin: 0,
       UndergraduatesMax: 0,
       admissionDifficulty: [],
@@ -141,6 +144,12 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
         cipCodeFilter = "&& cipCode:[" + state.filters.cipCode.join(',') + "]"; 
       }
 
+      let denomFilter = '';
+      if (state.filters.denom.length > 0) {
+        denomFilter = "&& denomDesc:[" + state.filters.denom.join(',') + "]"; 
+      }
+
+
       let filterByString = 
         hiddenFilter + 
         countryFilter + 
@@ -150,7 +159,8 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
         admitRateFilter + 
         admissionDifficultyFilter + 
         campusSettingFilter + 
-        cipCodeFilter
+        cipCodeFilter + 
+        denomFilter
       ;
 
       return filterByString;
