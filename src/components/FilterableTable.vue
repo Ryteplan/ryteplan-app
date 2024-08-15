@@ -136,7 +136,7 @@
           </v-row>
         </div>
       </div>
-      {{ searchFilterSortStore.filters }}
+      <!-- {{ searchFilterSortStore.filters }} -->
       <div class="d-flex align-center-md justify-space-between pr-4-md" style="gap: 40px">
         <v-dialog
           v-model="filterDialog"
@@ -291,6 +291,20 @@
                   auto
                   label="Denomination"
                   :items="searchFilterSortStore.denomsList" 
+                  v-model="searchFilterSortStore.filters.denom"
+                  @update:menu="onUpdateMenu"
+                >
+                </v-autocomplete>
+                <v-autocomplete 
+                  class="mt-4"
+                  flat 
+                  hide-details 
+                  small 
+                  multiple 
+                  clearable 
+                  auto
+                  label="Affiliation"
+                  :items="searchFilterSortStore.affilList" 
                   v-model="searchFilterSortStore.filters.denom"
                   @update:menu="onUpdateMenu"
                 >

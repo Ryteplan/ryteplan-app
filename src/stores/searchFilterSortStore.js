@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { states } from '../data/states';
 import { cipCodes } from '../data/cipCodes';
 import { denomsList } from '../data/denominations';
+import { affilList } from '../data/affiliations';
 
 export const useSearchFilterSortStore = defineStore('searchFilterSort', {
   state: () => ({
@@ -10,6 +11,7 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
     selectedRows: [],
     StatesList: states,
     denomsList: denomsList,
+    affilList: affilList,
     CountryList: ["United States", "International"],
     TypeList: ["Private", "Public"],
     admissionDifficultyList: ["—", "Noncompetitive", "Minimal", "Moderate", "Most", "Very"],
@@ -19,6 +21,7 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
       Country: [],
       Type: [],
       denom: [],
+      affil: [],
       UndergraduatesMin: 0,
       UndergraduatesMax: 0,
       admissionDifficulty: [],
