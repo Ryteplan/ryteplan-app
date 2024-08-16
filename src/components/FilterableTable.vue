@@ -169,7 +169,7 @@
                   @update:menu="onUpdateMenu"
                 >
                 </v-select>
-                <v-select 
+                <v-autocomplete 
                   :disabled="!searchFilterSortStore.filters.Country.includes('United States') && searchFilterSortStore.filters.Country.length !== 0"
                   class="mt-4"
                   flat 
@@ -182,8 +182,7 @@
                   :items="searchFilterSortStore.StatesList" 
                   v-model="searchFilterSortStore.filters.State"
                   @update:menu="onUpdateMenu"
-                >
-                </v-select>
+                />
                 <span class="d-block mt-8">Public or Private</span>
                 <v-select 
                   class="mt-4"
