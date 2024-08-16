@@ -177,6 +177,7 @@
                   small 
                   multiple 
                   clearable 
+                  chips
                   auto
                   label="State(s)"
                   :items="searchFilterSortStore.StatesList" 
@@ -275,6 +276,7 @@
                   multiple 
                   clearable 
                   auto
+                  chips
                   label="Majors"
                   :items="searchFilterSortStore.cipCodes" 
                   item-value="cipCode" 
@@ -291,6 +293,7 @@
                   small 
                   multiple 
                   clearable 
+                  chips
                   auto
                   label="Denomination"
                   :items="searchFilterSortStore.denomsList" 
@@ -305,13 +308,13 @@
                   small 
                   multiple 
                   clearable 
+                  chips
                   auto
                   label="Affiliation"
                   :items="searchFilterSortStore.affilList" 
                   v-model="searchFilterSortStore.filters.denom"
                   @update:menu="onUpdateMenu"
-                >
-                </v-autocomplete>
+                />
                 <span class="d-block mt-8">Other stuff</span>
                 <v-select 
                   class="mt-4"
