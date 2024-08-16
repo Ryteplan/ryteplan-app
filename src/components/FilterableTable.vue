@@ -234,6 +234,8 @@
                         variant="outlined"
                         hide-details
                         single-line
+                        style="width: 80px"
+                        class="mr-2"
                       ></v-text-field>
                     </template>
                     <template v-slot:append>
@@ -244,6 +246,8 @@
                         variant="outlined"
                         hide-details
                         single-line
+                        class="ml-2"
+                        style="width: 80px"
                       ></v-text-field>
                     </template>
                   </v-range-slider>
