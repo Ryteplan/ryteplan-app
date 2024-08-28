@@ -136,6 +136,7 @@
           </v-row>
         </div>
       </div>
+      <!-- {{ searchFilterSortStore.filters }} -->
       <div class="d-flex align-center-md justify-space-between pr-4-md" style="gap: 40px">
         <v-dialog
           v-model="filterDialog"
@@ -152,6 +153,22 @@
           <v-card>
             <div class="pa-8">
               <h4>Narrow down your search</h4>
+              <div class="d-none">
+                <span class="d-block mt-8">Sports</span>
+                <v-select 
+                  class="mt-4"
+                  flat 
+                  hide-details 
+                  small 
+                  multiple 
+                  clearable 
+                  auto
+                  label="Sport"
+                  :items="searchFilterSortStore.sportList" 
+                  v-model="searchFilterSortStore.filters.sportName"
+                  @update:menu="onUpdateMenu"
+                />
+              </div>
               <div class="mt-4">
                 <span class="">Location</span>
                 <v-select 
@@ -168,7 +185,7 @@
                   @update:menu="onUpdateMenu"
                 >
                 </v-select>
-                <v-select 
+                <v-autocomplete 
                   :disabled="!searchFilterSortStore.filters.Country.includes('United States') && searchFilterSortStore.filters.Country.length !== 0"
                   class="mt-4"
                   flat 
@@ -176,13 +193,13 @@
                   small 
                   multiple 
                   clearable 
+                  chips
                   auto
                   label="State(s)"
                   :items="searchFilterSortStore.StatesList" 
                   v-model="searchFilterSortStore.filters.State"
                   @update:menu="onUpdateMenu"
-                >
-                </v-select>
+                />
                 <span class="d-block mt-8">Public or Private</span>
                 <v-select 
                   class="mt-4"
@@ -233,6 +250,8 @@
                         variant="outlined"
                         hide-details
                         single-line
+                        style="width: 80px"
+                        class="mr-2"
                       ></v-text-field>
                     </template>
                     <template v-slot:append>
@@ -243,6 +262,8 @@
                         variant="outlined"
                         hide-details
                         single-line
+                        class="ml-2"
+                        style="width: 80px"
                       ></v-text-field>
                     </template>
                   </v-range-slider>
@@ -271,6 +292,7 @@
                   multiple 
                   clearable 
                   auto
+                  chips
                   label="Majors"
                   :items="searchFilterSortStore.cipCodes" 
                   item-value="cipCode" 
@@ -279,6 +301,36 @@
                   @update:menu="onUpdateMenu"
                 >
                 </v-autocomplete>
+                <span class="d-block mt-8">Religion</span>
+                <v-autocomplete 
+                  class="mt-4"
+                  flat 
+                  hide-details 
+                  small 
+                  multiple 
+                  clearable 
+                  chips
+                  auto
+                  label="Denomination"
+                  :items="searchFilterSortStore.denomsList" 
+                  v-model="searchFilterSortStore.filters.denom"
+                  @update:menu="onUpdateMenu"
+                >
+                </v-autocomplete>
+                <v-autocomplete 
+                  class="mt-4"
+                  flat 
+                  hide-details 
+                  small 
+                  multiple 
+                  clearable 
+                  chips
+                  auto
+                  label="Affiliation"
+                  :items="searchFilterSortStore.affilList" 
+                  v-model="searchFilterSortStore.filters.denom"
+                  @update:menu="onUpdateMenu"
+                />
                 <span class="d-block mt-8">Other stuff</span>
                 <v-select 
                   class="mt-4"

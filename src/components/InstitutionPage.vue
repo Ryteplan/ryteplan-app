@@ -338,8 +338,7 @@
             :valueFromPetersons="institution['actComp50thP']" 
             :valueFromManual="manualInstitionData['actComp50thP']"
           />
-        </div>
-        
+        </div>        
         <StatDisplay
           label="Testing Policy"
           :uri="institution['uri']"
@@ -762,15 +761,15 @@
           </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
-      <h2>Majors</h2>
-      {{ institution["cipCode"] }}
-      <v-expansion-panels class="mt-8">
+      <p class="mt-8">
+        {{ institution["sports"] }}
+      </p>
+      <!-- <v-expansion-panels class="mt-8">
         <v-expansion-panel :value="0">
           <v-expansion-panel-title>
             <h3>Sports</h3>
           </v-expansion-panel-title>
           <v-expansion-panel-text>
-            
             <div class="d-flex flex-column">
               <div class="flex">
                 <h3 class="mt-3">Associations</h3>
@@ -811,7 +810,7 @@
             </v-data-table>            
           </v-expansion-panel-text>
         </v-expansion-panel>
-      </v-expansion-panels>
+      </v-expansion-panels> -->
     </div>
     <SaveToListDialog 
       v-model="showSaveToListDialog" 

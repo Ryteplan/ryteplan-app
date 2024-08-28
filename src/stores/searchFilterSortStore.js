@@ -1,6 +1,9 @@
 import { defineStore } from 'pinia';
 import { states } from '../data/states';
 import { cipCodes } from '../data/cipCodes';
+import { denomsList } from '../data/denominations';
+import { affilList } from '../data/affiliations';
+import { sportList } from '../data/sportList';
 
 export const useSearchFilterSortStore = defineStore('searchFilterSort', {
   state: () => ({
@@ -8,6 +11,9 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
     hideHidden: false,
     selectedRows: [],
     StatesList: states,
+    denomsList: denomsList,
+    affilList: affilList,
+    sportList: sportList,
     CountryList: ["United States", "International"],
     TypeList: ["Private", "Public"],
     admissionDifficultyList: ["—", "Noncompetitive", "Minimal", "Moderate", "Most", "Very"],
@@ -16,6 +22,8 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
       State: [],
       Country: [],
       Type: [],
+      denom: [],
+      affil: [],
       UndergraduatesMin: 0,
       UndergraduatesMax: 0,
       admissionDifficulty: [],
@@ -23,7 +31,8 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
       cipCode: [],
       admitRateRange: [0, 100],
       admitRateMin: 0,
-      admitRateMax: 1
+      admitRateMax: 1,
+      sportName:[]
     },
     activeSearchTerms: '',
     searchInput: '',
@@ -141,6 +150,19 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
         cipCodeFilter = "&& cipCode:[" + state.filters.cipCode.join(',') + "]"; 
       }
 
+      let denomFilter = '';
+      if (state.filters.denom.length > 0) {
+        denomFilter = "&& denomDesc:[" + state.filters.denom.join(',') + "]"; 
+      }
+
+      let sportFilter = '';
+
+      // if (state.filters.sportName.length > 0) {
+      //   sportFilter = "&& sports." + state.filters.sportName.join(',') + ":[NCAA 2]"; 
+      // }
+
+      // sportFilter = "&& sports.Swimming:[NCAA 1]";
+
       let filterByString = 
         hiddenFilter + 
         countryFilter + 
@@ -150,7 +172,9 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
         admitRateFilter + 
         admissionDifficultyFilter + 
         campusSettingFilter + 
-        cipCodeFilter
+        cipCodeFilter + 
+        denomFilter +
+        sportFilter
       ;
 
       return filterByString;
