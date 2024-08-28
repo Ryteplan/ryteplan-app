@@ -153,21 +153,22 @@
           <v-card>
             <div class="pa-8">
               <h4>Narrow down your search</h4>
-              <span class="d-block mt-8">Sports</span>
-              <v-select 
-                class="mt-4"
-                flat 
-                hide-details 
-                small 
-                multiple 
-                clearable 
-                auto
-                label="Sport"
-                :items="searchFilterSortStore.sportList" 
-                v-model="searchFilterSortStore.filters.sportName"
-                @update:menu="onUpdateMenu"
-              >
-              </v-select>              
+              <div class="d-none">
+                <span class="d-block mt-8">Sports</span>
+                <v-select 
+                  class="mt-4"
+                  flat 
+                  hide-details 
+                  small 
+                  multiple 
+                  clearable 
+                  auto
+                  label="Sport"
+                  :items="searchFilterSortStore.sportList" 
+                  v-model="searchFilterSortStore.filters.sportName"
+                  @update:menu="onUpdateMenu"
+                />
+              </div>
               <div class="mt-4">
                 <span class="">Location</span>
                 <v-select 
@@ -497,7 +498,7 @@ export default {
   },
   data() {
     return {
-      filterDialog: true,
+      filterDialog: false,
       columnSettingsDialog: false,
       showShareDialog: false,
       showSaveToListDialog: false,

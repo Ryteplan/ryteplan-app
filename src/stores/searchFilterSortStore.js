@@ -161,7 +161,7 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
       //   sportFilter = "&& sports." + state.filters.sportName.join(',') + ":[NCAA 2]"; 
       // }
 
-      sportFilter = "&& sports.Swimming:[NCAA 1]";
+      // sportFilter = "&& sports.Swimming:[NCAA 1]";
 
       let filterByString = 
         hiddenFilter + 
