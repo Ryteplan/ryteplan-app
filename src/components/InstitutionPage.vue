@@ -761,9 +761,9 @@
           </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
-      <p class="mt-8">
+      <div class="d-none mt-8">
         {{ institution["sports"] }}
-      </p>
+      </div>
       <!-- <v-expansion-panels class="mt-8">
         <v-expansion-panel :value="0">
           <v-expansion-panel-title>
