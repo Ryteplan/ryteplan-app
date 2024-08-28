@@ -171,7 +171,7 @@
           </div>
           <v-btn
             @click="toggleImageCredits"
-            class="mt-4"
+            class="d-none mt-4"
             size="small"
           >
             Show Image credits
