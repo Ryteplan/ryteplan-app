@@ -3,6 +3,7 @@ import { states } from '../data/states';
 import { cipCodes } from '../data/cipCodes';
 import { denomsList } from '../data/denominations';
 import { affilList } from '../data/affiliations';
+import { sportList } from '../data/sportList';
 
 export const useSearchFilterSortStore = defineStore('searchFilterSort', {
   state: () => ({
@@ -12,6 +13,7 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
     StatesList: states,
     denomsList: denomsList,
     affilList: affilList,
+    sportList: sportList,
     CountryList: ["United States", "International"],
     TypeList: ["Private", "Public"],
     admissionDifficultyList: ["—", "Noncompetitive", "Minimal", "Moderate", "Most", "Very"],
@@ -29,7 +31,8 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
       cipCode: [],
       admitRateRange: [0, 100],
       admitRateMin: 0,
-      admitRateMax: 1
+      admitRateMax: 1,
+      sportName:[]
     },
     activeSearchTerms: '',
     searchInput: '',
@@ -152,6 +155,13 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
         denomFilter = "&& denomDesc:[" + state.filters.denom.join(',') + "]"; 
       }
 
+      let sportFilter = '';
+
+      // if (state.filters.sportName.length > 0) {
+      //   sportFilter = "&& sports." + state.filters.sportName.join(',') + ":[NCAA 2]"; 
+      // }
+
+      sportFilter = "&& sports.Swimming:[NCAA 1]";
 
       let filterByString = 
         hiddenFilter + 
@@ -163,7 +173,8 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
         admissionDifficultyFilter + 
         campusSettingFilter + 
         cipCodeFilter + 
-        denomFilter
+        denomFilter +
+        sportFilter
       ;
 
       return filterByString;
