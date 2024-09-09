@@ -915,6 +915,9 @@ export default {
       setDoc(doc(dbFireStore, 'manual_institution_data', this.institution["uri"]), {
         [field]: this.manualInstitionData[field]
       }, { merge: true });
+      setDoc(doc(dbFireStore, 'institutions_integrated', this.institution["uri"]), {
+        [field]: this.manualInstitionData[field]
+      }, { merge: true });
     },
     // saveManualFieldState() {
     //   this.userStore.setAdminMode();
