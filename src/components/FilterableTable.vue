@@ -695,8 +695,6 @@ tr td:nth-child(2) {
 }
 
 tr td:nth-child(2) {
-  background: #d1d1d1;
-  font-weight: 400;
 }
 
 tr td {
