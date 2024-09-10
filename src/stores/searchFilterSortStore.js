@@ -32,7 +32,8 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
       admitRateRange: [0, 100],
       admitRateMin: 0,
       admitRateMax: 1,
-      sportName:[]
+      sportName:[],
+      tribal: false,
     },
     activeSearchTerms: '',
     searchInput: '',
@@ -72,6 +73,11 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
         hiddenFilter = 'hidden:true ';
       }
 
+      let tribalFilter = '';
+      if (state.filters.tribal) {
+        tribalFilter = '&& tribal:true ';
+      }
+      
       let countryFilter = '';
       if (state.filters.Country.length > 0) {
         countryFilter = "&& countryCode:[";
@@ -174,7 +180,8 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
         campusSettingFilter + 
         cipCodeFilter + 
         denomFilter +
-        sportFilter
+        sportFilter +
+        tribalFilter
       ;
 
       return filterByString;

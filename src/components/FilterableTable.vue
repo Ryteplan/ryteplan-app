@@ -153,6 +153,10 @@
           <v-card>
             <div class="pa-8">
               <h4>Narrow down your search</h4>
+              <v-checkbox 
+                label="Tribal"
+                v-model="searchFilterSortStore.filters.tribal"
+              />
               <div class="d-none">
                 <span class="d-block mt-8">Sports</span>
                 <v-select 
