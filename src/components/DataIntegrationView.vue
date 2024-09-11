@@ -11,7 +11,6 @@
       </v-btn> -->
       
       <!-- <h1>Data Integration</h1>
-      <p>When we update data using the UI we need to press this button to make sure that the main table gets updated.</p>
       <v-btn
         @click="doDataIntegration"
         color="primary"
@@ -19,7 +18,6 @@
           Integrate Data
       </v-btn> -->
       <!-- <h1>Adding majors to the mix</h1>
-      <p>When we update data using the UI we need to press this button to make sure that the main table gets updated.</p>
       <v-btn
         @click="updateWithMajors"
         color="primary"

@@ -3,12 +3,12 @@ import Typesense from 'typesense';
 const client = new Typesense.Client({
   nodes: [
     {
-      host: "b84zp19gdc3xnmvsp-1.a1.typesense.net",
+      host: "6cm8vjdnx1uthfzyp-1.a1.typesense.net",
       port: "443",
       protocol: "https",
     }
   ],
-  apiKey: 'J0YEtIcIEBoJ8PwLaQFd6cq4wX53MPJY',
+  apiKey: '6eYnFxM0OXjAqK23pym4VkINJZlGil2F',
   connectionTimeoutSeconds: 2
 });
 
