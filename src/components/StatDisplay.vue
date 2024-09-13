@@ -261,6 +261,8 @@ export default {
           this.currentValue = this.petersonsValue;
         }
       }
+
+      localStorage.removeItem("tableData");
     },
     saveButtonVisibility(){
       if (this.currentValue !== this.updateValue || this.updateValue === null) {
