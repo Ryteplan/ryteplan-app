@@ -11,6 +11,7 @@
           Backup Data
         </v-btn>
       </div>
+      
       <div class="d-none">
         <h1>Data Integration</h1>
         <v-btn
@@ -20,7 +21,19 @@
             Integrate Data
         </v-btn>
       </div>
-      <div class="data-updated-container">
+
+      <div class="d-none">
+        <h1>Adding majors to the mix</h1>
+        <p>When we update data using the UI we need to press this button to make sure that the main table gets updated.</p>
+        <v-btn
+          @click="updateWithMajors"
+          color="primary"
+        >
+            Update data with majors
+        </v-btn>
+      </div>
+
+      <div class="data-updated-container d-none">
         <v-card v-for="item in petersonsData" :key="item.uri">
           <v-card-title>
             <h2>{{ item.name }}</h2>
