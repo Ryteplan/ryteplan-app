@@ -1,42 +1,36 @@
 <template>
   <v-container class="pt-4">
     <div class="data-integration">
-      <!-- <h1>Data Backup</h1>
-       <p>Note to developer: Update the setDoc for versioning of the backup</p>
-      <v-btn
-        @click="duplicateCollection"
-        color="primary"
-      >
-        Backup Data
-      </v-btn> -->
-      
-      <!-- <h1>Data Integration</h1>
-      <p>When we update data using the UI we need to press this button to make sure that the main table gets updated.</p>
-      <v-btn
-        @click="doDataIntegration"
-        color="primary"
-      >
-          Integrate Data
-      </v-btn> -->
-      <!-- <h1>Adding majors to the mix</h1>
-      <p>When we update data using the UI we need to press this button to make sure that the main table gets updated.</p>
-      <v-btn
-        @click="updateWithMajors"
-        color="primary"
-      >
-          Update data with majors
-      </v-btn> -->
-    </div>
-    <div class="data-updated-container">
-      <v-card v-for="item in petersonsData" :key="item.uri">
-        <v-card-title>
-          <h2>{{ item.name }}</h2>
-        </v-card-title>
-        <v-card-text>
-          <p>{{ item.city }}, {{ item.stateCleaned }}</p>
-          <p>{{ item.mainFunctionType }}</p>
-        </v-card-text>
-      </v-card>
+      <div class="d-none">
+        <h1>Data Backup</h1>
+        <p>Note to developer: Update the setDoc for versioning of the backup</p>
+        <v-btn
+          @click="duplicateCollection"
+          color="primary"
+        >
+          Backup Data
+        </v-btn>
+      </div>
+      <div class="d-none">
+        <h1>Data Integration</h1>
+        <v-btn
+          @click="doDataIntegration"
+          color="primary"
+        >
+            Integrate Data
+        </v-btn>
+      </div>
+      <div class="data-updated-container">
+        <v-card v-for="item in petersonsData" :key="item.uri">
+          <v-card-title>
+            <h2>{{ item.name }}</h2>
+          </v-card-title>
+          <v-card-text>
+            <p>{{ item.city }}, {{ item.stateCleaned }}</p>
+            <p>{{ item.mainFunctionType }}</p>
+          </v-card-text>
+        </v-card>
+      </div>
     </div>
   </v-container>
 </template>
@@ -81,6 +75,7 @@ export default {
       })
     },
     async duplicateCollection() {
+      console.log('duplicating collection')
       const integratedDataQuery = query(collection(dbFireStore, "institutions_integrated"));      
       const integratedDataSnapshots = await getDocs(integratedDataQuery);
 
@@ -90,18 +85,16 @@ export default {
       });
 
       this.integratedData.forEach(async (institution) => {
-        setDoc(doc(dbFireStore, 'institutions_integrated_v12_backup_1', institution["uri"]), {
+        setDoc(doc(dbFireStore, 'institutions_integrated_v12_backup_2', institution["uri"]), {
           ...institution
         }, { merge: true })
-        console.log('done adding: ' + institution.name + ' to institutions_integrated_v12_backup_1');
+        console.log('done adding: ' + institution.name + ' to institutions_integrated_v12_backup_2');
       })
-
-
     },
     async doDataIntegration() {
       console.log('doing data integration')
       
-      const petersonsDataQuery = query(collection(dbFireStore, "institutions_petersons_processed_v12"));      
+      const petersonsDataQuery = query(collection(dbFireStore, "institutions_v13"));      
       const petersonsSnapshots = await getDocs(petersonsDataQuery);
 
       petersonsSnapshots.docs.forEach(doc => {
@@ -120,11 +113,8 @@ export default {
 
       // do manual replacements integration
       this.manualData.forEach(data => {
-        console.log(data);
-        console.log(data.id);
         const index = this.petersonsData.findIndex(item => item.uri === data.id);
         if (index > -1) {
-          console.log(this.petersonsData[index])
           this.petersonsData[index] = { ...this.petersonsData[index], ...data };
         }
       });

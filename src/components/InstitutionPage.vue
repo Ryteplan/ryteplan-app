@@ -211,7 +211,8 @@
           label="Undergraduate Enrollment"
           :uri="institution['uri']"
           field="enTotUgN"
-          :valueFromPetersons="institution['enTotUgN']" 
+          :valueFromIntegrated="institution['enTotUgN']" 
+          :valueFromPetersons="petersonsInstitution['enTotUgN']" 
           :valueFromManual="manualInstitionData['enTotUgN']"
         />
         <StatDisplay
@@ -845,7 +846,8 @@ export default {
     };    
   },
   async beforeMount() {
-    await this.loadInstitutionData();
+    await this.loadPetersonsData();
+    await this.loadIntegratedInstitutionData();
     await this.loadManualInstitutionData();
   },
   mounted() {
@@ -872,6 +874,7 @@ export default {
       editImages: false,
       test: 25,
       institution: {},
+      petersonsInstitution: {},
       manualInstitionData: {},
       descriptions: {},
       institutionId: "",
@@ -952,13 +955,21 @@ export default {
         this.editImages = false
       }, 1000);
     },
-    async loadInstitutionData() {
+    async loadPetersonsData() {
+      const slugFromURL = this.$route.params.slug;
+      const institutions = collection(dbFireStore, 'institutions_v13');
+      const q = query(institutions, where("uri", "==", slugFromURL));
+      const docSnap = await getDocs(q);
+      docSnap.forEach((doc) => {
+        this.petersonsInstitution = doc.data();
+      });
+    },
+    async loadIntegratedInstitutionData() {
       const slugFromURL = this.$route.params.slug;
       const institutions = collection(dbFireStore, 'institutions_integrated');
       const q = query(institutions, where("uri", "==", slugFromURL));
       const docSnap = await getDocs(q);
       docSnap.forEach((doc) => {
-        console.log(doc.data());
         this.institutionId = doc.id;
         this.institution = doc.data();
         this.majors = this.institution.acadProgDesc.split(',');

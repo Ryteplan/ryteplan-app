@@ -12,18 +12,20 @@
         <a :href=getSchoolUrl(school.id) target="_blank">
           <h3>{{ school.id }}</h3>
         </a>
-        <div class="three-col-grid-container field-headers mt-2 mb-2">
+        <div class="grid-container field-headers mt-2 mb-2">
           <h4>field name</h4>
-          <h4>petersons value</h4>
-          <h4>manual value</h4>
+          <h4>petersons 2023</h4>
+          <h4>petersons 2024</h4>
+          <h4>manual</h4>
         </div>
         <div 
-          class="three-col-grid-container field-container py-2"
+          class="grid-container field-container py-2"
           v-for="field in getFilteredFields(school)" 
           :key='field.id'
         >
           <p>{{ field.name }}</p>
-          <p>{{ this.getPetersonsField(school.id, field.name) }}</p>
+          <p>{{ this.getPetersonsField1(school.id, field.name) }}</p>
+          <p>{{ this.getPetersonsField2(school.id, field.name) }}</p>
           <p>{{ field.value }}</p>
         </div>
       </v-card>
@@ -46,7 +48,9 @@ export default {
   },
   data() {
     return {
-      petersonsData: [],
+      loading: true,
+      petersonsData1: [],
+      petersonsData2: [],
       manualData: [],
       comparisonData: []
     }
@@ -54,7 +58,6 @@ export default {
   methods: {
     async getManualAndPetersonsData() {
       const manualDataQuery = query(collection(dbFireStore, "manual_institution_data"));
-      // const manualDataQuery = query(collection(dbFireStore, "manual_institution_data"), limit(10));
       const manualSnapshots = await getDocs(manualDataQuery);
 
       manualSnapshots.docs.forEach(doc => {
@@ -72,17 +75,35 @@ export default {
         });
       });
 
-      const petersonsDataQuery = query(collection(dbFireStore, "institutions_petersons_processed_v12"));      
-      const petersonsSnapshots = await getDocs(petersonsDataQuery);
+      const petersonsDataQuery1 = query(collection(dbFireStore, "institutions_petersons_processed_v12"));      
+      const petersonsSnapshots1 = await getDocs(petersonsDataQuery1);
 
-      petersonsSnapshots.docs.forEach(doc => {
+      petersonsSnapshots1.docs.forEach(doc => {
         const data = { ...doc.data(), id: doc.id };
-        this.petersonsData.push(data);
+        this.petersonsData1.push(data);
       });
+
+      const petersonsDataQuery2 = query(collection(dbFireStore, "institutions_v13"));      
+      const petersonsSnapshots2 = await getDocs(petersonsDataQuery2);
+
+      petersonsSnapshots2.docs.forEach(doc => {
+        const data = { ...doc.data(), id: doc.id };
+        this.petersonsData2.push(data);
+      });
+
+      this.loading = false;
     },
-    getPetersonsField(schoolId, fieldName) {
+    getPetersonsField1(schoolId, fieldName) {
       // search petersonsData for a record that has an id equal to schoolId and return the value of the item that matches the fieldName 
-      const petersonsRecord = this.petersonsData.find(item => item.id === schoolId);
+      const petersonsRecord = this.petersonsData1.find(item => item.id === schoolId);
+      if (petersonsRecord) {
+        return petersonsRecord[fieldName];
+      }
+      return null;
+    },
+    getPetersonsField2(schoolId, fieldName) {
+      // search petersonsData for a record that has an id equal to schoolId and return the value of the item that matches the fieldName 
+      const petersonsRecord = this.petersonsData2.find(item => item.id === schoolId);
       if (petersonsRecord) {
         return petersonsRecord[fieldName];
       }
@@ -104,9 +125,9 @@ export default {
 }
 </script>
 <style>
-  .three-col-grid-container {
+  .grid-container {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr; 
   }
 
   .field-container {

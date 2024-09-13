@@ -76,7 +76,7 @@
             class="mt-4"
           >
             <v-text-field
-              label="Value from Integrated Database"
+              label="Latest value from Petersons"
               v-model="this.petersonsValue"
               disabled
             />
@@ -270,8 +270,6 @@ export default {
       }
     },
     processValue(value, valueType) {
-      console.log(value);
-      console.log(valueType);
       const numberValue = Number(value);
       if (numberValue === 0) {
         return '—';
@@ -303,6 +301,9 @@ export default {
     label: {
       type: String,
     },  
+    valueFromIntegrated: {
+      type: [Number, String, Object],
+    },
     valueFromPetersons: {
       type: [Number, String, Object],
     },
@@ -320,10 +321,14 @@ export default {
     },
   },
   watch: {
+    valueFromIntegrated(newVal) {
+      if (newVal) {
+        this.currentValue = newVal
+      }
+    },
     valueFromPetersons(newVal) {
       if (newVal) {
         this.petersonsValue = newVal;
-        this.currentValue = newVal
       }
     },
     valueFromManual(newVal) {
