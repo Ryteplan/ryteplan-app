@@ -36,7 +36,7 @@ export const useTableStore = defineStore('table', {
           searchFilterSort.searchParameters.sort_by = 'name:asc';
         }
 
-        const result = await client.collections('institutions_integratedv4').documents().search(searchFilterSort.searchParameters);
+        const result = await client.collections('institutions_integratedv5').documents().search(searchFilterSort.searchParameters);
         this.tableData = this.tableData.concat(result.hits.map(hit => hit.document));
         if (this.tableData.length < this.resultsFound) {
           this.tableData.push({name: "Load more"});
@@ -95,7 +95,7 @@ export const useTableStore = defineStore('table', {
             searchFilterSort.searchParameters.sort_by = 'name:asc';
           }
           
-          const result = await client.collections('institutions_integratedv4').documents().search(searchFilterSort.searchParameters);
+          const result = await client.collections('institutions_integratedv5').documents().search(searchFilterSort.searchParameters);
           this.resultsFound = result.found;
           this.tableData = result.hits.map(hit => hit.document);
           if (this.tableData.length < this.resultsFound) {
@@ -125,7 +125,7 @@ export const useTableStore = defineStore('table', {
           } else {
             searchFilterSort.searchParameters.sort_by = 'name:asc';
           }
-          const result = await client.collections('institutions_integratedv4').documents().search(searchFilterSort.searchParameters);
+          const result = await client.collections('institutions_integratedv5').documents().search(searchFilterSort.searchParameters);
           this.resultsFound = result.found;
           this.tableData = result.hits.map(hit => hit.document);
           if (this.tableData.length < this.resultsFound) {

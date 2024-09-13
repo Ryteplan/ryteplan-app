@@ -286,12 +286,12 @@
           <div class="stat-container">
             <span class="stat-label">HBCU</span> 
             <span v-if="!userStore.adminMode" class="stat-content">
-              {{ manualInstitionData["hbcu"] ? '✔️' : '—' }}
+              {{ institution["hbcu"] ? '✔️' : '—' }}
             </span>
             <v-switch
                 v-if="userStore.adminMode"
                 label=""
-                v-model="manualInstitionData['hbcu']"
+                v-model="institution['hbcu']"
                 @change="toggleFieldTrueFalse('hbcu')"
                 color="primary"
                 hide-details
