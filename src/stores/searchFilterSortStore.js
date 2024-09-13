@@ -34,6 +34,7 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
       admitRateMax: 1,
       sportName:[],
       tribal: false,
+      hbcu: false
     },
     activeSearchTerms: '',
     searchInput: '',
@@ -76,6 +77,11 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
       let tribalFilter = '';
       if (state.filters.tribal) {
         tribalFilter = '&& tribal:true ';
+      }
+
+      let hbcuFilter = '';
+      if (state.filters.hbcu) {
+        hbcuFilter = '&& hbcu:true ';
       }
       
       let countryFilter = '';
@@ -181,7 +187,8 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
         cipCodeFilter + 
         denomFilter +
         sportFilter +
-        tribalFilter
+        tribalFilter + 
+        hbcuFilter
       ;
 
       return filterByString;

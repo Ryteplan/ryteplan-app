@@ -219,7 +219,8 @@
           label="Graduate Enrollment"
           :uri="institution['uri']"
           field="enTotGradN"
-          :valueFromPetersons="institution['enTotGradN']" 
+          :valueFromIntegrated="institution['enTotGradN']" 
+          :valueFromPetersons="petersonsInstitution['enTotGradN']" 
           :valueFromManual="manualInstitionData['enTotGradN']"
         />
         <div class="stat-container">
@@ -239,7 +240,8 @@
           label="Admission Rate"
           :uri="institution['uri']"
           field="admitRate"
-          :valueFromPetersons="institution['admitRate']" 
+          :valueFromIntegrated="institution['admitRate']" 
+          :valueFromPetersons="petersonsInstitution['admitRate']" 
           :valueFromManual="manualInstitionData['admitRate']"
           valueType="percentage"
         />
@@ -248,14 +250,16 @@
             label="Applicants"
             :uri="institution['uri']"
             field="apRecd1stN"
-            :valueFromPetersons="institution['apRecd1stN']" 
+            :valueFromIntegrated="institution['apRecd1stN']" 
+            :valueFromPetersons="petersonsInstitution['apRecd1stN']" 
             :valueFromManual="manualInstitionData['apRecd1stN']"
           />
           <StatDisplay
             label="Admits"
             :uri="institution['uri']"
             field="apAdmt1stN"
-            :valueFromPetersons="institution['apAdmt1stN']" 
+            :valueFromIntegrated="institution['apAdmt1stN']" 
+            :valueFromPetersons="petersonsInstitution['apAdmt1stN']" 
             :valueFromManual="manualInstitionData['apAdmt1stN']"
           />
         </div>
@@ -266,14 +270,16 @@
                 label="Men"
                 :uri="institution['uri']"
                 field="enTotFtMenN"
-                :valueFromPetersons="institution['enTotFtMenN']" 
+                :valueFromIntegrated="institution['enTotFtMenN']" 
+                :valueFromPetersons="petersonsInstitution['enTotFtMenN']" 
                 :valueFromManual="manualInstitionData['enTotFtMenN']"
               />
               <StatDisplay
                 label="Women"
                 :uri="institution['uri']"
                 field="enTotFtWmnN"
-                :valueFromPetersons="institution['enTotFtWmnN']" 
+                :valueFromIntegrated="institution['enTotFtWmnN']" 
+                :valueFromPetersons="petersonsInstitution['enTotFtWmnN']" 
                 :valueFromManual="manualInstitionData['enTotFtWmnN']"
               />
           </div>
@@ -320,7 +326,8 @@
           label="Average GPA"
           :uri="institution['uri']"
           field="frshGpa"
-          :valueFromPetersons="institution['frshGpa']" 
+          :valueFromIntegrated="institution['frshGpa']" 
+          :valueFromPetersons="petersonsInstitution['frshGpa']" 
           :valueFromManual="manualInstitionData['frshGpa']"
         />
         <div class="multiple-stat-container">
@@ -328,7 +335,8 @@
             label="SAT 50th%ile"
             :uri="institution['uri']"
             field="sat1CompMean"
-            :valueFromPetersons="sat50thPercentile"
+            :valueFromIntegrated="institution['sat1CompMean']" 
+            :valueFromPetersons="petersonsInstitution['sat1CompMean']" 
             :valueFromManual="manualInstitionData['sat1CompMean']"
             valueType="numberNoComma"
           />
@@ -336,7 +344,8 @@
             label="ACT 50th%ile"
             :uri="institution['uri']"
             field="actComp50thP"
-            :valueFromPetersons="institution['actComp50thP']" 
+            :valueFromIntegrated="institution['actComp50thP']" 
+            :valueFromPetersons="petersonsInstitution['actComp50thP']" 
             :valueFromManual="manualInstitionData['actComp50thP']"
           />
         </div>        
@@ -352,7 +361,8 @@
           label="Freshmen Living on Campus"
           :uri="institution['uri']"
           field="hous1stUgP"
-          :valueFromPetersons="institution['hous1stUgP']" 
+          :valueFromIntegrated="institution['hous1stUgP']" 
+          :valueFromPetersons="petersonsInstitution['hous1stUgP']" 
           :valueFromManual="manualInstitionData['hous1stUgP']"
           valueType="percentageWholeNumbers"
         />
@@ -360,7 +370,8 @@
           label="Out-of-State Population"
           :uri="institution['uri']"
           field="enNresP"
-          :valueFromPetersons="institution['enNresP']" 
+          :valueFromIntegrated="institution['enNresP']" 
+          :valueFromPetersons="petersonsInstitution['enNresP']" 
           :valueFromManual="manualInstitionData['enNresP']"
           valueType="percentageWholeNumbers"
         />
@@ -375,7 +386,8 @@
           label="Freshman Retention Rate"
           :uri="institution['uri']"
           field="retentionFrshP"
-          :valueFromPetersons="institution['retentionFrshP']" 
+          :valueFromIntegrated="institution['retentionFrshP']" 
+          :valueFromPetersons="petersonsInstitution['retentionFrshP']" 
           :valueFromManual="manualInstitionData['retentionFrshP']"
           valueType="percentageWholeNumbers"
         />
@@ -384,7 +396,8 @@
             label="Males in Greek"
             :uri="institution['uri']"
             field="fratP"
-            :valueFromPetersons="institution['fratP']" 
+            :valueFromIntegrated="institution['fratP']" 
+            :valueFromPetersons="petersonsInstitution['fratP']" 
             :valueFromManual="manualInstitionData['fratP']"
             valueType="percentageWholeNumbers"
           />
@@ -392,7 +405,8 @@
             label="Females in Greek"
             :uri="institution['uri']"
             field="soroP"
-            :valueFromPetersons="institution['soroP']" 
+            :valueFromIntegrated="institution['soroP']" 
+            :valueFromPetersons="petersonsInstitution['soroP']" 
             :valueFromManual="manualInstitionData['soroP']"
             valueType="percentageWholeNumbers"
           />
@@ -405,7 +419,8 @@
             label="Regular Decision"
             :uri="institution['uri']"
             field="regDecDead"
-            :valueFromPetersons="institution['regDecDead']" 
+            :valueFromIntegrated="institution['regDecDead']" 
+            :valueFromPetersons="petersonsInstitution['regDecDead']" 
             :valueFromManual="manualInstitionData['regDecDead']"
             valueType="date"
           />
@@ -413,7 +428,8 @@
             label="Early Decision 1"
             :uri="institution['uri']"
             field="earlyDecision1Dead"
-            :valueFromPetersons="institution['earlyDecision1Dead']" 
+            :valueFromIntegrated="institution['earlyDecision1Dead']" 
+            :valueFromPetersons="petersonsInstitution['earlyDecision1Dead']" 
             :valueFromManual="manualInstitionData['earlyDecision1Dead']"
             valueType="date"
           />
@@ -421,7 +437,8 @@
             label="Early Decision 2"
             :uri="institution['uri']"
             field="earlyDecision2Dead"
-            :valueFromPetersons="institution['earlyDecision2Dead']" 
+            :valueFromIntegrated="institution['earlyDecision2Dead']" 
+            :valueFromPetersons="petersonsInstitution['earlyDecision2Dead']" 
             :valueFromManual="manualInstitionData['earlyDecision2Dead']"
             valueType="date"
           />
@@ -429,7 +446,8 @@
             label="Early Action"
             :uri="institution['uri']"
             field="earlyActionDeadline"
-            :valueFromPetersons="institution['earlyActionDeadline']" 
+            :valueFromIntegrated="institution['earlyActionDeadline']" 
+            :valueFromPetersons="petersonsInstitution['earlyActionDeadline']" 
             :valueFromManual="manualInstitionData['earlyActionDeadline']"
             valueType="date"
           />
@@ -437,7 +455,8 @@
             label="Fall Freshman Priority"
             :uri="institution['uri']"
             field="fallFreshPrio"
-            :valueFromPetersons="institution['fallFreshPrio']" 
+            :valueFromIntegrated="institution['fallFreshPrio']" 
+            :valueFromPetersons="petersonsInstitution['fallFreshPrio']" 
             :valueFromManual="manualInstitionData['fallFreshPrio']"
             valueType="date"
           />
