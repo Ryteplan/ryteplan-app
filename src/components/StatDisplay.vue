@@ -239,6 +239,9 @@ export default {
         setDoc(doc(dbFireStore, 'manual_institution_data', this.uri), {
           [this.field]: deleteField()
         }, { merge: true });
+        setDoc(doc(dbFireStore, 'institutions_integrated', this.uri), {
+          [this.field]: this.petersonsValue
+        }, { merge: true });
       } else {
         setDoc(doc(dbFireStore, 'manual_institution_data', this.uri), {
           [this.field]: this.updateValue
