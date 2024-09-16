@@ -33,7 +33,7 @@
         </v-btn>
       </div>
 
-      <div class="data-updated-container d-none">
+      <div class="d-none data-updated-container">
         <v-card v-for="item in petersonsData" :key="item.uri">
           <v-card-title>
             <h2>{{ item.name }}</h2>
@@ -44,13 +44,25 @@
           </v-card-text>
         </v-card>
       </div>
+
+      <div class="d-none">
+        <h1>Fix Manual Stuff</h1>
+        <v-btn
+          @click="fixManualStuff"
+          color="primary"
+        >
+            Fix manual stuff
+        </v-btn>
+      </div>
     </div>
   </v-container>
 </template>
 
 <script>
 import { dbFireStore } from "../firebase";
-import { collection, query, getDocs, setDoc, doc, where, documentId } from 'firebase/firestore'
+
+// eslint-disable-next-line no-unused-vars
+import { collection, query, getDocs, setDoc, doc, where, documentId, deleteField, deleteDoc, limit } from 'firebase/firestore'
 
 export default {
   name: 'DataIntegration',
@@ -62,6 +74,33 @@ export default {
     }
   },
   methods: {
+    async fixManualStuff() {
+      console.log("fixManualStuff");
+      
+      const manualDataQuery = query(collection(dbFireStore, "manual_institution_data"));
+      const manualSnapshots = await getDocs(manualDataQuery);
+
+      manualSnapshots.docs.forEach(institution => {
+        const data = { ...institution.data(), id: institution.id };
+
+        // if data does not have any other key/value pairs other than a key with the name id, delete it
+        if (Object.keys(data).length === 1 && Object.hasOwn(data, 'id')) {
+          deleteDoc(doc(dbFireStore, "manual_institution_data", institution.id));
+          return;
+        }
+        this.manualData.push(data);
+      });
+
+      // this.manualData.map(d => {
+      //   for (let key in d) {
+      //     if (key === "undergradEnrollTotal") {
+      //       setDoc(doc(dbFireStore, 'manual_institution_data', d.id), {
+      //         [key]: deleteField()
+      //       }, { merge: true });
+      //     }
+      //   }
+      // });
+    },
     async updateWithMajors() {
       const integratedDataQuery = query(collection(dbFireStore, "institutions_integrated"));      
       const integratedDataSnapshots = await getDocs(integratedDataQuery);
@@ -114,7 +153,6 @@ export default {
         const data = { ...doc.data(), id: doc.id };
         this.petersonsData.push(data);
       });
-
 
       const manualDataQuery = query(collection(dbFireStore, "manual_institution_data"));
       const manualSnapshots = await getDocs(manualDataQuery);

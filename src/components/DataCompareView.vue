@@ -94,7 +94,7 @@ export default {
       this.loading = false;
     },
     getPetersonsField1(schoolId, fieldName) {
-      // search petersonsData for a record that has an id equal to schoolId and return the value of the item that matches the fieldName 
+      // search petersonsData1 for a record that has an id equal to schoolId and return the value of the item that matches the fieldName 
       const petersonsRecord = this.petersonsData1.find(item => item.id === schoolId);
       if (petersonsRecord) {
         return petersonsRecord[fieldName];
@@ -102,7 +102,7 @@ export default {
       return null;
     },
     getPetersonsField2(schoolId, fieldName) {
-      // search petersonsData for a record that has an id equal to schoolId and return the value of the item that matches the fieldName 
+      // search petersonsData2 for a record that has an id equal to schoolId and return the value of the item that matches the fieldName 
       const petersonsRecord = this.petersonsData2.find(item => item.id === schoolId);
       if (petersonsRecord) {
         return petersonsRecord[fieldName];
@@ -115,9 +115,7 @@ export default {
     getFilteredFields(school) {
       return Object.keys(school)
         .filter(key => 
-          key !== 'id' && 
-          key !== 'undergradEnrollTotal' &&
-          key !== 'undergrad_enroll_total'
+          key !== 'id' 
         )
         .map(key => ({ name: key, value: school[key] }));
     }

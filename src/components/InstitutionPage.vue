@@ -7,8 +7,8 @@
             <span v-if="userStore.adminMode">
               — {{ institution["inunId"] }}
             </span>
-
           </h1>
+          <span v-if="userStore.adminMode">{{ institution["uri"] }}</span>
           <!-- <StatDisplay
             label="Name"
             :uri="institution['uri']"
@@ -997,6 +997,7 @@ export default {
         this.majors = this.majors.map(major => major.replace(/\//g, ' and '));
         this.majors = this.majors.map(major => this.toTitleCase(major));
       });
+      
       this.getImages();
       this.getDescriptions();
       this.getSports();
