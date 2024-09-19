@@ -200,6 +200,20 @@
                   v-model="searchFilterSortStore.filters.State"
                   @update:menu="onUpdateMenu"
                 />
+                <v-select 
+                  class="mt-4"
+                  flat 
+                  hide-details 
+                  small 
+                  multiple 
+                  clearable 
+                  auto
+                  label="Campus Setting"
+                  :items="searchFilterSortStore.campusSettingList" 
+                  v-model="searchFilterSortStore.filters.campusSetting"
+                  @update:menu="onUpdateMenu"
+                >
+                </v-select>
                 <span class="d-block mt-8">Public or Private</span>
                 <v-select 
                   class="mt-4"
@@ -331,8 +345,8 @@
                   v-model="searchFilterSortStore.filters.denom"
                   @update:menu="onUpdateMenu"
                 />
-                <span class="d-block mt-8">Other stuff</span>
-                <v-select 
+                <span class="d-block mt-8">Specialized Community</span>
+                <!-- <v-select 
                   class="mt-4"
                   flat 
                   hide-details 
@@ -345,22 +359,8 @@
                   v-model="searchFilterSortStore.filters.admissionDifficulty"
                   @update:menu="onUpdateMenu"
                 >
-                </v-select>
-                <v-select 
-                  class="mt-4"
-                  flat 
-                  hide-details 
-                  small 
-                  multiple 
-                  clearable 
-                  auto
-                  label="Campus Setting"
-                  :items="searchFilterSortStore.campusSettingList" 
-                  v-model="searchFilterSortStore.filters.campusSetting"
-                  @update:menu="onUpdateMenu"
-                >
-                </v-select>
-                <div class="mt-6">
+                </v-select> -->
+                <div class="mt-2">
                   <v-checkbox 
                     label="Tribal"
                     v-model="searchFilterSortStore.filters.tribal"
