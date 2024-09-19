@@ -5,10 +5,10 @@
         <a href="/" class="logo">
           <LogoGreenBlack />
         </a>
-        <v-autocomplete class="ml-8 mr-md-8" append-inner-icon="mdi-magnify" density="compact" variant="solo"
-          single-line hide-details menu-icon="" hide-no-data placeholder="Search" :items="suggestedResults"
-          :search="searchInput" no-filter @update:search="setSuggestedSearch($event)" item-props
-          @keydown.enter="handleSearchEnter" clearable @click:clear="clearSearch">
+        <v-autocomplete class="ml-8 mr-md-8" density="compact" variant="solo" single-line hide-details menu-icon=""
+          hide-no-data placeholder="Search" :items="suggestedResults" :search="searchInput" no-filter
+          @update:search="setSuggestedSearch($event)" item-props @keydown.enter="handleSearchEnter" clearable
+          @click:clear="clearSearch">
           <template v-slot:item="data">
             <v-list-item class="suggestion-link" @click-once="() => handleSearchClick(data.item.props)">
               <v-list-item-title>
@@ -20,6 +20,11 @@
                 </div>
               </v-list-item-title>
             </v-list-item>
+          </template>
+          <template v-slot:append-inner>
+            <v-progress-circular v-if="isLoadingSuggestion" :size="20" color="primary"
+              indeterminate></v-progress-circular>
+            <v-icon v-else class="ml-3" icon="mdi-magnify" size="small"></v-icon>
           </template>
         </v-autocomplete>
         <div class="d-none d-md-block">
@@ -168,6 +173,7 @@ export default {
       isLoggedIn: false,
       searchInput: '',
       suggestedResults: [],
+      isLoadingSuggestion: false,
     }
   },
   methods: {
@@ -213,8 +219,10 @@ export default {
         this.searchInput = e;
         this.debounce(async () => {
           if (this.searchInput !== '') {
+            this.isLoadingSuggestion = true;
             const results = await this.suggestionSearchStore.performMultiSearch(this.searchInput);
             this.mapSuggestedItems(results);
+            this.isLoadingSuggestion = false;
           }
         })
       } else if (!e && this.searchInput.length === 1) {
