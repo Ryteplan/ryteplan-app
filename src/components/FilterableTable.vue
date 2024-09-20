@@ -90,17 +90,13 @@
               Filter
             </v-btn>
           </template>
-          <v-card >
+          <v-card>
             <v-card-title class="d-flex justify-space-between align-center">
-                <div class="text-h5">
-                  Filters
-                </div>
+              <div class="text-h5">
+                Filters
+              </div>
 
-                <v-btn
-                  icon="mdi-close"
-                  variant="text"
-                  @click="filterDialog = false"
-                ></v-btn>
+              <v-btn icon="mdi-close" variant="text" @click="filterDialog = false"></v-btn>
             </v-card-title>
             <v-divider></v-divider>
 
