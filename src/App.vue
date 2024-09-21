@@ -5,29 +5,31 @@
         <a href="/" class="logo">
           <LogoGreenBlack />
         </a>
-        <v-text-field
-          class="ml-8 mr-md-8"
-          v-model="searchFilterSortStore.activeSearchTerms"
-          label="Search By Name"
-          append-inner-icon="mdi-magnify"
-          density="compact"
-          variant="solo"
-          single-line
-          hide-details
-          @keydown="updateSearchBarInput"
-          @keydown.enter="performSearch"
-          @click:clear="updateSearchBarInput"
-        ></v-text-field>
+        <v-autocomplete class="ml-8 mr-md-8" density="compact" variant="solo" single-line hide-details menu-icon=""
+          hide-no-data placeholder="Search" :items="suggestedResults" :search="searchInput" no-filter
+          @update:search="setSuggestedSearch($event)" item-props @keydown.enter="handleSearchEnter" clearable
+          @click:clear="clearSearch">
+          <template v-slot:item="data">
+            <v-list-item class="suggestion-link" @click-once="() => handleSearchClick(data.item.props)">
+              <v-list-item-title>
+                <div class="d-flex align-center ga-2">
+                  <v-icon class="ml-3"
+                    :icon="data.item.props.type === 'real' ? 'mdi-office-building-marker-outline' : 'mdi-magnify'"
+                    size="small"></v-icon>
+                  <span v-html="data.item.props.html"></span>
+                </div>
+              </v-list-item-title>
+            </v-list-item>
+          </template>
+          <template v-slot:append-inner>
+            <v-progress-circular v-if="isLoadingSuggestion" :size="20" color="primary"
+              indeterminate></v-progress-circular>
+            <v-icon v-else class="ml-3" icon="mdi-magnify" size="small"></v-icon>
+          </template>
+        </v-autocomplete>
         <div class="d-none d-md-block">
-          <v-btn
-            cols="2"
-            block
-            class="max-w-24"
-            color="primary" 
-            variant="outlined"
-            href="https://forms.gle/TkssoDbsbAaiuSnA6" 
-            target="_blank"
-          >
+          <v-btn cols="2" block class="max-w-24" color="primary" variant="outlined"
+            href="https://forms.gle/TkssoDbsbAaiuSnA6" target="_blank">
             Submit feedback
           </v-btn>
         </div>
@@ -47,73 +49,29 @@
         </div> -->
       </div>
     </v-app-bar>
-    <v-navigation-drawer
-      v-if="isLoggedIn"
-      permanent
-    >
+    <v-navigation-drawer v-if="isLoggedIn" permanent>
       <v-list nav>
-        <v-list-item 
-          to="/" 
-          prepend-icon="mdi-magnify" 
-          title="Institutions" 
-          value="Institution Search">
+        <v-list-item to="/" prepend-icon="mdi-magnify" title="Institutions" value="Institution Search">
         </v-list-item>
-        <v-list-item 
-          to="/lists" 
-          prepend-icon="mdi-list-box-outline" 
-          title="Lists" 
-          value="Saved Lists">
+        <v-list-item to="/lists" prepend-icon="mdi-list-box-outline" title="Lists" value="Saved Lists">
         </v-list-item>
-        <v-list-item 
-          to="/playground"
-          prepend-icon="mdi-slide" 
-          title="Playground" 
-          value="Playground">
+        <v-list-item to="/playground" prepend-icon="mdi-slide" title="Playground" value="Playground">
         </v-list-item>
-        <v-list-item 
-          to="/data-compare" 
-          prepend-icon="mdi-compare-horizontal" 
-          title="Data Compare" 
-          value="Data Compare">
+        <v-list-item to="/data-compare" prepend-icon="mdi-compare-horizontal" title="Data Compare" value="Data Compare">
         </v-list-item>
-        <v-list-item 
-          to="/data-integration" 
-          prepend-icon="mdi-call-merge" 
-          title="Data Integration" 
+        <v-list-item to="/data-integration" prepend-icon="mdi-call-merge" title="Data Integration"
           value="Data Integration">
         </v-list-item>
-        <v-list-item 
-          to="/image-work" 
-          prepend-icon="mdi-image-edit" 
-          title="Image Work" 
-          value="Image Work">
+        <v-list-item to="/image-work" prepend-icon="mdi-image-edit" title="Image Work" value="Image Work">
         </v-list-item>
-        <v-list-item
-          to="/students" 
-          prepend-icon="mdi-account-school" 
-          title="Students" 
-          value="Students">
+        <v-list-item to="/students" prepend-icon="mdi-account-school" title="Students" value="Students">
         </v-list-item>
-        <v-list-item 
-          to="/account" 
-          prepend-icon="mdi-cog" 
-          title="Account" 
-          value="Account">
+        <v-list-item to="/account" prepend-icon="mdi-cog" title="Account" value="Account">
         </v-list-item>
-        <v-list-item 
-          prepend-icon="mdi-logout" 
-          title="Logout" 
-          value="Logout" 
-          @click="handleSignOut"
-        >
+        <v-list-item prepend-icon="mdi-logout" title="Logout" value="Logout" @click="handleSignOut">
         </v-list-item>
-        <v-switch 
-          class="px-4"
-          label="Admin Mode"
-          v-model="userStore.adminMode"
-          color="primary"
-          @change="userStore.saveAdminModeState"
-        >
+        <v-switch class="px-4" label="Admin Mode" v-model="userStore.adminMode" color="primary"
+          @change="userStore.saveAdminModeState">
         </v-switch>
         <!-- <v-list-item
           v-if="userStore.adminMode"
@@ -124,7 +82,7 @@
         >
         </v-list-item> -->
       </v-list>
-    </v-navigation-drawer>    
+    </v-navigation-drawer>
     <v-main class="flex-column">
       <router-view :key="$route.fullPath"></router-view>
       <v-container class="pt-0">
@@ -132,13 +90,13 @@
           <v-row>
             <v-col cols="6">
               <p style="font-size: 13px">
-              Version: {{ appVersionStore.getVersion() }}<br/>
-              Copyright 2024 Ryteplan LLC All rights reserved
+                Version: {{ appVersionStore.getVersion() }}<br />
+                Copyright 2024 Ryteplan LLC All rights reserved
               </p>
             </v-col>
             <v-col cols="6" class="text-right">
               <p style="font-size: 13px">
-                Data Source: Peterson's Databases<br/>
+                Data Source: Peterson's Databases<br />
                 Copyright 2024 Peterson's LLC All rights reserved
               </p>
             </v-col>
@@ -156,6 +114,7 @@ import { useAppVersionStore } from './/stores/appVersionStore';
 import { useUserStore } from './/stores/userStore';
 import { useTableStore } from './/stores/tableStore';
 import { useSearchFilterSortStore } from './/stores/searchFilterSortStore';
+import { useSuggestionSearchStore } from './/stores/suggestionSearchStore';
 
 let auth;
 
@@ -170,12 +129,25 @@ export default {
     let tableStore = useTableStore();
 
     let searchFilterSortStore = useSearchFilterSortStore();
+    let suggestionSearchStore = useSuggestionSearchStore();
+
+    function createDebounce() {
+      let timeout = null;
+      return function (fnc, delayMs) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+          fnc();
+        }, delayMs || 1000);
+      };
+    }
 
     return {
       userStore,
       tableStore,
       searchFilterSortStore,
-      appVersionStore
+      suggestionSearchStore,
+      appVersionStore,
+      debounce: createDebounce(),
     };
   },
   components: {
@@ -199,11 +171,14 @@ export default {
   data() {
     return {
       isLoggedIn: false,
+      searchInput: '',
+      suggestedResults: [],
+      isLoadingSuggestion: false,
     }
   },
   methods: {
     handleSignOut() {
-      signOut(auth).then(() =>{
+      signOut(auth).then(() => {
         this.userStore.isLoggedIn = false;
         localStorage.removeItem("adminMode");
         this.$router.push("/");
@@ -223,16 +198,15 @@ export default {
         : '';
 
       this.tableStore.freshSearch = true;
-        
+
       if (this.$route.path === '/') {
         this.searchFilterSortStore.activeSearchTerms = searchQuery;
         this.tableStore.performSearch();
-        console.log("right before router push");
         this.$router.push({ query: { ...this.$route.query, search: searchQuery } });
       } else {
         if (source === 'fromClear') return;
-        
-        let route = this.$router.resolve({ 
+
+        let route = this.$router.resolve({
           name: 'home',
           query: { "search": searchQuery },
         });
@@ -240,47 +214,115 @@ export default {
         window.open(route.href, '_self');
       }
     },
+    setSuggestedSearch(e) {
+      if (e && e !== this.searchInput) {
+        this.searchInput = e;
+        this.debounce(async () => {
+          if (this.searchInput !== '') {
+            this.isLoadingSuggestion = true;
+            const results = await this.suggestionSearchStore.performMultiSearch(this.searchInput);
+            this.mapSuggestedItems(results);
+            this.isLoadingSuggestion = false;
+          }
+        })
+      } else if (!e && this.searchInput.length === 1) {
+        this.clearSearch();
+      }
+    },
+    mapSuggestedItems(items) {
+      let suggestedResults = [];
+      if (items) {
+        const suggestedHits = items?.results[0]?.hits?.map((hit) => {
+          return {
+            html: hit.highlight?.q?.snippet,
+            value: hit.document?.id,
+            name: hit.document?.q,
+            type: 'suggestion'
+          }
+        })
+        const realHits = items?.results[1]?.hits?.map((hit) => {
+          return {
+            html: hit.highlight?.name?.snippet,
+            value: hit.document?.id,
+            name: hit.document?.name,
+            type: 'real'
+          }
+        })
+        suggestedResults = [...suggestedHits, ...realHits];
+      }
+      this.suggestedResults = suggestedResults;
+    },
+    handleSearchClick(item) {
+      if (item.type === 'suggestion') {
+        this.searchFilterSortStore.activeSearchTerms = item.name;
+        this.performSearch('fromSuggestion');
+      } else {
+        this.$router.push(`/institution/${item.value}`);
+      }
+      this.clearSearch();
+    },
+    handleSearchEnter() {
+      if (this.searchInput === '') return;
+      this.searchFilterSortStore.activeSearchTerms = this.searchInput;
+      this.performSearch('fromSuggestion');
+      this.clearSearch();
+    },
+    clearSearch() {
+      this.searchInput = '';
+      this.suggestedResults = [];
+      document.activeElement.blur();
+    }
   }
 };
 
 </script>
 
 <style>
-  a.logo {
-    color: #000;
-    text-decoration: none;
-    line-height: 1;
-    height: 23px;
-    margin-top: 4px;
+.v-autocomplete--single:not(.v-autocomplete--selection-slot) .v-field--dirty:not(.v-field--focused) input {
+  opacity: 1 !important;
+}
+
+a.logo {
+  color: #000;
+  text-decoration: none;
+  line-height: 1;
+  height: 23px;
+  margin-top: 4px;
+}
+
+.v-toolbar__content {
+  margin: 0 auto;
+}
+
+.no-active .v-btn__overlay {
+  display: none;
+}
+
+a {
+  color: blue;
+}
+
+.v-footer {
+  background: transparent !important;
+}
+
+@media screen and (min-width: 960px) {
+  .header-container {
+    max-width: 900px;
   }
+}
 
-  .v-toolbar__content {
-    margin: 0 auto;
+@media screen and (min-width: 1280px) {
+  .header-container {
+    max-width: 1200px;
   }
+}
 
-  .no-active .v-btn__overlay {
-    display: none;
-  }
+.suggestion-link {
+  cursor: pointer;
+}
 
-  a {
-    color: blue;
-  }
-
-  .v-footer {
-    background: transparent !important;
-  }
-
-  @media screen and (min-width: 960px){
-    .header-container {
-      max-width: 900px;
-    }    
-  }
-
-  @media screen and (min-width: 1280px){
-    .header-container {
-      max-width: 1200px;
-    }
-  }
-
-
+.suggestion-link:hover {
+  background-color: #eaeaea;
+}
 </style>

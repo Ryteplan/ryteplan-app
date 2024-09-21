@@ -4,6 +4,7 @@ import { cipCodes } from '../data/cipCodes';
 import { denomsList } from '../data/denominations';
 import { affilList } from '../data/affiliations';
 import { sportList } from '../data/sportList';
+import { defaultFilters } from '../data/defaultFilters';
 
 export const useSearchFilterSortStore = defineStore('searchFilterSort', {
   state: () => ({
@@ -18,24 +19,7 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
     TypeList: ["Private", "Public"],
     admissionDifficultyList: ["—", "Noncompetitive", "Minimal", "Moderate", "Most", "Very"],
     campusSettingList: ["Rural", "Small", "Suburb", "Urban"],
-    filters: {
-      State: [],
-      Country: [],
-      Type: [],
-      denom: [],
-      affil: [],
-      UndergraduatesMin: 0,
-      UndergraduatesMax: 0,
-      admissionDifficulty: [],
-      campusSetting: [],
-      cipCode: [],
-      admitRateRange: [0, 100],
-      admitRateMin: 0,
-      admitRateMax: 1,
-      sportName:[],
-      tribal: false,
-      hbcu: false
-    },
+    filters: { ...defaultFilters },
     activeSearchTerms: '',
     searchInput: '',
     saveSearchInput: '',
@@ -43,7 +27,7 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
       q: '*',
       query_by: 'name, stateCleaned, city',
       filter_by: 'getsReplacedByFetchTableData',
-      sort_by : 'name:desc',
+      sort_by: 'name:desc',
       per_page: 50,
       page: 1
     },
@@ -54,13 +38,17 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
   }),
   // persist: true,
   actions: {
+    clearFilters() {
+      this.filters = { ...defaultFilters };
+      this.searchInput = '';
+    },
     saveThenClearSearchInput() {
       this.saveSearchInput = this.searchInput;
       this.searchInput = '';
     },
     loadSavedSearchInput() {
       if (this.saveSearchInput !== '') {
-          this.searchInput = this.saveSearchInput;
+        this.searchInput = this.saveSearchInput;
       }
     },
   },
@@ -83,24 +71,24 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
       if (state.filters.hbcu) {
         hbcuFilter = '&& hbcu:true ';
       }
-      
+
       let countryFilter = '';
       if (state.filters.Country.length > 0) {
         countryFilter = "&& countryCode:[";
 
         if (state.filters.Country.includes("United States")) {
-          countryFilter = countryFilter+"USA,"          
+          countryFilter = countryFilter + "USA,"
         }
 
         if (state.filters.Country.includes("International")) {
-          countryFilter = countryFilter+"ARE,BGR,CAN,GRC,IRL,LBN"          
+          countryFilter = countryFilter + "ARE,BGR,CAN,GRC,IRL,LBN"
         }
         countryFilter = countryFilter + "]";
       }
 
       let stateFilter = '';
       if (state.filters.State.length > 0) {
-        stateFilter = "&& stateCleaned:[" + state.filters.State.join(',') + "]"; 
+        stateFilter = "&& stateCleaned:[" + state.filters.State.join(',') + "]";
       }
 
       let TypeFilter = '';
@@ -108,11 +96,11 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
         TypeFilter = "&& mainInstControlDesc:[";
 
         if (state.filters.Type.includes("Private")) {
-          TypeFilter = TypeFilter+"Private,"          
+          TypeFilter = TypeFilter + "Private,"
         }
 
         if (state.filters.Type.includes("Public")) {
-          TypeFilter = TypeFilter+"Public"          
+          TypeFilter = TypeFilter + "Public"
         }
         TypeFilter = TypeFilter + "]";
       }
@@ -123,48 +111,48 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
         UndergraduatesFilter = "&& enTotUgN:";
 
         if (state.filters.UndergraduatesMin > 0 && state.filters.UndergraduatesMax > 0) {
-          UndergraduatesFilter = UndergraduatesFilter + "[" + state.filters.UndergraduatesMin + ".." + state.filters.UndergraduatesMax + "]";          
-        } else if(state.filters.UndergraduatesMin > 0 && state.filters.UndergraduatesMax == 0) {
-          UndergraduatesFilter = UndergraduatesFilter + ">" + state.filters.UndergraduatesMin;          
+          UndergraduatesFilter = UndergraduatesFilter + "[" + state.filters.UndergraduatesMin + ".." + state.filters.UndergraduatesMax + "]";
+        } else if (state.filters.UndergraduatesMin > 0 && state.filters.UndergraduatesMax == 0) {
+          UndergraduatesFilter = UndergraduatesFilter + ">" + state.filters.UndergraduatesMin;
 
-        } else if(state.filters.UndergraduatesMin == 0 && state.filters.UndergraduatesMax > 0) {
-          UndergraduatesFilter = UndergraduatesFilter + "<" + state.filters.UndergraduatesMax;          
+        } else if (state.filters.UndergraduatesMin == 0 && state.filters.UndergraduatesMax > 0) {
+          UndergraduatesFilter = UndergraduatesFilter + "<" + state.filters.UndergraduatesMax;
         }
       }
 
       let admitRateFilter = '';
       if (state.filters.admitRateRange[0] > 0 || state.filters.admitRateRange[1] < 100) {
-        state.filters.admitRateMin = state.filters.admitRateRange[0]/100;
-        state.filters.admitRateMax = state.filters.admitRateRange[1]/100;
+        state.filters.admitRateMin = state.filters.admitRateRange[0] / 100;
+        state.filters.admitRateMax = state.filters.admitRateRange[1] / 100;
         admitRateFilter = " && admitRate:";
 
         if (state.filters.admitRateRange[0] > 0 && state.filters.admitRateRange[1] < 100) {
-          admitRateFilter = admitRateFilter + "[" + state.filters.admitRateMin + ".." + state.filters.admitRateMax + "]";          
-        } else if(state.filters.admitRateRange[0] > 0 && state.filters.admitRateRange[1] == 100) {
-          admitRateFilter = admitRateFilter + ">" + state.filters.admitRateMin;          
-        } else if(state.filters.admitRateRange[0] == 0 && state.filters.admitRateRange[1] < 100) {
-          admitRateFilter = admitRateFilter + "<" +state.filters.admitRateMax;          
+          admitRateFilter = admitRateFilter + "[" + state.filters.admitRateMin + ".." + state.filters.admitRateMax + "]";
+        } else if (state.filters.admitRateRange[0] > 0 && state.filters.admitRateRange[1] == 100) {
+          admitRateFilter = admitRateFilter + ">" + state.filters.admitRateMin;
+        } else if (state.filters.admitRateRange[0] == 0 && state.filters.admitRateRange[1] < 100) {
+          admitRateFilter = admitRateFilter + "<" + state.filters.admitRateMax;
         }
       }
 
       let admissionDifficultyFilter = '';
       if (state.filters.admissionDifficulty.length > 0) {
-        admissionDifficultyFilter = "&& adDiffAll:[" + state.filters.admissionDifficulty.join(',') + "]"; 
+        admissionDifficultyFilter = "&& adDiffAll:[" + state.filters.admissionDifficulty.join(',') + "]";
       }
 
       let campusSettingFilter = '';
       if (state.filters.campusSetting.length > 0) {
-        campusSettingFilter = "&& cmpsSetting:[" + state.filters.campusSetting.join(',') + "]"; 
+        campusSettingFilter = "&& cmpsSetting:[" + state.filters.campusSetting.join(',') + "]";
       }
 
       let cipCodeFilter = '';
       if (state.filters.cipCode.length > 0) {
-        cipCodeFilter = "&& cipCode:[" + state.filters.cipCode.join(',') + "]"; 
+        cipCodeFilter = "&& cipCode:[" + state.filters.cipCode.join(',') + "]";
       }
 
       let denomFilter = '';
       if (state.filters.denom.length > 0) {
-        denomFilter = "&& denomDesc:[" + state.filters.denom.join(',') + "]"; 
+        denomFilter = "&& denomDesc:[" + state.filters.denom.join(',') + "]";
       }
 
       let sportFilter = '';
@@ -175,21 +163,21 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
 
       // sportFilter = "&& sports.Swimming:[NCAA 1]";
 
-      let filterByString = 
-        hiddenFilter + 
-        countryFilter + 
-        stateFilter + 
-        TypeFilter + 
-        UndergraduatesFilter + 
-        admitRateFilter + 
-        admissionDifficultyFilter + 
-        campusSettingFilter + 
-        cipCodeFilter + 
+      let filterByString =
+        hiddenFilter +
+        countryFilter +
+        stateFilter +
+        TypeFilter +
+        UndergraduatesFilter +
+        admitRateFilter +
+        admissionDifficultyFilter +
+        campusSettingFilter +
+        cipCodeFilter +
         denomFilter +
         sportFilter +
-        tribalFilter + 
+        tribalFilter +
         hbcuFilter
-      ;
+        ;
 
       return filterByString;
     },
