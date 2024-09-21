@@ -334,6 +334,9 @@ export default {
     valueFromPetersons(newVal) {
       if (newVal) {
         this.petersonsValue = newVal;
+        if (this.valueType == 'testingPolicy') {
+          this.currentValue = newVal
+        }
       }
     },
     valueFromManual(newVal) {
