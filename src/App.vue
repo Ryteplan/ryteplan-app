@@ -1,35 +1,75 @@
 <template>
   <v-layout class="app-container" :class="{ 'logged-in': isLoggedIn }">
     <v-app-bar class="elevation-1">
-      <div class="header-container d-flex align-center justify-space-between ma-auto w-100 px-3 px-lg-0">
+      <div
+        class="header-container d-flex align-center justify-space-between ma-auto w-100 px-3 px-lg-0"
+      >
         <a href="/" class="logo">
           <LogoGreenBlack />
         </a>
-        <v-autocomplete class="ml-8 mr-md-8" density="compact" variant="solo" single-line hide-details menu-icon=""
-          hide-no-data placeholder="Search" :items="suggestedResults" :search="searchInput" no-filter
-          @update:search="setSuggestedSearch($event)" item-props @keydown.enter="handleSearchEnter" clearable
-          @click:clear="clearSearch">
+        <v-autocomplete
+          class="ml-8 mr-md-8"
+          density="compact"
+          variant="solo"
+          single-line
+          hide-details
+          menu-icon=""
+          hide-no-data
+          placeholder="Search"
+          :items="suggestedResults"
+          :search="searchInput"
+          no-filter
+          @update:search="setSuggestedSearch($event)"
+          item-props
+          @keydown.enter="handleSearchEnter"
+          @click:clear="clearSearch"
+        >
           <template v-slot:item="data">
-            <v-list-item class="suggestion-link" @click-once="() => handleSearchClick(data.item.props)">
+            <v-list-item
+              class="suggestion-link"
+              @click-once="() => handleSearchClick(data.item.props)"
+            >
               <v-list-item-title>
                 <div class="d-flex align-center ga-2">
-                  <v-icon class="ml-3"
-                    :icon="data.item.props.type === 'real' ? 'mdi-office-building-marker-outline' : 'mdi-magnify'"
-                    size="small"></v-icon>
+                  <v-icon
+                    class="ml-3"
+                    :icon="
+                      data.item.props.type === 'real'
+                        ? 'mdi-office-building-marker-outline'
+                        : 'mdi-magnify'
+                    "
+                    size="small"
+                  ></v-icon>
                   <span v-html="data.item.props.html"></span>
                 </div>
               </v-list-item-title>
             </v-list-item>
           </template>
           <template v-slot:append-inner>
-            <v-progress-circular v-if="isLoadingSuggestion" :size="20" color="primary"
-              indeterminate></v-progress-circular>
-            <v-icon v-else class="ml-3" icon="mdi-magnify" size="small"></v-icon>
+            <v-progress-circular
+              v-if="isLoadingSuggestion"
+              :size="20"
+              color="primary"
+              indeterminate
+            ></v-progress-circular>
+            <v-icon
+              v-else
+              class="ml-3"
+              icon="mdi-magnify"
+              size="small"
+            ></v-icon>
           </template>
         </v-autocomplete>
         <div class="d-none d-md-block">
-          <v-btn cols="2" block class="max-w-24" color="primary" variant="outlined"
-            href="https://forms.gle/TkssoDbsbAaiuSnA6" target="_blank">
+          <v-btn
+            cols="2"
+            block
+            class="max-w-24"
+            color="primary"
+            variant="outlined"
+            href="https://forms.gle/TkssoDbsbAaiuSnA6"
+            target="_blank"
+          >
             Submit feedback
           </v-btn>
         </div>
@@ -51,27 +91,76 @@
     </v-app-bar>
     <v-navigation-drawer v-if="isLoggedIn" permanent>
       <v-list nav>
-        <v-list-item to="/" prepend-icon="mdi-magnify" title="Institutions" value="Institution Search">
+        <v-list-item
+          to="/"
+          prepend-icon="mdi-magnify"
+          title="Institutions"
+          value="Institution Search"
+        >
         </v-list-item>
-        <v-list-item to="/lists" prepend-icon="mdi-list-box-outline" title="Lists" value="Saved Lists">
+        <v-list-item
+          to="/lists"
+          prepend-icon="mdi-list-box-outline"
+          title="Lists"
+          value="Saved Lists"
+        >
         </v-list-item>
-        <v-list-item to="/playground" prepend-icon="mdi-slide" title="Playground" value="Playground">
+        <v-list-item
+          to="/playground"
+          prepend-icon="mdi-slide"
+          title="Playground"
+          value="Playground"
+        >
         </v-list-item>
-        <v-list-item to="/data-compare" prepend-icon="mdi-compare-horizontal" title="Data Compare" value="Data Compare">
+        <v-list-item
+          to="/data-compare"
+          prepend-icon="mdi-compare-horizontal"
+          title="Data Compare"
+          value="Data Compare"
+        >
         </v-list-item>
-        <v-list-item to="/data-integration" prepend-icon="mdi-call-merge" title="Data Integration"
-          value="Data Integration">
+        <v-list-item
+          to="/data-integration"
+          prepend-icon="mdi-call-merge"
+          title="Data Integration"
+          value="Data Integration"
+        >
         </v-list-item>
-        <v-list-item to="/image-work" prepend-icon="mdi-image-edit" title="Image Work" value="Image Work">
+        <v-list-item
+          to="/image-work"
+          prepend-icon="mdi-image-edit"
+          title="Image Work"
+          value="Image Work"
+        >
         </v-list-item>
-        <v-list-item to="/students" prepend-icon="mdi-account-school" title="Students" value="Students">
+        <v-list-item
+          to="/students"
+          prepend-icon="mdi-account-school"
+          title="Students"
+          value="Students"
+        >
         </v-list-item>
-        <v-list-item to="/account" prepend-icon="mdi-cog" title="Account" value="Account">
+        <v-list-item
+          to="/account"
+          prepend-icon="mdi-cog"
+          title="Account"
+          value="Account"
+        >
         </v-list-item>
-        <v-list-item prepend-icon="mdi-logout" title="Logout" value="Logout" @click="handleSignOut">
+        <v-list-item
+          prepend-icon="mdi-logout"
+          title="Logout"
+          value="Logout"
+          @click="handleSignOut"
+        >
         </v-list-item>
-        <v-switch class="px-4" label="Admin Mode" v-model="userStore.adminMode" color="primary"
-          @change="userStore.saveAdminModeState">
+        <v-switch
+          class="px-4"
+          label="Admin Mode"
+          v-model="userStore.adminMode"
+          color="primary"
+          @change="userStore.saveAdminModeState"
+        >
         </v-switch>
         <!-- <v-list-item
           v-if="userStore.adminMode"
@@ -108,13 +197,13 @@
 </template>
 
 <script>
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth"
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import LogoGreenBlack from "@/components/svg/LogoGreenBlack.vue";
-import { useAppVersionStore } from './/stores/appVersionStore';
-import { useUserStore } from './/stores/userStore';
-import { useTableStore } from './/stores/tableStore';
-import { useSearchFilterSortStore } from './/stores/searchFilterSortStore';
-import { useSuggestionSearchStore } from './/stores/suggestionSearchStore';
+import { useAppVersionStore } from ".//stores/appVersionStore";
+import { useUserStore } from ".//stores/userStore";
+import { useTableStore } from ".//stores/tableStore";
+import { useSearchFilterSortStore } from ".//stores/searchFilterSortStore";
+import { useSuggestionSearchStore } from ".//stores/suggestionSearchStore";
 
 let auth;
 
@@ -151,7 +240,7 @@ export default {
     };
   },
   components: {
-    LogoGreenBlack
+    LogoGreenBlack,
   },
   mounted() {
     auth = getAuth();
@@ -161,7 +250,7 @@ export default {
       } else {
         this.isLoggedIn = false;
       }
-    })
+    });
 
     // Check if the URL contains a "search" parameter
     if (this.$route.query.search) {
@@ -171,10 +260,10 @@ export default {
   data() {
     return {
       isLoggedIn: false,
-      searchInput: '',
+      searchInput: "",
       suggestedResults: [],
       isLoadingSuggestion: false,
-    }
+    };
   },
   methods: {
     handleSignOut() {
@@ -182,51 +271,62 @@ export default {
         this.userStore.isLoggedIn = false;
         localStorage.removeItem("adminMode");
         this.$router.push("/");
-      })
+      });
     },
     updateSearchBarInput() {
-      if (this.searchFilterSortStore.activeSearchTerms === '') {
-        this.searchFilterSortStore.searchParameters.q = '*';
-        this.searchFilterSortStore.searchParameters.activeSearchTerms = '*';
+      if (this.searchFilterSortStore.activeSearchTerms === "") {
+        this.searchFilterSortStore.searchParameters.q = "*";
+        this.searchFilterSortStore.searchParameters.activeSearchTerms = "*";
       } else {
-        this.searchFilterSortStore.searchParameters.q = this.searchFilterSortStore.activeSearchTerms;
+        this.searchFilterSortStore.searchParameters.q =
+          this.searchFilterSortStore.activeSearchTerms;
       }
     },
     performSearch(source) {
       const searchQuery = this.searchFilterSortStore.activeSearchTerms
-        ? decodeURIComponent(encodeURIComponent(this.searchFilterSortStore.activeSearchTerms.trim().toLowerCase()))
-        : '';
+        ? decodeURIComponent(
+            encodeURIComponent(
+              this.searchFilterSortStore.activeSearchTerms.trim().toLowerCase()
+            )
+          )
+        : "";
 
       this.tableStore.freshSearch = true;
 
-      if (this.$route.path === '/') {
+      if (this.$route.path === "/") {
         this.searchFilterSortStore.activeSearchTerms = searchQuery;
         this.tableStore.performSearch();
-        this.$router.push({ query: { ...this.$route.query, search: searchQuery } });
+        this.$router.push({
+          query: { ...this.$route.query, search: searchQuery },
+        });
       } else {
-        if (source === 'fromClear') return;
+        if (source === "fromClear") return;
 
         let route = this.$router.resolve({
-          name: 'home',
-          query: { "search": searchQuery },
+          name: "home",
+          query: { search: searchQuery },
         });
 
-        window.open(route.href, '_self');
+        window.open(route.href, "_self");
       }
     },
     setSuggestedSearch(e) {
       if (e && e !== this.searchInput) {
+        this.isLoadingSuggestion = true;
+        this.suggestedResults = [];
         this.searchInput = e;
         this.debounce(async () => {
-          if (this.searchInput !== '') {
-            this.isLoadingSuggestion = true;
-            const results = await this.suggestionSearchStore.performMultiSearch(this.searchInput);
+          if (this.searchInput !== "") {
+            const results = await this.suggestionSearchStore.performMultiSearch(
+              this.searchInput
+            );
             this.mapSuggestedItems(results);
             this.isLoadingSuggestion = false;
           }
-        })
-      } else if (!e && this.searchInput.length === 1) {
+        });
+      } else if (!e && this.searchInput.length >= 1) {
         this.clearSearch();
+        this.isLoadingSuggestion = false;
       }
     },
     mapSuggestedItems(items) {
@@ -237,48 +337,49 @@ export default {
             html: hit.highlight?.q?.snippet,
             value: hit.document?.id,
             name: hit.document?.q,
-            type: 'suggestion'
-          }
-        })
+            type: "suggestion",
+          };
+        });
         const realHits = items?.results[1]?.hits?.map((hit) => {
           return {
             html: hit.highlight?.name?.snippet,
             value: hit.document?.id,
             name: hit.document?.name,
-            type: 'real'
-          }
-        })
+            type: "real",
+          };
+        });
         suggestedResults = [...suggestedHits, ...realHits];
       }
       this.suggestedResults = suggestedResults;
     },
     handleSearchClick(item) {
-      if (item.type === 'suggestion') {
+      if (item.type === "suggestion") {
         this.searchFilterSortStore.activeSearchTerms = item.name;
-        this.performSearch('fromSuggestion');
+        this.performSearch("fromSuggestion");
       } else {
         this.$router.push(`/institution/${item.value}`);
       }
       this.clearSearch();
     },
     handleSearchEnter() {
-      if (this.searchInput === '') return;
+      if (this.searchInput === "") return;
       this.searchFilterSortStore.activeSearchTerms = this.searchInput;
-      this.performSearch('fromSuggestion');
+      this.performSearch("fromSuggestion");
       this.clearSearch();
     },
     clearSearch() {
-      this.searchInput = '';
+      this.searchInput = "";
       this.suggestedResults = [];
       document.activeElement.blur();
-    }
-  }
+    },
+  },
 };
-
 </script>
 
 <style>
-.v-autocomplete--single:not(.v-autocomplete--selection-slot) .v-field--dirty:not(.v-field--focused) input {
+.v-autocomplete--single:not(.v-autocomplete--selection-slot)
+  .v-field--dirty:not(.v-field--focused)
+  input {
   opacity: 1 !important;
 }
 
