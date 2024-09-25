@@ -7,22 +7,20 @@
         <a href="/" class="logo">
           <LogoGreenBlack />
         </a>
-        <v-autocomplete
+        <v-combobox
+          ref="suggestedSearch"
           class="ml-8 mr-md-8"
           density="compact"
           variant="solo"
           single-line
           hide-details
           menu-icon=""
-          hide-no-data
           placeholder="Search"
           :items="suggestedResults"
-          :search="searchInput"
-          no-filter
-          @update:search="setSuggestedSearch($event)"
-          item-props
+          v-model.search="searchInput"
           @keydown.enter="handleSearchEnter"
-          @click:clear="clearSearch"
+          item-props
+          no-filter
         >
           <template v-slot:item="data">
             <v-list-item
@@ -59,7 +57,7 @@
               size="small"
             ></v-icon>
           </template>
-        </v-autocomplete>
+        </v-combobox>
         <div class="d-none d-md-block">
           <v-btn
             cols="2"
@@ -226,7 +224,7 @@ export default {
         clearTimeout(timeout);
         timeout = setTimeout(() => {
           fnc();
-        }, delayMs || 1000);
+        }, delayMs || 800);
       };
     }
 
@@ -255,6 +253,7 @@ export default {
     // Check if the URL contains a "search" parameter
     if (this.$route.query.search) {
       this.searchFilterSortStore.activeSearchTerms = this.$route.query.search;
+      this.searchInput = this.$route.query.search;
     }
   },
   data() {
@@ -263,6 +262,7 @@ export default {
       searchInput: "",
       suggestedResults: [],
       isLoadingSuggestion: false,
+      initialLoading: true
     };
   },
   methods: {
@@ -310,25 +310,6 @@ export default {
         window.open(route.href, "_self");
       }
     },
-    setSuggestedSearch(e) {
-      if (e && e !== this.searchInput) {
-        this.isLoadingSuggestion = true;
-        this.suggestedResults = [];
-        this.searchInput = e;
-        this.debounce(async () => {
-          if (this.searchInput !== "") {
-            const results = await this.suggestionSearchStore.performMultiSearch(
-              this.searchInput
-            );
-            this.mapSuggestedItems(results);
-            this.isLoadingSuggestion = false;
-          }
-        });
-      } else if (!e && this.searchInput.length >= 1) {
-        this.clearSearch();
-        this.isLoadingSuggestion = false;
-      }
-    },
     mapSuggestedItems(items) {
       let suggestedResults = [];
       if (items) {
@@ -350,27 +331,46 @@ export default {
         });
         suggestedResults = [...suggestedHits, ...realHits];
       }
-      this.suggestedResults = suggestedResults;
+      this.$nextTick(() => {
+        if (this.searchInput) {
+          this.suggestedResults = suggestedResults;
+          this.$refs.suggestedSearch.menu = true;
+        }
+      });
     },
     handleSearchClick(item) {
       if (item.type === "suggestion") {
         this.searchFilterSortStore.activeSearchTerms = item.name;
         this.performSearch("fromSuggestion");
       } else {
+        this.searchInput = null;
         this.$router.push(`/institution/${item.value}`);
       }
-      this.clearSearch();
+      document.activeElement.blur();
     },
     handleSearchEnter() {
       if (this.searchInput === "") return;
       this.searchFilterSortStore.activeSearchTerms = this.searchInput;
       this.performSearch("fromSuggestion");
-      this.clearSearch();
-    },
-    clearSearch() {
-      this.searchInput = "";
-      this.suggestedResults = [];
       document.activeElement.blur();
+    },
+  },
+  watch: {
+    searchInput(val) {
+      if (val && !this.initialLoading) {
+        this.isLoadingSuggestion = true;
+        this.debounce(async () => {
+          const results = await this.suggestionSearchStore.performMultiSearch(
+            val
+          );
+          this.mapSuggestedItems(results);
+          this.isLoadingSuggestion = false;
+        });
+      } else {
+        this.suggestedResults = [];
+        this.isLoadingSuggestion = false;
+        this.initialLoading = false;
+      }
     },
   },
 };
