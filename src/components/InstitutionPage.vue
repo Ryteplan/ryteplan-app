@@ -781,79 +781,49 @@
           </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
-      <div class="mt-8">
-        <!-- <pre>{{ sports["Mens_Varsity"] }}</pre> -->
-        <!-- <div v-if="sports['Mens_Varsity'] !== null"> -->
-          <!-- <ul>
-            <li v-for="item in sports" :key="item"> -->
-              <!-- {{ Object.keys(item) }} -->
-              <!-- {{ Object }} -->
-              <!-- <div v-for="item2 in sports" :key="item2">
-              </div> -->
-            <!-- </li>
-          </ul> -->
-        <!-- </div> -->
-      </div>
-      <div v-if="sports !== null">
-        <ul>
-          <li v-for="(sports, sportName) in sports['Mens_Varsity']" :key="sportName">
-            <h2>{{ sportName }}</h2>
-            <ul>
-              <li v-for="item in sportData" :key="item">
-                <p>{{ Object.keys(item)[0] }}: {{ item[Object.keys(item)[0]] }}</p>
-                
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-      <!-- <v-expansion-panels class="mt-8">
-        <v-expansion-panel :value="0">
-          <v-expansion-panel-title>
-            <h3>Sports</h3>
-          </v-expansion-panel-title>
-          <v-expansion-panel-text>
-            <div class="d-flex flex-column">
-              <div class="flex">
-                <h3 class="mt-3">Associations</h3>
-                <div class="multiple-stat-container mt-2">
-                  <div class="stat-container">
-                    <span class="stat-label">NCAA*</span> 
-                    <span class="stat-content">{{ institution["assnAthlNcaa"] === 'NULL' || institution["assnAthlNcaa"] === 'FALSE' ? '—' : institution["assnAthlNcaa"].toLocaleString() }}</span>
-                  </div>
-
-                    <div class="stat-container">
-                    <span class="stat-label">NCCAA</span> 
-                    <span class="stat-content">{{ institution["assnAthlNccaa"] === 'NULL' || institution["assnAthlNccaa"] === 'FALSE' ? '—' : institution["assnAthlNccaa"].toLocaleString() }}</span>
-                  </div>
-                    
-                  <div class="stat-container">
-                    <span class="stat-label">NAIA</span> 
-                    <span class="stat-content">{{ institution["assnAthlNaia"] === 'NULL' || institution["assnAthlNaia"] === 'FALSE' ? '—' : institution["assnAthlNccaa"].toLocaleString() }}</span>
-                  </div>
-                </div>
-              </div>
-              <div class="mt-4 d-flex" style="font-size: 12px; gap: 16px;">
-                  <span>1 = Division 1</span>
-                  <span>2 = Division 2</span>
-                  <span>3 = Division 3</span>
-                  <span>A = Division 1-A</span>
-                  <span>B = Division 1-AA</span>
-                  <span>C = Club teams</span>
-                  <span>X = Yes</span>
-                </div>
-            </div>
-            <v-data-table 
-              v-if="sports !== null"
-              :headers="sportsHeaders"
-              :items="sports"
-              :items-per-page="-1"
-            >
-              <template #bottom></template>
-            </v-data-table>            
-          </v-expansion-panel-text>
-        </v-expansion-panel>
-      </v-expansion-panels> -->
+      <div 
+        class="sports-container mt-8"
+        v-if="sports !== null"
+      >
+        <h2>Sports</h2>
+        <div>
+          <h3>Men's Varsity</h3>
+          <ul>
+            <li v-for="(sports, sportName) in sports['Mens_Varsity']" :key="sportName">
+              <h4>{{ sportName }}</h4>
+              {{ sports.Division }}
+              {{ sports.Subdivision }}
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h3>Women's Varsity</h3>
+          <ul>
+            <li v-for="(sports, sportName) in sports['Women_Varsity']" :key="sportName">
+              <h4>{{ sportName }}</h4>
+              {{ sports.Division }}
+              {{ sports.Subdivision }}
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h3>Club</h3>
+          <ul>
+            <li v-for="(sports, sportName) in sports['Club']" :key="sportName">
+              <h4>{{ sportName }}</h4>
+              {{ sports.Gender }}
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h3>Intramural</h3>
+          <ul>
+            <li v-for="(sports, sportName) in sports['Intramural']" :key="sportName">
+              <h4>{{ sportName }}</h4>
+              {{ sports.Gender }}
+            </li>
+          </ul>
+        </div>      </div>
     </div>
     <SaveToListDialog 
       v-model="showSaveToListDialog" 
@@ -942,13 +912,6 @@ export default {
       sat50thPercentile: 0,
       majors: [],
       sports: [],
-      sportsHeaders: [
-        { title: 'Sport', key: 'descr', width: "250px" },
-        { title: 'Intramural Men', key: 'intmMen', width: "180px" },
-        { title: 'Intramural Women', key: 'intmWmn', width: "180px" },
-        { title: 'Intercollegiate Men', key: 'intcMen', width: "200px" },
-        { title: 'Intercollegiate Women', key: 'intcWmn', width: "230px" },
-      ],
       ethnicityPopulationTotal: 0,
     }
   },
@@ -1047,9 +1010,6 @@ export default {
       } else {
         console.log("No such document")
       }
-
-      // sportsArray.sort((a, b) => a.descr.localeCompare(b.descr));
-      // this.sports = sportsArray;
     },
     async getImages() {
       const slugFromURL = this.$route.params.slug;
@@ -1274,4 +1234,9 @@ export default {
     padding: 24px 0;
     
   }
+
+  .sports-container {
+    
+  }
+
 </style>
