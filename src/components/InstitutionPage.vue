@@ -782,7 +782,30 @@
         </v-expansion-panel>
       </v-expansion-panels>
       <div class="mt-8">
-        {{ sports }}
+        <!-- <pre>{{ sports["Mens_Varsity"] }}</pre> -->
+        <!-- <div v-if="sports['Mens_Varsity'] !== null"> -->
+          <!-- <ul>
+            <li v-for="item in sports" :key="item"> -->
+              <!-- {{ Object.keys(item) }} -->
+              <!-- {{ Object }} -->
+              <!-- <div v-for="item2 in sports" :key="item2">
+              </div> -->
+            <!-- </li>
+          </ul> -->
+        <!-- </div> -->
+      </div>
+      <div v-if="sports !== null">
+        <ul>
+          <li v-for="(sports, sportName) in sports['Mens_Varsity']" :key="sportName">
+            <h2>{{ sportName }}</h2>
+            <ul>
+              <li v-for="item in sportData" :key="item">
+                <p>{{ Object.keys(item)[0] }}: {{ item[Object.keys(item)[0]] }}</p>
+                
+              </li>
+            </ul>
+          </li>
+        </ul>
       </div>
       <!-- <v-expansion-panels class="mt-8">
         <v-expansion-panel :value="0">
@@ -1021,14 +1044,11 @@ export default {
       if (snap.exists()) {
         console.log(snap.data().sports);
         this.sports = snap.data().sports;
-      }
-      else {
+      } else {
         console.log("No such document")
       }
 
-
       // sportsArray.sort((a, b) => a.descr.localeCompare(b.descr));
-
       // this.sports = sportsArray;
     },
     async getImages() {
