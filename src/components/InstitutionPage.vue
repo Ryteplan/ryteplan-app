@@ -781,8 +781,8 @@
           </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
-      <div class="d-none mt-8">
-        {{ institution["sports"] }}
+      <div class="mt-8">
+        {{ sports }}
       </div>
       <!-- <v-expansion-panels class="mt-8">
         <v-expansion-panel :value="0">
@@ -841,7 +841,7 @@
  
 <script>
 import { dbFireStore } from "../firebase";
-import { collection, documentId, query, where, getDocs, setDoc, doc } from 'firebase/firestore'
+import { collection, documentId, query, where, getDocs, setDoc, doc, getDoc } from 'firebase/firestore'
 import SaveToListDialog from './SaveToListDialog'
 import { getAuth,onAuthStateChanged } from "firebase/auth";
 import { useUserStore } from '../stores/userStore';
@@ -1016,21 +1016,20 @@ export default {
       });
     },
     async getSports() {
-      const sports = collection(dbFireStore, 'sports_v3');
-      const q = query(sports, where("inunId", "==", this.institution.inunId));
-      const docSnap = await getDocs(q);
-      let sportsArray = [];
-      docSnap.forEach((doc) => {
-        sportsArray.push(doc.data());
-      });
-      sportsArray = sportsArray.map(sport => {
-        sport.descr = this.toTitleCase(sport.descr);
-        return sport;
-      });
+      const slugFromURL = this.$route.params.slug;
+      const snap = await getDoc(doc(dbFireStore, 'institutions_v9', slugFromURL))
+      if (snap.exists()) {
+        console.log(snap.data().sports);
+        this.sports = snap.data().sports;
+      }
+      else {
+        console.log("No such document")
+      }
 
-      sportsArray.sort((a, b) => a.descr.localeCompare(b.descr));
 
-      this.sports = sportsArray;
+      // sportsArray.sort((a, b) => a.descr.localeCompare(b.descr));
+
+      // this.sports = sportsArray;
     },
     async getImages() {
       const slugFromURL = this.$route.params.slug;
