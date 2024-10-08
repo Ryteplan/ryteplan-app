@@ -782,48 +782,59 @@
         </v-expansion-panel>
       </v-expansion-panels>
       <div 
-        class="sports-container mt-8"
+        class="section-container mt-8"
         v-if="sports !== null"
       >
         <h2>Sports</h2>
-        <div>
-          <h3>Men's Varsity</h3>
-          <ul>
-            <li v-for="(sports, sportName) in sports['Mens_Varsity']" :key="sportName">
-              <h4>{{ sportName }}</h4>
-              {{ sports.Division }}
-              {{ sports.Subdivision }}
-            </li>
-          </ul>
-        </div>
-        <div>
-          <h3>Women's Varsity</h3>
-          <ul>
-            <li v-for="(sports, sportName) in sports['Women_Varsity']" :key="sportName">
-              <h4>{{ sportName }}</h4>
-              {{ sports.Division }}
-              {{ sports.Subdivision }}
-            </li>
-          </ul>
-        </div>
-        <div>
-          <h3>Club</h3>
-          <ul>
-            <li v-for="(sports, sportName) in sports['Club']" :key="sportName">
-              <h4>{{ sportName }}</h4>
-              {{ sports.Gender }}
-            </li>
-          </ul>
-        </div>
-        <div>
-          <h3>Intramural</h3>
-          <ul>
-            <li v-for="(sports, sportName) in sports['Intramural']" :key="sportName">
-              <h4>{{ sportName }}</h4>
-              {{ sports.Gender }}
-            </li>
-          </ul>
-        </div>      </div>
+        <div class="sports-container">
+          <div>
+            <h3>Men's Varsity</h3>
+            <ul>
+              <li v-for="(sports, sportName) in sports['Mens_Varsity']" :key="sportName">
+                <h4>{{ sportName }}</h4>
+                <div class="division">
+                  <span>{{ sports.Division }}</span>              
+                  <span 
+                    v-if="sports.Subdivision"
+                    class="subdivision">{{ sports.Subdivision }}
+                  </span>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3>Women's Varsity</h3>
+            <ul>
+              <li v-for="(sports, sportName) in sports['Women_Varsity']" :key="sportName">
+                <h4>{{ sportName }}</h4>
+                <div class="division">
+                  <span>{{ sports.Division }}</span>              
+                  <span 
+                    v-if="sports.Subdivision"
+                    class="subdivision">{{ sports.Subdivision }}
+                  </span>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3>Club Teams</h3>
+            <ul>
+              <li v-for="(sports, sportName) in sports['Club']" :key="sportName">
+                <span><span style="font-weight: 500">{{ sportName }}</span> - {{ sports.Gender }} </span>                
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3>Intramural</h3>
+            <ul>
+              <li v-for="(sports, sportName) in sports['Intramural']" :key="sportName">
+                <span><span style="font-weight: 500">{{ sportName }}</span> - {{ sports.Gender }} </span>                
+              </li>
+            </ul>
+          </div>       
+        </div> 
+      </div>
     </div>
     <SaveToListDialog 
       v-model="showSaveToListDialog" 
@@ -1005,8 +1016,11 @@ export default {
       const slugFromURL = this.$route.params.slug;
       const snap = await getDoc(doc(dbFireStore, 'institutions_v9', slugFromURL))
       if (snap.exists()) {
-        console.log(snap.data().sports);
         this.sports = snap.data().sports;
+        // place sports in alphabetical order
+        for (const key in this.sports) {
+          this.sports[key] = Object.fromEntries(Object.entries(this.sports[key]).sort());
+        }
       } else {
         console.log("No such document")
       }
@@ -1236,7 +1250,41 @@ export default {
   }
 
   .sports-container {
-    
+    margin-top: 12px;    
+
+    h2 {
+      font-size: 24px;
+    }
+
+    h3 {
+      font-size: 20px;
+    }
+
+    li {
+      &:not(:first-of-type) {
+        margin-top: 12px;
+      }
+    }
+    .division {
+      display: flex;
+      gap: 8px;
+      align-items: center
+    }
+
+    .subdivision {
+      background: rgb(232, 232, 232);
+      border-radius: 6px;
+      font-size: 12px;
+      padding: 2px 8px;
+    }
+
+    p {
+      font-size: 14px;
+    }
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 24px;
   }
 
 </style>
