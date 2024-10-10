@@ -313,14 +313,6 @@ export default {
     mapSuggestedItems(items) {
       let suggestedResults = [];
       if (items) {
-        // const suggestedHits = items?.results[0]?.hits?.map((hit) => {
-        //   return {
-        //     html: hit.highlight?.q?.snippet,
-        //     value: hit.document?.id,
-        //     name: hit.document?.q,
-        //     type: "suggestion",
-        //   };
-        // });
         const realHits = items?.results[1]?.hits?.map((hit) => {
           return {
             html: hit.highlight?.name?.snippet,

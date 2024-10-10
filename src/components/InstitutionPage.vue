@@ -781,56 +781,60 @@
           </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
-      <div class="d-none mt-8">
-        {{ institution["sports"] }}
+      <div 
+        class="section-container mt-8"
+        v-if="sports !== null"
+      >
+        <h2>Sports</h2>
+        <div class="sports-container">
+          <div>
+            <h3>Men's Varsity</h3>
+            <ul>
+              <li v-for="(sports, sportName) in sports['Mens_Varsity']" :key="sportName">
+                <h4>{{ sportName }}</h4>
+                <div class="division">
+                  <span>{{ sports.Division }}</span>              
+                  <span 
+                    v-if="sports.Subdivision"
+                    class="subdivision">{{ sports.Subdivision }}
+                  </span>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3>Women's Varsity</h3>
+            <ul>
+              <li v-for="(sports, sportName) in sports['Women_Varsity']" :key="sportName">
+                <h4>{{ sportName }}</h4>
+                <div class="division">
+                  <span>{{ sports.Division }}</span>              
+                  <span 
+                    v-if="sports.Subdivision"
+                    class="subdivision">{{ sports.Subdivision }}
+                  </span>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3>Club Teams</h3>
+            <ul>
+              <li v-for="(sports, sportName) in sports['Club']" :key="sportName">
+                <span><span style="font-weight: 500">{{ sportName }}</span> - {{ sports.Gender }} </span>                
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3>Intramural</h3>
+            <ul>
+              <li v-for="(sports, sportName) in sports['Intramural']" :key="sportName">
+                <span><span style="font-weight: 500">{{ sportName }}</span> - {{ sports.Gender }} </span>                
+              </li>
+            </ul>
+          </div>       
+        </div> 
       </div>
-      <!-- <v-expansion-panels class="mt-8">
-        <v-expansion-panel :value="0">
-          <v-expansion-panel-title>
-            <h3>Sports</h3>
-          </v-expansion-panel-title>
-          <v-expansion-panel-text>
-            <div class="d-flex flex-column">
-              <div class="flex">
-                <h3 class="mt-3">Associations</h3>
-                <div class="multiple-stat-container mt-2">
-                  <div class="stat-container">
-                    <span class="stat-label">NCAA*</span> 
-                    <span class="stat-content">{{ institution["assnAthlNcaa"] === 'NULL' || institution["assnAthlNcaa"] === 'FALSE' ? '—' : institution["assnAthlNcaa"].toLocaleString() }}</span>
-                  </div>
-
-                    <div class="stat-container">
-                    <span class="stat-label">NCCAA</span> 
-                    <span class="stat-content">{{ institution["assnAthlNccaa"] === 'NULL' || institution["assnAthlNccaa"] === 'FALSE' ? '—' : institution["assnAthlNccaa"].toLocaleString() }}</span>
-                  </div>
-                    
-                  <div class="stat-container">
-                    <span class="stat-label">NAIA</span> 
-                    <span class="stat-content">{{ institution["assnAthlNaia"] === 'NULL' || institution["assnAthlNaia"] === 'FALSE' ? '—' : institution["assnAthlNccaa"].toLocaleString() }}</span>
-                  </div>
-                </div>
-              </div>
-              <div class="mt-4 d-flex" style="font-size: 12px; gap: 16px;">
-                  <span>1 = Division 1</span>
-                  <span>2 = Division 2</span>
-                  <span>3 = Division 3</span>
-                  <span>A = Division 1-A</span>
-                  <span>B = Division 1-AA</span>
-                  <span>C = Club teams</span>
-                  <span>X = Yes</span>
-                </div>
-            </div>
-            <v-data-table 
-              v-if="sports !== null"
-              :headers="sportsHeaders"
-              :items="sports"
-              :items-per-page="-1"
-            >
-              <template #bottom></template>
-            </v-data-table>            
-          </v-expansion-panel-text>
-        </v-expansion-panel>
-      </v-expansion-panels> -->
     </div>
     <SaveToListDialog 
       v-model="showSaveToListDialog" 
@@ -919,13 +923,6 @@ export default {
       sat50thPercentile: 0,
       majors: [],
       sports: [],
-      sportsHeaders: [
-        { title: 'Sport', key: 'descr', width: "250px" },
-        { title: 'Intramural Men', key: 'intmMen', width: "180px" },
-        { title: 'Intramural Women', key: 'intmWmn', width: "180px" },
-        { title: 'Intercollegiate Men', key: 'intcMen', width: "200px" },
-        { title: 'Intercollegiate Women', key: 'intcWmn', width: "230px" },
-      ],
       ethnicityPopulationTotal: 0,
     }
   },
@@ -996,11 +993,14 @@ export default {
         this.majors.sort((a, b) => a.localeCompare(b));
         this.majors = this.majors.map(major => major.replace(/\//g, ' and '));
         this.majors = this.majors.map(major => this.toTitleCase(major));
+        this.sports = doc.data().sports;
+        for (const key in this.sports) {
+          this.sports[key] = Object.fromEntries(Object.entries(this.sports[key]).sort());
+        }
       });
       
       this.getImages();
       this.getDescriptions();
-      this.getSports();
       this.getEthnicityPopulationTotal();
       this.sat50thPercentile = this.institution["satVerb50thP"] + this.institution["satMath50thP"];
 
@@ -1015,23 +1015,19 @@ export default {
         this.descriptions = doc.data();
       });
     },
-    async getSports() {
-      const sports = collection(dbFireStore, 'sports_v3');
-      const q = query(sports, where("inunId", "==", this.institution.inunId));
-      const docSnap = await getDocs(q);
-      let sportsArray = [];
-      docSnap.forEach((doc) => {
-        sportsArray.push(doc.data());
-      });
-      sportsArray = sportsArray.map(sport => {
-        sport.descr = this.toTitleCase(sport.descr);
-        return sport;
-      });
-
-      sportsArray.sort((a, b) => a.descr.localeCompare(b.descr));
-
-      this.sports = sportsArray;
-    },
+    // async getSports() {
+    //   const slugFromURL = this.$route.params.slug;
+    //   const snap = await getDoc(doc(dbFireStore, 'institutions_v9', slugFromURL))
+    //   if (snap.exists()) {
+    //     this.sports = snap.data().sports;
+    //     // place sports in alphabetical order
+    //     for (const key in this.sports) {
+    //       this.sports[key] = Object.fromEntries(Object.entries(this.sports[key]).sort());
+    //     }
+    //   } else {
+    //     console.log("No such document")
+    //   }
+    // },
     async getImages() {
       const slugFromURL = this.$route.params.slug;
 
@@ -1255,4 +1251,47 @@ export default {
     padding: 24px 0;
     
   }
+
+  .sports-container {
+    margin-top: 12px;    
+
+    h2 {
+      font-size: 24px;
+    }
+
+    h3 {
+      font-size: 20px;
+    }
+    
+    h4 {
+      font-weight: 500;
+    }
+
+    li {
+      &:not(:first-of-type) {
+        margin-top: 12px;
+      }
+    }
+    .division {
+      display: flex;
+      gap: 8px;
+      align-items: center
+    }
+
+    .subdivision {
+      background: rgb(232, 232, 232);
+      border-radius: 6px;
+      font-size: 12px;
+      padding: 2px 8px;
+    }
+
+    p {
+      font-size: 14px;
+    }
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 24px;
+  }
+
 </style>
