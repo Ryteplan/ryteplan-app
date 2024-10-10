@@ -25,7 +25,7 @@
 
 <script>
 import StarterKit from '@tiptap/starter-kit'
-import Link from '@tiptap/extension-link'
+// import Link from '@tiptap/extension-link'
 import { Editor, EditorContent } from '@tiptap/vue-3'
 
 export default {
@@ -66,10 +66,10 @@ export default {
     this.editor = new Editor({
       extensions: [
         StarterKit,
-        Link.configure({
-          openOnClick: false,
-          defaultProtocol: 'https',
-        }),
+        // Link.configure({
+        //   openOnClick: false,
+        //   defaultProtocol: 'https',
+        // }),
       ],
       content: this.modelValue,
       onUpdate: () => {

@@ -9,10 +9,6 @@
   },
   "dependencies": {
     "@amcharts/amcharts5": "^5.4.6",
-    "@tiptap/extension-link": "^2.5.4",
-    "@tiptap/pm": "^2.5.4",
-    "@tiptap/starter-kit": "^2.5.4",
-    "@tiptap/vue-3": "^2.5.4",
     "algoliasearch": "^4.23.3",
     "core-js": "^3.8.3",
     "firebase": "^10.3.1",

@@ -61,7 +61,7 @@
           </div>
           <div class="mt-4">
             <span class="font-weight-bold">Image Credit</span>
-            <TiptapInputA v-model="imageCredits.image1" class="mt-4"/>
+            <!-- <TiptapInputA v-model="imageCredits.image1" class="mt-4"/> -->
           </div>
         </div>
         <div class="mt-4 pa-4" style="background: #eee;">
@@ -72,7 +72,7 @@
           </div>
           <div class="mt-4">
             <span class="font-weight-bold">Image Credit</span>
-            <TiptapInputA v-model="imageCredits.image2" class="mt-4"/>
+            <!-- <TiptapInputA v-model="imageCredits.image2" class="mt-4"/> -->
           </div>
         </div>
         <div class="mt-4 pa-4" style="background: #eee;">
@@ -83,7 +83,7 @@
           </div>
           <div class="mt-4">
             <span class="font-weight-bold">Image Credit</span>
-            <TiptapInputA v-model="imageCredits.image3" class="mt-4"/>
+            <!-- <TiptapInputA v-model="imageCredits.image3" class="mt-4"/> -->
           </div>
         </div>
         <div class="mt-4 pa-4" style="background: #eee;">
@@ -94,7 +94,7 @@
           </div>
           <div class="mt-4">
             <span class="font-weight-bold">Image Credit</span>
-            <TiptapInputA v-model="imageCredits.image4" class="mt-4"/>
+            <!-- <TiptapInputA v-model="imageCredits.image4" class="mt-4"/> -->
           </div>
         </div>
 
@@ -106,7 +106,7 @@
           </div>
           <div class="mt-4">
             <span class="font-weight-bold">Image Credit</span>
-            <TiptapInputA v-model="imageCredits.image5" class="mt-4"/>
+            <!-- <TiptapInputA v-model="imageCredits.image5" class="mt-4"/> -->
           </div>
         </div>
 
@@ -851,7 +851,7 @@ import { getAuth,onAuthStateChanged } from "firebase/auth";
 import { useUserStore } from '../stores/userStore';
 import { useSearchFilterSortStore } from '../stores/searchFilterSortStore';
 import StatDisplay from './StatDisplay.vue';
-import TiptapInputA from "./TiptapInputA.vue"
+// import TiptapInputA from "./TiptapInputA.vue"
 
 
 // import EthnicityChart from './EthnicityChart.vue';
@@ -1093,7 +1093,7 @@ export default {
     // EthnicityChart,
     SaveToListDialog,
     StatDisplay,
-    TiptapInputA,
+    // TiptapInputA,
   },
 };
 
