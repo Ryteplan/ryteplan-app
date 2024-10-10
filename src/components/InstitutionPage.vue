@@ -845,7 +845,7 @@
  
 <script>
 import { dbFireStore } from "../firebase";
-import { collection, documentId, query, where, getDocs, setDoc, doc, getDoc } from 'firebase/firestore'
+import { collection, documentId, query, where, getDocs, setDoc, doc } from 'firebase/firestore'
 import SaveToListDialog from './SaveToListDialog'
 import { getAuth,onAuthStateChanged } from "firebase/auth";
 import { useUserStore } from '../stores/userStore';
@@ -993,11 +993,14 @@ export default {
         this.majors.sort((a, b) => a.localeCompare(b));
         this.majors = this.majors.map(major => major.replace(/\//g, ' and '));
         this.majors = this.majors.map(major => this.toTitleCase(major));
+        this.sports = doc.data().sports;
+        for (const key in this.sports) {
+          this.sports[key] = Object.fromEntries(Object.entries(this.sports[key]).sort());
+        }
       });
       
       this.getImages();
       this.getDescriptions();
-      this.getSports();
       this.getEthnicityPopulationTotal();
       this.sat50thPercentile = this.institution["satVerb50thP"] + this.institution["satMath50thP"];
 
@@ -1012,19 +1015,19 @@ export default {
         this.descriptions = doc.data();
       });
     },
-    async getSports() {
-      const slugFromURL = this.$route.params.slug;
-      const snap = await getDoc(doc(dbFireStore, 'institutions_v9', slugFromURL))
-      if (snap.exists()) {
-        this.sports = snap.data().sports;
-        // place sports in alphabetical order
-        for (const key in this.sports) {
-          this.sports[key] = Object.fromEntries(Object.entries(this.sports[key]).sort());
-        }
-      } else {
-        console.log("No such document")
-      }
-    },
+    // async getSports() {
+    //   const slugFromURL = this.$route.params.slug;
+    //   const snap = await getDoc(doc(dbFireStore, 'institutions_v9', slugFromURL))
+    //   if (snap.exists()) {
+    //     this.sports = snap.data().sports;
+    //     // place sports in alphabetical order
+    //     for (const key in this.sports) {
+    //       this.sports[key] = Object.fromEntries(Object.entries(this.sports[key]).sort());
+    //     }
+    //   } else {
+    //     console.log("No such document")
+    //   }
+    // },
     async getImages() {
       const slugFromURL = this.$route.params.slug;
 
@@ -1258,6 +1261,10 @@ export default {
 
     h3 {
       font-size: 20px;
+    }
+    
+    h4 {
+      font-weight: 500;
     }
 
     li {
