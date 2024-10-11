@@ -790,12 +790,12 @@
           <div>
             <h3>Men's Varsity</h3>
             <ul>
-              <li v-for="(sports, sportName) in sports['Mens_Varsity']" :key="sportName">
+              <li class="sport-listing" v-for="(sports, sportName) in sports['Mens_Varsity']" :key="sportName">
                 <h4>{{ sportName }}</h4>
                 <div class="division">
                   <span>{{ sports.Division }}</span>              
                   <span 
-                    v-if="sports.Subdivision"
+                    v-if="sports.Subdivision.trim() !== ''"
                     class="subdivision">{{ sports.Subdivision }}
                   </span>
                 </div>
@@ -805,12 +805,12 @@
           <div>
             <h3>Women's Varsity</h3>
             <ul>
-              <li v-for="(sports, sportName) in sports['Women_Varsity']" :key="sportName">
+              <li class="sport-listing" v-for="(sports, sportName) in sports['Women_Varsity']" :key="sportName">
                 <h4>{{ sportName }}</h4>
                 <div class="division">
                   <span>{{ sports.Division }}</span>              
                   <span 
-                    v-if="sports.Subdivision"
+                    v-if="sports.Subdivision.trim() !== ''"
                     class="subdivision">{{ sports.Subdivision }}
                   </span>
                 </div>
@@ -820,16 +820,16 @@
           <div>
             <h3>Club Teams</h3>
             <ul>
-              <li v-for="(sports, sportName) in sports['Club']" :key="sportName">
-                <span><span style="font-weight: 500">{{ sportName }}</span> - {{ sports.Gender }} </span>                
+              <li class="sport-listing" v-for="(sports, sportName) in sports['Club']" :key="sportName">
+                <span><span style="font-weight: 500">{{ sportName }}</span> - <span class="gender">{{ sports.Gender }}</span> </span>                
               </li>
             </ul>
           </div>
           <div>
             <h3>Intramural</h3>
             <ul>
-              <li v-for="(sports, sportName) in sports['Intramural']" :key="sportName">
-                <span><span style="font-weight: 500">{{ sportName }}</span> - {{ sports.Gender }} </span>                
+              <li class="sport-listing" v-for="(sports, sportName) in sports['Intramural']" :key="sportName">
+                <span><span style="font-weight: 500">{{ sportName }}</span> - <span class="gender">{{ sports.Gender }}</span> </span>                
               </li>
             </ul>
           </div>       
@@ -1280,7 +1280,7 @@ export default {
     .subdivision {
       background: rgb(232, 232, 232);
       border-radius: 6px;
-      font-size: 12px;
+      font-size: 10px;
       padding: 2px 8px;
     }
 
@@ -1292,5 +1292,14 @@ export default {
     grid-template-columns: 1fr 1fr;
     row-gap: 24px;
   }
+  .sport-listing {
+    display: flex;
+    gap: 8px;
 
+    .division,
+    .subdivision,
+    .gender {
+      color: #434343
+    }
+  }
 </style>

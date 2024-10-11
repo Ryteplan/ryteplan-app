@@ -158,7 +158,10 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
       let sportFilter = '';
 
       if (state.filters.sportName.length > 0) {
-        sportFilter = "&& sportsForTypesense.womensVarsitySports:=[*" + state.filters.sportName + "*]";
+        sportFilter = "&& (sportsForTypesense.mensVarsitySports:=[*" + state.filters.sportName + "*] || " +
+        "sportsForTypesense.womensVarsitySports:=[*" + state.filters.sportName + "*] || " +
+        "sportsForTypesense.clubSports:=[*" + state.filters.sportName + "*] || " +
+        "sportsForTypesense.intramuralSports:=[*" + state.filters.sportName + "*])";
       }
 
 
