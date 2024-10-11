@@ -157,11 +157,10 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
 
       let sportFilter = '';
 
-      // if (state.filters.sportName.length > 0) {
-      //   sportFilter = "&& sports." + state.filters.sportName.join(',') + ":[NCAA 2]"; 
-      // }
+      if (state.filters.sportName.length > 0) {
+        sportFilter = "&& sportsForTypesense.womensVarsitySports:=[*" + state.filters.sportName + "*]";
+      }
 
-      // sportFilter = "&& sports.Swimming:[NCAA 1]";
 
       let filterByString =
         hiddenFilter +

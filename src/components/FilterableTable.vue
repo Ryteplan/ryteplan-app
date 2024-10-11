@@ -82,7 +82,7 @@
           </v-row>
         </div>
       </div>
-      <!-- {{ searchFilterSortStore.filters }} -->
+      {{ searchFilterSortStore.filters }}
       <div class="d-flex align-center-md justify-space-between pr-4-md" style="gap: 40px">
         <v-dialog v-model="filterDialog" width="700px" scrollable>
           <template v-slot:activator="{ props }">
@@ -102,11 +102,16 @@
 
             <v-card-text class="px-4" style="height: 70vh;">
               <h4>Narrow down your search</h4>
-              <div class="d-none">
+              <div class="mt-4">
                 <span class="d-block mt-8">Sports</span>
-                <v-select class="mt-4" flat hide-details small multiple clearable auto label="Sport"
+                <!-- <v-select class="mt-4" flat hide-details small multiple clearable auto label="Sport"
                   :items="searchFilterSortStore.sportList" v-model="searchFilterSortStore.filters.sportName"
-                  @update:menu="onUpdateMenu" />
+                  @update:menu="onUpdateMenu" /> -->
+                  <v-text-field
+                      v-model="searchFilterSortStore.filters.sportName"
+                      label="Sport"
+                      clearable
+                    />
               </div>
               <div class="mt-4">
                 <span class="">Location</span>
