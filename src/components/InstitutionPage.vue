@@ -781,9 +781,9 @@
           </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
-      <div 
+      <!-- <div 
         class="section-container mt-8"
-        v-if="sports !== null"
+        v-if="sports !== null && sports['Mens_Varsity'] !== null"
       >
         <h2>Sports</h2>
         <div class="sports-container">
@@ -834,7 +834,7 @@
             </ul>
           </div>       
         </div> 
-      </div>
+      </div> -->
     </div>
     <SaveToListDialog 
       v-model="showSaveToListDialog" 
