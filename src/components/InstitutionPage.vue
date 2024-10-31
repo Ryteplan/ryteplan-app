@@ -786,54 +786,16 @@
         v-if="sports && Object.keys(sports).length > 0"
         >
         <h2>Sports</h2>
-        <div class="sports-container" v-if="sports && sports['Mens_Varsity']">
-          <div>
-            <h3>Men's Varsity</h3>
-            <ul>
-              <li class="sport-listing" v-for="(sports, sportName) in sports['Mens_Varsity']" :key="sportName">
-                <h4>{{ sportName }}</h4>
-                <div class="division">
-                  <span>{{ sports.Division }}</span>              
-                  <span 
-                    v-if="sports.Subdivision.trim() !== ''"
-                    class="subdivision">{{ sports.Subdivision }}
-                  </span>
-                </div>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h3>Women's Varsity</h3>
-            <ul>
-              <li class="sport-listing" v-for="(sports, sportName) in sports['Women_Varsity']" :key="sportName">
-                <h4>{{ sportName }}</h4>
-                <div class="division">
-                  <span>{{ sports.Division }}</span>              
-                  <span 
-                    v-if="sports.Subdivision.trim() !== ''"
-                    class="subdivision">{{ sports.Subdivision }}
-                  </span>
-                </div>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h3>Club Teams</h3>
-            <ul>
-              <li class="sport-listing" v-for="(sports, sportName) in sports['Club']" :key="sportName">
-                <span><span style="font-weight: 500">{{ sportName }}</span> - <span class="gender">{{ sports.Gender }}</span> </span>                
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h3>Intramural</h3>
-            <ul>
-              <li class="sport-listing" v-for="(sports, sportName) in sports['Intramural']" :key="sportName">
-                <span><span style="font-weight: 500">{{ sportName }}</span> - <span class="gender">{{ sports.Gender }}</span> </span>                
-              </li>
-            </ul>
-          </div>       
-        </div> 
+        <div class="sports-container">
+            <template v-for="(category, key) in ['Mens_Varsity', 'Women_Varsity', 'Intramural', 'Club']" :key="key">
+            <SportsCategory
+              v-if="sports[category]"
+              :categoryName="category.replace('_', ' ')"
+              :sports="sports[category]"
+              :category="category"
+            />
+            </template>
+        </div>
       </div>
     </div>
     <SaveToListDialog 
@@ -852,6 +814,7 @@ import { useUserStore } from '../stores/userStore';
 import { useSearchFilterSortStore } from '../stores/searchFilterSortStore';
 import StatDisplay from './StatDisplay.vue';
 import TiptapInputA from "./TiptapInputA.vue"
+import SportsCategory from './SportsCategory.vue'
 
 // import EthnicityChart from './EthnicityChart.vue';
 
@@ -1094,6 +1057,7 @@ export default {
     SaveToListDialog,
     StatDisplay,
     TiptapInputA,
+    SportsCategory
   },
 };
 
