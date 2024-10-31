@@ -781,12 +781,12 @@
           </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
-      <!-- <div 
+      <div 
         class="section-container mt-8"
-        v-if="sports !== null && sports['Mens_Varsity'] !== null"
-      >
+        v-if="sports && Object.keys(sports).length > 0"
+        >
         <h2>Sports</h2>
-        <div class="sports-container">
+        <div class="sports-container" v-if="sports && sports['Mens_Varsity']">
           <div>
             <h3>Men's Varsity</h3>
             <ul>
@@ -834,7 +834,7 @@
             </ul>
           </div>       
         </div> 
-      </div> -->
+      </div>
     </div>
     <SaveToListDialog 
       v-model="showSaveToListDialog" 
@@ -996,6 +996,7 @@ export default {
         for (const key in this.sports) {
           this.sports[key] = Object.fromEntries(Object.entries(this.sports[key]).sort());
         }
+        console.log(this.sports);
       });
       
       this.getImages();
