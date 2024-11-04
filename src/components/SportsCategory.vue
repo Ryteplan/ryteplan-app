@@ -10,10 +10,13 @@
 							<span class="subdivision" v-if="sport.Subdivision.trim() !== ''">{{ sport.Subdivision }}</span>
 					</div>
 					<div v-else>
-							<span> - <span class="gender">{{ sport.Gender }}</span></span>
+							<span>- <span class="gender">{{ sport.Gender }}</span></span>
 					</div>
 				</div>
-				<div class="d-flex ga-4 mb-8">
+				<div 
+					class="d-flex ga-1 mb-8"
+					v-if="userStore.adminMode"
+				>
 					<v-btn @click="editSport(sportName)">Edit</v-btn>
 					<v-btn @click="deleteSport(sportName)">Delete</v-btn>
 				</div>
