@@ -785,7 +785,9 @@
         class="section-container mt-8"
         v-if="sports && Object.keys(sports).length > 0"
         >
-        <h2>Sports</h2>
+        <div class="d-flex ga-4">
+          <h2>Sports</h2>
+        </div>
         <div class="sports-container">
             <template v-for="(category, key) in ['Mens_Varsity', 'Women_Varsity', 'Intramural', 'Club']" :key="key">
             <SportsCategory
@@ -797,7 +799,96 @@
             </template>
         </div>
       </div>
+      <v-expansion-panels>
+        <v-expansion-panel>
+          <v-expansion-panel-title>
+            <h3>Add New Sport</h3>
+          </v-expansion-panel-title>
+          <v-expansion-panel-text>
+            <v-form ref="form" v-model="valid">
+              <v-text-field
+                v-model="newSport.name"
+                label="Sport Name"
+                :rules="[v => !!v || 'Sport name is required']"
+                required
+              ></v-text-field>
+              <v-select
+                v-model="newSport.category"
+                :items="['Mens_Varsity', 'Women_Varsity', 'Intramural', 'Club']"
+                label="Category"
+                :rules="[v => !!v || 'Category is required']"
+                required
+              ></v-select>
+              <v-text-field
+                v-model="newSport.division"
+                label="Division"
+              ></v-text-field>
+              <v-text-field
+                v-model="newSport.subdivision"
+                label="Subdivision"
+              ></v-text-field>
+              <v-btn
+                :disabled="!valid"
+                color="primary"
+                @click="addNewSport"
+              >
+                Add Sport
+              </v-btn>
+            </v-form>
+          </v-expansion-panel-text>
+        </v-expansion-panel>
+      </v-expansion-panels>
+      <v-expansion-panels class="mt-8">
+        <v-expansion-panel :value="0">
+          <v-expansion-panel-title>
+            <h3>Sports From Petersons</h3>
+          </v-expansion-panel-title>
+          <v-expansion-panel-text>            
+            <div class="d-flex flex-column">
+              <div class="flex">
+                <h3 class="mt-3">Associations</h3>
+                <div class="multiple-stat-container mt-2">
+                  <div class="stat-container">
+                    <span class="stat-label">NCAA*</span> 
+                    <span class="stat-content">{{ institution["assnAthlNcaa"] === 'NULL' || institution["assnAthlNcaa"] === 'FALSE' ? '—' : institution["assnAthlNcaa"].toLocaleString() }}</span>
+                  </div>
+
+                    <div class="stat-container">
+                    <span class="stat-label">NCCAA</span> 
+                    <span class="stat-content">{{ institution["assnAthlNccaa"] === 'NULL' || institution["assnAthlNccaa"] === 'FALSE' ? '—' : institution["assnAthlNccaa"].toLocaleString() }}</span>
+                  </div>
+                    
+                  <div class="stat-container">
+                    <span class="stat-label">NAIA</span> 
+                    <span class="stat-content">{{ institution["assnAthlNaia"] === 'NULL' || institution["assnAthlNaia"] === 'FALSE' ? '—' : institution["assnAthlNccaa"].toLocaleString() }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-4 d-flex" style="font-size: 12px; gap: 16px;">
+                  <span>1 = Division 1</span>
+                  <span>2 = Division 2</span>
+                  <span>3 = Division 3</span>
+                  <span>A = Division 1-A</span>
+                  <span>B = Division 1-AA</span>
+                  <span>C = Club teams</span>
+                  <span>X = Yes</span>
+                </div>
+            </div>
+            <v-data-table 
+              v-if="sports !== null"
+              :headers="sportsHeadersFromPetersons"
+              :items="sportsFromPetersons"
+              :items-per-page="-1"
+            >
+              <template #bottom></template>
+            </v-data-table>            
+          </v-expansion-panel-text>
+        </v-expansion-panel>
+      </v-expansion-panels>
     </div>
+
+
+
     <SaveToListDialog 
       v-model="showSaveToListDialog" 
       :institutionId="institutionId"
@@ -853,6 +944,13 @@ export default {
   },
   data() {
     return {
+      valid: false,
+      newSport: {
+        name: '',
+        category: '',
+        division: '',
+        subdivision: ''
+      },
       isLoggedIn: false,
       isEditImagesSaveButtonDisabled: false,
       isEditImagesSaveButtonVisible: false,
@@ -885,10 +983,34 @@ export default {
       sat50thPercentile: 0,
       majors: [],
       sports: [],
+      sportsFromPetersons: [],
+      sportsHeadersFromPetersons: [
+        { title: 'Sport', key: 'descr', width: "250px" },
+        { title: 'Intramural Men', key: 'intmMen', width: "180px" },
+        { title: 'Intramural Women', key: 'intmWmn', width: "180px" },
+        { title: 'Intercollegiate Men', key: 'intcMen', width: "200px" },
+        { title: 'Intercollegiate Women', key: 'intcWmn', width: "230px" },
+      ],
       ethnicityPopulationTotal: 0,
     }
   },
   methods: {
+    async getSportsFromPetersons() {
+      const sports = collection(dbFireStore, 'sports_v3');
+      const q = query(sports, where("inunId", "==", this.institution.inunId));
+      const docSnap = await getDocs(q);
+      let sportsArray = [];
+      docSnap.forEach((doc) => {
+        sportsArray.push(doc.data());
+      });
+      sportsArray = sportsArray.map(sport => {
+        sport.descr = this.toTitleCase(sport.descr);
+        return sport;
+      });
+      sportsArray.sort((a, b) => a.descr.localeCompare(b.descr));
+      console.log(sportsArray);
+      this.sportsFromPetersons = sportsArray;
+    },
     toggleImageCredits() {
       this.showImageCredits = !this.showImageCredits
     },
@@ -965,6 +1087,7 @@ export default {
       this.getImages();
       this.getDescriptions();
       this.getEthnicityPopulationTotal();
+      this.getSportsFromPetersons();
       this.sat50thPercentile = this.institution["satVerb50thP"] + this.institution["satMath50thP"];
 
       document.title = this.institution["name"] + " | Ryteplan College Search";
