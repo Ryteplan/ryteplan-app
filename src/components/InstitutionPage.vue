@@ -97,7 +97,6 @@
             <TiptapInputA v-model="imageCredits.image4" class="mt-4"/>
           </div>
         </div>
-
         <div class="mt-4 pa-4" style="background: #eee;">
           <span class="font-weight-bold">Image 5</span>
           <div class="mt-2">
@@ -171,20 +170,20 @@
           </div>
           <v-btn
             @click="toggleImageCredits"
-            class="d-none mt-4"
+            class="mt-4"
             size="small"
           >
-            Show Image credits
+            Image credits
           </v-btn>
           <div 
             v-if="showImageCredits"
             class="mt-3"
           >
             <div v-html="imageCredits.image1" />
-            <div v-html="imageCredits.image2" />
-            <div v-html="imageCredits.image3" />
-            <div v-html="imageCredits.image4" />
-            <div v-html="imageCredits.image5" />
+            <div class="mt-2" v-html="imageCredits.image2" />
+            <div class="mt-2" v-html="imageCredits.image3" />
+            <div class="mt-2" v-html="imageCredits.image4" />
+            <div class="mt-2" v-html="imageCredits.image5" />
           </div>
         </div>
         <div v-if="imagesFromGoogleSearch.length > 0">
@@ -835,7 +834,7 @@
           </div>       
         </div> 
       </div> -->
-    </div>
+    </div>    
     <SaveToListDialog 
       v-model="showSaveToListDialog" 
       :institutionId="institutionId"
