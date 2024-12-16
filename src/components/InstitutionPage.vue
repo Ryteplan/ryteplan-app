@@ -629,8 +629,10 @@
       </v-expansion-panels>
       <div class="section-container mt-8">
         <h2>Student Ethnicity</h2>
-        <!-- <EthnicityChart :institutionData="this.institution"></EthnicityChart> -->
-        <div class="ethnic-stats">
+        <div 
+          class="ethnic-stats"
+          v-if="ethnicityPopulationTotal !== 0"
+        >
           <div class="three-by-three-stat-grid mt-4" style="max-width: 900px; margin: 0 auto;">
             <div class="stat-container">          
               <span class="stat-label">International</span>
@@ -759,6 +761,9 @@
               </div>
             </div>
           </div>
+        </div>
+        <div v-else>
+          <p>No data available</p>
         </div>
       </div>
       <v-expansion-panels class="mt-8">
