@@ -42,7 +42,7 @@
         </v-col>
         <v-col cols="6" lg="3" class="pa-0">
           <v-switch 
-            label="Edit image URLs"
+            label="Edit Images"
             v-model="editImages"
             @change="toggleEditImages"
             color="primary"
@@ -628,6 +628,63 @@
         </v-expansion-panel>
       </v-expansion-panels>
       <div class="section-container mt-8">
+        <h2>Sports & Athletics</h2>
+        <div>
+          <h3>Intercollegiate</h3>
+          <div class="d-flex">
+            <div class="flex-grow-1 mr-4">
+              <h4>Men</h4>
+              <ul class="d-flex flex-column" style="gap: 8px;">
+                <SportItem
+                  v-for="sport in sports.filter(sport => sport.INTC_MEN !== null)"
+                  :key="sport.DESCR"
+                  :sport="sport"
+                  :division-code="sport.INTC_MEN"
+                />
+              </ul>
+            </div>
+            <div class="flex-grow-1">
+              <h4>Women</h4>
+              <ul class="d-flex flex-column" style="gap: 8px;">
+                <SportItem
+                  v-for="sport in sports.filter(sport => sport.INTC_WMN !== null)"
+                  :key="sport.DESCR"
+                  :sport="sport"
+                  :division-code="sport.INTC_WMN"
+                />
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4">
+          <h3>Intramural</h3>
+          <div class="d-flex">
+            <div class="flex-grow-1 mr-4">
+              <h4>Men</h4>
+              <ul class="d-flex flex-column" style="gap: 8px;">
+                <SportItem
+                  v-for="sport in sports.filter(sport => sport.INTM_MEN !== null)"
+                  :key="sport.DESCR"
+                  :sport="sport"
+                  :division-code="sport.INTM_MEN"
+                />
+              </ul>
+            </div>
+            <div class="flex-grow-1">
+              <h4>Women</h4>
+              <ul class="d-flex flex-column" style="gap: 8px;">
+                <SportItem
+                  v-for="sport in sports.filter(sport => sport.INTM_WMN !== null)"
+                  :key="sport.DESCR"
+                  :sport="sport"
+                  :division-code="sport.INTM_WMN"
+                />
+              </ul>
+            </div>
+          </div>        
+        </div>
+      </div>
+      <div class="section-container mt-8">
         <h2>Student Ethnicity</h2>
         <div 
           class="ethnic-stats"
@@ -785,60 +842,6 @@
           </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
-      <!-- <div 
-        class="section-container mt-8"
-        v-if="sports !== null && sports['Mens_Varsity'] !== null"
-      >
-        <h2>Sports</h2>
-        <div class="sports-container">
-          <div>
-            <h3>Men's Varsity</h3>
-            <ul>
-              <li v-for="(sports, sportName) in sports['Mens_Varsity']" :key="sportName">
-                <h4>{{ sportName }}</h4>
-                <div class="division">
-                  <span>{{ sports.Division }}</span>              
-                  <span 
-                    v-if="sports.Subdivision"
-                    class="subdivision">{{ sports.Subdivision }}
-                  </span>
-                </div>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h3>Women's Varsity</h3>
-            <ul>
-              <li v-for="(sports, sportName) in sports['Women_Varsity']" :key="sportName">
-                <h4>{{ sportName }}</h4>
-                <div class="division">
-                  <span>{{ sports.Division }}</span>              
-                  <span 
-                    v-if="sports.Subdivision"
-                    class="subdivision">{{ sports.Subdivision }}
-                  </span>
-                </div>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h3>Club Teams</h3>
-            <ul>
-              <li v-for="(sports, sportName) in sports['Club']" :key="sportName">
-                <span><span style="font-weight: 500">{{ sportName }}</span> - {{ sports.Gender }} </span>                
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h3>Intramural</h3>
-            <ul>
-              <li v-for="(sports, sportName) in sports['Intramural']" :key="sportName">
-                <span><span style="font-weight: 500">{{ sportName }}</span> - {{ sports.Gender }} </span>                
-              </li>
-            </ul>
-          </div>       
-        </div> 
-      </div> -->
     </div>    
     <SaveToListDialog 
       v-model="showSaveToListDialog" 
@@ -856,6 +859,7 @@ import { useUserStore } from '../stores/userStore';
 import { useSearchFilterSortStore } from '../stores/searchFilterSortStore';
 import StatDisplay from './StatDisplay.vue';
 import TiptapInputA from "./TiptapInputA.vue"
+import SportItem from './SportItem.vue'
 
 // import EthnicityChart from './EthnicityChart.vue';
 
@@ -930,6 +934,19 @@ export default {
     }
   },
   methods: {
+    getDivisionText(code) {
+      console.log(code);
+      const divisions = {
+        '1': 'NCAA Division 1',
+        '2': 'NCAA Division 2',
+        '3': 'NCAA Division 3',
+        'A': 'NCAA Division 1-A',
+        'B': 'NCAA Division 1-AA',
+        'C': 'Club',
+        'X': ''
+      };
+      return divisions[code] || code;
+    },
     toggleImageCredits() {
       this.showImageCredits = !this.showImageCredits
     },
@@ -996,12 +1013,8 @@ export default {
         this.majors.sort((a, b) => a.localeCompare(b));
         this.majors = this.majors.map(major => major.replace(/\//g, ' and '));
         this.majors = this.majors.map(major => this.toTitleCase(major));
-        this.sports = doc.data().sports;
-        for (const key in this.sports) {
-          this.sports[key] = Object.fromEntries(Object.entries(this.sports[key]).sort());
-        }
       });
-      
+      this.getSports();
       this.getImages();
       this.getDescriptions();
       this.getEthnicityPopulationTotal();
@@ -1018,19 +1031,57 @@ export default {
         this.descriptions = doc.data();
       });
     },
-    // async getSports() {
-    //   const slugFromURL = this.$route.params.slug;
-    //   const snap = await getDoc(doc(dbFireStore, 'institutions_v9', slugFromURL))
-    //   if (snap.exists()) {
-    //     this.sports = snap.data().sports;
-    //     // place sports in alphabetical order
-    //     for (const key in this.sports) {
-    //       this.sports[key] = Object.fromEntries(Object.entries(this.sports[key]).sort());
-    //     }
-    //   } else {
-    //     console.log("No such document")
-    //   }
-    // },
+    async getSports() {
+      const idString = this.institution.inunId.toString();
+      console.log(idString);
+      const sports = collection(dbFireStore, 'sports_v_13');      
+      const q = query(sports, where(documentId(), "==", idString));
+      const docSnap = await getDocs(q);
+      let sportsArray = [];
+
+      docSnap.forEach((doc) => {
+        sportsArray = doc.data().sports;
+      });
+      
+      // if any field has a value of "" then set it to null
+      sportsArray = sportsArray.map(sport => {
+        const updatedSport = {};
+        for (const [key, value] of Object.entries(sport)) {
+          updatedSport[key] = value === "" ? null : value;
+        }
+        return updatedSport;
+      });
+
+      sportsArray = sportsArray.map(sport => ({
+        ...sport,
+        descr: sport.descr ? this.toTitleCase(sport.descr) : ''
+      }));
+
+      const allFields = new Set();
+      sportsArray.forEach(sport => {
+        Object.keys(sport).forEach(key => allFields.add(key));
+      });
+
+      sportsArray = sportsArray.map(sport => {
+        const normalizedSport = {};
+        Array.from(allFields).sort().forEach(field => {
+          normalizedSport[field] = sport[field] || null;
+        });
+        return normalizedSport;
+      });
+
+      sportsArray.sort((a, b) => {
+        const descrA = a.DESCR || '';
+        const descrB = b.DESCR || '';
+        return descrA.localeCompare(descrB);
+      });
+
+      console.log(sportsArray);
+
+      for (const sport of sportsArray) {
+        this.sports.push(sport);
+      }
+    },
     async getImages() {
       const slugFromURL = this.$route.params.slug;
 
@@ -1097,6 +1148,7 @@ export default {
     SaveToListDialog,
     StatDisplay,
     TiptapInputA,
+    SportItem,
   },
 };
 
