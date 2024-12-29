@@ -935,7 +935,6 @@ export default {
   },
   methods: {
     getDivisionText(code) {
-      console.log(code);
       const divisions = {
         '1': 'NCAA Division 1',
         '2': 'NCAA Division 2',
@@ -1033,7 +1032,6 @@ export default {
     },
     async getSports() {
       const idString = this.institution.inunId.toString();
-      console.log(idString);
       const sports = collection(dbFireStore, 'sports_v_13');      
       const q = query(sports, where(documentId(), "==", idString));
       const docSnap = await getDocs(q);
@@ -1075,8 +1073,6 @@ export default {
         const descrB = b.DESCR || '';
         return descrA.localeCompare(descrB);
       });
-
-      console.log(sportsArray);
 
       for (const sport of sportsArray) {
         this.sports.push(sport);
