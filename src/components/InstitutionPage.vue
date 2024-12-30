@@ -108,8 +108,6 @@
             <TiptapInputA v-model="imageCredits.image5" class="mt-4"/>
           </div>
         </div>
-
-
         <v-btn class="mt-4" :disabled="isEditImagesSaveButtonDisabled" color="primary" @click="saveImages">
           <span v-if="isEditImagesSaveButtonDisabled">
             <v-progress-circular
@@ -682,6 +680,17 @@
               </ul>
             </div>
           </div>        
+        </div>
+        <div class="mt-4">
+          <h3>Uncategorized</h3>
+          <ul class="d-flex flex-column" style="gap: 8px;">
+            <SportItem
+              v-for="sport in sports.filter(sport => sport.INTM_WMN == null && sport.INTM_MEN == null && sport.INTC_WMN == null && sport.INTC_MEN == null)"
+              :key="sport.DESCR"
+              :sport="sport"
+              :division-code=null
+            />
+          </ul>
         </div>
       </div>
       <div class="section-container mt-8">

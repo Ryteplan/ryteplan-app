@@ -14,7 +14,7 @@ export default {
     },
     divisionCode: {
       type: String,
-      required: true
+      required: false
     }
   },
   methods: {
