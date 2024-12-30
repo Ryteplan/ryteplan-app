@@ -1040,15 +1040,7 @@ export default {
       });
     },
     async getSports() {
-      const idString = this.institution.inunId.toString();
-      const sports = collection(dbFireStore, 'sports_v_13');      
-      const q = query(sports, where(documentId(), "==", idString));
-      const docSnap = await getDocs(q);
-      let sportsArray = [];
-
-      docSnap.forEach((doc) => {
-        sportsArray = doc.data().sports;
-      });
+      let sportsArray = this.institution["sports"];
       
       // if any field has a value of "" then set it to null
       sportsArray = sportsArray.map(sport => {

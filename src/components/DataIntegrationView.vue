@@ -1,6 +1,14 @@
 <template>
   <v-container class="pt-4">
     <div class="data-integration">
+      <v-btn
+        class="d-none"
+        @click="addSportsFromPetersonsToIntegratedData"
+        color="primary"
+      >
+        Add sports data to integrated data
+      </v-btn>
+
       <div class="d-none">
         <h1>Data Backup</h1>
         <p>Note to developer: Update the setDoc for versioning of the backup</p>
@@ -74,6 +82,46 @@ export default {
     }
   },
   methods: {
+    async addSportsFromPetersonsToIntegratedData() {
+      // Get all documents from institutions_integrated
+      const integratedDataQuery = query(collection(dbFireStore, "institutions_integrated"));
+      const integratedDataSnapshots = await getDocs(integratedDataQuery);
+      
+      // Process each institution
+      for (const institutionDoc of integratedDataSnapshots.docs) {
+        const institution = institutionDoc.data();
+        const inunId = institution.inunId?.toString();
+        
+        if (!inunId) {
+          console.warn(`Skipping institution ${institution.name}: No inunId found`);
+          continue;
+        }
+
+        // Get sports data for this institution
+        const sportsQuery = query(
+          collection(dbFireStore, 'sports_v_13'), 
+          where(documentId(), "==", inunId)
+        );
+        const sportsSnap = await getDocs(sportsQuery);
+        
+        if (sportsSnap.empty) {
+          console.warn(`No sports data found for institution ${institution.name} (ID: ${inunId})`);
+          continue;
+        }
+
+        // Update the institution with sports data
+        const sportsData = sportsSnap.docs[0].data().sports;
+        await setDoc(
+          doc(dbFireStore, 'institutions_integrated', institution.uri),
+          { sports: sportsData },
+          { merge: true }
+        );
+        
+        console.log(`Updated sports data for: ${institution.name}`);
+      }
+      
+      console.log('Finished updating sports data for all institutions');
+    },
     async fixManualStuff() {
       console.log("fixManualStuff");
       
