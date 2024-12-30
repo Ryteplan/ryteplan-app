@@ -102,41 +102,6 @@
             <v-card-text class="px-4" style="height: 70vh;">
               <h4>Narrow down your search</h4>
               <div class="mt-4">
-                <span class="d-block mt-8">Sports</span>
-                <v-row class="mt-4">
-                  <v-col cols="6">
-                    <v-select class="text-capitalize" 
-                      flat 
-                      hide-details 
-                      small 
-                      clearable 
-                      auto 
-                      label="Sport"
-                      :items="searchFilterSortStore.sportList" 
-                      v-model="searchFilterSortStore.filters.sportName"
-                      :item-title="str => str.replace(/\b\w/g, l => l.toUpperCase())"
-                      :menu-props="{ contentClass: 'text-capitalize' }"
-                      @update:menu="onUpdateMenu" 
-                    />
-                  </v-col>
-                  <v-col cols="6">
-                    <v-select
-                      flat 
-                      hide-details 
-                      small 
-                      clearable 
-                      auto 
-                      label="Division"
-                      :items="divisions"
-                      item-title="title"
-                      item-value="value"
-                      v-model="searchFilterSortStore.filters.division"
-                      @update:menu="onUpdateMenu"
-                    />
-                  </v-col>
-                </v-row>
-              </div>
-              <div class="mt-4">
                 <span class="">Location</span>
                 <v-select class="mt-4" flat hide-details small multiple clearable auto label="Country"
                   :items="searchFilterSortStore.CountryList" v-model="searchFilterSortStore.filters.Country"
@@ -201,6 +166,41 @@
                   :items="searchFilterSortStore.cipCodes" item-value="cipCode" item-title="major"
                   v-model="searchFilterSortStore.filters.cipCode" @update:menu="onUpdateMenu">
                 </v-autocomplete>
+                <div class="mt-4">
+                  <span class="d-block mt-8">Sports</span>
+                  <v-select class="text-capitalize mt-4" 
+                    flat 
+                    hide-details 
+                    small 
+                    clearable 
+                    auto 
+                    label="Sport"
+                    :items="searchFilterSortStore.sportList" 
+                    v-model="searchFilterSortStore.filters.sportName"
+                    :item-title="str => str.replace(/\b\w/g, l => l.toUpperCase())"
+                    :menu-props="{ contentClass: 'text-capitalize' }"
+                    @update:menu="onUpdateMenu" 
+                  />
+                  <v-select
+                    class="mt-4"
+                    flat 
+                    hide-details 
+                    small 
+                    clearable 
+                    auto 
+                    label="Division"
+                    :items="divisions"
+                    item-title="title"
+                    item-value="value"
+                    v-model="searchFilterSortStore.filters.division"
+                    @update:menu="onUpdateMenu"
+                  />
+                  <span style="color: rgb(114 114 114); font-size: 12px;" class="mt-2">
+                    This field is unrelated to the sport selected field.
+                    <br/>
+                    Any school offering any sport in the division selected here will show in the search results.
+                  </span>
+                </div>
                 <span class="d-block mt-8">Religion</span>
                 <v-autocomplete class="mt-4" flat hide-details small multiple clearable chips auto label="Denomination"
                   :items="searchFilterSortStore.denomsList" v-model="searchFilterSortStore.filters.denom"
@@ -361,8 +361,8 @@ export default {
         { value: '3', title: 'NCAA Division 3' },
         { value: 'A', title: 'NCAA Division 1-A' },
         { value: 'B', title: 'NCAA Division 1-AA' },
-        { value: 'C', title: 'Club' },
-        { value: 'X', title: 'Intramural' }
+        // { value: 'C', title: 'Club' },
+        // { value: 'X', title: 'Intramural' }
       ]
     }
   },
