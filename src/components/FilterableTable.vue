@@ -12,7 +12,6 @@
             @update:menu="onUpdateMenu">
           </v-select>
         </div>
-
         <div style="display: flex; justify-content: end; align-items: center;">
           <v-row class="align-end">
             <!-- <v-col cols="12" md="3">
@@ -102,11 +101,40 @@
 
             <v-card-text class="px-4" style="height: 70vh;">
               <h4>Narrow down your search</h4>
-              <div class="d-none">
+              <div class="mt-4">
                 <span class="d-block mt-8">Sports</span>
-                <v-select class="mt-4" flat hide-details small multiple clearable auto label="Sport"
-                  :items="searchFilterSortStore.sportList" v-model="searchFilterSortStore.filters.sportName"
-                  @update:menu="onUpdateMenu" />
+                <v-row class="mt-4">
+                  <v-col cols="6">
+                    <v-select class="text-capitalize" 
+                      flat 
+                      hide-details 
+                      small 
+                      clearable 
+                      auto 
+                      label="Sport"
+                      :items="searchFilterSortStore.sportList" 
+                      v-model="searchFilterSortStore.filters.sportName"
+                      :item-title="str => str.replace(/\b\w/g, l => l.toUpperCase())"
+                      :menu-props="{ contentClass: 'text-capitalize' }"
+                      @update:menu="onUpdateMenu" 
+                    />
+                  </v-col>
+                  <v-col cols="6">
+                    <v-select
+                      flat 
+                      hide-details 
+                      small 
+                      clearable 
+                      auto 
+                      label="Division"
+                      :items="divisions"
+                      item-title="title"
+                      item-value="value"
+                      v-model="searchFilterSortStore.filters.division"
+                      @update:menu="onUpdateMenu"
+                    />
+                  </v-col>
+                </v-row>
               </div>
               <div class="mt-4">
                 <span class="">Location</span>
@@ -327,7 +355,15 @@ export default {
         //   action: this.shareClicked
         // }
       ],
-
+      divisions: [
+        { value: '1', title: 'NCAA Division 1' },
+        { value: '2', title: 'NCAA Division 2' },
+        { value: '3', title: 'NCAA Division 3' },
+        { value: 'A', title: 'NCAA Division 1-A' },
+        { value: 'B', title: 'NCAA Division 1-AA' },
+        { value: 'C', title: 'Club' },
+        { value: 'X', title: 'Intramural' }
+      ]
     }
   },
   methods: {

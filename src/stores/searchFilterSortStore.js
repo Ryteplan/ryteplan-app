@@ -156,12 +156,31 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
       }
 
       let sportFilter = '';
+      if ((state.filters.division && state.filters.division.length > 0) || (state.filters.sportName && state.filters.sportName.length > 0)) {
+        const divisionFields = {
+          '1': 'INTC_',    // NCAA D1
+          '2': 'INTC_',    // NCAA D2
+          '3': 'INTC_',    // NCAA D3
+          'A': 'INTC_',    // NCAA D1-A
+          'B': 'INTC_',    // NCAA D1-AA
+          'C': 'INTC_',    // Club
+          'X': 'INTM_'     // Intramural
+        };
 
-      // if (state.filters.sportName.length > 0) {
-      //   sportFilter = "&& sports." + state.filters.sportName.join(',') + ":[NCAA 2]"; 
-      // }
-
-      // sportFilter = "&& sports.Swimming:[NCAA 1]";
+        console.log(state.filters.division, state.filters.sportName)
+        if (state.filters.sportName.length > 0 && state.filters.division) {
+          // Both sport and division are selected
+          const fieldPrefix = divisionFields[state.filters.division];
+          sportFilter = `&& sports.DESCR:=${state.filters.sportName} && (sports.${fieldPrefix}MEN:${state.filters.division} || sports.${fieldPrefix}WMN:${state.filters.division})`;
+        } else if (state.filters.division) {
+          // Only division is selected
+          const fieldPrefix = divisionFields[state.filters.division];
+          sportFilter = `&& (sports.${fieldPrefix}MEN:${state.filters.division} || sports.${fieldPrefix}WMN:${state.filters.division})`;
+        } else if (state.filters.sportName) {
+          // Only sport is selected
+          sportFilter = `&& sports.DESCR:=${state.filters.sportName}`;
+        }
+      }      
 
       let filterByString =
         hiddenFilter +

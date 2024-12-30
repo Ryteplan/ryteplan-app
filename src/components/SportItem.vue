@@ -1,7 +1,7 @@
 <template>
   <li class="d-flex flex-column">
     <p style="text-transform: capitalize;">{{ sport.DESCR }}</p>
-    <span style="font-size: 12px" v-if="divisionCode !== null && divisionCode !== 'X'">{{ getDivisionText(divisionCode) }}</span>
+    <span style="font-size: 12px; color: rgb(114 114 114); " v-if="divisionCode !== null && divisionCode !== 'X'">{{ getDivisionText(divisionCode) }}</span>
   </li>
 </template>
 
