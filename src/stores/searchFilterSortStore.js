@@ -19,7 +19,10 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
     TypeList: ["Private", "Public"],
     admissionDifficultyList: ["—", "Noncompetitive", "Minimal", "Moderate", "Most", "Very"],
     campusSettingList: ["Rural", "Small", "Suburb", "Urban"],
-    filters: { ...defaultFilters },
+    filters: { 
+      ...defaultFilters,
+      sportName: [],
+    },
     activeSearchTerms: '',
     searchInput: '',
     saveSearchInput: '',
@@ -167,20 +170,23 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
           'X': 'INTM_'     // Intramural
         };
 
-        console.log(state.filters.division, state.filters.sportName)
-        if (state.filters.sportName.length > 0 && state.filters.division) {
-          // Both sport and division are selected
-          const fieldPrefix = divisionFields[state.filters.division];
-          sportFilter = `&& sports.DESCR:=${state.filters.sportName} && (sports.${fieldPrefix}MEN:${state.filters.division} || sports.${fieldPrefix}WMN:${state.filters.division})`;
-        } else if (state.filters.division) {
-          // Only division is selected
-          const fieldPrefix = divisionFields[state.filters.division];
-          sportFilter = `&& (sports.${fieldPrefix}MEN:${state.filters.division} || sports.${fieldPrefix}WMN:${state.filters.division})`;
-        } else if (state.filters.sportName) {
-          // Only sport is selected
-          sportFilter = `&& sports.DESCR:=${state.filters.sportName}`;
-        }
-      }      
+        // Convert single sport to array if needed
+        const selectedSports = Array.isArray(state.filters.sportName) 
+          ? state.filters.sportName 
+          : [state.filters.sportName];
+
+        // Create filter conditions for each sport
+        const sportConditions = selectedSports.map(sport => {
+          if (state.filters.division) {
+            const fieldPrefix = divisionFields[state.filters.division];
+            return `(sports.DESCR:=${sport} && (sports.${fieldPrefix}MEN:=${state.filters.division} || sports.${fieldPrefix}WMN:=${state.filters.division}))`;
+          }
+          return `sports.DESCR:=${sport}`;
+        });
+
+        // Join conditions with OR operator
+        sportFilter = `&& (${sportConditions.join(' || ')})`;
+      }
 
       let filterByString =
         hiddenFilter +

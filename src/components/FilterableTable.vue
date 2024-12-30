@@ -167,13 +167,15 @@
                   v-model="searchFilterSortStore.filters.cipCode" @update:menu="onUpdateMenu">
                 </v-autocomplete>
                 <div class="mt-4">
-                  <span class="d-block mt-8">Sports</span>
-                  <v-select class="text-capitalize mt-4" 
+                  <span class="d-block mt-8">Athletics</span>
+                  <v-autocomplete class="text-capitalize mt-4" 
                     flat 
                     hide-details 
                     small 
                     clearable 
                     auto 
+                    chips
+                    multiple
                     label="Sport"
                     :items="searchFilterSortStore.sportList" 
                     v-model="searchFilterSortStore.filters.sportName"
@@ -198,7 +200,7 @@
                   <span style="color: rgb(114 114 114); font-size: 12px;" class="mt-2">
                     This field is unrelated to the sport selected field.
                     <br/>
-                    Any school offering any sport in the division selected here will show in the search results.
+                    Schools offering any sport in the division selected will appear in the search results.
                   </span>
                 </div>
                 <span class="d-block mt-8">Religion</span>
