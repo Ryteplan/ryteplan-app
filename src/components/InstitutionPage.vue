@@ -627,7 +627,7 @@
       </v-expansion-panels>
       <div class="section-container mt-8">
         <h2>Sports & Athletics</h2>
-        <div>
+        <div v-if="sports.some(sport => sport.INTC_MEN !== null || sport.INTC_WMN !== null)">
           <h3>Intercollegiate</h3>
           <div class="d-flex">
             <div class="flex-grow-1 mr-4">
@@ -654,7 +654,7 @@
             </div>
           </div>
         </div>
-        <div class="mt-4">
+        <div class="mt-4" v-if="sports.some(sport => sport.INTM_MEN !== null || sport.INTM_WMN !== null)">
           <h3>Intramural</h3>
           <div class="d-flex">
             <div class="flex-grow-1 mr-4">
@@ -681,7 +681,7 @@
             </div>
           </div>        
         </div>
-        <div class="mt-4">
+        <div class="mt-4" v-if="sports.filter(sport => sport.INTM_WMN == null && sport.INTM_MEN == null && sport.INTC_WMN == null && sport.INTC_MEN == null).length > 0">
           <h3>Uncategorized</h3>
           <ul class="d-flex flex-column" style="gap: 8px;">
             <SportItem
