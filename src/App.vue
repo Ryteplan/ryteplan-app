@@ -173,7 +173,7 @@
     </v-navigation-drawer>
     <v-main class="flex-column">
       <router-view :key="$route.fullPath"></router-view>
-      <v-container class="pt-0">
+      <v-container class="footer-container pt-0">
         <v-footer class="pb-4 ml-0 mr-0 pl-0 pr-0">
           <v-row>
             <v-col cols="6">

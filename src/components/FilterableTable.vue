@@ -1,9 +1,9 @@
 <template>
   <v-container class="browse-institution-table-container pt-4">
-    <div v-if="tableStore.loading === true" class="d-flex align-center justify-center" style="height: 59vh">
+    <div v-if="tableStore.loading === true" class="table-content-wrapper d-flex align-center justify-center">
       <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
     </div>
-    <div v-if="tableStore.loading === false">
+    <div v-if="tableStore.loading === false" class="table-content-wrapper">
       <div class="d-none">
         <div class="mt-6" v-for="header in tableStore.tableHeaders" :key="header.title">
           <v-select flat hide-details small multiple clearable auto
@@ -248,15 +248,27 @@
             class="inherit-height align-end" v-model="tableStore.hideHidden" @change="tableStore.saveHideHiddenState">
           </v-switch>
           <div class="d-flex flex-column flex-md-row text-right">
-            <p class="text-subtitle-2 mr-md-4">results found: {{ tableStore.resultsFound }}</p>
-            <p class="text-subtitle-2">page(s) loaded: {{ searchFilterSortStore.searchParameters.page }}</p>
+            <p class="text-subtitle-2 mr-md-4">Results found: {{ tableStore.resultsFound }}</p>
+            <p class="text-subtitle-2">Page(s) loaded: {{ searchFilterSortStore.searchParameters.page }}</p>
           </div>
         </div>
       </div>
-      <v-data-table id="dataTable" ref="dataTable" class="mt-4 institutionDataTable" item-key="Institution name"
-        selectable-key="Institution name" height="59vh" fixed-header return-object
-        :headers="tableStore.filteredHeadersData()" :items="tableStore.tableData" :items-per-page="-1"
-        @click:row="navigateToInstitution" item-value="institution name" v-model="tableStore.selectedRows"
+      <v-data-table 
+        v-show="isTableHeightCalculated"
+        id="dataTable" 
+        ref="dataTable" 
+        class="mt-4 institutionDataTable" 
+        item-key="Institution name"
+        selectable-key="Institution name" 
+        :height="tableHeight"
+        fixed-header 
+        return-object
+        :headers="tableStore.filteredHeadersData()" 
+        :items="tableStore.tableData" 
+        :items-per-page="-1"
+        @click:row="navigateToInstitution" 
+        item-value="institution name" 
+        v-model="tableStore.selectedRows"
         density="comfortable">
         <template v-slot:headers="{ columns, isSorted, getSortIcon }">
           <tr>
@@ -321,17 +333,23 @@ export default {
     this.$watch('tableStore.loading', (loadingState) => {
       if (loadingState === false) {
         setTimeout(() => {
-          const dataTable = document.querySelector("#dataTable .v-table__wrapper");
-          dataTable.addEventListener("scroll", this.onScroll, true);
-          this.scrollToLastKnownPosition();
-          this.highlightLastClickedRow();
+          this.calculateTableHeight();
+          // Wait for table to be visible before scrolling
+          setTimeout(() => {
+            const dataTable = document.querySelector("#dataTable .v-table__wrapper");
+            dataTable.addEventListener("scroll", this.onScroll, true);
+            this.scrollToLastKnownPosition();
+            this.highlightLastClickedRow();
+          }, 100); // Short delay after height calculation
         }, 1000);
       }
     }, { immediate: true });
-    document.title = "Browse Institutions | Ryteplan College Search"
+
+    window.addEventListener('resize', this.calculateTableHeight);
   },
   beforeUnmount() {
     window.removeEventListener("scroll", this.onScroll, true)
+    window.removeEventListener('resize', this.calculateTableHeight);
   },
   data() {
     return {
@@ -365,7 +383,9 @@ export default {
         { value: 'B', title: 'NCAA Division 1-AA' },
         // { value: 'C', title: 'Club' },
         // { value: 'X', title: 'Intramural' }
-      ]
+      ],
+      isTableHeightCalculated: false,
+      tableHeight: 'auto'
     }
   },
   methods: {
@@ -400,7 +420,6 @@ export default {
 
     },
     navigateToInstitution(event, item) {
-
       const institution = JSON.parse(JSON.stringify(item));
       const targetRowKey = institution.item.name;
 
@@ -418,11 +437,8 @@ export default {
           }
         });
 
-        if (event.ctrlKey || event.metaKey) {
-          window.open(route.href, '_blank');
-        } else {
-          window.open(route.href, '_self');
-        }
+        // Always open in new tab
+        window.open(route.href, '_blank');
       }
     },
     onUpdateMenu(open) {
@@ -448,6 +464,18 @@ export default {
     },
     thStyle(width) {
       return `width: ${width}; left: 0px; min-width: ${width}; position: sticky; z-index: 4;`;
+    },
+    calculateTableHeight() {
+      const wrapper = this.$el.querySelector('.table-content-wrapper');
+      const filters = this.$el.querySelector('.d-flex.align-center-md');
+      
+      if (!wrapper || !filters) return;
+
+      const containerHeight = wrapper.clientHeight;
+      const filtersHeight = filters.clientHeight;
+      const spacing = 16;
+      this.tableHeight = `${containerHeight - filtersHeight - spacing}px`;
+      this.isTableHeightCalculated = true;
     }
   },
   computed: {
@@ -465,6 +493,15 @@ export default {
 </script>
 
 <style lang="scss">
+.browse-institution-table-container {
+  height: 100%;
+}
+
+.table-content-wrapper {
+  /* Adjust these values based on your actual header/footer heights */
+  height: calc(100vh - 100px - 98px); /* Subtract header height and footer height */
+}
+
 #dataTable {
   border-radius: 8px;
   overflow: hidden;
