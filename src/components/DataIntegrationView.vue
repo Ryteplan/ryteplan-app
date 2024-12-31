@@ -2,6 +2,13 @@
   <v-container class="pt-4">
     <div class="data-integration">
       <v-btn
+        @click="addAliasesToIntegratedData"
+        color="primary"
+      >
+        Add aliases to integrated data
+      </v-btn>
+
+      <v-btn
         class="d-none"
         @click="addSportsFromPetersonsToIntegratedData"
         color="primary"
@@ -82,6 +89,44 @@ export default {
     }
   },
   methods: {
+    async addAliasesToIntegratedData() {
+      // Get all documents from aliases collection
+      const aliasesQuery = query(collection(dbFireStore, "aliases"));
+      const aliasesSnapshots = await getDocs(aliasesQuery);
+      
+      // Process each aliases document
+      for (const aliasDoc of aliasesSnapshots.docs) {
+        const aliasData = aliasDoc.data();
+        const documentId = aliasDoc.id;
+        
+        // Skip if no aliases field exists
+        if (!aliasData.aliases) {
+          console.warn(`No aliases found for document ID: ${documentId}`);
+          continue;
+        }
+
+        try {
+          // Update the matching institution with aliases data
+          // Update the integrated_institutions collection with aliases data
+          await setDoc(
+            doc(dbFireStore, 'institutions_integrated', documentId),
+            { aliases: aliasData.aliases },
+            { merge: true }
+          );
+          await setDoc(
+            doc(dbFireStore, 'manual_institution_data', documentId),
+            { aliases: aliasData.aliases },
+            { merge: true }
+          );
+          
+          console.log(`Updated aliases for institution ID: ${documentId}`);
+        } catch (error) {
+          console.error(`Error updating aliases for ${documentId}:`, error);
+        }
+      }
+      
+      console.log('Finished updating aliases for all institutions');    
+    },
     async addSportsFromPetersonsToIntegratedData() {
       // Get all documents from institutions_integrated
       const integratedDataQuery = query(collection(dbFireStore, "institutions_integrated"));
