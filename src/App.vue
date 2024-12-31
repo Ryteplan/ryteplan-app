@@ -38,7 +38,8 @@
                     "
                     size="small"
                   ></v-icon>
-                  <span v-html="data.item.props.html"></span>
+                  <span v-if="data.item.props.html" v-html="data.item.props.html"></span>
+                  <span v-else>{{ data.item.props.name }}</span>
                 </div>
               </v-list-item-title>
             </v-list-item>
