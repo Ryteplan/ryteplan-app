@@ -52,6 +52,58 @@
           </v-switch>
         </v-col>
       </v-row>
+      <div class="section-container" style="max-width: 600px;" v-if="userStore.adminMode">
+        <h4>Aliases</h4>
+        <div v-if="institution?.aliases?.length > 0" class="aliases-container mt-4 mb-4">
+          <div v-for="(alias, index) in institution.aliases" :key="index" class="d-flex align-center mb-2">
+            <v-text-field
+              v-model="institution.aliases[index]"
+              density="compact"
+              hide-details
+              class="mr-2"
+              placeholder="Enter alias"
+              @input="markAliasAsEdited(index)"
+            ></v-text-field>
+            <v-btn
+              v-if="editedAliasIndexes.includes(index)"
+              density="compact"
+              color="primary"
+              variant="text"
+              class="mr-2"
+              @click="saveEditedAlias(index)"
+            >
+              Save
+            </v-btn>
+            <v-btn
+              density="compact"
+              icon="mdi-delete"
+              variant="text"
+              @click="institution.aliases.splice(index, 1)"
+            ></v-btn>
+          </div>
+        </div>
+        <div>
+          <div class="d-flex align-center">
+            <v-text-field
+              v-model="newAlias"
+              density="compact"
+              hide-details
+              class="mr-2"
+              placeholder="Enter new alias"
+              style="width: 400px"
+            ></v-text-field>
+            <v-btn
+              v-if="newAlias.trim()"
+              density="compact"
+              color="primary"
+              variant="text"
+              @click="addAlias"
+            >
+              Save
+            </v-btn>
+          </div>
+        </div>
+      </div>
       <div class="mb-12" v-if="editImages">
         <div class="mt-4 pa-4" style="background: #eee;">
           <span class="font-size-s font-weight-bold">Image 1</span>
@@ -121,7 +173,7 @@
           </span>
         </v-btn>
       </div>
-      <div class="section-container location-links-images-container mt-2">
+      <div class="section-container location-links-images-container mt-4">
         <div class="d-flex flex-column">
           <div class="location-container d-flex flex-column" style="gap: 12px">
             <div class="stat-container">
@@ -940,6 +992,8 @@ export default {
       majors: [],
       sports: [],
       ethnicityPopulationTotal: 0,
+      newAlias: "",
+      editedAliasIndexes: [],
     }
   },
   methods: {
@@ -1138,6 +1192,57 @@ export default {
         "Not used": this.institution["admsNotUsed"]
       }
       return policies;
+    },
+    async addAlias() {
+      if (!this.newAlias.trim()) return;
+
+      // Initialize aliases array if it doesn't exist
+      if (!this.institution.aliases) {
+        this.institution.aliases = [];
+      }
+
+      // Add new alias to array
+      this.institution.aliases.push(this.newAlias.trim());
+
+      // Update both collections in Firestore
+      try {
+        await setDoc(doc(dbFireStore, 'manual_institution_data', this.institution["uri"]), {
+          aliases: this.institution.aliases
+        }, { merge: true });
+
+        await setDoc(doc(dbFireStore, 'institutions_integrated', this.institution["uri"]), {
+          aliases: this.institution.aliases
+        }, { merge: true });
+
+        // Clear the input field after successful save
+        this.newAlias = "";
+      } catch (error) {
+        console.error("Error saving alias:", error);
+        // Optionally remove the alias from the array if save failed
+        this.institution.aliases.pop();
+      }
+    },
+    markAliasAsEdited(index) {
+      if (!this.editedAliasIndexes.includes(index)) {
+        this.editedAliasIndexes.push(index);
+      }
+    },
+    async saveEditedAlias(index) {
+      try {
+        // Update both collections in Firestore
+        await setDoc(doc(dbFireStore, 'manual_institution_data', this.institution["uri"]), {
+          aliases: this.institution.aliases
+        }, { merge: true });
+
+        await setDoc(doc(dbFireStore, 'institutions_integrated', this.institution["uri"]), {
+          aliases: this.institution.aliases
+        }, { merge: true });
+
+        // Remove index from editedAliasIndexes after successful save
+        this.editedAliasIndexes = this.editedAliasIndexes.filter(i => i !== index);
+      } catch (error) {
+        console.error("Error saving edited alias:", error);
+      }
     },
   },
   components: {
