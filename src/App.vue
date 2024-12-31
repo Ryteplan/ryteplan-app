@@ -29,7 +29,7 @@
             >
               <v-list-item-title>
                 <div class="d-flex align-center ga-2">
-                  <v-icon
+                  <!-- <v-icon
                     class="ml-3"
                     :icon="
                       data.item.props.type === 'real'
@@ -37,7 +37,7 @@
                         : 'mdi-magnify'
                     "
                     size="small"
-                  ></v-icon>
+                  ></v-icon> -->
                   <span v-if="data.item.props.html" v-html="data.item.props.html"></span>
                   <span v-else>{{ data.item.props.name }}</span>
                 </div>

@@ -14,6 +14,7 @@ export const useSuggestionSearchStore = defineStore('suggestionSearchStore', {
           collection: 'institutions_integratedv5',
           q: '',
           query_by: 'name, aliases',
+          filter_by: 'hidden:=false'
         }
       ]
     },
