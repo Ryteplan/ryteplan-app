@@ -1,295 +1,295 @@
 <template>
   <v-container class="browse-institution-table-container pt-4">
-    <div v-if="tableStore.loading === true || !isTableHeightCalculated" class="table-content-wrapper d-flex align-center justify-center">
+    <div v-if="tableStore.loading === true || !isTableHeightCalculated" class="d-flex align-center justify-center" style="height: calc(100vh - 164px)">
       <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
     </div>
-    <div v-if="tableStore.loading === false && isTableHeightCalculated" class="table-content-wrapper">
-      <div class="d-none">
-        <div class="mt-6" v-for="header in tableStore.tableHeaders" :key="header.title">
-          <v-select flat hide-details small multiple clearable auto
-            v-if="searchFilterSortStore.filters.hasOwnProperty(header.title)" :label="header.title"
-            :items="tableStore.columnValueList(header.key)" v-model="searchFilterSortStore.filters[header.key]"
-            @update:menu="onUpdateMenu">
-          </v-select>
-        </div>
-        <div style="display: flex; justify-content: end; align-items: center;">
-          <v-row class="align-end">
-            <!-- <v-col cols="12" md="3">
-              <v-text-field
-                v-model="tableStore.searchInput"
-                label="Search By Name"
-                append-inner-icon="mdi-magnify"
-                density="compact"
-                variant="solo"
-                single-line
+    <v-container v-if="tableStore.loading === false && isTableHeightCalculated" class="pa-0">
+      <v-row class="fill-height">
+        <!-- Left Side Filters -->
+        <v-col cols="3" class="filters-sidebar d-flex flex-column">
+          <h3 class="mb-4">Filters</h3>
+          <div class="filters-content flex-grow-1">
+            <h4>Location</h4>
+            <v-select 
+              class="mt-4" 
+              flat 
+              hide-details 
+              small 
+              multiple 
+              clearable 
+              auto 
+              label="Country"
+              :items="searchFilterSortStore.CountryList" 
+              v-model="searchFilterSortStore.filters.Country"
+              @update:menu="onUpdateMenu"
+            />
+            <v-autocomplete
+              :disabled="!searchFilterSortStore.filters.Country.includes('United States') && searchFilterSortStore.filters.Country.length !== 0"
+              class="mt-4" 
+              flat 
+              hide-details 
+              small 
+              multiple 
+              clearable 
+              chips 
+              auto 
+              label="State(s)"
+              :items="searchFilterSortStore.StatesList" 
+              v-model="searchFilterSortStore.filters.State"
+              @update:menu="onUpdateMenu" 
+            />
+            <v-select 
+              class="mt-4" 
+              flat 
+              hide-details 
+              small 
+              multiple 
+              clearable 
+              auto 
+              label="Campus Setting"
+              :items="searchFilterSortStore.campusSettingList" 
+              v-model="searchFilterSortStore.filters.campusSetting"
+              @update:menu="onUpdateMenu"
+            />
+
+            <h4 class="mt-6">Public or Private</h4>
+            <v-select 
+              class="mt-4" 
+              flat 
+              hide-details 
+              small 
+              multiple 
+              clearable 
+              auto 
+              label="Type"
+              :items="searchFilterSortStore.TypeList" 
+              v-model="searchFilterSortStore.filters.Type"
+              @update:menu="onUpdateMenu"
+            />
+
+            <h4 class="mt-6">Undergraduates</h4>
+            <div class="d-flex mt-4" style="gap: 16px;">
+              <v-text-field 
+                v-model="searchFilterSortStore.filters.UndergraduatesMin" 
+                label="Minimum"
+                type="number" 
+                clearable 
                 hide-details
-                clearable
-                v-on:keyup.enter="tableStore.performSearch"
-              ></v-text-field>
-            </v-col> -->
-            <v-col class="d-none">
-              <v-btn @click="tableStore.performSearch">
-                Search
+              />
+              <v-text-field 
+                v-model="searchFilterSortStore.filters.UndergraduatesMax" 
+                label="Maximum"
+                type="number" 
+                clearable 
+                hide-details
+              />
+            </div>
+
+            <h4 class="mt-6">Admit Range</h4>
+            <v-range-slider 
+              v-model="searchFilterSortStore.filters.admitRateRange" 
+              :max="100" 
+              :min="0" 
+              :step="1"
+              class="align-center mt-4" 
+              hide-details
+            >
+              <template v-slot:prepend>
+                <v-text-field
+                  v-model="searchFilterSortStore.filters.admitRateRange[0]"
+                  density="compact"
+                  type="number"
+                  variant="outlined"
+                  hide-details
+                  single-line
+                  style="width: 60px"
+                  class="mr-2"
+                ></v-text-field>
+              </template>
+              <template v-slot:append>
+                <v-text-field
+                  v-model="searchFilterSortStore.filters.admitRateRange[1]"
+                  density="compact"
+                  type="number"
+                  variant="outlined"
+                  hide-details
+                  single-line
+                  style="width: 60px"
+                  class="ml-2"
+                ></v-text-field>
+              </template>
+            </v-range-slider>
+
+            <h4 class="mt-6">Academics</h4>
+            <v-autocomplete 
+              class="mt-4" 
+              flat 
+              hide-details 
+              small 
+              multiple 
+              clearable 
+              chips 
+              auto 
+              label="Majors"
+              :items="searchFilterSortStore.cipCodes" 
+              item-value="cipCode" 
+              item-title="major"
+              v-model="searchFilterSortStore.filters.cipCode" 
+              @update:menu="onUpdateMenu"
+            />
+
+            <h4 class="mt-6">Athletics</h4>
+            <v-autocomplete 
+              class="text-capitalize mt-4" 
+              flat 
+              hide-details 
+              small 
+              clearable 
+              auto 
+              chips
+              multiple
+              label="Sport"
+              :items="searchFilterSortStore.sportList" 
+              v-model="searchFilterSortStore.filters.sportName"
+              :item-title="str => str.replace(/\b\w/g, l => l.toUpperCase())"
+              :menu-props="{ contentClass: 'text-capitalize' }"
+              @update:menu="onUpdateMenu" 
+            />
+            <v-select
+              class="mt-4"
+              flat 
+              hide-details 
+              small 
+              clearable 
+              auto 
+              label="Division"
+              :items="divisions"
+              item-title="title"
+              item-value="value"
+              v-model="searchFilterSortStore.filters.division"
+              @update:menu="onUpdateMenu"
+            />
+            <span style="color: rgb(114 114 114); font-size: 12px;" class="mt-2 d-block">
+              This field is unrelated to the sport selected field.
+              Schools offering any sport in the division selected will appear in the search results.
+            </span>
+
+            <h4 class="mt-6">Religion</h4>
+            <v-autocomplete 
+              class="mt-4" 
+              flat 
+              hide-details 
+              small 
+              multiple 
+              clearable 
+              chips 
+              auto 
+              label="Denomination"
+              :items="searchFilterSortStore.denomsList" 
+              v-model="searchFilterSortStore.filters.denom"
+              @update:menu="onUpdateMenu"
+            />
+            <v-autocomplete 
+              class="mt-4" 
+              flat 
+              hide-details 
+              small 
+              multiple 
+              clearable 
+              chips 
+              auto 
+              label="Affiliation"
+              :items="searchFilterSortStore.affilList" 
+              v-model="searchFilterSortStore.filters.denom"
+              @update:menu="onUpdateMenu" 
+            />
+
+            <h4 class="mt-6">Specialized Community</h4>
+            <v-checkbox label="Tribal" v-model="searchFilterSortStore.filters.tribal" hide-details class="mt-2" />
+            <v-checkbox label="HBCU" v-model="searchFilterSortStore.filters.hbcu" hide-details />
+
+            <div class="mt-6">
+              <v-btn 
+                color="primary" 
+                block 
+                @click="tableStore.applyNewSearch()"
+              >
+                Apply Filters
               </v-btn>
-            </v-col>
-            <v-col cols="12" md="6">
-              <v-dialog v-model="columnSettingsDialog" width="700px">
-                <template v-slot:activator="{ props }">
-                  <v-btn class="ml-5" v-bind="props" append-icon="mdi-table">
-                    Columns
-                  </v-btn>
-                </template>
-                <v-card>
-                  <div class="pa-8">
-                    <h2>Columns</h2>
-                    <p class="mt-2">Use the controls below to select which columns will appear on the table.</p>
-                    <div v-for="header in tableStore.tableHeaders" :key="header.title" class="mb-4">
-                      <v-switch v-if="header.title !== 'Institution name' && header.hideFromUser !== true"
-                        v-show="header.title !== 'id'" :label="header.title" v-model="header.show"
-                        @change="tableStore.updateHeaders" color="primary">
-                      </v-switch>
-                    </div>
-                  </div>
-                  <v-card-actions>
-                    <v-btn color="primary" block @click="columnSettingsDialog = false">Close</v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
-            </v-col>
-            <v-col v-if="tableStore.selectedRows.length" cols="6" class="d-flex justify-end align-center">
-              <div class="d-flex align-center">
-                <v-btn>
-                  Focus
-                </v-btn>
-                <v-menu>
-                  <template v-slot:activator="{ props }">
-                    <v-btn class="ml-3" v-bind="props" @click="onUpdateMenu">
-                      {{ tableStore.selectedRows.length }} Selected
-                    </v-btn>
-                  </template>
-                  <v-list>
-                    <v-list-item v-for="(item, index) in selectedDropDown" @click="item.action" :key="index">
-                      <div class="d-flex justify-end align-center">
-                        <v-list-item-title>{{ item.title }}</v-list-item-title>
-                        <v-icon class="ml-3" :icon="item.icon"></v-icon>
-                      </div>
-                    </v-list-item>
-                  </v-list>
-                </v-menu>
-              </div>
-            </v-col>
-          </v-row>
-        </div>
-      </div>
-      <!-- {{ searchFilterSortStore.filters }} -->
-      <div class="d-flex align-center-md justify-space-between pr-4-md" style="gap: 40px">
-        <v-dialog v-model="filterDialog" width="700px" scrollable>
-          <template v-slot:activator="{ props }">
-            <v-btn v-bind="props" append-icon="mdi-filter-variant">
-              Filter
-            </v-btn>
-          </template>
-          <v-card>
-            <v-card-title class="d-flex justify-space-between align-center">
-              <div class="text-h5">
-                Filters
-              </div>
-
-              <v-btn icon="mdi-close" variant="text" @click="filterDialog = false"></v-btn>
-            </v-card-title>
-            <v-divider></v-divider>
-
-            <v-card-text class="px-4" style="height: 70vh;">
-              <h4>Narrow down your search</h4>
-              <div class="mt-4">
-                <span class="">Location</span>
-                <v-select class="mt-4" flat hide-details small multiple clearable auto label="Country"
-                  :items="searchFilterSortStore.CountryList" v-model="searchFilterSortStore.filters.Country"
-                  @update:menu="onUpdateMenu">
-                </v-select>
-                <v-autocomplete
-                  :disabled="!searchFilterSortStore.filters.Country.includes('United States') && searchFilterSortStore.filters.Country.length !== 0"
-                  class="mt-4" flat hide-details small multiple clearable chips auto label="State(s)"
-                  :items="searchFilterSortStore.StatesList" v-model="searchFilterSortStore.filters.State"
-                  @update:menu="onUpdateMenu" />
-                <v-select class="mt-4" flat hide-details small multiple clearable auto label="Campus Setting"
-                  :items="searchFilterSortStore.campusSettingList" v-model="searchFilterSortStore.filters.campusSetting"
-                  @update:menu="onUpdateMenu">
-                </v-select>
-                <span class="d-block mt-8">Public or Private</span>
-                <v-select class="mt-4" flat hide-details small multiple clearable auto label="Type"
-                  :items="searchFilterSortStore.TypeList" v-model="searchFilterSortStore.filters.Type"
-                  @update:menu="onUpdateMenu">
-                </v-select>
-                <div class="mt-8">
-                  <span>Undergraduates</span>
-                  <div class="d-flex mt-4" style="gap: 40px;">
-                    <v-text-field v-model="searchFilterSortStore.filters.UndergraduatesMin" label="Minimum"
-                      type="number" clearable />
-                    <v-text-field v-model="searchFilterSortStore.filters.UndergraduatesMax" label="Maximum"
-                      type="number" clearable />
-                  </div>
-                </div>
-                <div class="mt-8">
-                  <span>Admit Range (in percentages)</span>
-                  <v-range-slider v-model="searchFilterSortStore.filters.admitRateRange" :max="100" :min="0" :step="1"
-                    class="align-center" hide-details>
-                    <template v-slot:prepend>
-                      <v-text-field v-model="searchFilterSortStore.filters.admitRateRange[0]" density="compact"
-                        type="number" variant="outlined" hide-details single-line style="width: 80px"
-                        class="mr-2"></v-text-field>
-                    </template>
-                    <template v-slot:append>
-                      <v-text-field v-model="searchFilterSortStore.filters.admitRateRange[1]" density="compact"
-                        type="number" variant="outlined" hide-details single-line class="ml-2"
-                        style="width: 80px"></v-text-field>
-                    </template>
-                  </v-range-slider>
-                  <!-- <span>Admit Range (in percentages)</span>
-                  <div class="d-flex mt-4" style="gap: 40px;">
-                    <v-text-field
-                      v-model="searchFilterSortStore.filters.admitRateMin"
-                      label="Minimum"
-                      type="number"
-                      clearable
-                    />
-                    <v-text-field
-                      v-model="searchFilterSortStore.filters.admitRateMax"
-                      label="Maximum"
-                      type="number"
-                      clearable
-                    />
-                  </div> -->
-                </div>
-                <span class="d-block mt-8">Academics</span>
-                <v-autocomplete class="mt-4" flat hide-details small multiple clearable auto chips label="Majors"
-                  :items="searchFilterSortStore.cipCodes" item-value="cipCode" item-title="major"
-                  v-model="searchFilterSortStore.filters.cipCode" @update:menu="onUpdateMenu">
-                </v-autocomplete>
-                <div class="mt-4">
-                  <span class="d-block mt-8">Athletics</span>
-                  <v-autocomplete class="text-capitalize mt-4" 
-                    flat 
-                    hide-details 
-                    small 
-                    clearable 
-                    auto 
-                    chips
-                    multiple
-                    label="Sport"
-                    :items="searchFilterSortStore.sportList" 
-                    v-model="searchFilterSortStore.filters.sportName"
-                    :item-title="str => str.replace(/\b\w/g, l => l.toUpperCase())"
-                    :menu-props="{ contentClass: 'text-capitalize' }"
-                    @update:menu="onUpdateMenu" 
-                  />
-                  <v-select
-                    class="mt-4"
-                    flat 
-                    hide-details 
-                    small 
-                    clearable 
-                    auto 
-                    label="Division"
-                    :items="divisions"
-                    item-title="title"
-                    item-value="value"
-                    v-model="searchFilterSortStore.filters.division"
-                    @update:menu="onUpdateMenu"
-                  />
-                  <span style="color: rgb(114 114 114); font-size: 12px;" class="mt-2">
-                    This field is unrelated to the sport selected field.
-                    <br/>
-                    Schools offering any sport in the division selected will appear in the search results.
-                  </span>
-                </div>
-                <span class="d-block mt-8">Religion</span>
-                <v-autocomplete class="mt-4" flat hide-details small multiple clearable chips auto label="Denomination"
-                  :items="searchFilterSortStore.denomsList" v-model="searchFilterSortStore.filters.denom"
-                  @update:menu="onUpdateMenu">
-                </v-autocomplete>
-                <v-autocomplete class="mt-4" flat hide-details small multiple clearable chips auto label="Affiliation"
-                  :items="searchFilterSortStore.affilList" v-model="searchFilterSortStore.filters.denom"
-                  @update:menu="onUpdateMenu" />
-                <span class="d-block mt-8">Specialized Community</span>
-                <!-- <v-select 
-                  class="mt-4"
-                  flat 
-                  hide-details 
-                  small 
-                  multiple 
-                  clearable 
-                  auto
-                  label="Difficulty"
-                  :items="searchFilterSortStore.admissionDifficultyList" 
-                  v-model="searchFilterSortStore.filters.admissionDifficulty"
-                  @update:menu="onUpdateMenu"
-                >
-                </v-select> -->
-                <div class="mt-2">
-                  <v-checkbox label="Tribal" v-model="searchFilterSortStore.filters.tribal" hide-details />
-                  <v-checkbox label="HBCU" v-model="searchFilterSortStore.filters.hbcu" hide-details />
-                </div>
-              </div>
-            </v-card-text>
-
-            <v-card-actions class="justify-start">
-              <div class="d-flex flex-row justify-space-between w-100">
-                <v-btn color="primary" @click="searchFilterSortStore.clearFilters">Clear</v-btn>
-                <v-btn color="primary" variant="flat" @click="tableStore.applyNewSearch(); filterDialog = false;">
-                  Apply Filters
-                </v-btn>
-              </div>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-        <div class="d-flex align-center " style="gap: 40px">
-          <v-switch v-if="userStore.isLoggedIn && userStore.adminMode" label="Show hidden" color="primary" hide-details
-            class="inherit-height align-end" v-model="tableStore.hideHidden" @change="tableStore.saveHideHiddenState">
-          </v-switch>
-          <div class="d-flex flex-column flex-md-row text-right">
-            <p class="text-subtitle-2 mr-md-4">Results found: {{ tableStore.resultsFound }}</p>
-            <p class="text-subtitle-2">Page(s) loaded: {{ searchFilterSortStore.searchParameters.page }}</p>
+              <v-btn 
+                color="secondary" 
+                block 
+                class="mt-2" 
+                @click="searchFilterSortStore.clearFilters"
+              >
+                Clear All
+              </v-btn>
+            </div>
           </div>
-        </div>
-      </div>
-      <v-data-table 
-        v-show="isTableHeightCalculated"
-        id="dataTable" 
-        ref="dataTable" 
-        class="mt-4 institutionDataTable" 
-        item-key="Institution name"
-        selectable-key="Institution name" 
-        :height="tableHeight"
-        fixed-header 
-        return-object
-        :headers="tableStore.filteredHeadersData()" 
-        :items="tableStore.tableData" 
-        :items-per-page="-1"
-        @click:row="navigateToInstitution" 
-        item-value="institution name" 
-        v-model="tableStore.selectedRows"
-        density="comfortable">
-        <template v-slot:headers="{ columns, isSorted, getSortIcon }">
-          <tr>
-            <template v-for="(column, index) in columns" :key="column.key">
-              <th v-if="column.show !== false" :class="thClasses(index)" :style="thStyle(column.width)"
-                @click="tableStore.customSort(column)">
-                <div class="v-data-table-header__content">
-                  <span>
-                    {{ column.title }}
-                  </span>
-                  <template v-if="isSorted(column)">
-                    <v-icon :icon="getSortIcon(column)"></v-icon>
-                  </template>
-                </div>
-              </th>
+        </v-col>
+
+        <!-- Right Side Table -->
+        <v-col cols="9">
+          <div class="d-flex align-center justify-space-between mb-4">
+            <div class="d-flex align-center" style="gap: 40px">
+              <v-switch 
+                v-if="userStore.isLoggedIn && userStore.adminMode" 
+                label="Show hidden" 
+                color="primary" 
+                hide-details
+                class="inherit-height align-end" 
+                v-model="tableStore.hideHidden" 
+                @change="tableStore.saveHideHiddenState"
+              />
+              <div class="d-flex flex-column flex-md-row">
+                <p class="text-subtitle-2 mr-md-4">Results found: {{ tableStore.resultsFound }}</p>
+                <p class="text-subtitle-2">Page(s) loaded: {{ searchFilterSortStore.searchParameters.page }}</p>
+              </div>
+            </div>
+          </div>
+
+          <v-data-table 
+            v-show="isTableHeightCalculated"
+            id="dataTable" 
+            ref="dataTable" 
+            class="institutionDataTable" 
+            item-key="Institution name"
+            selectable-key="Institution name" 
+            :height="tableHeight"
+            fixed-header 
+            return-object
+            :headers="tableStore.filteredHeadersData()" 
+            :items="tableStore.tableData" 
+            :items-per-page="-1"
+            @click:row="navigateToInstitution" 
+            item-value="institution name" 
+            v-model="tableStore.selectedRows"
+            density="comfortable"
+          >
+            <template v-slot:headers="{ columns, isSorted, getSortIcon }">
+              <tr>
+                <template v-for="(column, index) in columns" :key="column.key">
+                  <th 
+                    v-if="column.show !== false" 
+                    :class="thClasses(index)" 
+                    :style="thStyle(column.width)"
+                    @click="tableStore.customSort(column)"
+                  >
+                    <div class="v-data-table-header__content">
+                      <span>{{ column.title }}</span>
+                      <template v-if="isSorted(column)">
+                        <v-icon :icon="getSortIcon(column)"></v-icon>
+                      </template>
+                    </div>
+                  </th>
+                </template>
+              </tr>
             </template>
-          </tr>
-        </template>
-        <template #bottom></template>
-      </v-data-table>
-    </div>
+            <template #bottom></template>
+          </v-data-table>
+        </v-col>
+      </v-row>
+    </v-container>
     <SaveToListDialog v-model="showSaveToListDialog" :selectedRows="tableStore.selectedRows" />
     <ShareDialog v-model="showShareDialog" :selectedRows="tableStore.selectedRows" />
   </v-container>
@@ -473,7 +473,7 @@ export default {
       
       if (!wrapper || !filters) {
         // Set default height and mark as calculated even if elements aren't found
-        this.tableHeight = 'calc(100vh - 250px)';
+        this.tableHeight = 'calc(100vh - 300px)';
         this.isTableHeightCalculated = true;
         return;
       }
@@ -501,12 +501,38 @@ export default {
 
 <style lang="scss">
 .browse-institution-table-container {
-  height: 100%;
+  height: calc(100vh - 180px); // Adjust based on your header height
+  max-width: 100%;
+  overflow: hidden;
 }
 
-.table-content-wrapper {
-  /* Adjust these values based on your actual header/footer heights */
-  height: calc(100vh - 100px - 98px); /* Subtract header height and footer height */
+.fill-height {
+  height: calc(100vh - 214px); // Adjusted for container padding and header
+}
+
+.filters-sidebar {
+  height: 100%;
+  
+  .filters-content {
+    height: 70vh;
+    overflow-y: scroll;
+    padding-right: 16px;
+    padding-bottom: 32px;
+    
+    &::-webkit-scrollbar {
+      width: 8px;
+      background-color: #f5f5f5;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      border-radius: 4px;
+      background-color: #ccc;
+      
+      &:hover {
+        background-color: #999;
+      }
+    }
+  }
 }
 
 #dataTable {
