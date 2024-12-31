@@ -1,9 +1,9 @@
 <template>
   <v-container class="browse-institution-table-container pt-4">
-    <div v-if="tableStore.loading === true" class="table-content-wrapper d-flex align-center justify-center">
+    <div v-if="tableStore.loading === true || !isTableHeightCalculated" class="table-content-wrapper d-flex align-center justify-center">
       <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
     </div>
-    <div v-if="tableStore.loading === false" class="table-content-wrapper">
+    <div v-if="tableStore.loading === false && isTableHeightCalculated" class="table-content-wrapper">
       <div class="d-none">
         <div class="mt-6" v-for="header in tableStore.tableHeaders" :key="header.title">
           <v-select flat hide-details small multiple clearable auto
@@ -337,9 +337,11 @@ export default {
           // Wait for table to be visible before scrolling
           setTimeout(() => {
             const dataTable = document.querySelector("#dataTable .v-table__wrapper");
-            dataTable.addEventListener("scroll", this.onScroll, true);
-            this.scrollToLastKnownPosition();
-            this.highlightLastClickedRow();
+            if (dataTable) {
+              dataTable.addEventListener("scroll", this.onScroll, true);
+              this.scrollToLastKnownPosition();
+              this.highlightLastClickedRow();
+            }
           }, 100); // Short delay after height calculation
         }, 1000);
       }
@@ -469,7 +471,12 @@ export default {
       const wrapper = this.$el.querySelector('.table-content-wrapper');
       const filters = this.$el.querySelector('.d-flex.align-center-md');
       
-      if (!wrapper || !filters) return;
+      if (!wrapper || !filters) {
+        // Set default height and mark as calculated even if elements aren't found
+        this.tableHeight = 'calc(100vh - 250px)';
+        this.isTableHeightCalculated = true;
+        return;
+      }
 
       const containerHeight = wrapper.clientHeight;
       const filtersHeight = filters.clientHeight;

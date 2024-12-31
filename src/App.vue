@@ -193,6 +193,7 @@
         </v-footer>
       </v-container>
     </v-main>
+    <CookieNotification class="mb-8" style="position: fixed; bottom: 0; left: 0; right: 0;" />
   </v-layout>
 </template>
 
@@ -204,6 +205,7 @@ import { useUserStore } from ".//stores/userStore";
 import { useTableStore } from ".//stores/tableStore";
 import { useSearchFilterSortStore } from ".//stores/searchFilterSortStore";
 import { useSuggestionSearchStore } from ".//stores/suggestionSearchStore";
+import CookieNotification from '@/components/CookieNotification.vue'
 
 let auth;
 
@@ -241,6 +243,7 @@ export default {
   },
   components: {
     LogoGreenBlack,
+    CookieNotification
   },
   mounted() {
     auth = getAuth();
