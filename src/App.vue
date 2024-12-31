@@ -179,11 +179,12 @@
             <v-col cols="6">
               <p style="font-size: 13px">
                 Version: {{ appVersionStore.getVersion() }}<br />
-                Copyright 2024 Ryteplan LLC All rights reserved
+                Copyright 2024 Ryteplan LLC <br/> All rights reserved
               </p>
             </v-col>
             <v-col cols="6" class="text-right">
               <p style="font-size: 13px">
+                <router-link to="/terms" class="terms-link">Terms and Conditions</router-link><br />
                 Data Source: Peterson's Databases<br />
                 Copyright 2024 Peterson's LLC All rights reserved
               </p>
@@ -418,5 +419,14 @@ a {
 
 .suggestion-link:hover {
   background-color: #eaeaea;
+}
+
+.terms-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.terms-link:hover {
+  text-decoration: underline;
 }
 </style>

@@ -30,6 +30,7 @@ import PlaygroundView from './components/PlaygroundView.vue';
 import DataIntegrationView from './components/DataIntegrationView.vue';
 import DataCompareView from './components/DataCompareView.vue';
 import ImageWorkView from './components/ImageWorkView.vue';
+import TermsView from './views/TermsView.vue';
 
 const app = createApp(App);
 
@@ -102,6 +103,11 @@ const routes = [
     name: 'Account',
     component: AccountView,
   },
+  {
+    path: '/terms',
+    name: 'terms',
+    component: TermsView
+  }
 
 ];
 
