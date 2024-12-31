@@ -7,7 +7,7 @@
       <v-row class="fill-height">
         <!-- Left Side Filters -->
         <v-col cols="3" class="filters-sidebar d-flex flex-column">
-          <h3 class="mb-4">Filters</h3>
+          <h5 class="mb-4">Filters</h5>
           <div class="filters-content flex-grow-1">
             <h4>Location</h4>
             <v-select 
@@ -518,6 +518,12 @@ export default {
     overflow-y: scroll;
     padding-right: 16px;
     padding-bottom: 32px;
+    
+    h4 {
+      color: #2e2e2e;
+      font-size: 15px;
+      font-weight: 600;
+    }
     
     &::-webkit-scrollbar {
       width: 8px;
