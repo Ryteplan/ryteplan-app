@@ -733,12 +733,12 @@
             </div>
           </div>
         </div>
-        <div class="mt-4" v-if="sports.filter(sport => sport.INTM_WMN == null && sport.INTM_MEN == null && sport.INTC_WMN == null && sport.INTC_MEN == null).length > 0">
+        <div class="mt-4" v-if="sports.filter(sport => this.isUncategorizedSport(sport)).length > 0">
           <h3>Uncategorized</h3>
-          <ul class="d-flex flex-column" style="gap: 8px;">
+          <ul class="d-flex flex-column mt-1" style="gap: 8px;">
             <SportItem
-              v-for="sport in sports.filter(sport => sport.INTM_WMN == null && sport.INTM_MEN == null && sport.INTC_WMN == null && sport.INTC_MEN == null)"
-              :key="sport.DESCR"
+              v-for="sport in sports.filter(sport => this.isUncategorizedSport(sport))"
+              :key="sport.sport_name"
               :sport="sport"
               :division-code=null
             />
@@ -1257,6 +1257,17 @@ export default {
       if (!divisions) return null;
       
       return gender === 'men' ? divisions.INTM_MEN : divisions.INTM_WMN;
+    },
+    isUncategorizedSport(sport) {
+      const divisionKey = `${sport.sport_name.toLowerCase().replace(/ /g, '_')}_divisions`;
+      const divisions = sport[divisionKey];
+      console.log('Sport:', sport.sport_name, 'Divisions:', divisions);
+      if (!divisions) return true;
+      
+      // Check if all division values are empty strings
+      const result = Object.values(divisions).every(value => value === "");
+      console.log('Is uncategorized:', result);
+      return result;
     },
   },
   components: {
