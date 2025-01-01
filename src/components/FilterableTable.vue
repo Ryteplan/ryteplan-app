@@ -15,7 +15,6 @@
               flat 
               hide-details 
               small 
-              multiple 
               clearable 
               auto 
               label="Country"
@@ -24,7 +23,6 @@
               @update:menu="onUpdateMenu"
             />
             <v-autocomplete
-              :disabled="!searchFilterSortStore.filters.Country.includes('United States') && searchFilterSortStore.filters.Country.length !== 0"
               class="mt-4" 
               flat 
               hide-details 
@@ -105,7 +103,6 @@
               flat 
               hide-details 
               small 
-              multiple 
               clearable 
               auto 
               label="Type"

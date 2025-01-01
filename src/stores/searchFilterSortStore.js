@@ -42,7 +42,9 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
   // persist: true,
   actions: {
     clearFilters() {
-      this.filters = { ...defaultFilters };
+      this.filters = { 
+        ...defaultFilters,
+      };
       this.searchInput = '';
     },
     saveThenClearSearchInput() {
@@ -76,7 +78,7 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
       }
 
       let countryFilter = '';
-      if (state.filters.Country.length > 0) {
+      if (state.filters.Country && state.filters.Country.length > 0) {
         countryFilter = "&& countryCode:[";
 
         if (state.filters.Country.includes("United States")) {
@@ -90,12 +92,12 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
       }
 
       let stateFilter = '';
-      if (state.filters.State.length > 0) {
+      if (state.filters.State && state.filters.State.length > 0) {
         stateFilter = "&& stateCleaned:[" + state.filters.State.join(',') + "]";
       }
 
       let TypeFilter = '';
-      if (state.filters.Type.length > 0) {
+      if (state.filters.Type && state.filters.Type.length > 0) {
         TypeFilter = "&& mainInstControlDesc:[";
 
         if (state.filters.Type.includes("Private")) {
@@ -109,7 +111,8 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
       }
 
       let UndergraduatesFilter = '';
-      if (state.filters.UndergraduatesMin.length > 0 || state.filters.UndergraduatesMax.length > 0) {
+      if ((state.filters.UndergraduatesMin && state.filters.UndergraduatesMin.length > 0) || 
+          (state.filters.UndergraduatesMax && state.filters.UndergraduatesMax.length > 0)) {
 
         UndergraduatesFilter = "&& enTotUgN:";
 
