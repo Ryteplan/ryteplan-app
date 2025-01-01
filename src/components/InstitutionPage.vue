@@ -1245,14 +1245,14 @@ export default {
       }
     },
     getIntercollegiateDivision(sport, gender) {
-      const divisionKey = `${sport.sport_name.replace(/ /g, '_')}_divisions`;
+      const divisionKey = `${sport.sport_name.toLowerCase().replace(/ /g, '_')}_divisions`;
       const divisions = sport[divisionKey];
       if (!divisions) return null;
       
       return gender === 'men' ? divisions.INTC_MEN : divisions.INTC_WMN;
     },
     getIntramuralDivision(sport, gender) {
-      const divisionKey = `${sport.sport_name.replace(/ /g, '_')}_divisions`;
+      const divisionKey = `${sport.sport_name.toLowerCase().replace(/ /g, '_')}_divisions`;
       const divisions = sport[divisionKey];
       if (!divisions) return null;
       

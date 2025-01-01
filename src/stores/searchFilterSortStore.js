@@ -175,7 +175,7 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
             conditions.push(`sports.${divisionFieldName}.${genderField}:=${state.filters.division}`);
           } else {
             // Only gender selected - show any non-empty division
-            conditions.push(`sports.${divisionFieldName}.${genderField}:!=""`);
+            conditions.push(`sports.${divisionFieldName}.${genderField}:!=null`);
           }
         } else if (state.filters.division) {
           // Only division selected - check both genders

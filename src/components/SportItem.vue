@@ -1,5 +1,5 @@
 <template>
-  <li v-if="divisionCode" class="d-flex flex-column">
+  <li class="d-flex flex-column">
     <p style="text-transform: capitalize;">{{ sport.sport_name }}</p>
     <span 
       v-if="divisionCode && divisionCode !== 'X'" 
