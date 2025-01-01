@@ -1,7 +1,12 @@
 <template>
-  <li class="d-flex flex-column">
-    <p style="text-transform: capitalize;">{{ sport.DESCR }}</p>
-    <span style="font-size: 12px; color: rgb(114 114 114); " v-if="divisionCode !== null && divisionCode !== 'X'">{{ getDivisionText(divisionCode) }}</span>
+  <li v-if="divisionCode" class="d-flex flex-column">
+    <p style="text-transform: capitalize;">{{ sport.sport_name }}</p>
+    <span 
+      v-if="divisionCode && divisionCode !== 'X'" 
+      style="font-size: 12px; color: rgb(114 114 114);"
+    >
+      {{ getDivisionText(divisionCode) }}
+    </span>
   </li>
 </template>
 
@@ -14,7 +19,8 @@ export default {
     },
     divisionCode: {
       type: String,
-      required: false
+      required: false,
+      default: null
     }
   },
   methods: {

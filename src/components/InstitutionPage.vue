@@ -679,17 +679,17 @@
       </v-expansion-panels>
       <div class="section-container mt-8">
         <h2>Sports & Athletics</h2>
-        <div v-if="sports.some(sport => sport.INTC_MEN !== null || sport.INTC_WMN !== null)">
+        <div v-if="sports.length > 0">
           <h3>Intercollegiate</h3>
           <div class="d-flex">
             <div class="flex-grow-1 mr-4">
               <h4>Men</h4>
               <ul class="d-flex flex-column" style="gap: 8px;">
                 <SportItem
-                  v-for="sport in sports.filter(sport => sport.INTC_MEN !== null)"
-                  :key="sport.DESCR"
+                  v-for="sport in menIntercollegiateSports"
+                  :key="`men-${sport.sport_name}`"
                   :sport="sport"
-                  :division-code="sport.INTC_MEN"
+                  :division-code="getIntercollegiateDivision(sport, 'men')"
                 />
               </ul>
             </div>
@@ -697,26 +697,26 @@
               <h4>Women</h4>
               <ul class="d-flex flex-column" style="gap: 8px;">
                 <SportItem
-                  v-for="sport in sports.filter(sport => sport.INTC_WMN !== null)"
-                  :key="sport.DESCR"
+                  v-for="sport in womenIntercollegiateSports"
+                  :key="`women-${sport.sport_name}`"
                   :sport="sport"
-                  :division-code="sport.INTC_WMN"
+                  :division-code="getIntercollegiateDivision(sport, 'women')"
                 />
               </ul>
             </div>
           </div>
         </div>
-        <div class="mt-4" v-if="sports.some(sport => sport.INTM_MEN !== null || sport.INTM_WMN !== null)">
+        <div class="mt-4" v-if="hasAnyIntramural">
           <h3>Intramural</h3>
           <div class="d-flex">
             <div class="flex-grow-1 mr-4">
               <h4>Men</h4>
               <ul class="d-flex flex-column" style="gap: 8px;">
                 <SportItem
-                  v-for="sport in sports.filter(sport => sport.INTM_MEN !== null)"
-                  :key="sport.DESCR"
+                  v-for="sport in menIntramuralSports"
+                  :key="`intramural-men-${sport.sport_name}`"
                   :sport="sport"
-                  :division-code="sport.INTM_MEN"
+                  :division-code="getIntramuralDivision(sport, 'men')"
                 />
               </ul>
             </div>
@@ -724,14 +724,14 @@
               <h4>Women</h4>
               <ul class="d-flex flex-column" style="gap: 8px;">
                 <SportItem
-                  v-for="sport in sports.filter(sport => sport.INTM_WMN !== null)"
-                  :key="sport.DESCR"
+                  v-for="sport in womenIntramuralSports"
+                  :key="`intramural-women-${sport.sport_name}`"
                   :sport="sport"
-                  :division-code="sport.INTM_WMN"
+                  :division-code="getIntramuralDivision(sport, 'women')"
                 />
               </ul>
             </div>
-          </div>        
+          </div>
         </div>
         <div class="mt-4" v-if="sports.filter(sport => sport.INTM_WMN == null && sport.INTM_MEN == null && sport.INTC_WMN == null && sport.INTC_MEN == null).length > 0">
           <h3>Uncategorized</h3>
@@ -1244,6 +1244,20 @@ export default {
         console.error("Error saving edited alias:", error);
       }
     },
+    getIntercollegiateDivision(sport, gender) {
+      const divisionKey = `${sport.sport_name.replace(/ /g, '_')}_divisions`;
+      const divisions = sport[divisionKey];
+      if (!divisions) return null;
+      
+      return gender === 'men' ? divisions.INTC_MEN : divisions.INTC_WMN;
+    },
+    getIntramuralDivision(sport, gender) {
+      const divisionKey = `${sport.sport_name.replace(/ /g, '_')}_divisions`;
+      const divisions = sport[divisionKey];
+      if (!divisions) return null;
+      
+      return gender === 'men' ? divisions.INTM_MEN : divisions.INTM_WMN;
+    },
   },
   components: {
     // EthnicityChart,
@@ -1251,6 +1265,27 @@ export default {
     StatDisplay,
     TiptapInputA,
     SportItem,
+  },
+  computed: {
+    menIntercollegiateSports() {
+      return this.sports.filter(sport => this.getIntercollegiateDivision(sport, 'men'));
+    },
+    womenIntercollegiateSports() {
+      return this.sports.filter(sport => this.getIntercollegiateDivision(sport, 'women'));
+    },
+    menIntramuralSports() {
+      return this.sports.filter(sport => this.getIntramuralDivision(sport, 'men'));
+    },
+    womenIntramuralSports() {
+      return this.sports.filter(sport => this.getIntramuralDivision(sport, 'women'));
+    },
+    hasAnyIntramural() {
+      return this.sports.some(sport => {
+        const divisionKey = `${sport.sport_name.replace(/ /g, '_')}_divisions`;
+        const divisions = sport[divisionKey];
+        return divisions && (divisions.INTM_MEN || divisions.INTM_WMN);
+      });
+    }
   },
 };
 
