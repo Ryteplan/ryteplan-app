@@ -215,23 +215,6 @@
             <v-checkbox label="Tribal" v-model="searchFilterSortStore.filters.tribal" hide-details class="mt-2" />
             <v-checkbox label="HBCU" v-model="searchFilterSortStore.filters.hbcu" hide-details />
           </div>
-          <div class="filters-actions d-none">
-            <v-btn 
-              color="primary" 
-              block 
-              @click="tableStore.applyNewSearch()"
-            >
-              Apply Filters
-            </v-btn>
-            <v-btn 
-              color="secondary" 
-              block 
-              class="mt-2" 
-              @click="searchFilterSortStore.clearFilters"
-            >
-              Clear All
-            </v-btn>
-          </div>
         </v-col>
 
         <!-- Right Side Table -->
@@ -248,7 +231,11 @@
                 @change="tableStore.saveHideHiddenState"
               />
               <div class="d-flex flex-column flex-md-row">
-                <p class="text-subtitle-2 mr-md-4">Results found: {{ tableStore.resultsFound }}</p>
+                <div class="text-subtitle-2 mr-md-4">
+                  Results found: 
+                  <span v-if="!tableStore.applyFiltersLoading">{{ tableStore.resultsFound }}</span>
+                  <v-progress-circular class="ml-2" v-else :size="20" color="primary" indeterminate></v-progress-circular>
+                </div>
                 <p class="text-subtitle-2">Page(s) loaded: {{ searchFilterSortStore.searchParameters.page }}</p>
               </div>
             </div>
@@ -501,7 +488,7 @@ export default {
           () => this.searchFilterSortStore.filters,
           debounce((newFilters) => {
             // Automatically apply filters when they change
-            this.tableStore.applyNewSearch();
+            this.tableStore.applyNewSearch('filtersChanged');
             this.originalFilters = JSON.stringify(newFilters);
           }, 500), // 500ms debounce to prevent too many rapid updates
           { deep: true } // Watch nested properties

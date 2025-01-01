@@ -6,6 +6,7 @@ import { useRoute } from 'vue-router';
 export const useTableStore = defineStore('table', {
   state: () => ({
       loading: true,
+      applyFiltersLoading: false, 
       tableData: [],
       tableDataManual: [],
       hideHidden: true,
@@ -114,31 +115,39 @@ export const useTableStore = defineStore('table', {
 
       this.loading = false;
     },
-    async applyNewSearch(){
-        try {
-          const searchFilterSort = useSearchFilterSortStore()
-          console.log(searchFilterSort.filterByString);
-          searchFilterSort.searchParameters.page = 1;
-          searchFilterSort.searchParameters.filter_by = searchFilterSort.filterByString;
-
-          if (searchFilterSort.customSortString !== '') {
-            searchFilterSort.searchParameters.sort_by = searchFilterSort.customSortString;
-          } else {
-            searchFilterSort.searchParameters.sort_by = 'name:asc';
-          }
-          const result = await client.collections('institutions_integratedv5').documents().search(searchFilterSort.searchParameters);
-          this.resultsFound = result.found;
-          this.tableData = result.hits.map(hit => hit.document);
-          if (this.tableData.length < this.resultsFound) {
-            this.tableData.push({name: "Load more"});
-          }
-  
-          // save this.tableData to local storage
-          localStorage.setItem("tableData", JSON.stringify(this.tableData));
-  
-        } catch (error) {
-          console.error('Error fetching data from Typesense:', error);
+    async applyNewSearch(type){      
+      try {
+        if (type === 'filtersChanged') {
+          this.applyFiltersLoading = true;
         }
+  
+        const searchFilterSort = useSearchFilterSortStore()
+        console.log(searchFilterSort.filterByString);
+        searchFilterSort.searchParameters.page = 1;
+        searchFilterSort.searchParameters.filter_by = searchFilterSort.filterByString;
+
+        if (searchFilterSort.customSortString !== '') {
+          searchFilterSort.searchParameters.sort_by = searchFilterSort.customSortString;
+        } else {
+          searchFilterSort.searchParameters.sort_by = 'name:asc';
+        }
+        const result = await client.collections('institutions_integratedv5').documents().search(searchFilterSort.searchParameters);
+        this.resultsFound = result.found;
+        this.tableData = result.hits.map(hit => hit.document);
+        if (this.tableData.length < this.resultsFound) {
+          this.tableData.push({name: "Load more"});
+        }
+
+        // save this.tableData to local storage
+        localStorage.setItem("tableData", JSON.stringify(this.tableData));
+
+        setTimeout(() => {
+          this.applyFiltersLoading = false;
+        }, 1500);
+
+      } catch (error) {
+        console.error('Error fetching data from Typesense:', error);
+      }
     },
     columnValueList(val) {
       return [...new Set(this.tableData.map(d => d[val]))].sort();
