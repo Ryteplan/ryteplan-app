@@ -1094,7 +1094,13 @@ export default {
       });
     },
     async getSports() {
-      let sportsArray = this.institution["sports"];
+      // Check if sports array exists, if not return early
+      if (!this.institution?.sports) {
+        this.sports = [];
+        return;
+      }
+
+      let sportsArray = this.institution.sports;
       
       // if any field has a value of "" then set it to null
       sportsArray = sportsArray.map(sport => {
