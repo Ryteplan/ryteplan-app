@@ -2,14 +2,14 @@
   <v-container class="pt-4">
     <div class="data-integration">
       <v-btn
-        @click="addAliasesToIntegratedData"
+      class="d-none"
+      @click="addAliasesToIntegratedData"
         color="primary"
       >
         Add aliases to integrated data
       </v-btn>
 
       <v-btn
-        class="d-none"
         @click="addSportsFromPetersonsToIntegratedData"
         color="primary"
       >
@@ -144,7 +144,7 @@ export default {
 
         // Get sports data for this institution
         const sportsQuery = query(
-          collection(dbFireStore, 'sports_v_13'), 
+          collection(dbFireStore, 'sports_v_13_b'), 
           where(documentId(), "==", inunId)
         );
         const sportsSnap = await getDocs(sportsQuery);
