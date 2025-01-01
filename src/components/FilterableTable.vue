@@ -52,6 +52,58 @@
               @update:menu="onUpdateMenu"
             />
 
+            <h4 class="mt-6">Athletics</h4>
+            <v-autocomplete 
+              class="text-capitalize mt-4" 
+              flat 
+              hide-details 
+              small 
+              clearable 
+              auto 
+              label="Sport"
+              :items="searchFilterSortStore.sportList" 
+              v-model="searchFilterSortStore.filters.sportName"
+              :item-title="str => str.replace(/\b\w/g, l => l.toUpperCase())"
+              :menu-props="{ contentClass: 'text-capitalize' }"
+              @update:menu="onUpdateMenu" 
+            />
+            <v-select
+              class="mt-4"
+              flat 
+              hide-details 
+              small 
+              clearable 
+              auto 
+              label="Division"
+              :items="divisions"
+              item-title="title"
+              item-value="value"
+              v-model="searchFilterSortStore.filters.division"
+              @update:menu="onUpdateMenu"
+            />
+            <v-select
+              class="mt-4"
+              flat 
+              hide-details 
+              small 
+              clearable 
+              auto 
+              label="Gender"
+              :items="[
+                { title: 'Men', value: 'men' },
+                { title: 'Women', value: 'women' }
+              ]"
+              item-title="title"
+              item-value="value"
+              v-model="searchFilterSortStore.filters.gender"
+              @update:menu="onUpdateMenu"
+            />
+
+            <span style="color: rgb(114 114 114); font-size: 12px;" class="mt-2 d-none">
+              This field is unrelated to the sport selected field.
+              Schools offering any sport in the division selected will appear in the search results.
+            </span>
+
             <h4 class="mt-6">Public or Private</h4>
             <v-select 
               class="mt-4" 
@@ -138,42 +190,6 @@
               @update:menu="onUpdateMenu"
             />
 
-            <h4 class="mt-6">Athletics</h4>
-            <v-autocomplete 
-              class="text-capitalize mt-4" 
-              flat 
-              hide-details 
-              small 
-              clearable 
-              auto 
-              chips
-              multiple
-              label="Sport"
-              :items="searchFilterSortStore.sportList" 
-              v-model="searchFilterSortStore.filters.sportName"
-              :item-title="str => str.replace(/\b\w/g, l => l.toUpperCase())"
-              :menu-props="{ contentClass: 'text-capitalize' }"
-              @update:menu="onUpdateMenu" 
-            />
-            <v-select
-              class="mt-4"
-              flat 
-              hide-details 
-              small 
-              clearable 
-              auto 
-              label="Division"
-              :items="divisions"
-              item-title="title"
-              item-value="value"
-              v-model="searchFilterSortStore.filters.division"
-              @update:menu="onUpdateMenu"
-            />
-            <span style="color: rgb(114 114 114); font-size: 12px;" class="mt-2 d-block">
-              This field is unrelated to the sport selected field.
-              Schools offering any sport in the division selected will appear in the search results.
-            </span>
-
             <h4 class="mt-6">Religion</h4>
             <v-autocomplete 
               class="mt-4" 
@@ -207,24 +223,23 @@
             <h4 class="mt-6">Specialized Community</h4>
             <v-checkbox label="Tribal" v-model="searchFilterSortStore.filters.tribal" hide-details class="mt-2" />
             <v-checkbox label="HBCU" v-model="searchFilterSortStore.filters.hbcu" hide-details />
-
-            <div class="mt-6">
-              <v-btn 
-                color="primary" 
-                block 
-                @click="tableStore.applyNewSearch()"
-              >
-                Apply Filters
-              </v-btn>
-              <v-btn 
-                color="secondary" 
-                block 
-                class="mt-2" 
-                @click="searchFilterSortStore.clearFilters"
-              >
-                Clear All
-              </v-btn>
-            </div>
+          </div>
+          <div class="filters-actions">
+            <v-btn 
+              color="primary" 
+              block 
+              @click="tableStore.applyNewSearch()"
+            >
+              Apply Filters
+            </v-btn>
+            <v-btn 
+              color="secondary" 
+              block 
+              class="mt-2" 
+              @click="searchFilterSortStore.clearFilters"
+            >
+              Clear All
+            </v-btn>
           </div>
         </v-col>
 
@@ -511,33 +526,27 @@ export default {
 }
 
 .filters-sidebar {
-  height: 100%;
+  height: 100vh; // Set explicit height
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
   
   .filters-content {
-    height: 70vh;
-    overflow-y: scroll;
+    flex: 1;
+    overflow-y: auto;
     padding-right: 16px;
-    padding-bottom: 32px;
-    
-    h4 {
-      color: #2e2e2e;
-      font-size: 15px;
-      font-weight: 600;
-    }
-    
-    &::-webkit-scrollbar {
-      width: 8px;
-      background-color: #f5f5f5;
-    }
-    
-    &::-webkit-scrollbar-thumb {
-      border-radius: 4px;
-      background-color: #ccc;
-      
-      &:hover {
-        background-color: #999;
-      }
-    }
+    margin-bottom: 16px;
+  }
+
+  .filters-actions {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    padding-top: 16px;
+    border-top: 1px solid #eee;
+    margin: 0 -16px;
+    padding: 16px 16px 0;
   }
 }
 

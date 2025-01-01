@@ -117,6 +117,7 @@ export const useTableStore = defineStore('table', {
     async applyNewSearch(){
         try {
           const searchFilterSort = useSearchFilterSortStore()
+          console.log(searchFilterSort.filterByString);
           searchFilterSort.searchParameters.page = 1;
           searchFilterSort.searchParameters.filter_by = searchFilterSort.filterByString;
 
@@ -195,8 +196,10 @@ export const useTableStore = defineStore('table', {
       localStorage.setItem("tableHeaders", tableHeaders);
     },
     performSearch() {
+      
       this.freshSearch = true;
       const searchFilterSort = useSearchFilterSortStore();
+      
       searchFilterSort.searchParameters.page = 1;
       if (searchFilterSort.searchInput !== '') {
         searchFilterSort.saveThenClearSearchInput();

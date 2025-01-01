@@ -159,33 +159,30 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
       }
 
       let sportFilter = '';
-      if ((state.filters.division && state.filters.division.length > 0) || (state.filters.sportName && state.filters.sportName.length > 0)) {
-        const divisionFields = {
-          '1': 'INTC_',    // NCAA D1
-          '2': 'INTC_',    // NCAA D2
-          '3': 'INTC_',    // NCAA D3
-          'A': 'INTC_',    // NCAA D1-A
-          'B': 'INTC_',    // NCAA D1-AA
-          'C': 'INTC_',    // Club
-          'X': 'INTM_'     // Intramural
-        };
-
-        // Convert single sport to array if needed
-        const selectedSports = Array.isArray(state.filters.sportName) 
-          ? state.filters.sportName 
-          : [state.filters.sportName];
-
-        // Create filter conditions for each sport
-        const sportConditions = selectedSports.map(sport => {
+      if (state.filters.sportName && typeof state.filters.sportName === 'string') {
+        const sport = state.filters.sportName;
+        const divisionFieldName = `${sport.toLowerCase().replace(/ /g, '_')}_divisions`;
+        
+        // Start with basic sport filter
+        let conditions = [`sports.sport_name:=${sport}`];
+        
+        // Add gender/division conditions
+        if (state.filters.gender) {
+          // Gender selected
+          const genderField = state.filters.gender === 'men' ? 'INTC_MEN' : 'INTC_WMN';
           if (state.filters.division) {
-            const fieldPrefix = divisionFields[state.filters.division];
-            return `(sports.DESCR:=${sport} && (sports.${fieldPrefix}MEN:=${state.filters.division} || sports.${fieldPrefix}WMN:=${state.filters.division}))`;
+            // Both gender and division selected
+            conditions.push(`sports.${divisionFieldName}.${genderField}:=${state.filters.division}`);
+          } else {
+            // Only gender selected - show any non-empty division
+            conditions.push(`sports.${divisionFieldName}.${genderField}:!=""`);
           }
-          return `sports.DESCR:=${sport}`;
-        });
-
-        // Join conditions with OR operator
-        sportFilter = `&& (${sportConditions.join(' || ')})`;
+        } else if (state.filters.division) {
+          // Only division selected - check both genders
+          conditions.push(`(sports.${divisionFieldName}.INTC_MEN:=${state.filters.division} || sports.${divisionFieldName}.INTC_WMN:=${state.filters.division})`);
+        }
+        
+        sportFilter = `&& (${conditions.join(' && ')})`;
       }
 
       let filterByString =
