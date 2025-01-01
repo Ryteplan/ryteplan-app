@@ -477,7 +477,7 @@ export default {
       
       if (!wrapper || !filters) {
         // Set default height and mark as calculated even if elements aren't found
-        this.tableHeight = 'calc(100vh - 220px)';
+        this.tableHeight = 'calc(100vh - 232px)';
         this.isTableHeightCalculated = true;
         return;
       }
