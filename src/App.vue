@@ -171,8 +171,9 @@
         </v-list-item> -->
       </v-list>
     </v-navigation-drawer>
-    <v-main class="flex-column">
+    <v-main class="d-flex flex-column">
       <router-view :key="$route.fullPath"></router-view>
+      <v-spacer></v-spacer>
       <v-container class="footer-container pt-0">
         <v-footer class="pb-4 ml-0 mr-0 pl-0 pr-0">
           <v-row>
@@ -431,5 +432,13 @@ a {
 
 .terms-link:hover {
   text-decoration: underline;
+}
+
+.v-main {
+  min-height: 100vh;
+}
+
+.footer-container {
+  margin-top: auto;
 }
 </style>
