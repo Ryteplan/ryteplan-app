@@ -4,10 +4,10 @@
       <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
     </div>
     <v-container v-if="tableStore.loading === false && isTableHeightCalculated" class="pa-0">
-      <v-row class="fill-height">
+      <v-row class="">
         <!-- Left Side Filters -->
-        <v-col cols="3" class="filters-sidebar d-flex flex-column">
-          <p class="text-subtitle-2" style="height: 40px; display: flex; align-items: center;">Filters</p>
+        <v-col cols="3" class="filters-sidebar d-flex flex-column pt-0">
+          <p class="text-subtitle-2" style="height: 48px; display: flex; align-items: center;">Filters</p>
           <div class="filters-content flex-grow-1">
             <h4>Location</h4>
             <v-select 
@@ -214,12 +214,11 @@
               v-model="searchFilterSortStore.filters.denom"
               @update:menu="onUpdateMenu" 
             />
-
             <h4 class="mt-6">Specialized Community</h4>
             <v-checkbox label="Tribal" v-model="searchFilterSortStore.filters.tribal" hide-details class="mt-2" />
             <v-checkbox label="HBCU" v-model="searchFilterSortStore.filters.hbcu" hide-details />
           </div>
-          <div class="filters-actions">
+          <div class="filters-actions d-none">
             <v-btn 
               color="primary" 
               block 
@@ -309,13 +308,12 @@
 import { useUserStore } from '../stores/userStore';
 import { useTableStore } from '../stores/tableStore';
 import { useSearchFilterSortStore } from '../stores/searchFilterSortStore';
-// import { useAppVersionStore } from '../stores/appVersionStore';
 import SaveToListDialog from './SaveToListDialog'
 import ShareDialog from './ShareDialog'
+import { debounce } from 'lodash';
 
 export default {
   setup() {
-    // let appVersionStore = useAppVersionStore();
 
     let userStore = useUserStore();
     userStore.getAdminMode();
@@ -479,7 +477,7 @@ export default {
       
       if (!wrapper || !filters) {
         // Set default height and mark as calculated even if elements aren't found
-        this.tableHeight = 'calc(100vh - 300px)';
+        this.tableHeight = 'calc(100vh - 220px)';
         this.isTableHeightCalculated = true;
         return;
       }
@@ -497,6 +495,22 @@ export default {
     }
   },
   created() {
+    this.$nextTick(() => {
+      if (this.searchFilterSortStore?.filters) {
+        this.originalFilters = JSON.stringify(this.searchFilterSortStore.filters);
+
+        // Watch the entire filters object
+        this.$watch(
+          () => this.searchFilterSortStore.filters,
+          debounce((newFilters) => {
+            // Automatically apply filters when they change
+            this.tableStore.applyNewSearch();
+            this.originalFilters = JSON.stringify(newFilters);
+          }, 500), // 500ms debounce to prevent too many rapid updates
+          { deep: true } // Watch nested properties
+        );
+      }
+    });
   },
   components: {
     SaveToListDialog,
@@ -512,16 +526,13 @@ export default {
   overflow: hidden;
 }
 
-.fill-height {
-  height: calc(100vh - 214px); // Adjusted for container padding and header
-}
-
 .filters-sidebar {
   height: 100vh; // Set explicit height
   position: sticky;
   top: 0;
   display: flex;
   flex-direction: column;
+  padding-bottom: 180px;
   
   .filters-content {
     flex: 1;
