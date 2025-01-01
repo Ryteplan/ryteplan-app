@@ -7,7 +7,7 @@
       <v-row class="fill-height">
         <!-- Left Side Filters -->
         <v-col cols="3" class="filters-sidebar d-flex flex-column">
-          <h5 class="mb-4">Filters</h5>
+          <p class="text-subtitle-2" style="height: 40px; display: flex; align-items: center;">Filters</p>
           <div class="filters-content flex-grow-1">
             <h4>Location</h4>
             <v-select 
@@ -98,11 +98,6 @@
               v-model="searchFilterSortStore.filters.gender"
               @update:menu="onUpdateMenu"
             />
-
-            <span style="color: rgb(114 114 114); font-size: 12px;" class="mt-2 d-none">
-              This field is unrelated to the sport selected field.
-              Schools offering any sport in the division selected will appear in the search results.
-            </span>
 
             <h4 class="mt-6">Public or Private</h4>
             <v-select 
@@ -406,10 +401,6 @@ export default {
     }
   },
   methods: {
-    handleRightClick(event, item) {
-      // do something with event and/or item
-      console.log(event, item)
-    },
     onScroll(e) {
       localStorage.setItem("tableViewScrollPositionY", e.target.scrollTop);
       localStorage.setItem("tableViewScrollPositionX", e.target.scrollLeft);
@@ -544,8 +535,6 @@ export default {
     bottom: 0;
     background: white;
     padding-top: 16px;
-    border-top: 1px solid #eee;
-    margin: 0 -16px;
     padding: 16px 16px 0;
   }
 }
