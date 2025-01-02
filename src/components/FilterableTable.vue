@@ -67,6 +67,7 @@
               @update:menu="onUpdateMenu" 
             />
             <v-select
+              v-if="searchFilterSortStore.filters.sportName && searchFilterSortStore.filters.sportName.length > 0"
               class="mt-4"
               flat 
               hide-details 
@@ -81,6 +82,7 @@
               @update:menu="onUpdateMenu"
             />
             <v-select
+              v-if="searchFilterSortStore.filters.sportName && searchFilterSortStore.filters.sportName.length > 0"
               class="mt-4"
               flat 
               hide-details 
