@@ -25,7 +25,7 @@
           <div class="filters-content flex-grow-1">
             <h4>Location</h4>
             <v-select 
-              class="mt-2" 
+              class="mt-4" 
               density="compact"
               variant="outlined"
               hide-details 
@@ -36,7 +36,7 @@
               @update:menu="onUpdateMenu"
             />
             <v-autocomplete
-              class="mt-2" 
+              class="mt-4" 
               density="compact"
               variant="outlined"
               hide-details 
@@ -49,7 +49,7 @@
               @update:menu="onUpdateMenu" 
             />
             <v-select 
-              class="mt-2" 
+              class="mt-4" 
               density="compact"
               variant="outlined"
               hide-details 
@@ -63,7 +63,7 @@
             <h4>Athletics</h4>
             <v-autocomplete 
               ref="sportFilter"
-              class="text-capitalize mt-2" 
+              class="mt-4" 
               density="compact"
               variant="outlined"
               hide-details 
@@ -77,7 +77,7 @@
             />
             <v-select
               v-if="searchFilterSortStore.filters.sportName && searchFilterSortStore.filters.sportName.length > 0"
-              class="mt-2"
+              class="mt-4"
               density="compact"
               variant="outlined"
               hide-details 
@@ -91,7 +91,7 @@
             />
             <v-select
               v-if="searchFilterSortStore.filters.sportName && searchFilterSortStore.filters.sportName.length > 0"
-              class="mt-2"
+              class="mt-4"
               density="compact"
               variant="outlined"
               hide-details 
@@ -108,7 +108,7 @@
             />
             <h4>Public or Private</h4>
             <v-select 
-              class="mt-2" 
+              class="mt-4" 
               density="compact"
               variant="outlined"
               hide-details 
@@ -119,7 +119,7 @@
               @update:menu="onUpdateMenu"
             />
             <h4>Undergraduates</h4>
-            <div class="d-flex mt-2" style="gap: 16px;">
+            <div class="d-flex mt-4" style="gap: 16px;">
               <v-text-field 
                 v-model="searchFilterSortStore.filters.UndergraduatesMin" 
                 label="Minimum"
@@ -128,6 +128,7 @@
                 hide-details
                 density="compact"
                 variant="outlined"
+                hide-spin-buttons
               />
               <v-text-field 
                 v-model="searchFilterSortStore.filters.UndergraduatesMax" 
@@ -137,6 +138,7 @@
                 variant="outlined"
                 clearable 
                 hide-details
+                hide-spin-buttons
               />
             </div>
             <h4>Admit Range</h4>
@@ -178,7 +180,7 @@
 
             <h4>Academics</h4>
             <v-autocomplete 
-              class="mt-2" 
+              class="mt-4" 
               density="compact"
               variant="outlined"
               hide-details 
@@ -195,7 +197,7 @@
 
             <h4>Religion</h4>
             <v-autocomplete 
-              class="mt-2" 
+              class="mt-4" 
               density="compact"
               variant="outlined"
               hide-details 
@@ -208,7 +210,7 @@
               @update:menu="onUpdateMenu"
             />
             <v-autocomplete 
-              class="mt-2 d-none" 
+              class="mt-4 d-none" 
               density="compact"
               variant="outlined"
               hide-details 
@@ -221,13 +223,14 @@
               @update:menu="onUpdateMenu" 
             />
             <h4>Specialized Community</h4>
-            <v-checkbox density="compact" label="Tribal" v-model="searchFilterSortStore.filters.tribal" hide-details class="mt-2" />
+            <v-checkbox density="compact" label="Tribal" v-model="searchFilterSortStore.filters.tribal" hide-details class="mt-4" />
             <v-checkbox density="compact" label="HBCU" v-model="searchFilterSortStore.filters.hbcu" hide-details />
           </div>
         </v-col>
 
         <!-- Right Side Table -->
         <v-col
+          class="pt-0"
           :cols="12"
           :sm="showFilters ? 9 : 12"
         >
@@ -398,8 +401,8 @@ export default {
         { value: '3', title: 'NCAA Division 3' },
         { value: 'A', title: 'NCAA Division 1-A' },
         { value: 'B', title: 'NCAA Division 1-AA' },
-        // { value: 'C', title: 'Club' },
-        // { value: 'X', title: 'Intramural' }
+        { value: 'C', title: 'Club' },
+        { value: 'X', title: 'Intramural' }
       ],
       isTableHeightCalculated: false,
       tableHeight: 'auto',

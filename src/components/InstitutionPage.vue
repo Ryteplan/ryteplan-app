@@ -682,7 +682,7 @@
         <div v-if="sports.length > 0">
           <h3>Intercollegiate</h3>
           <div class="d-flex">
-            <div class="flex-grow-1 mr-4">
+            <div class="flex-grow-1 mr-4" v-if="menIntercollegiateSports.length > 0">
               <h4>Men</h4>
               <ul class="d-flex flex-column" style="gap: 8px;">
                 <SportItem
@@ -693,7 +693,7 @@
                 />
               </ul>
             </div>
-            <div class="flex-grow-1">
+            <div class="flex-grow-1" v-if="womenIntercollegiateSports.length > 0">
               <h4>Women</h4>
               <ul class="d-flex flex-column" style="gap: 8px;">
                 <SportItem
@@ -709,7 +709,7 @@
         <div class="mt-4" v-if="hasAnyIntramural">
           <h3>Intramural</h3>
           <div class="d-flex">
-            <div class="flex-grow-1 mr-4">
+            <div class="flex-grow-1 mr-4" v-if="menIntramuralSports.length > 0">
               <h4>Men</h4>
               <ul class="d-flex flex-column" style="gap: 8px;">
                 <SportItem
@@ -720,7 +720,7 @@
                 />
               </ul>
             </div>
-            <div class="flex-grow-1">
+            <div class="flex-grow-1" v-if="womenIntramuralSports.length > 0">
               <h4>Women</h4>
               <ul class="d-flex flex-column" style="gap: 8px;">
                 <SportItem
@@ -1285,16 +1285,24 @@ export default {
   },
   computed: {
     menIntercollegiateSports() {
-      return this.sports.filter(sport => this.getIntercollegiateDivision(sport, 'men'));
+      return this.sports
+        .filter(sport => this.getIntercollegiateDivision(sport, 'men'))
+        .sort((a, b) => a.sport_name.localeCompare(b.sport_name));
     },
     womenIntercollegiateSports() {
-      return this.sports.filter(sport => this.getIntercollegiateDivision(sport, 'women'));
+      return this.sports
+        .filter(sport => this.getIntercollegiateDivision(sport, 'women'))
+        .sort((a, b) => a.sport_name.localeCompare(b.sport_name));
     },
     menIntramuralSports() {
-      return this.sports.filter(sport => this.getIntramuralDivision(sport, 'men'));
+      return this.sports
+        .filter(sport => this.getIntramuralDivision(sport, 'men'))
+        .sort((a, b) => a.sport_name.localeCompare(b.sport_name));
     },
     womenIntramuralSports() {
-      return this.sports.filter(sport => this.getIntramuralDivision(sport, 'women'));
+      return this.sports
+        .filter(sport => this.getIntramuralDivision(sport, 'women'))
+        .sort((a, b) => a.sport_name.localeCompare(b.sport_name));
     },
     hasAnyIntramural() {
       return this.sports.some(sport => {

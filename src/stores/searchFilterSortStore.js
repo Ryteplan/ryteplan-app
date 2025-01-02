@@ -159,22 +159,20 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
         const sport = state.filters.sportName;
         const divisionFieldName = `${sport.toLowerCase().replace(/ /g, '_')}_divisions`;
         
-        // Start with basic sport filter
         let conditions = [`sports.sport_name:=${sport}`];
         
-        // Add gender/division conditions
-        if (state.filters.gender) {
-          // Gender selected
+        if (state.filters.division === 'X') {  // 'X' is the value for intramural
+          // Check if either INTM_MEN or INTM_WMN has an 'X'
+          conditions.push(`(sports.${divisionFieldName}.INTM_MEN:='X' || sports.${divisionFieldName}.INTM_WMN:='X')`);
+        } else if (state.filters.gender) {
+          // Gender selected for intercollegiate sports
           const genderField = state.filters.gender === 'men' ? 'INTC_MEN' : 'INTC_WMN';
           if (state.filters.division) {
-            // Both gender and division selected
             conditions.push(`sports.${divisionFieldName}.${genderField}:=${state.filters.division}`);
           } else {
-            // Only gender selected - show any non-empty division
             conditions.push(`sports.${divisionFieldName}.${genderField}:!=null`);
           }
         } else if (state.filters.division) {
-          // Only division selected - check both genders
           conditions.push(`(sports.${divisionFieldName}.INTC_MEN:=${state.filters.division} || sports.${divisionFieldName}.INTC_WMN:=${state.filters.division})`);
         }
         
