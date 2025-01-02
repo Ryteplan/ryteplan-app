@@ -6,6 +6,10 @@
 
         <p class="mb-6">Welcome to Ryteplan ("we," "us," or "our"). These Terms and Conditions ("Terms") govern your use of our web application ("App") and any related services ("Services"). By accessing or using Ryteplan, you agree to comply with and be bound by these Terms. If you do not agree, please do not use our App.</p>
 
+        <p class="mb-6">Data Source: Peterson's Databases<br />
+          Copyright 2024 Peterson's LLC · All rights reserved
+        </p>
+
         <div v-for="(section, index) in sections" :key="index" class="mb-6">
           <h2 class="text-h6 mb-3">{{ section.title }}</h2>
           <div v-html="section.content" class="terms-content"></div>

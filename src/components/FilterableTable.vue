@@ -25,39 +25,36 @@
           <div class="filters-content flex-grow-1">
             <h4>Location</h4>
             <v-select 
-              class="mt-4" 
-              flat 
+              class="mt-2" 
+              density="compact"
+              variant="outlined"
               hide-details 
-              small 
               clearable 
-              auto 
               label="Country"
               :items="searchFilterSortStore.CountryList" 
               v-model="searchFilterSortStore.filters.Country"
               @update:menu="onUpdateMenu"
             />
             <v-autocomplete
-              class="mt-4" 
-              flat 
+              class="mt-2" 
+              density="compact"
+              variant="outlined"
               hide-details 
-              small 
               multiple 
               clearable 
               chips 
-              auto 
               label="State(s)"
               :items="searchFilterSortStore.StatesList" 
               v-model="searchFilterSortStore.filters.State"
               @update:menu="onUpdateMenu" 
             />
             <v-select 
-              class="mt-4" 
-              flat 
+              class="mt-2" 
+              density="compact"
+              variant="outlined"
               hide-details 
-              small 
               multiple 
               clearable 
-              auto 
               label="Campus Setting"
               :items="searchFilterSortStore.campusSettingList" 
               v-model="searchFilterSortStore.filters.campusSetting"
@@ -66,12 +63,11 @@
             <h4>Athletics</h4>
             <v-autocomplete 
               ref="sportFilter"
-              class="text-capitalize mt-4" 
-              flat 
+              class="text-capitalize mt-2" 
+              density="compact"
+              variant="outlined"
               hide-details 
-              small 
               clearable 
-              auto 
               label="Sport"
               :items="searchFilterSortStore.sportList" 
               v-model="searchFilterSortStore.filters.sportName"
@@ -81,12 +77,11 @@
             />
             <v-select
               v-if="searchFilterSortStore.filters.sportName && searchFilterSortStore.filters.sportName.length > 0"
-              class="mt-4"
-              flat 
+              class="mt-2"
+              density="compact"
+              variant="outlined"
               hide-details 
-              small 
               clearable 
-              auto 
               label="Division"
               :items="divisions"
               item-title="title"
@@ -96,12 +91,11 @@
             />
             <v-select
               v-if="searchFilterSortStore.filters.sportName && searchFilterSortStore.filters.sportName.length > 0"
-              class="mt-4"
-              flat 
+              class="mt-2"
+              density="compact"
+              variant="outlined"
               hide-details 
-              small 
               clearable 
-              auto 
               label="Gender"
               :items="[
                 { title: 'Men', value: 'men' },
@@ -114,30 +108,33 @@
             />
             <h4>Public or Private</h4>
             <v-select 
-              class="mt-4" 
-              flat 
+              class="mt-2" 
+              density="compact"
+              variant="outlined"
               hide-details 
-              small 
               clearable 
-              auto 
               label="Type"
               :items="searchFilterSortStore.TypeList" 
               v-model="searchFilterSortStore.filters.Type"
               @update:menu="onUpdateMenu"
             />
             <h4>Undergraduates</h4>
-            <div class="d-flex mt-4" style="gap: 16px;">
+            <div class="d-flex mt-2" style="gap: 16px;">
               <v-text-field 
                 v-model="searchFilterSortStore.filters.UndergraduatesMin" 
                 label="Minimum"
                 type="number" 
                 clearable 
                 hide-details
+                density="compact"
+                variant="outlined"
               />
               <v-text-field 
                 v-model="searchFilterSortStore.filters.UndergraduatesMax" 
                 label="Maximum"
                 type="number" 
+                density="compact"
+                variant="outlined"
                 clearable 
                 hide-details
               />
@@ -157,6 +154,7 @@
                   density="compact"
                   type="number"
                   variant="outlined"
+                  hide-spin-buttons
                   hide-details
                   single-line
                   style="width: 60px"
@@ -169,6 +167,7 @@
                   density="compact"
                   type="number"
                   variant="outlined"
+                  hide-spin-buttons
                   hide-details
                   single-line
                   style="width: 60px"
@@ -179,14 +178,13 @@
 
             <h4>Academics</h4>
             <v-autocomplete 
-              class="mt-4" 
-              flat 
+              class="mt-2" 
+              density="compact"
+              variant="outlined"
               hide-details 
-              small 
               multiple 
               clearable 
               chips 
-              auto 
               label="Majors"
               :items="searchFilterSortStore.cipCodes" 
               item-value="cipCode" 
@@ -197,36 +195,34 @@
 
             <h4>Religion</h4>
             <v-autocomplete 
-              class="mt-4" 
-              flat 
+              class="mt-2" 
+              density="compact"
+              variant="outlined"
               hide-details 
-              small 
               multiple 
               clearable 
               chips 
-              auto 
               label="Denomination"
               :items="searchFilterSortStore.denomsList" 
               v-model="searchFilterSortStore.filters.denom"
               @update:menu="onUpdateMenu"
             />
             <v-autocomplete 
-              class="mt-4 d-none" 
-              flat 
+              class="mt-2 d-none" 
+              density="compact"
+              variant="outlined"
               hide-details 
-              small 
               multiple 
               clearable 
               chips 
-              auto 
               label="Affiliation"
               :items="searchFilterSortStore.affilList" 
               v-model="searchFilterSortStore.filters.affil"
               @update:menu="onUpdateMenu" 
             />
             <h4>Specialized Community</h4>
-            <v-checkbox label="Tribal" v-model="searchFilterSortStore.filters.tribal" hide-details class="mt-2" />
-            <v-checkbox label="HBCU" v-model="searchFilterSortStore.filters.hbcu" hide-details />
+            <v-checkbox density="compact" label="Tribal" v-model="searchFilterSortStore.filters.tribal" hide-details class="mt-2" />
+            <v-checkbox density="compact" label="HBCU" v-model="searchFilterSortStore.filters.hbcu" hide-details />
           </div>
         </v-col>
 
@@ -236,7 +232,7 @@
           :sm="showFilters ? 9 : 12"
         >
           <div class="d-flex align-center justify-space-between mb-4">
-            <div class="d-flex align-center" style="gap: 40px">
+            <div class="d-flex align-center w-100" style="gap: 40px">
               <v-switch 
                 v-if="userStore.isLoggedIn && userStore.adminMode" 
                 label="Show hidden" 
@@ -246,7 +242,7 @@
                 v-model="tableStore.hideHidden" 
                 @change="tableStore.saveHideHiddenState"
               />
-              <div class="d-flex flex-column flex-md-row align-center mt-3">
+              <div class="d-flex align-center justify-space-between mt-3 w-100">
                 <v-btn
                   size="x-small"
                   @click="toggleFilters"
@@ -255,12 +251,14 @@
                 >
                   {{ showFilters ? 'Hide Filters' : 'Show Filters' }}
                 </v-btn>
-                <div class="text-subtitle-2 mr-md-4 align-center">
+                <div class="d-flex">
+                  <div class="text-subtitle-2 mr-md-4 align-center">
                   Results: 
-                  <span v-if="!tableStore.applyFiltersLoading">{{ tableStore.resultsFound }}</span>
-                  <v-progress-circular class="ml-2" style="top: -2px;" v-else :size="20" color="primary" indeterminate></v-progress-circular>
+                    <span v-if="!tableStore.applyFiltersLoading">{{ tableStore.resultsFound }}</span>
+                    <v-progress-circular class="ml-2" style="top: -2px;" v-else :size="20" color="primary" indeterminate></v-progress-circular>
+                  </div>
+                  <p class="text-subtitle-2">Page(s) loaded: {{ searchFilterSortStore.searchParameters.page }}</p>
                 </div>
-                <p class="text-subtitle-2">Page(s) loaded: {{ searchFilterSortStore.searchParameters.page }}</p>
               </div>
             </div>
           </div>
@@ -696,5 +694,9 @@ tr td {
 
 .v-col {
   transition: all 0.3s ease-in-out;
+}
+
+.v-slider.v-input--horizontal {
+  margin-inline: 0;
 }
 </style>

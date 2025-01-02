@@ -176,19 +176,15 @@
       <v-spacer></v-spacer>
       <v-container class="footer-container pt-0">
         <v-footer class="pb-4 ml-0 mr-0 pl-0 pr-0">
-          <v-row>
+          <v-row class="align-end">
             <v-col cols="6">
-              <p style="font-size: 13px">
-                Version: {{ appVersionStore.getVersion() }}<br />
-                Copyright 2024 Ryteplan LLC <br/> All rights reserved
-              </p>
-            </v-col>
-            <v-col cols="6" class="text-right">
-              <p style="font-size: 13px">
-                <router-link to="/terms" class="terms-link">Terms and Conditions</router-link><br />
-                Data Source: Peterson's Databases<br />
-                Copyright 2024 Peterson's LLC All rights reserved
-              </p>
+              <div style="font-size: 13px; margin-bottom: 0; gap: 8px; display: flex;">
+                <span>Version: {{ appVersionStore.getVersion() }}</span> 
+                <span>·</span>
+                <span>Ryteplan LLC © 2025</span>
+                <span>·</span>
+                <router-link to="/terms" class="terms-link" target="_blank">Terms and Conditions</router-link>
+            </div>
             </v-col>
           </v-row>
         </v-footer>
