@@ -113,7 +113,9 @@
       v-model="showFiltersDialog"
       width="100%"
       max-width="600px"
+      max-height="90vh"
       scrollable
+      class="mx-4"
     >
       <v-card>
         <v-card-title class="d-flex justify-space-between align-center">
