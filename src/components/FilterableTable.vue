@@ -9,6 +9,16 @@
         <v-col cols="3" class="filters-sidebar d-flex flex-column pt-0">
           <div class="d-flex align-center justify-space-between">
             <p class="text-subtitle-2" style="height: 48px; display: flex; align-items: center;">Filters</p>
+            <v-btn 
+              v-if="hasActiveFilters"
+              @click="clearFilters"
+              color="primary"
+              variant="text"
+              size="x-small"
+              class="text-caption mr-4"
+            >
+              Clear
+            </v-btn>
           </div>
           <div class="filters-content flex-grow-1">
             <h4>Location</h4>
@@ -198,7 +208,7 @@
               @update:menu="onUpdateMenu"
             />
             <v-autocomplete 
-              class="mt-4" 
+              class="mt-4 d-none" 
               flat 
               hide-details 
               small 
@@ -208,7 +218,7 @@
               auto 
               label="Affiliation"
               :items="searchFilterSortStore.affilList" 
-              v-model="searchFilterSortStore.filters.denom"
+              v-model="searchFilterSortStore.filters.affil"
               @update:menu="onUpdateMenu" 
             />
             <h4 >Specialized Community</h4>
@@ -231,10 +241,10 @@
                 @change="tableStore.saveHideHiddenState"
               />
               <div class="d-flex flex-column flex-md-row">
-                <div class="text-subtitle-2 mr-md-4">
+                <div class="text-subtitle-2 mr-md-4 align-center">
                   Results found: 
                   <span v-if="!tableStore.applyFiltersLoading">{{ tableStore.resultsFound }}</span>
-                  <v-progress-circular class="ml-2" v-else :size="20" color="primary" indeterminate></v-progress-circular>
+                  <v-progress-circular class="ml-2" style="top: -2px;" v-else :size="20" color="primary" indeterminate></v-progress-circular>
                 </div>
                 <p class="text-subtitle-2">Page(s) loaded: {{ searchFilterSortStore.searchParameters.page }}</p>
               </div>
@@ -292,6 +302,7 @@
 import { useUserStore } from '../stores/userStore';
 import { useTableStore } from '../stores/tableStore';
 import { useSearchFilterSortStore } from '../stores/searchFilterSortStore';
+import { defaultFilters } from '../data/defaultFilters';
 import SaveToListDialog from './SaveToListDialog'
 import ShareDialog from './ShareDialog'
 import { debounce } from 'lodash';
@@ -471,12 +482,24 @@ export default {
       const spacing = 16;
       this.tableHeight = `${containerHeight - filtersHeight - spacing}px`;
       this.isTableHeightCalculated = true;
+    },
+    clearFilters() {
+      this.searchFilterSortStore.filters = JSON.parse(JSON.stringify(defaultFilters));
     }
   },
   computed: {
     searchQueryFromRoute() {
       return this.$route.query.search;
     },
+    hasActiveFilters() {
+      const currentFilters = this.searchFilterSortStore.filters;
+      return Object.keys(defaultFilters).some(key => {
+        if (Array.isArray(defaultFilters[key])) {
+          return JSON.stringify(currentFilters[key]) !== JSON.stringify(defaultFilters[key]);
+        }
+        return currentFilters[key] !== defaultFilters[key];
+      });
+    }
   },
   created() {
     this.$nextTick(() => {
