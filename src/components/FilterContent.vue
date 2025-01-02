@@ -248,6 +248,13 @@ export default {
         return currentFilters[key] !== defaultFilters[key];
       });
     }
+  },
+  methods: {
+    onUpdateMenu(open) {
+      if (open) {
+        setTimeout(() => window.dispatchEvent(new Event("resize")), 0);
+      }
+    }
   }
 }
 </script>
