@@ -177,7 +177,7 @@
       <v-container class="footer-container pt-0">
         <v-footer class="pb-4 ml-0 mr-0 pl-0 pr-0">
           <v-row class="align-end">
-            <v-col cols="6">
+            <v-col cols="12">
               <div style="font-size: 13px; margin-bottom: 0; gap: 8px; display: flex;">
                 <span>Version: {{ appVersionStore.getVersion() }}</span> 
                 <span>·</span>
