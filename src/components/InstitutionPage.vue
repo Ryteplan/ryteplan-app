@@ -199,7 +199,7 @@
           </div>
         </div>
         <div v-if="Object.keys(imageURLsFromDB).length > 0">
-          <div class="institution-images-container mt-xs-4 mt-sm-4">
+          <div class="institution-images-container">
             <div class="img-bg position-relative" 
                  @mouseenter="hoveredImageIndex = 1" 
                  @mouseleave="hoveredImageIndex = null">
@@ -1536,7 +1536,7 @@ export default {
 
   .image-info-btn {
     position: absolute !important;
-    top: 8px;
+    bottom: 8px;
     right: 8px;
     background-color: rgba(255, 255, 255, 0.8) !important;
   }
