@@ -1,7 +1,7 @@
 <template>
   <v-container class="browse-institution-table-container pt-4">
-    <v-container v-if="tableStore.loading === false && isTableHeightCalculated" class="pa-0">
-      <v-row class="">
+    <v-container class="pa-0">
+      <v-row v-if="tableStore.loading === false && isTableHeightCalculated">
         <!-- Left Side Filters -->
         <v-col
           v-show="showFilters"
@@ -248,6 +248,7 @@
               <div class="d-flex align-center justify-space-between mt-3 w-100">
                 <v-btn
                   size="x-small"
+                  elevation="1"
                   @click="toggleFilters"
                   :title="showFilters ? 'Hide Filters' : 'Show Filters'"
                   class="mr-2"
@@ -306,6 +307,15 @@
             <template #bottom></template>
           </v-data-table>
         </v-col>
+      </v-row>
+      <v-row v-else>
+        <v-progress-circular
+          style="margin-top: 150px;"
+          class="mx-auto"
+          color="primary"
+          indeterminate
+          size="64"
+        ></v-progress-circular>
       </v-row>
     </v-container>
     <SaveToListDialog v-model="showSaveToListDialog" :selectedRows="tableStore.selectedRows" />
