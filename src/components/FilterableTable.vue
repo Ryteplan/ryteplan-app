@@ -2,237 +2,24 @@
   <v-container class="browse-institution-table-container pt-4">
     <v-container class="pa-0">
       <v-row v-if="tableStore.loading === false && isTableHeightCalculated">
-        <!-- Left Side Filters -->
+        <!-- Left Side Filters - Only show on large screens -->
         <v-col
-          v-show="showFilters"
+          v-show="showFilters && $vuetify.display.lgAndUp"
           cols="12"
           sm="3"
           class="filters-sidebar pt-0"          
         >
-          <div class="d-flex align-center justify-space-between">
-            <p class="text-subtitle-2" style="height: 48px; display: flex; align-items: center;">Filters</p>
-            <v-btn 
-              v-if="hasActiveFilters"
-              @click="clearFilters"
-              color="primary"
-              variant="text"
-              size="x-small"
-              class="text-caption mr-4"
-            >
-              Clear
-            </v-btn>
-          </div>
-          <div class="filters-content flex-grow-1">
-            <h4>Location</h4>
-            <v-select 
-              class="mt-4" 
-              density="compact"
-              variant="outlined"
-              hide-details 
-              clearable 
-              label="Country"
-              :items="searchFilterSortStore.CountryList" 
-              v-model="searchFilterSortStore.filters.Country"
-              @update:menu="onUpdateMenu"
-            />
-            <v-autocomplete
-              class="mt-4" 
-              density="compact"
-              variant="outlined"
-              hide-details 
-              multiple 
-              clearable 
-              chips 
-              label="State(s)"
-              :items="searchFilterSortStore.StatesList" 
-              v-model="searchFilterSortStore.filters.State"
-              @update:menu="onUpdateMenu" 
-            />
-            <v-select 
-              class="mt-4" 
-              density="compact"
-              variant="outlined"
-              hide-details 
-              multiple 
-              clearable 
-              label="Campus Setting"
-              :items="searchFilterSortStore.campusSettingList" 
-              v-model="searchFilterSortStore.filters.campusSetting"
-              @update:menu="onUpdateMenu"
-            />
-            <h4>Athletics</h4>
-            <v-autocomplete 
-              ref="sportFilter"
-              class="mt-4" 
-              density="compact"
-              variant="outlined"
-              hide-details 
-              clearable 
-              label="Sport"
-              :items="searchFilterSortStore.sportList" 
-              v-model="searchFilterSortStore.filters.sportName"
-              :item-title="str => str?.replace(/\b\w/g, l => l.toUpperCase())"
-              :menu-props="{ contentClass: 'text-capitalize' }"
-              @update:menu="onUpdateMenu" 
-            />
-            <v-select
-              v-if="searchFilterSortStore.filters.sportName && searchFilterSortStore.filters.sportName.length > 0"
-              class="mt-4"
-              density="compact"
-              variant="outlined"
-              hide-details 
-              clearable 
-              label="Division"
-              :items="divisions"
-              item-title="title"
-              item-value="value"
-              v-model="searchFilterSortStore.filters.division"
-              @update:menu="onUpdateMenu"
-            />
-            <v-select
-              v-if="searchFilterSortStore.filters.sportName && searchFilterSortStore.filters.sportName.length > 0"
-              class="mt-4"
-              density="compact"
-              variant="outlined"
-              hide-details 
-              clearable 
-              label="Gender"
-              :items="[
-                { title: 'Men', value: 'men' },
-                { title: 'Women', value: 'women' }
-              ]"
-              item-title="title"
-              item-value="value"
-              v-model="searchFilterSortStore.filters.gender"
-              @update:menu="onUpdateMenu"
-            />
-            <h4>Public or Private</h4>
-            <v-select 
-              class="mt-4" 
-              density="compact"
-              variant="outlined"
-              hide-details 
-              clearable 
-              label="Type"
-              :items="searchFilterSortStore.TypeList" 
-              v-model="searchFilterSortStore.filters.Type"
-              @update:menu="onUpdateMenu"
-            />
-            <h4>Undergraduates</h4>
-            <div class="d-flex mt-4" style="gap: 16px;">
-              <v-text-field 
-                v-model="searchFilterSortStore.filters.UndergraduatesMin" 
-                label="Minimum"
-                type="number" 
-                clearable 
-                hide-details
-                density="compact"
-                variant="outlined"
-                hide-spin-buttons
-              />
-              <v-text-field 
-                v-model="searchFilterSortStore.filters.UndergraduatesMax" 
-                label="Maximum"
-                type="number" 
-                density="compact"
-                variant="outlined"
-                clearable 
-                hide-details
-                hide-spin-buttons
-              />
-            </div>
-            <h4>Admit Range</h4>
-            <v-range-slider 
-              v-model="searchFilterSortStore.filters.admitRateRange" 
-              :max="100" 
-              :min="0" 
-              :step="1"
-              class="align-center mt-4" 
-              hide-details
-            >
-              <template v-slot:prepend>
-                <v-text-field
-                  v-model="searchFilterSortStore.filters.admitRateRange[0]"
-                  density="compact"
-                  type="number"
-                  variant="outlined"
-                  hide-spin-buttons
-                  hide-details
-                  single-line
-                  style="width: 60px"
-                  class="mr-2"
-                ></v-text-field>
-              </template>
-              <template v-slot:append>
-                <v-text-field
-                  v-model="searchFilterSortStore.filters.admitRateRange[1]"
-                  density="compact"
-                  type="number"
-                  variant="outlined"
-                  hide-spin-buttons
-                  hide-details
-                  single-line
-                  style="width: 60px"
-                  class="ml-2"
-                ></v-text-field>
-              </template>
-            </v-range-slider>
-
-            <h4>Academics</h4>
-            <v-autocomplete 
-              class="mt-4" 
-              density="compact"
-              variant="outlined"
-              hide-details 
-              multiple 
-              clearable 
-              chips 
-              label="Majors"
-              :items="searchFilterSortStore.cipCodes" 
-              item-value="cipCode" 
-              item-title="major"
-              v-model="searchFilterSortStore.filters.cipCode" 
-              @update:menu="onUpdateMenu"
-            />
-
-            <h4>Religion</h4>
-            <v-autocomplete 
-              class="mt-4" 
-              density="compact"
-              variant="outlined"
-              hide-details 
-              multiple 
-              clearable 
-              chips 
-              label="Denomination"
-              :items="searchFilterSortStore.denomsList" 
-              v-model="searchFilterSortStore.filters.denom"
-              @update:menu="onUpdateMenu"
-            />
-            <v-autocomplete 
-              class="mt-4 d-none" 
-              density="compact"
-              variant="outlined"
-              hide-details 
-              multiple 
-              clearable 
-              chips 
-              label="Affiliation"
-              :items="searchFilterSortStore.affilList" 
-              v-model="searchFilterSortStore.filters.affil"
-              @update:menu="onUpdateMenu" 
-            />
-            <h4>Specialized Community</h4>
-            <v-checkbox density="compact" label="Tribal" v-model="searchFilterSortStore.filters.tribal" hide-details class="mt-2" />
-            <v-checkbox density="compact" label="HBCU" v-model="searchFilterSortStore.filters.hbcu" hide-details />
-          </div>
+          <FilterContent 
+            :sport-filter-ref="$refs.sportFilter"
+            @clear-filters="clearFilters"
+          />
         </v-col>
 
         <!-- Right Side Table -->
         <v-col
           class="pt-0"
           :cols="12"
-          :sm="showFilters ? 9 : 12"
+          :sm="($vuetify.display.lgAndUp && showFilters) ? 9 : 12"
         >
           <div class="d-flex align-center justify-space-between mb-4">
             <div class="d-flex align-center w-100" style="gap: 40px">
@@ -256,8 +43,8 @@
                   {{ showFilters ? 'Hide Filters' : 'Show Filters' }}
                 </v-btn>
                 <div class="d-flex">
-                  <div class="text-subtitle-2 mr-md-4 align-center">
-                  Results: 
+                  <div class="text-subtitle-2 mr-4 align-center">
+                    Results: 
                     <span v-if="!tableStore.applyFiltersLoading">{{ tableStore.resultsFound }}</span>
                     <v-progress-circular class="ml-2" style="top: -2px;" v-else :size="20" color="primary" indeterminate></v-progress-circular>
                   </div>
@@ -320,6 +107,30 @@
     </v-container>
     <SaveToListDialog v-model="showSaveToListDialog" :selectedRows="tableStore.selectedRows" />
     <ShareDialog v-model="showShareDialog" :selectedRows="tableStore.selectedRows" />
+
+    <!-- Add new dialog for filters -->
+    <v-dialog
+      v-model="showFiltersDialog"
+      width="100%"
+      max-width="600px"
+      scrollable
+    >
+      <v-card>
+        <v-card-title class="d-flex justify-space-between align-center">
+          <span>Filters</span>
+          <v-btn icon="mdi-close" variant="text" @click="showFiltersDialog = false"></v-btn>
+        </v-card-title>
+        <v-card-text>
+          <FilterContent 
+            :sport-filter-ref="$refs.sportFilter"
+            @clear-filters="clearFilters"
+          />
+        </v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn color="primary" @click="showFiltersDialog = false">Done</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -331,6 +142,7 @@ import { defaultFilters } from '../data/defaultFilters';
 import SaveToListDialog from './SaveToListDialog'
 import ShareDialog from './ShareDialog'
 import { debounce } from 'lodash';
+import FilterContent from './FilterContent.vue'
 
 export default {
   setup() {
@@ -416,7 +228,8 @@ export default {
       ],
       isTableHeightCalculated: false,
       tableHeight: 'auto',
-      showFilters: true
+      showFilters: true,
+      showFiltersDialog: false
     }
   },
   methods: {
@@ -518,7 +331,11 @@ export default {
       this.searchFilterSortStore.filters = JSON.parse(JSON.stringify(defaultFilters));
     },
     toggleFilters() {
-      this.showFilters = !this.showFilters;
+      if (this.$vuetify.display.lgAndUp) {
+        this.showFilters = !this.showFilters;
+      } else {
+        this.showFiltersDialog = true;
+      }
     }
   },
   computed: {
@@ -552,7 +369,8 @@ export default {
   },
   components: {
     SaveToListDialog,
-    ShareDialog
+    ShareDialog,
+    FilterContent
   }
 };
 </script>
@@ -711,5 +529,12 @@ tr td {
 
 .v-slider.v-input--horizontal {
   margin-inline: 0;
+}
+
+// Add responsive styles
+.filters-dialog {
+  .v-card-text {
+    padding: 16px;
+  }
 }
 </style>
