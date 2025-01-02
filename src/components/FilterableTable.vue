@@ -1,12 +1,14 @@
 <template>
   <v-container class="browse-institution-table-container pt-4">
-    <div v-if="tableStore.loading === true || !isTableHeightCalculated" class="d-flex align-center justify-center" style="height: calc(100vh - 164px)">
-      <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
-    </div>
     <v-container v-if="tableStore.loading === false && isTableHeightCalculated" class="pa-0">
       <v-row class="">
         <!-- Left Side Filters -->
-        <v-col cols="3" class="filters-sidebar d-flex flex-column pt-0">
+        <v-col
+          v-show="showFilters"
+          cols="12"
+          sm="3"
+          class="filters-sidebar pt-0"          
+        >
           <div class="d-flex align-center justify-space-between">
             <p class="text-subtitle-2" style="height: 48px; display: flex; align-items: center;">Filters</p>
             <v-btn 
@@ -61,8 +63,9 @@
               v-model="searchFilterSortStore.filters.campusSetting"
               @update:menu="onUpdateMenu"
             />
-            <h4 >Athletics</h4>
+            <h4>Athletics</h4>
             <v-autocomplete 
+              ref="sportFilter"
               class="text-capitalize mt-4" 
               flat 
               hide-details 
@@ -72,7 +75,7 @@
               label="Sport"
               :items="searchFilterSortStore.sportList" 
               v-model="searchFilterSortStore.filters.sportName"
-              :item-title="str => str.replace(/\b\w/g, l => l.toUpperCase())"
+              :item-title="str => str?.replace(/\b\w/g, l => l.toUpperCase())"
               :menu-props="{ contentClass: 'text-capitalize' }"
               @update:menu="onUpdateMenu" 
             />
@@ -109,7 +112,7 @@
               v-model="searchFilterSortStore.filters.gender"
               @update:menu="onUpdateMenu"
             />
-            <h4 >Public or Private</h4>
+            <h4>Public or Private</h4>
             <v-select 
               class="mt-4" 
               flat 
@@ -122,7 +125,7 @@
               v-model="searchFilterSortStore.filters.Type"
               @update:menu="onUpdateMenu"
             />
-            <h4 >Undergraduates</h4>
+            <h4>Undergraduates</h4>
             <div class="d-flex mt-4" style="gap: 16px;">
               <v-text-field 
                 v-model="searchFilterSortStore.filters.UndergraduatesMin" 
@@ -139,7 +142,7 @@
                 hide-details
               />
             </div>
-            <h4 >Admit Range</h4>
+            <h4>Admit Range</h4>
             <v-range-slider 
               v-model="searchFilterSortStore.filters.admitRateRange" 
               :max="100" 
@@ -174,7 +177,7 @@
               </template>
             </v-range-slider>
 
-            <h4 >Academics</h4>
+            <h4>Academics</h4>
             <v-autocomplete 
               class="mt-4" 
               flat 
@@ -192,7 +195,7 @@
               @update:menu="onUpdateMenu"
             />
 
-            <h4 >Religion</h4>
+            <h4>Religion</h4>
             <v-autocomplete 
               class="mt-4" 
               flat 
@@ -221,14 +224,17 @@
               v-model="searchFilterSortStore.filters.affil"
               @update:menu="onUpdateMenu" 
             />
-            <h4 >Specialized Community</h4>
+            <h4>Specialized Community</h4>
             <v-checkbox label="Tribal" v-model="searchFilterSortStore.filters.tribal" hide-details class="mt-2" />
             <v-checkbox label="HBCU" v-model="searchFilterSortStore.filters.hbcu" hide-details />
           </div>
         </v-col>
 
         <!-- Right Side Table -->
-        <v-col cols="9">
+        <v-col
+          :cols="12"
+          :sm="showFilters ? 9 : 12"
+        >
           <div class="d-flex align-center justify-space-between mb-4">
             <div class="d-flex align-center" style="gap: 40px">
               <v-switch 
@@ -240,9 +246,17 @@
                 v-model="tableStore.hideHidden" 
                 @change="tableStore.saveHideHiddenState"
               />
-              <div class="d-flex flex-column flex-md-row">
+              <div class="d-flex flex-column flex-md-row align-center mt-3">
+                <v-btn
+                  size="x-small"
+                  @click="toggleFilters"
+                  :title="showFilters ? 'Hide Filters' : 'Show Filters'"
+                  class="mr-2"
+                >
+                  {{ showFilters ? 'Hide Filters' : 'Show Filters' }}
+                </v-btn>
                 <div class="text-subtitle-2 mr-md-4 align-center">
-                  Results found: 
+                  Results: 
                   <span v-if="!tableStore.applyFiltersLoading">{{ tableStore.resultsFound }}</span>
                   <v-progress-circular class="ml-2" style="top: -2px;" v-else :size="20" color="primary" indeterminate></v-progress-circular>
                 </div>
@@ -390,7 +404,8 @@ export default {
         // { value: 'X', title: 'Intramural' }
       ],
       isTableHeightCalculated: false,
-      tableHeight: 'auto'
+      tableHeight: 'auto',
+      showFilters: true
     }
   },
   methods: {
@@ -484,7 +499,15 @@ export default {
       this.isTableHeightCalculated = true;
     },
     clearFilters() {
+      if (this.$refs.sportFilter) {
+        this.$refs.sportFilter.internalSearch = '';
+        this.$refs.sportFilter.search = '';
+      }
+      
       this.searchFilterSortStore.filters = JSON.parse(JSON.stringify(defaultFilters));
+    },
+    toggleFilters() {
+      this.showFilters = !this.showFilters;
     }
   },
   computed: {
@@ -665,5 +688,13 @@ tr td {
 .v-table>.v-table__wrapper>table>tbody>tr>td {
   padding-top: 8px;
   padding-bottom: 8px;
+}
+
+.v-input__control {
+  height: auto;
+}
+
+.v-col {
+  transition: all 0.3s ease-in-out;
 }
 </style>
