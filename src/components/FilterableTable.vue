@@ -389,6 +389,7 @@ export default {
   display: flex;
   flex-direction: column;
   padding-bottom: 180px;
+  overflow-y: auto;
   
   .filters-content {
     flex: 1;
