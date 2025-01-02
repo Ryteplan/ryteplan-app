@@ -223,7 +223,7 @@
               @update:menu="onUpdateMenu" 
             />
             <h4>Specialized Community</h4>
-            <v-checkbox density="compact" label="Tribal" v-model="searchFilterSortStore.filters.tribal" hide-details class="mt-4" />
+            <v-checkbox density="compact" label="Tribal" v-model="searchFilterSortStore.filters.tribal" hide-details class="mt-2" />
             <v-checkbox density="compact" label="HBCU" v-model="searchFilterSortStore.filters.hbcu" hide-details />
           </div>
         </v-col>

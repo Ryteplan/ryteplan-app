@@ -200,40 +200,34 @@
         </div>
         <div v-if="Object.keys(imageURLsFromDB).length > 0">
           <div class="institution-images-container mt-xs-4 mt-sm-4">
-            <div class="img-bg">
+            <div class="img-bg position-relative" 
+                 @mouseenter="hoveredImageIndex = 1" 
+                 @mouseleave="hoveredImageIndex = null">
               <img class="institution-image" :src="imageURLsFromDB.image1" />
+              <v-btn
+                v-show="hoveredImageIndex === 1"
+                icon="mdi-information"
+                size="small"
+                class="image-info-btn"
+                @click="showImageCreditInfo(1)"
+              />
             </div>
             <div class="institution-images-grid">
-              <div class="img-bg">
-                <img class="institution-image" :src="imageURLsFromDB.image2" />
-              </div>
-              <div class="img-bg">
-                <img class="institution-image" :src="imageURLsFromDB.image3" />
-              </div>
-              <div class="img-bg">
-                <img class="institution-image" :src="imageURLsFromDB.image4" />
-              </div>
-              <div class="img-bg">
-                <img class="institution-image" :src="imageURLsFromDB.image5" />
-              </div>
+              <template v-for="i in 4" :key="i">
+                <div class="img-bg position-relative"
+                     @mouseenter="hoveredImageIndex = i + 1" 
+                     @mouseleave="hoveredImageIndex = null">
+                  <img class="institution-image" :src="imageURLsFromDB[`image${i+1}`]" />
+                  <v-btn
+                    v-show="hoveredImageIndex === i + 1"
+                    icon="mdi-information"
+                    size="small"
+                    class="image-info-btn"
+                    @click="showImageCreditInfo(i + 1)"
+                  />
+                </div>
+              </template>
             </div>
-          </div>
-          <v-btn
-            @click="toggleImageCredits"
-            class="mt-4"
-            size="small"
-          >
-            Image credits
-          </v-btn>
-          <div 
-            v-if="showImageCredits"
-            class="mt-3"
-          >
-            <div v-html="imageCredits.image1" />
-            <div class="mt-2" v-html="imageCredits.image2" />
-            <div class="mt-2" v-html="imageCredits.image3" />
-            <div class="mt-2" v-html="imageCredits.image4" />
-            <div class="mt-2" v-html="imageCredits.image5" />
           </div>
         </div>
         <div v-if="imagesFromGoogleSearch.length > 0">
@@ -908,6 +902,25 @@
       v-model="showSaveToListDialog" 
       :institutionId="institutionId"
     />
+    <v-dialog v-model="showImageCreditDialog" max-width="800">
+      <v-card>
+        <v-card-title>Image Information</v-card-title>
+        <v-card-text>
+          <div class="d-flex flex-column">
+            <img 
+              :src="selectedImageUrl" 
+              class="dialog-image mb-4"
+              alt="Selected institution image"
+            />
+            <div v-html="selectedImageCredit"></div>
+          </div>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" text @click="showImageCreditDialog = false">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
  
@@ -994,6 +1007,10 @@ export default {
       ethnicityPopulationTotal: 0,
       newAlias: "",
       editedAliasIndexes: [],
+      selectedImageCredit: null,
+      showImageCreditDialog: false,
+      hoveredImageIndex: null,
+      selectedImageUrl: null,
     }
   },
   methods: {
@@ -1008,9 +1025,6 @@ export default {
         'X': ''
       };
       return divisions[code] || code;
-    },
-    toggleImageCredits() {
-      this.showImageCredits = !this.showImageCredits
     },
     toggleFieldTrueFalse(field) {
       setDoc(doc(dbFireStore, 'manual_institution_data', this.institution["uri"]), {
@@ -1275,6 +1289,11 @@ export default {
       console.log('Is uncategorized:', result);
       return result;
     },
+    showImageCreditInfo(imageIndex) {
+      this.selectedImageCredit = this.imageCredits[`image${imageIndex}`];
+      this.selectedImageUrl = this.imageURLsFromDB[`image${imageIndex}`];
+      this.showImageCreditDialog = true;
+    }
   },
   components: {
     // EthnicityChart,
@@ -1509,6 +1528,24 @@ export default {
     display: grid;
     grid-template-columns: 1fr 1fr;
     row-gap: 24px;
+  }
+
+  .position-relative {
+    position: relative;
+  }
+
+  .image-info-btn {
+    position: absolute !important;
+    top: 8px;
+    right: 8px;
+    background-color: rgba(255, 255, 255, 0.8) !important;
+  }
+
+  .dialog-image {
+    max-width: 100%;
+    max-height: 400px;
+    object-fit: contain;
+    border-radius: 4px;
   }
 
 </style>
