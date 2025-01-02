@@ -40,7 +40,7 @@
                   :title="showFilters ? 'Hide Filters' : 'Show Filters'"
                   class="mr-2"
                 >
-                  {{ showFilters ? 'Hide Filters' : 'Show Filters' }}
+                  Filter
                 </v-btn>
                 <div class="d-flex">
                   <div class="text-subtitle-2 mr-4 align-center">
