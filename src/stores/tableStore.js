@@ -17,7 +17,7 @@ export const useTableStore = defineStore('table', {
       lastVisible: {},
       resultsFound: 0,
   }),
-  persist: true,
+  persist: false,
   actions: {
     async loadMoreItems() {
       this.tableData.pop();
@@ -115,12 +115,12 @@ export const useTableStore = defineStore('table', {
 
       this.loading = false;
     },
-    async applyNewSearch(type){      
+    async applyNewSearch(type) {      
       try {
         if (type === 'filtersChanged') {
           this.applyFiltersLoading = true;
-        }
-  
+        } 
+
         const searchFilterSort = useSearchFilterSortStore()
         console.log(searchFilterSort.filterByString);
         searchFilterSort.searchParameters.page = 1;
@@ -140,10 +140,11 @@ export const useTableStore = defineStore('table', {
 
         // save this.tableData to local storage
         localStorage.setItem("tableData", JSON.stringify(this.tableData));
-
-        setTimeout(() => {
-          this.applyFiltersLoading = false;
-        }, 1500);
+        if (type === 'filtersChanged') {
+          setTimeout(() => {
+            this.applyFiltersLoading = false;            
+          }, 900);
+        }
 
       } catch (error) {
         console.error('Error fetching data from Typesense:', error);

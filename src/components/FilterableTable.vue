@@ -7,7 +7,9 @@
       <v-row class="">
         <!-- Left Side Filters -->
         <v-col cols="3" class="filters-sidebar d-flex flex-column pt-0">
-          <p class="text-subtitle-2" style="height: 48px; display: flex; align-items: center;">Filters</p>
+          <div class="d-flex align-center justify-space-between">
+            <p class="text-subtitle-2" style="height: 48px; display: flex; align-items: center;">Filters</p>
+          </div>
           <div class="filters-content flex-grow-1">
             <h4>Location</h4>
             <v-select 
@@ -49,8 +51,7 @@
               v-model="searchFilterSortStore.filters.campusSetting"
               @update:menu="onUpdateMenu"
             />
-
-            <h4 class="mt-6">Athletics</h4>
+            <h4 >Athletics</h4>
             <v-autocomplete 
               class="text-capitalize mt-4" 
               flat 
@@ -96,8 +97,7 @@
               v-model="searchFilterSortStore.filters.gender"
               @update:menu="onUpdateMenu"
             />
-
-            <h4 class="mt-6">Public or Private</h4>
+            <h4 >Public or Private</h4>
             <v-select 
               class="mt-4" 
               flat 
@@ -110,8 +110,7 @@
               v-model="searchFilterSortStore.filters.Type"
               @update:menu="onUpdateMenu"
             />
-
-            <h4 class="mt-6">Undergraduates</h4>
+            <h4 >Undergraduates</h4>
             <div class="d-flex mt-4" style="gap: 16px;">
               <v-text-field 
                 v-model="searchFilterSortStore.filters.UndergraduatesMin" 
@@ -128,8 +127,7 @@
                 hide-details
               />
             </div>
-
-            <h4 class="mt-6">Admit Range</h4>
+            <h4 >Admit Range</h4>
             <v-range-slider 
               v-model="searchFilterSortStore.filters.admitRateRange" 
               :max="100" 
@@ -164,7 +162,7 @@
               </template>
             </v-range-slider>
 
-            <h4 class="mt-6">Academics</h4>
+            <h4 >Academics</h4>
             <v-autocomplete 
               class="mt-4" 
               flat 
@@ -182,7 +180,7 @@
               @update:menu="onUpdateMenu"
             />
 
-            <h4 class="mt-6">Religion</h4>
+            <h4 >Religion</h4>
             <v-autocomplete 
               class="mt-4" 
               flat 
@@ -211,7 +209,7 @@
               v-model="searchFilterSortStore.filters.denom"
               @update:menu="onUpdateMenu" 
             />
-            <h4 class="mt-6">Specialized Community</h4>
+            <h4 >Specialized Community</h4>
             <v-checkbox label="Tribal" v-model="searchFilterSortStore.filters.tribal" hide-details class="mt-2" />
             <v-checkbox label="HBCU" v-model="searchFilterSortStore.filters.hbcu" hide-details />
           </div>
@@ -476,20 +474,17 @@ export default {
   computed: {
     searchQueryFromRoute() {
       return this.$route.query.search;
-    }
+    },
   },
   created() {
     this.$nextTick(() => {
       if (this.searchFilterSortStore?.filters) {
         this.originalFilters = JSON.stringify(this.searchFilterSortStore.filters);
-
-        // Watch the entire filters object
         this.$watch(
           () => this.searchFilterSortStore.filters,
           debounce((newFilters) => {
-            // Automatically apply filters when they change
             this.tableStore.applyNewSearch('filtersChanged');
-            this.originalFilters = JSON.stringify(newFilters);
+            this.newFilters = JSON.stringify(newFilters);
           }, 500), // 500ms debounce to prevent too many rapid updates
           { deep: true } // Watch nested properties
         );
@@ -523,14 +518,15 @@ export default {
     overflow-y: auto;
     padding-right: 16px;
     margin-bottom: 16px;
-  }
 
-  .filters-actions {
-    position: sticky;
-    bottom: 0;
-    background: white;
-    padding-top: 16px;
-    padding: 16px 16px 0;
+    h4 {
+      &:first-of-type {
+        margin-top: 0px;
+      }
+      margin-top: 32px;
+      font-size: 15px;
+      font-weight: 500;
+    }
   }
 }
 
@@ -606,8 +602,6 @@ tr td:nth-child(2) {
   padding-bottom: 8px !important;
   padding-top: 8px !important;
 }
-
-tr td:nth-child(2) {}
 
 tr td {
   line-height: 1.3em;

@@ -21,7 +21,6 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
     campusSettingList: ["Rural", "Small", "Suburb", "Urban"],
     filters: { 
       ...defaultFilters,
-      sportName: [],
     },
     activeSearchTerms: '',
     searchInput: '',
@@ -41,12 +40,6 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
   }),
   // persist: true,
   actions: {
-    clearFilters() {
-      this.filters = { 
-        ...defaultFilters,
-      };
-      this.searchInput = '';
-    },
     saveThenClearSearchInput() {
       this.saveSearchInput = this.searchInput;
       this.searchInput = '';
