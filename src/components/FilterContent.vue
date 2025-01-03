@@ -238,6 +238,19 @@ export default {
       searchFilterSortStore
     };
   },
+  data() {
+    return {
+      divisions: [
+        { value: '1', title: 'NCAA Division 1' },
+        { value: '2', title: 'NCAA Division 2' },
+        { value: '3', title: 'NCAA Division 3' },
+        { value: 'A', title: 'NCAA Division 1-A' },
+        { value: 'B', title: 'NCAA Division 1-AA' },
+        { value: 'C', title: 'Club' },
+        { value: 'X', title: 'Intramural' }
+      ]
+    }
+  },
   computed: {
     hasActiveFilters() {
       const currentFilters = this.searchFilterSortStore.filters;

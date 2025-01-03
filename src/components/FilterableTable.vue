@@ -219,15 +219,6 @@ export default {
         //   action: this.shareClicked
         // }
       ],
-      divisions: [
-        { value: '1', title: 'NCAA Division 1' },
-        { value: '2', title: 'NCAA Division 2' },
-        { value: '3', title: 'NCAA Division 3' },
-        { value: 'A', title: 'NCAA Division 1-A' },
-        { value: 'B', title: 'NCAA Division 1-AA' },
-        { value: 'C', title: 'Club' },
-        { value: 'X', title: 'Intramural' }
-      ],
       isTableHeightCalculated: false,
       tableHeight: 'auto',
       showFilters: true,
