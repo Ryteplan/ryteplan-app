@@ -33,15 +33,25 @@
                 @change="tableStore.saveHideHiddenState"
               />
               <div class="d-flex align-center justify-space-between mt-3 w-100">
-                <v-btn
-                  size="x-small"
-                  elevation="1"
-                  @click="toggleFilters"
-                  :title="showFilters ? 'Hide Filters' : 'Show Filters'"
-                  class="mr-2"
-                >
-                  Filter
-                </v-btn>
+                <div class="d-flex align-center" style="gap: 8px">
+                  <v-btn
+                    size="x-small"
+                    elevation="1"
+                    @click="toggleFilters"
+                    :title="showFilters ? 'Hide Filters' : 'Show Filters'"
+                  >
+                    {{ showFilters ? 'Hide Filters' : 'Show Filters' }}
+                  </v-btn>
+                  <v-btn
+                    class="d-none"
+                    size="x-small"
+                    elevation="1"
+                    @click="showColumnsDialog = true"
+                    title="Edit Columns"
+                  >
+                    Edit Columns
+                  </v-btn>
+                </div>
                 <div class="d-flex">
                   <div class="text-subtitle-2 mr-4 align-center">
                     Results: 
@@ -133,6 +143,43 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <!-- Add new dialog for column configuration -->
+    <v-dialog
+      v-model="showColumnsDialog"
+      width="100%"
+      max-width="600px"
+      scrollable
+      class="ma-4"
+    >
+      <v-card>
+        <v-card-title class="d-flex justify-space-between align-center">
+          <span>Edit Columns</span>
+          <v-btn icon="mdi-close" variant="text" @click="showColumnsDialog = false"></v-btn>
+        </v-card-title>
+        <v-card-text>
+          <v-list>
+            <v-list-item
+              v-for="header in tableStore.tableHeaders"
+              :key="header.key"
+            >
+              <v-list-item-title>
+                <v-checkbox
+                  v-model="header.show"
+                  :label="header.title"
+                  hide-details
+                  density="comfortable"
+                  @change="tableStore.saveHeaderState"
+                ></v-checkbox>
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn color="primary" @click="showColumnsDialog = false">Done</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -158,6 +205,7 @@ export default {
 
     if (tableStore.tableHeaders.length == 0) {
       tableStore.loadTableHeaders();
+      tableStore.loadHeaderState();
     }
 
     tableStore.updateHeaders();
@@ -198,10 +246,8 @@ export default {
   data() {
     return {
       filterDialog: false,
-      columnSettingsDialog: false,
       showShareDialog: false,
       showSaveToListDialog: false,
-      testValue: true,
       selectedDropDown: [
         {
           title: 'Save to list',
@@ -222,7 +268,8 @@ export default {
       isTableHeightCalculated: false,
       tableHeight: 'auto',
       showFilters: true,
-      showFiltersDialog: false
+      showFiltersDialog: false,
+      showColumnsDialog: false
     }
   },
   methods: {

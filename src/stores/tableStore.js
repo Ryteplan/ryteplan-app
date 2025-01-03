@@ -245,6 +245,25 @@ export const useTableStore = defineStore('table', {
       searchFilterSort.customSortString = column.key + ":" + searchFilterSort.customSortDirection + ", " + "name:" + searchFilterSort.nameSortDirection;
       this.applyNewSearch();
     },
-
+    saveHeaderState() {
+      // Save header visibility state to localStorage
+      const headerState = this.tableHeaders.reduce((acc, header) => {
+        acc[header.key] = header.show;
+        return acc;
+      }, {});
+      localStorage.setItem('tableHeaderState', JSON.stringify(headerState));
+    },
+    loadHeaderState() {
+      // Load header visibility state from localStorage
+      const savedState = localStorage.getItem('tableHeaderState');
+      if (savedState) {
+        const headerState = JSON.parse(savedState);
+        this.tableHeaders.forEach(header => {
+          if (Object.prototype.hasOwnProperty.call(headerState, header.key)) {
+            header.show = headerState[header.key];
+          }
+        });
+      }
+    },
   },
 });

@@ -6,6 +6,7 @@ export const useUserStore = defineStore('user', {
       loading: true,
       userInfo: {},
       adminMode: false,
+      paidUser: false,
       isLoggedIn: false
   }),
   actions: {

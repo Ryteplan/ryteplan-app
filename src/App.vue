@@ -161,6 +161,14 @@
           @change="userStore.saveAdminModeState"
         >
         </v-switch>
+        <v-switch
+          class="px-4"
+          label="Paid User"
+          v-model="userStore.paidUser"
+          color="primary"
+          @change="userStore.savePaidUserState"
+        >
+        </v-switch>
         <!-- <v-list-item
           v-if="userStore.adminMode"
           prepend-icon="mdi-table"
