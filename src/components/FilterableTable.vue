@@ -40,7 +40,7 @@
                     @click="toggleFilters"
                     :title="showFilters ? 'Hide Filters' : 'Show Filters'"
                   >
-                    {{ showFilters ? 'Hide Filters' : 'Show Filters' }}
+                    {{ $vuetify.display.lgAndUp ? (showFilters ? 'Hide Filters' : 'Show Filters') : 'Filters' }}
                   </v-btn>
                   <v-btn
                     class="d-none"
