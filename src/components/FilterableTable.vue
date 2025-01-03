@@ -136,6 +136,7 @@
           <FilterContent 
             :sport-filter-ref="$refs.sportFilter"
             @clear-filters="clearFilters"
+            source="dialog"
           />
         </v-card-text>
         <v-card-actions class="justify-end">

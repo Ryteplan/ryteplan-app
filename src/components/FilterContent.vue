@@ -1,7 +1,13 @@
 <template>
   <div>
     <div class="d-flex align-center justify-space-between">
-      <p class="text-subtitle-2" style="height: 48px; display: flex; align-items: center;">Filters</p>
+      <p 
+        v-if="source !== 'dialog'"
+        class="text-subtitle-2" 
+        style="height: 48px; display: flex; align-items: center;"
+      >
+        Filters
+      </p>
       <v-btn 
         v-if="hasActiveFilters"
         @click="$emit('clear-filters')"
@@ -230,6 +236,10 @@ export default {
     sportFilterRef: {
       type: Object,
       default: null
+    },
+    source: {
+      type: String,
+      default: 'table'
     }
   },
   setup() {
