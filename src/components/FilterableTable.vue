@@ -43,7 +43,6 @@
                     {{ $vuetify.display.lgAndUp ? (showFilters ? 'Hide Filters' : 'Show Filters') : 'Filters' }}
                   </v-btn>
                   <v-btn
-                    class="d-none"
                     size="x-small"
                     elevation="1"
                     @click="showColumnsDialog = true"

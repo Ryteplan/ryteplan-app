@@ -10,7 +10,7 @@ import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { firebaseApp } from './firebase'
 import { VueFire } from 'vuefire'
 import App from './App.vue';
-
+import VueGtag from "vue-gtag";
 
 import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/dist/vuetify.min.css';
@@ -126,6 +126,9 @@ const router = createRouter({
 
 app.use(router);
 
+app.use(VueGtag, {
+  config: { id: 'G-G1MRV4MCNL' }
+})
 
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
