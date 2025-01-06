@@ -88,7 +88,7 @@ export default {
         },
         {
           title: '13. Contact Us',
-          content: 'For questions or concerns about these Terms, please contact us at pat@ryteplan.com'
+          content: 'For questions or concerns about these Terms, please contact us at support@ryteplan.com'
         }
       ]
     }
