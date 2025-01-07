@@ -127,7 +127,7 @@ const router = createRouter({
 app.use(router);
 
 app.use(VueGtag, {
-  config: { id: 'G-G1MRV4MCNL' }
+  config: { id: 'G-N15EGVJW30' }
 })
 
 const pinia = createPinia()
