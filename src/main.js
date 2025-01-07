@@ -79,6 +79,11 @@ const routes = [
     component: InstitutionPage,
   },
   {
+    path: '/institution/:slug/sports-work',
+    name: 'SportsWork',
+    component: () => import('./components/SportsWork.vue')
+  },
+  {
     path: '/compare-instituion',
     name: 'CompareInstituion',
     component: CompareInstituion,

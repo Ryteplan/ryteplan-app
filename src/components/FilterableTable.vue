@@ -23,15 +23,6 @@
         >
           <div class="d-flex align-center justify-space-between mb-4">
             <div class="d-flex align-center w-100" style="gap: 40px">
-              <v-switch 
-                v-if="userStore.isLoggedIn && userStore.adminMode" 
-                label="Show hidden" 
-                color="primary" 
-                hide-details
-                class="inherit-height align-end" 
-                v-model="tableStore.hideHidden" 
-                @change="tableStore.saveHideHiddenState"
-              />
               <div class="d-flex align-center justify-space-between mt-3 w-100">
                 <div class="d-flex align-center" style="gap: 8px">
                   <v-btn
@@ -52,7 +43,16 @@
                     Edit Columns
                   </v-btn>
                 </div>
-                <div class="d-flex">
+                <div class="d-flex align-center">
+                  <v-switch 
+                    v-if="userStore.isLoggedIn && userStore.adminMode" 
+                    label="Show hidden results" 
+                    color="primary" 
+                    hide-details
+                    class="inherit-height align-end mr-6" 
+                    v-model="tableStore.hideHidden" 
+                    @change="tableStore.saveHideHiddenState"
+                  />
                   <div class="text-subtitle-2 mr-4 align-center">
                     Results: 
                     <span v-if="!tableStore.applyFiltersLoading">{{ tableStore.resultsFound }}</span>

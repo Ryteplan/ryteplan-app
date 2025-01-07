@@ -9,15 +9,6 @@
             </span>
           </h1>
           <span v-if="userStore.adminMode">{{ institution["uri"] }}</span>
-          <!-- <StatDisplay
-            label="Name"
-            :uri="institution['uri']"
-            field="name"
-            :valueFromPetersons="institution['name']" 
-            :valueFromManual="manualInstitionData['name']"
-            valueType="string"
-          /> -->
-          <!-- <span class="d-block" style="font-weight: 500;">{{ descriptions.tagline }}</span> -->
         </v-col>
         <v-col cols="12" md="6" class="d-md-flex align-center justify-end pt-0">
           <v-btn
@@ -672,7 +663,17 @@
         </v-expansion-panel>
       </v-expansion-panels>
       <div class="section-container mt-8">
-        <h2>Sports & Athletics</h2>
+        <div class="d-flex align-center justify-space-between">
+          <h2>Sports & Athletics</h2>
+          <v-btn
+            size="small"
+          class="mb-4"
+          :to="`/institution/${$route.params.slug}/sports-work`"
+          target="_blank"
+        >
+            Edit Sports
+          </v-btn>
+        </div>
         <div v-if="sports.length > 0">
           <h3>Intercollegiate</h3>
           <div class="d-flex">
@@ -1305,30 +1306,31 @@ export default {
   computed: {
     menIntercollegiateSports() {
       return this.sports
-        .filter(sport => this.getIntercollegiateDivision(sport, 'men'))
+        .filter(sport => !sport.hidden && this.getIntercollegiateDivision(sport, 'men'))
         .sort((a, b) => a.sport_name.localeCompare(b.sport_name));
     },
     womenIntercollegiateSports() {
       return this.sports
-        .filter(sport => this.getIntercollegiateDivision(sport, 'women'))
+        .filter(sport => !sport.hidden && this.getIntercollegiateDivision(sport, 'women'))
         .sort((a, b) => a.sport_name.localeCompare(b.sport_name));
     },
     menIntramuralSports() {
       return this.sports
-        .filter(sport => this.getIntramuralDivision(sport, 'men'))
+        .filter(sport => !sport.hidden && this.getIntramuralDivision(sport, 'men'))
         .sort((a, b) => a.sport_name.localeCompare(b.sport_name));
     },
     womenIntramuralSports() {
       return this.sports
-        .filter(sport => this.getIntramuralDivision(sport, 'women'))
+        .filter(sport => !sport.hidden && this.getIntramuralDivision(sport, 'women'))
         .sort((a, b) => a.sport_name.localeCompare(b.sport_name));
     },
     hasAnyIntramural() {
-      return this.sports.some(sport => {
-        const divisionKey = `${sport.sport_name.replace(/ /g, '_')}_divisions`;
-        const divisions = sport[divisionKey];
-        return divisions && (divisions.INTM_MEN || divisions.INTM_WMN);
-      });
+      return this.sports.some(sport => 
+        !sport.hidden && (
+          this.getIntramuralDivision(sport, 'men') || 
+          this.getIntramuralDivision(sport, 'women')
+        )
+      );
     }
   },
 };
