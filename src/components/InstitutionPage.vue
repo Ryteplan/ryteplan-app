@@ -667,10 +667,11 @@
           <h2>Sports & Athletics</h2>
           <v-btn
             size="small"
-          class="mb-4"
-          :to="`/institution/${$route.params.slug}/sports-work`"
-          target="_blank"
-        >
+            class="mb-4"
+            :to="`/institution/${$route.params.slug}/sports-work`"
+            target="_blank"
+            v-if="userStore.adminMode"
+          >
             Edit Sports
           </v-btn>
         </div>
