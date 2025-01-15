@@ -5,7 +5,7 @@
     </div>
     <div v-if="sports.length" class="mt-8">
       <v-card 
-        v-for="sport in sports" 
+        v-for="sport in sortedSports" 
         :key="sport.sport_name"
         class="mb-4 pa-4"
         :class="{ 'hidden-sport': sport.hidden }"
@@ -92,6 +92,13 @@ export default {
       institutionName: '',
       sports: [],
       divisionOptions: ['', '1', '2', '3', 'A', 'B', 'C', 'X']
+    }
+  },
+  computed: {
+    sortedSports() {
+      return [...this.sports].sort((a, b) => 
+        a.sport_name.localeCompare(b.sport_name)
+      );
     }
   },
   mounted() {

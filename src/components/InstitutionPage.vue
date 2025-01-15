@@ -1281,6 +1281,9 @@ export default {
       return gender === 'men' ? divisions.INTM_MEN : divisions.INTM_WMN;
     },
     isUncategorizedSport(sport) {
+      // First check if sport is hidden
+      if (sport.hidden) return false;
+      
       const divisionKey = `${sport.sport_name.toLowerCase().replace(/ /g, '_')}_divisions`;
       const divisions = sport[divisionKey];
       console.log('Sport:', sport.sport_name, 'Divisions:', divisions);
