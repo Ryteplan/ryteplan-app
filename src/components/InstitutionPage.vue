@@ -676,7 +676,44 @@
           </v-btn>
         </div>
         <div v-if="sports.length > 0">
-          <h3>Intercollegiate</h3>
+          <div class="d-flex align-center">
+            <h3>Intercollegiate</h3>
+            <div class="ms-2">
+              <v-chip
+                v-if="institution.assnAthlNaia"
+                size="small"
+                class="me-1"
+                color="primary"
+              >
+                NAIA
+              </v-chip>
+              <v-chip
+                v-if="hasNCAAdivision('1')"
+                size="small"
+                class="me-1"
+                color="primary"
+              >
+                NCAA Division 1
+              </v-chip>
+              <v-chip
+                v-if="hasNCAAdivision('2')"
+                size="small"
+                class="me-1"
+                color="primary"
+              >
+                NCAA Division 2
+              </v-chip>
+              <v-chip
+                v-if="hasNCAAdivision('3')"
+                size="small"
+                class="me-1"
+                color="primary"
+              >
+                NCAA Division 3
+              </v-chip>
+
+            </div>
+          </div>
           <div class="d-flex">
             <div class="flex-grow-1 mr-4" v-if="menIntercollegiateSports.length > 0">
               <h4>Men</h4>
@@ -1110,13 +1147,13 @@ export default {
       });
     },
     async getSports() {
-      // Check if sports array exists, if not return early
-      if (!this.institution?.sports) {
+      // Check if sports array exists and is actually an array
+      if (!this.institution?.sports || !Array.isArray(this.institution.sports)) {
         this.sports = [];
         return;
       }
 
-      let sportsArray = this.institution.sports;
+      let sportsArray = [...this.institution.sports]; // Create a copy of the array
       
       // if any field has a value of "" then set it to null
       sportsArray = sportsArray.map(sport => {
@@ -1298,7 +1335,16 @@ export default {
       this.selectedImageCredit = this.imageCredits[`image${imageIndex}`];
       this.selectedImageUrl = this.imageURLsFromDB[`image${imageIndex}`];
       this.showImageCreditDialog = true;
-    }
+    },
+    hasNCAAdivision(division) {
+      return this.sports.some(sport => {
+        const divisionKey = `${sport.sport_name.toLowerCase().replace(/ /g, '_')}_divisions`;
+        const divisions = sport[divisionKey];
+        if (!divisions) return false;
+        
+        return Object.values(divisions).some(value => value === division);
+      });
+    },
   },
   components: {
     // EthnicityChart,

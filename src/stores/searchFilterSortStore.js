@@ -162,8 +162,14 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
         let conditions = [`sports.sport_name:=${sport}`];
         
         if (state.filters.division === 'X') {  // 'X' is the value for intramural
-          // Check if either INTM_MEN or INTM_WMN has an 'X'
           conditions.push(`(sports.${divisionFieldName}.INTM_MEN:='X' || sports.${divisionFieldName}.INTM_WMN:='X')`);
+        } else if (state.filters.division === 'NAIA') {
+          conditions.push('assnAthlNaia:true');
+          if (state.filters.gender) {
+            // For NAIA + gender, just check if the gender has any division
+            const genderField = state.filters.gender === 'men' ? 'INTC_MEN' : 'INTC_WMN';
+            conditions.push(`sports.${divisionFieldName}.${genderField}:!=null`);
+          }
         } else if (state.filters.gender) {
           // Gender selected for intercollegiate sports
           const genderField = state.filters.gender === 'men' ? 'INTC_MEN' : 'INTC_WMN';

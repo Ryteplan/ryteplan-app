@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="filters-container">
     <div class="d-flex align-center justify-space-between">
       <p 
         v-if="source !== 'dialog'"
@@ -20,7 +20,8 @@
       </v-btn>
     </div>
     <div class="filters-content flex-grow-1">
-      <h4>Location</h4>
+      <div class="filters-content-section">
+        <h4>Location</h4>
       <v-select 
         class="mt-4" 
         density="compact"
@@ -57,7 +58,10 @@
         v-model="searchFilterSortStore.filters.campusSetting"
         @update:menu="onUpdateMenu"
       />
-      <h4>Athletics</h4>
+      </div>
+
+      <div class="filters-content-section">
+        <h4>Athletics</h4>
       <v-autocomplete 
         ref="sportFilter"
         class="mt-4" 
@@ -102,10 +106,12 @@
         item-value="value"
         v-model="searchFilterSortStore.filters.gender"
         @update:menu="onUpdateMenu"
-      />
-      <h4>Public or Private</h4>
-      <v-select 
-        class="mt-4" 
+        />
+      </div>
+      <div class="filters-content-section">
+        <h4>Public or Private</h4>
+        <v-select 
+          class="mt-4" 
         density="compact"
         variant="outlined"
         hide-details 
@@ -114,10 +120,12 @@
         :items="searchFilterSortStore.TypeList" 
         v-model="searchFilterSortStore.filters.Type"
         @update:menu="onUpdateMenu"
-      />
-      <h4>Undergraduates</h4>
-      <div class="d-flex mt-4" style="gap: 16px;">
-        <v-text-field 
+        />
+      </div>
+      <div class="filters-content-section">
+        <h4>Undergraduates</h4>
+        <div class="d-flex mt-4" style="gap: 16px;">
+          <v-text-field 
           v-model="searchFilterSortStore.filters.UndergraduatesMin" 
           label="Minimum"
           type="number" 
@@ -136,10 +144,12 @@
           clearable 
           hide-details
           hide-spin-buttons
-        />
+          />
+        </div>
       </div>
-      <h4>Admit Range</h4>
-      <v-range-slider 
+      <div class="filters-content-section">
+        <h4>Admit Range</h4>
+        <v-range-slider 
         v-model="searchFilterSortStore.filters.admitRateRange" 
         :max="100" 
         :min="0" 
@@ -174,14 +184,15 @@
           ></v-text-field>
         </template>
       </v-range-slider>
-
-      <h4>Academics</h4>
-      <v-autocomplete 
-        class="mt-4" 
-        density="compact"
-        variant="outlined"
-        hide-details 
-        multiple 
+      </div>
+      <div class="filters-content-section">
+        <h4>Academics</h4>
+        <v-autocomplete 
+          class="mt-4" 
+          density="compact"
+          variant="outlined"
+          hide-details 
+          multiple 
         clearable 
         chips 
         label="Majors"
@@ -190,14 +201,15 @@
         item-title="major"
         v-model="searchFilterSortStore.filters.cipCode" 
         @update:menu="onUpdateMenu"
-      />
-
-      <h4>Religion</h4>
-      <v-autocomplete 
-        class="mt-4" 
-        density="compact"
-        variant="outlined"
-        hide-details 
+        />
+      </div>
+      <div class="filters-content-section">
+        <h4>Religion</h4>
+        <v-autocomplete 
+          class="mt-4" 
+          density="compact"
+          variant="outlined"
+          hide-details 
         multiple 
         clearable 
         chips 
@@ -218,10 +230,13 @@
         :items="searchFilterSortStore.affilList" 
         v-model="searchFilterSortStore.filters.affil"
         @update:menu="onUpdateMenu" 
-      />
-      <h4>Specialized Community</h4>
-      <v-checkbox density="compact" label="Tribal" v-model="searchFilterSortStore.filters.tribal" hide-details class="mt-2" />
-      <v-checkbox density="compact" label="HBCU" v-model="searchFilterSortStore.filters.hbcu" hide-details />
+        />
+      </div>
+      <div class="filters-content-section">
+        <h4>Specialized Community</h4>
+        <v-checkbox density="compact" label="Tribal" v-model="searchFilterSortStore.filters.tribal" hide-details class="mt-2" />
+        <v-checkbox density="compact" label="HBCU" v-model="searchFilterSortStore.filters.hbcu" hide-details />
+      </div>
     </div>
   </div>
 </template>
@@ -281,6 +296,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.filters-container {
+
+}
 .filters-content {
   flex: 1;
   overflow-y: auto;
@@ -296,4 +314,16 @@ export default {
     font-weight: 500;
   }
 }
+
+.filters-content-section {
+  margin-bottom: 32px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 32px;
+  &:last-of-type {
+    margin-bottom: 0px;
+    border-bottom: none;
+  }
+}
+
+
 </style> 
