@@ -2,51 +2,45 @@
   <v-container class="pt-4">
     <div class="data-integration">
       <v-btn
-      class="d-none"
-      @click="addAliasesToIntegratedData"
+        class="d-none"
+        @click="duplicateCollection"
         color="primary"
       >
-        Add aliases to integrated data
+        Backup Data
       </v-btn>
 
       <v-btn
+        @click="doDataIntegration"
+        color="primary"
+      >
+          Integrate Data
+      </v-btn>
+
+
+      <v-btn
+        class="d-none"
         @click="addSportsFromPetersonsToIntegratedData"
         color="primary"
       >
         Add sports data to integrated data
       </v-btn>
 
-      <div class="d-none">
-        <h1>Data Backup</h1>
-        <p>Note to developer: Update the setDoc for versioning of the backup</p>
-        <v-btn
-          @click="duplicateCollection"
-          color="primary"
-        >
-          Backup Data
-        </v-btn>
-      </div>
-      
-      <div class="d-none">
-        <h1>Data Integration</h1>
-        <v-btn
-          @click="doDataIntegration"
-          color="primary"
-        >
-            Integrate Data
-        </v-btn>
-      </div>
 
-      <div class="d-none">
-        <h1>Adding majors to the mix</h1>
-        <p>When we update data using the UI we need to press this button to make sure that the main table gets updated.</p>
-        <v-btn
-          @click="updateWithMajors"
-          color="primary"
-        >
-            Update data with majors
-        </v-btn>
-      </div>
+      <v-btn
+        class="d-none"
+        @click="updateWithMajors"
+        color="primary"
+      >
+          Update data with majors
+      </v-btn>
+
+      <v-btn
+        class="d-none"
+        @click="addAliasesToIntegratedData"
+        color="primary"
+      >
+        Add aliases to integrated data
+      </v-btn>
 
       <div class="d-none data-updated-container">
         <v-card v-for="item in petersonsData" :key="item.uri">
@@ -230,16 +224,16 @@ export default {
       });
 
       this.integratedData.forEach(async (institution) => {
-        setDoc(doc(dbFireStore, 'institutions_integrated_v12_backup_2', institution["uri"]), {
+        setDoc(doc(dbFireStore, 'institutions_integrated_v13_backup_1', institution["uri"]), {
           ...institution
         }, { merge: true })
-        console.log('done adding: ' + institution.name + ' to institutions_integrated_v12_backup_2');
+        console.log('done adding: ' + institution.name + ' to institutions_integrated_v13_backup_1');
       })
     },
     async doDataIntegration() {
       console.log('doing data integration')
       
-      const petersonsDataQuery = query(collection(dbFireStore, "institutions_v13"));      
+      const petersonsDataQuery = query(collection(dbFireStore, "institutions_v14"));      
       const petersonsSnapshots = await getDocs(petersonsDataQuery);
 
       petersonsSnapshots.docs.forEach(doc => {
