@@ -256,8 +256,6 @@ export default {
         { value: '3', title: 'NCAA Division 3' },
         { value: 'A', title: 'NCAA Division 1-A' },
         { value: 'B', title: 'NCAA Division 1-AA' },
-        { value: 'C', title: 'Club' },
-        { value: 'X', title: 'Intramural' }
       ]
     }
   },
