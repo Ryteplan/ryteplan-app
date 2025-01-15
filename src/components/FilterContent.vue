@@ -4,7 +4,7 @@
       <p 
         v-if="source !== 'dialog'"
         class="text-subtitle-2" 
-        style="height: 48px; display: flex; align-items: center;"
+        style="padding-left: 12px; height: 48px; display: flex; align-items: center;"
       >
         Filters
       </p>
@@ -316,9 +316,17 @@ export default {
 }
 
 .filters-content-section {
+  background: white;
+  padding: 12px;
+  border-radius: 8px;
   margin-bottom: 32px;
   border-bottom: 1px solid #ddd;
   padding-bottom: 32px;
+
+  @media (min-width: 1279px) {
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+  }
+
   &:last-of-type {
     margin-bottom: 0px;
     border-bottom: none;
