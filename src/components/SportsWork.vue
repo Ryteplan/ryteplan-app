@@ -1,8 +1,96 @@
 <template>
   <v-container class="pt-4">
     <div class="image-work">      
-      <h1>Edit Sports & Athletics for {{ institutionName }}</h1>
+      <div class="d-flex justify-space-between align-center">
+        <h1>Edit Sports & Athletics for {{ institutionName }}</h1>
+        <v-btn
+          color="primary"
+          @click="showAddSportDialog = true"
+        >
+          Add Sport
+        </v-btn>
+      </div>
     </div>
+
+    <!-- Add Sport Dialog -->
+    <v-dialog v-model="showAddSportDialog" width="600px">
+      <v-card>
+        <v-card-title class="d-flex justify-space-between align-center pa-4">
+          <span>Add New Sport</span>
+          <v-btn icon="mdi-close" variant="text" @click="showAddSportDialog = false"></v-btn>
+        </v-card-title>
+        <v-card-text class="pa-4">
+          <v-autocomplete
+            v-model="newSport.sport_name"
+            :items="sportList"
+            label="Select Sport"
+            density="compact"
+            variant="outlined"
+            class="mb-4"
+          />
+          
+          <div class="division-section">
+            <h4>Intercollegiate</h4>
+            <div class="division-row">
+              <div class="division-item">
+                <span class="division-label">Men</span>
+                <v-select
+                  v-model="newSport.divisions.INTC_MEN"
+                  :items="divisionOptions"
+                  density="compact"
+                  variant="outlined"
+                />
+              </div>
+              <div class="division-item">
+                <span class="division-label">Women</span>
+                <v-select
+                  v-model="newSport.divisions.INTC_WMN"
+                  :items="divisionOptions"
+                  density="compact"
+                  variant="outlined"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="division-section mt-4">
+            <h4>Intramural</h4>
+            <div class="division-row">
+              <div class="division-item">
+                <span class="division-label">Men</span>
+                <v-select
+                  v-model="newSport.divisions.INTM_MEN"
+                  :items="divisionOptions"
+                  density="compact"
+                  variant="outlined"
+                />
+              </div>
+              <div class="division-item">
+                <span class="division-label">Women</span>
+                <v-select
+                  v-model="newSport.divisions.INTM_WMN"
+                  :items="divisionOptions"
+                  density="compact"
+                  variant="outlined"
+                />
+              </div>
+            </div>
+          </div>
+        </v-card-text>
+        <v-card-actions class="pa-4">
+          <v-spacer></v-spacer>
+          <v-btn
+            color="primary"
+            @click="addSport"
+            :disabled="!newSport.sport_name"
+          >
+            Add Sport
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- Existing sports cards -->
     <div v-if="sports.length" class="mt-8">
       <v-card 
         v-for="sport in sortedSports" 
@@ -83,6 +171,7 @@
 /* eslint-disable no-unused-vars */
 import { dbFireStore } from "../firebase";
 import { collection, query, getDocs, where, doc, getDoc, setDoc } from 'firebase/firestore';
+import { sportList } from '../data/sportList';
 
 export default {
   name: 'SportsWork',
@@ -91,7 +180,18 @@ export default {
       institutionSlug: this.$route.params.slug,
       institutionName: '',
       sports: [],
-      divisionOptions: ['', '1', '2', '3', 'A', 'B', 'C', 'X']
+      divisionOptions: ['', '1', '2', '3', 'A', 'B', 'C', 'X'],
+      showAddSportDialog: false,
+      sportList,
+      newSport: {
+        sport_name: '',
+        divisions: {
+          INTC_MEN: '',
+          INTC_WMN: '',
+          INTM_MEN: '',
+          INTM_WMN: ''
+        }
+      }
     }
   },
   computed: {
@@ -165,6 +265,38 @@ export default {
         await this.saveSportsToFirestore(updatedSports);
         this.sports = updatedSports;
       }
+    },
+    async addSport() {
+      if (!this.newSport.sport_name) return;
+
+      const sportName = this.newSport.sport_name.toLowerCase();
+      const divisionsKey = `${sportName.replace(/ /g, '_')}_divisions`;
+      
+      const sportToAdd = {
+        sport_name: this.newSport.sport_name,
+        [divisionsKey]: {
+          INTC_MEN: this.newSport.divisions.INTC_MEN,
+          INTC_WMN: this.newSport.divisions.INTC_WMN,
+          INTM_MEN: this.newSport.divisions.INTM_MEN,
+          INTM_WMN: this.newSport.divisions.INTM_WMN
+        }
+      };
+
+      const updatedSports = [...this.sports, sportToAdd];
+      await this.saveSportsToFirestore(updatedSports);
+      this.sports = updatedSports;
+      
+      // Reset form and close dialog
+      this.newSport = {
+        sport_name: '',
+        divisions: {
+          INTC_MEN: '',
+          INTC_WMN: '',
+          INTM_MEN: '',
+          INTM_WMN: ''
+        }
+      };
+      this.showAddSportDialog = false;
     }
   }
 }
