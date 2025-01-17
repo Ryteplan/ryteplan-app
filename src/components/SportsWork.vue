@@ -100,13 +100,23 @@
       >
         <div class="d-flex justify-space-between align-center">
           <h3>{{ sport.sport_name }}</h3>
-          <v-btn
-            :color="sport.hidden ? 'success' : 'error'"
-            variant="text"
-            @click="toggleSportVisibility(sport.sport_name)"
-          >
-            {{ sport.hidden ? 'Show Sport' : 'Hide Sport' }}
-          </v-btn>
+          <div>
+            <v-btn
+              :color="sport.hidden ? 'success' : 'error'"
+              variant="text"
+              class="me-2"
+              @click="toggleSportVisibility(sport.sport_name)"
+            >
+              {{ sport.hidden ? 'Show Sport' : 'Hide Sport' }}
+            </v-btn>
+            <v-btn
+              color="error"
+              variant="text"
+              @click="deleteSport(sport.sport_name)"
+            >
+              Delete Sport
+            </v-btn>
+          </div>
         </div>
 
         <div class="mt-4">
@@ -297,6 +307,13 @@ export default {
         }
       };
       this.showAddSportDialog = false;
+    },
+    async deleteSport(sportName) {
+      if (confirm(`Are you sure you want to delete ${sportName}?`)) {
+        const updatedSports = this.sports.filter(s => s.sport_name !== sportName);
+        await this.saveSportsToFirestore(updatedSports);
+        this.sports = updatedSports;
+      }
     }
   }
 }
