@@ -296,12 +296,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.filters-container {
 
-}
 .filters-content {
+  overflow: visible;
   flex: 1;
-  overflow-y: auto;
   padding-right: 16px;
   margin-bottom: 16px;
 

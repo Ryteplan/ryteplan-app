@@ -433,8 +433,6 @@ export default {
   overflow-y: auto;
   
   .filters-content {
-    flex: 1;
-    overflow-y: auto;
     padding-right: 16px;
     margin-bottom: 16px;
 
