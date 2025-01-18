@@ -91,11 +91,11 @@
     </v-dialog>
 
     <!-- Existing sports cards -->
-    <div v-if="sports.length" class="mt-8">
+    <div v-if="sports.length" class="mt-8 sport-cards-container">
       <v-card 
         v-for="sport in sortedSports" 
         :key="sport.sport_name"
-        class="mb-4 pa-4"
+        class="mb-4 pa-4 sport-container"
         :class="{ 'hidden-sport': sport.hidden }"
       >
         <div class="d-flex justify-space-between align-center">
@@ -347,8 +347,16 @@ export default {
   color: rgba(0, 0, 0, 0.6);
 }
 
+.sport-container {
+  background-color: #ffffff;
+  border: 2px solid green;
+}
+
 .hidden-sport {
-  opacity: 0.7;
-  background-color: #f5f5f5;
+  border: 2px solid red;
+}
+
+.sport-cards-container {
+  gap: 16px;
 }
 </style>
