@@ -271,6 +271,7 @@ export default {
         { value: '3', title: 'NCAA Division 3' },
         { value: 'A', title: 'NCAA Division 1-A' },
         { value: 'B', title: 'NCAA Division 1-AA' },
+        { value: 'NAIA', title: 'NAIA' },
       ]
     }
   },
@@ -319,7 +320,7 @@ export default {
   border-radius: 8px;
   margin-bottom: 32px;
   border-bottom: 1px solid #ddd;
-  padding-bottom: 32px;
+  padding-bottom: 20px;
 
   @media (min-width: 1279px) {
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);

@@ -159,7 +159,7 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
         const sport = state.filters.sportName;
         const divisionFieldName = `${sport.toLowerCase().replace(/ /g, '_')}_divisions`;
         
-        let conditions = [`sports.sport_name:=${sport}`];
+        let conditions = [`sports.sport_name:=${sport}`, 'sports.hidden:!=true'];
         
         if (state.filters.division === 'X') {  // 'X' is the value for intramural
           conditions.push(`(sports.${divisionFieldName}.INTM_MEN:='X' || sports.${divisionFieldName}.INTM_WMN:='X')`);

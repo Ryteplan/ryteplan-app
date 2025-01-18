@@ -4,7 +4,7 @@ export const defaultFilters =  {
     Type: [],
     denom: [],
     affil: [],
-    UndergraduatesMin: 0,
+    UndergraduatesMin: 1,
     UndergraduatesMax: 0,
     admissionDifficulty: [],
     campusSetting: [],
