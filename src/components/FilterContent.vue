@@ -263,6 +263,15 @@ export default {
       searchFilterSortStore
     };
   },
+  watch: {
+    'searchFilterSortStore.filters.sportName'(newValue) {
+      if (!newValue || newValue.length === 0) {
+        // Reset division and gender when sport is cleared
+        this.searchFilterSortStore.filters.division = null;
+        this.searchFilterSortStore.filters.gender = null;
+      }
+    }
+  },
   data() {
     return {
       divisions: [
