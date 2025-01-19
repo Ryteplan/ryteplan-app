@@ -221,20 +221,6 @@
             </div>
           </div>
         </div>
-        <div v-if="imagesFromGoogleSearch.length > 0">
-          <div class="institution-images-container mt-xs-4 mt-sm-4">
-            <div class="img-bg">
-              <img :src="image " v-for="(image, index) in imagesFromGoogleSearch.slice(0, 1)" class="institution-image" :key="index" />
-            </div>
-            <div class="institution-images-grid">
-                <template v-for="(image, index) in imagesFromGoogleSearch.slice(1, 5)" :key="index">
-                  <div class="img-bg">
-                    <img class="institution-image" :src="image" />
-                  </div>
-                </template>
-            </div>
-          </div>
-        </div>
       </div>
       <div class="section-container three-by-three-stat-grid mt-8">
         <div class="stat-container">
@@ -1040,7 +1026,6 @@ export default {
       imagesData: {},
       showSaveToListDialog: false,
       descriptionPanels: [],
-      imagesFromGoogleSearch: [],
       imageURLsFromDB: {
         image1: "",
         image2: "",
