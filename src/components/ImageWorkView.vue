@@ -3,14 +3,36 @@
     <div class="image-work">      
       <div class="mb-4">
         <h1 class="mr-4">Image Work</h1>
-        <v-btn
-          :to="`/institution/${schoolId}`"
-          color="primary"
-          variant="text"
-          prepend-icon="mdi-arrow-left"
-        >
-          Back to {{ schoolId }}
-        </v-btn>
+        <div class="d-flex justify-space-between">
+            <v-btn
+              v-if="prevSchoolId"
+              :to="`/image-work/${prevSchoolId}`"
+              color="primary"
+              variant="text"
+              prepend-icon="mdi-arrow-left"
+              class="mr-2"
+            >
+              {{ prevSchoolId }}
+            </v-btn>
+            <v-btn
+              :to="`/institution/${schoolId}`"
+              color="primary"
+              variant="text"
+              class="mr-2"
+              append-icon="mdi-arrow-top-right"
+            >
+              View {{ schoolId }}
+            </v-btn>
+            <v-btn
+              v-if="nextSchoolId"
+              :to="`/image-work/${nextSchoolId}`"
+              color="primary"
+              variant="text"
+              append-icon="mdi-arrow-right"
+            >
+              {{ nextSchoolId }}
+            </v-btn>
+        </div>
       </div>  
       <v-row>
         <!-- Database Images Column -->
@@ -19,8 +41,7 @@
             <h2 class="text-h6 mb-4">External URL Images</h2>
             <div v-if="imagesData">
               <div v-for="(url, key) in imagesData" :key="key" class="mb-4">
-                <div class="d-flex align-center justify-space-between mb-2">
-                  <span class="font-weight-bold">{{ key }}</span>
+                <div class="d-flex align-center justify-end mb-2">
                   <v-btn
                     size="small"
                     color="primary"
@@ -42,6 +63,7 @@
                   <div v-if="imageCredits[key]" v-html="imageCredits[key]"></div>
                   <div v-else class="text-italic">No caption has been entered</div>
                 </div>
+                <v-divider thickness="1" opacity=".3" class="mt-8 "></v-divider>
               </div>
             </div>
             <div v-else class="text-center py-4">
@@ -78,16 +100,32 @@
               >
             </div>
             <div v-if="storageImages.length">
-              <div v-for="(image, index) in storageImages" :key="index" class="mb-4">
-                <div class="d-flex align-center justify-space-between mb-2">
-                  <v-btn
-                    size="small"
-                    color="error"
-                    :loading="deletingImage === image.name"
-                    @click="deleteImage(image)"
-                  >
-                    Delete
-                  </v-btn>
+              <div 
+                v-for="(image, index) in sortedStorageImages" 
+                :key="image.url"
+                :class="{
+                  'mb-4': true,
+                  'moved-item': movedIndex === index,
+                  'affected-item': affectedIndex === index
+                }"
+              >
+                <div class="d-flex align-center justify-end mb-2">
+                  <div class="d-flex align-center">
+                    <v-btn
+                      icon="mdi-arrow-up"
+                      size="small"
+                      variant="text"
+                      :disabled="index === 0"
+                      @click="changePosition(index, 'up')"
+                    ></v-btn>
+                    <v-btn
+                      icon="mdi-arrow-down"
+                      size="small"
+                      variant="text"
+                      :disabled="index === storageImages.length - 1"
+                      @click="changePosition(index, 'down')"
+                    ></v-btn>
+                  </div>
                 </div>
                 <v-img
                   :src="image.url"
@@ -95,10 +133,34 @@
                   cover
                   class="bg-grey-lighten-2"
                 />
-                <div class="mt-2 text-caption">
-                  <div v-if="image.caption" v-html="image.caption"></div>
-                  <div v-else class="text-italic">No caption has been entered</div>
+                <div class="mt-2">
+                  <TiptapInputA
+                    placeholder="Enter caption"
+                    v-model="image.caption"
+                    class="caption-editor"
+                    @update:modelValue="handleCaptionChange(index)"
+                  />
+                  <v-btn
+                    v-if="editedCaptions[index]"
+                    color="primary"
+                    size="small"
+                    class="mt-2"
+                    :loading="savingCaption === index"
+                    @click="saveCaption(index, image)"
+                  >
+                    Save Caption
+                  </v-btn>
                 </div>
+                <v-btn
+                  class="mt-4"
+                  size="small"
+                  color="error"
+                  :loading="deletingImage === image.name"
+                  @click="deleteImage(image)"
+                >
+                    Delete
+                </v-btn>
+                <v-divider thickness="1" opacity=".3" class="mt-8 "></v-divider>
               </div>
             </div>
             <div v-else class="text-center py-4">
@@ -142,12 +204,16 @@
 
 <script>
 import { dbFireStore } from "../firebase";
-import { collection, query, getDocs, where, documentId, doc, getDoc, setDoc } from 'firebase/firestore';
+import { collection, query, getDocs, where, documentId, doc, getDoc, setDoc, orderBy, startAfter, limit } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import axios from 'axios';
+import TiptapInputA from '../components/TiptapInputA.vue';
 
 export default {
   name: 'ImageWork',
+  components: {
+    TiptapInputA
+  },
   data() {
     return {
       isProcessing: false,
@@ -160,16 +226,26 @@ export default {
       uploading: false,
       imageCredits: {},
       deletingImage: null,
+      editedCaptions: {},
+      savingCaption: null,
+      nextSchoolId: null,
+      prevSchoolId: null,
+      movedIndex: null,
+      affectedIndex: null,
     }
   },
   computed: {
     schoolId() {
       return this.$route.params.slug
+    },
+    sortedStorageImages() {
+      return [...this.storageImages].sort((a, b) => a.position - b.position);
     }
   },
   mounted() {
     this.loadImages()
     this.loadImageCredits()
+    this.findNextSchool()
   },
   methods: {
     async loadImages() {
@@ -198,7 +274,8 @@ export default {
           this.storageImages = (data.images || []).map(image => ({
             name: image.URL.split('/').pop(), // Extract filename from URL
             url: image.URL,
-            caption: image.caption
+            caption: image.caption,
+            position: image.position
           }));
         } else {
           this.storageImages = [];
@@ -408,6 +485,146 @@ export default {
         this.deletingImage = null;
       }
     },
+
+    handleCaptionChange(index) {
+      this.editedCaptions[index] = true;
+    },
+
+    async saveCaption(index, image) {
+      this.savingCaption = index;
+      try {
+        const docRef = doc(dbFireStore, 'institution_images_v2', this.schoolId);
+        const docSnap = await getDoc(docRef);
+        
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          const images = data.images;
+          const imageIndex = images.findIndex(img => img.URL === image.url);
+          
+          if (imageIndex !== -1) {
+            images[imageIndex].caption = image.caption;
+            await setDoc(docRef, { images }, { merge: true });
+            this.editedCaptions[index] = false;
+            this.results.push('✅ Caption saved successfully');
+          }
+        }
+      } catch (error) {
+        console.error('Error saving caption:', error);
+        this.results.push(`❌ Failed to save caption: ${error.message}`);
+      } finally {
+        this.savingCaption = null;
+      }
+    },
+
+    async findNextSchool() {
+      try {
+        const institutionsRef = collection(dbFireStore, 'institution_images');
+        const q = query(
+          institutionsRef,
+          orderBy(documentId()),
+          startAfter(this.schoolId),
+          limit(1)
+        );
+        
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          this.nextSchoolId = querySnapshot.docs[0].id;
+        } else {
+          this.nextSchoolId = null;
+        }
+      } catch (error) {
+        console.error('Error finding next school:', error);
+        this.nextSchoolId = null;
+      }
+    },
+
+    async findPrevSchool() {
+      try {
+        const institutionsRef = collection(dbFireStore, 'institution_images');
+        const q = query(
+          institutionsRef,
+          orderBy(documentId(), 'desc'),
+          startAfter(this.schoolId),
+          limit(1)
+        );
+        
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          this.prevSchoolId = querySnapshot.docs[0].id;
+        } else {
+          this.prevSchoolId = null;
+        }
+      } catch (error) {
+        console.error('Error finding previous school:', error);
+        this.prevSchoolId = null;
+      }
+    },
+
+    async changePosition(index, direction) {
+      const images = [...this.storageImages];
+      const currentImage = images[index];
+      let swapIndex;
+      
+      if (direction === 'up' && index > 0) {
+        swapIndex = index - 1;
+      } else if (direction === 'down' && index < images.length - 1) {
+        swapIndex = index + 1;
+      } else {
+        return;
+      }
+
+      // Set animation indices
+      this.movedIndex = index;
+      this.affectedIndex = swapIndex;
+
+      // Clear animation classes after animation completes
+      setTimeout(() => {
+        this.movedIndex = null;
+        this.affectedIndex = null;
+      }, 1000);
+
+      // Swap positions
+      const tempPosition = currentImage.position;
+      currentImage.position = images[swapIndex].position;
+      images[swapIndex].position = tempPosition;
+
+      try {
+        // Map and validate the data before saving
+        const validatedImages = images.map(img => {
+          if (!img.url) {
+            console.error('Missing URL for image:', img);
+            throw new Error('Image URL is required');
+          }
+          
+          return {
+            URL: img.url,
+            caption: img.caption || null,
+            position: typeof img.position === 'number' ? img.position : 0
+          };
+        });
+
+        // Update Firestore with validated data
+        const docRef = doc(dbFireStore, 'institution_images_v2', this.schoolId);
+        await setDoc(docRef, { 
+          images: validatedImages
+        }, { merge: true });
+        
+        // Reload images to ensure proper sorting
+        await this.loadStorageImages();
+      } catch (error) {
+        console.error('Error updating positions:', error);
+        this.results.push(`❌ Failed to update positions: ${error.message}`);
+      }
+    },
+  },
+  watch: {
+    schoolId: {
+      handler() {
+        this.findNextSchool();
+        this.findPrevSchool();
+      },
+      immediate: true
+    }
   }
 }
 </script>
@@ -425,5 +642,49 @@ export default {
 
 .image-link:hover {
   opacity: 0.9;
+}
+
+.caption-editor {
+  font-size: 12px;
+}
+
+.caption-editor .tiptap {
+  background: transparent;
+  padding: 8px;
+}
+
+.caption-editor .tiptap p {
+  margin: 0;
+}
+
+.moved-item {
+  animation: highlightGreen 1s ease;
+}
+
+.affected-item {
+  animation: highlightYellow 1s ease;
+}
+
+@keyframes highlightGreen {
+  0% {
+    background-color: #4CAF50;
+  }
+  100% {
+    background-color: white;
+  }
+}
+
+@keyframes highlightYellow {
+  0% {
+    background-color: #FFC107;
+  }
+  100% {
+    background-color: white;
+  }
+}
+
+/* Make sure the background shows through */
+.v-card {
+  transition: background-color 1s ease;
 }
 </style>

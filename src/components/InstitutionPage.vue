@@ -32,15 +32,14 @@
           </v-switch>         
         </v-col>
         <v-col cols="6" lg="3" class="pa-0">
-          <v-switch 
-            label="Edit Images"
-            v-model="editImages"
-            @change="toggleEditImages"
-            color="primary"
-            hide-details
-            dense
+          <v-btn
+            v-if="userStore.adminMode"
+            size="small"
+            class="mt-2"
+            :to="`/image-work/${institution['uri']}`"
           >
-          </v-switch>
+            Edit Images
+          </v-btn>
         </v-col>
       </v-row>
       <div class="section-container" style="max-width: 600px;" v-if="userStore.adminMode">
@@ -96,14 +95,6 @@
         </div>
       </div>
       <div class="mb-12" v-if="editImages">
-        <v-btn
-          v-if="userStore.adminMode"
-          size="small"
-          class="mt-2"
-          :to="`/image-work/${institution['uri']}`"
-        >
-          Transfer Images
-        </v-btn>
         <div class="mt-4 pa-4" style="background: #eee;">
           <span class="font-size-s font-weight-bold">Image 1</span>
           <div class="mt-2">

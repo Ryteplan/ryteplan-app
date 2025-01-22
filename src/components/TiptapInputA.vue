@@ -27,6 +27,7 @@
 import StarterKit from '@tiptap/starter-kit'
 import Link from '@tiptap/extension-link'
 import { Editor, EditorContent } from '@tiptap/vue-3'
+import Placeholder from '@tiptap/extension-placeholder'
 
 export default {
   components: {
@@ -34,6 +35,10 @@ export default {
   },
   props: {
     modelValue: {
+      type: String,
+      default: '',
+    },
+    placeholder: {
       type: String,
       default: '',
     },
@@ -70,6 +75,9 @@ export default {
           openOnClick: false,
           defaultProtocol: 'https',
         }),
+        Placeholder.configure({
+          placeholder: this.placeholder,
+        })
       ],
       content: this.modelValue,
       onUpdate: () => {
@@ -120,11 +128,10 @@ export default {
 
 <style lang="scss">
 
-.tiptap-container {
-}
 /* Basic editor styles */
 .tiptap {
   background: white;
+  border: 1px solid #ccc;
 
   :first-child {
     margin-top: 0;
@@ -214,5 +221,13 @@ export default {
     border-top: 1px solid var(--gray-2);
     margin: 2rem 0;
   }
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
 }
 </style>
