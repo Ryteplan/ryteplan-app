@@ -38,7 +38,7 @@ const app = createApp(App);
 
 const routes = [
   {
-    path: '/image-work',
+    path: '/image-work/:slug',
     name: 'ImageWork',
     component: ImageWorkView,
   },

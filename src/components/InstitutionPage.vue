@@ -96,6 +96,14 @@
         </div>
       </div>
       <div class="mb-12" v-if="editImages">
+        <v-btn
+          v-if="userStore.adminMode"
+          size="small"
+          class="mt-2"
+          :to="`/image-work/${institution['uri']}`"
+        >
+          Transfer Images
+        </v-btn>
         <div class="mt-4 pa-4" style="background: #eee;">
           <span class="font-size-s font-weight-bold">Image 1</span>
           <div class="mt-2">
@@ -189,6 +197,7 @@
             </ul>
           </div>
         </div>
+
         <div v-if="Object.keys(imageURLsFromDB).length > 0">
           <div class="institution-images-container">
             <div class="img-bg position-relative" 
@@ -966,7 +975,7 @@
  
 <script>
 import { dbFireStore } from "../firebase";
-import { collection, documentId, query, where, getDocs, setDoc, doc } from 'firebase/firestore'
+import { collection, documentId, query, where, getDocs, setDoc, doc, getDoc } from 'firebase/firestore'
 import SaveToListDialog from './SaveToListDialog'
 import { getAuth,onAuthStateChanged } from "firebase/auth";
 import { useUserStore } from '../stores/userStore';
@@ -1017,7 +1026,6 @@ export default {
       isEditImagesSaveButtonDisabled: false,
       isEditImagesSaveButtonVisible: false,
       editImages: false,
-      test: 25,
       institution: {},
       petersonsInstitution: {},
       manualInstitionData: {},
@@ -1026,6 +1034,7 @@ export default {
       imagesData: {},
       showSaveToListDialog: false,
       descriptionPanels: [],
+      imagesFromGoogleSearch: [],
       imageURLsFromDB: {
         image1: "",
         image2: "",
@@ -1057,7 +1066,8 @@ export default {
         sports: false,
         fieldsOfStudy: false,
         ethnicity: false
-      }
+      },
+      imagesv2: [],
     }
   },
   methods: {
@@ -1203,13 +1213,11 @@ export default {
     async getImages() {
       const slugFromURL = this.$route.params.slug;
 
-      // get image URLs
-
+      // get image URLs from institution_images
       const imageURLsFromDB = collection(dbFireStore, 'institution_images');
       const q = query(imageURLsFromDB, where(documentId(), "==", slugFromURL));
-
       const docSnap = await getDocs(q);
-
+      
       docSnap.forEach((doc) => {
         this.imagesData = doc.data();
       });
@@ -1219,15 +1227,29 @@ export default {
       }
 
       // get Image Credits
-
       const imageCredits = collection(dbFireStore, 'image_credits');
       const qIC = query(imageCredits, where(documentId(), "==", slugFromURL));
-
       const docSnapIc = await getDocs(qIC);
-
+      
       docSnapIc.forEach((doc) => {
         this.imageCredits = doc.data();
       });
+
+      // get images from institution_images_v2
+      try {
+        const imageRef = doc(dbFireStore, 'institution_images_v2', slugFromURL);
+        const docSnapV2 = await getDoc(imageRef);
+        
+        if (docSnapV2.exists()) {
+          const data = docSnapV2.data();
+          this.imagesv2 = data.images || [];
+        } else {
+          this.imagesv2 = [];
+        }
+      } catch (error) {
+        console.error('Error loading v2 images:', error);
+        this.imagesv2 = [];
+      }
     },
     returnPercent(input) {
       const percentage = Math.round(input * 100);
