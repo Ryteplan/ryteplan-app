@@ -58,6 +58,23 @@
           </td>
         </tr>
       </template>
+      <template #item="{ item }">
+        <tr>
+          <td>
+            <div class="d-flex justify-space-between align-center">
+              <span class="font-weight-bold">{{ item.name }}</span>
+              <router-link 
+                :to="`/institution/${item.id}`" 
+                target="_blank"
+                class="view-link"
+              >
+                View Details
+                <v-icon size="small" class="ml-1">mdi-arrow-top-right</v-icon>
+              </router-link>
+            </div>
+          </td>
+        </tr>
+      </template>
     </v-data-table>
   </v-container>
 </template>
