@@ -126,13 +126,6 @@
         >
         </v-list-item>
         <v-list-item
-          to="/image-work"
-          prepend-icon="mdi-image-edit"
-          title="Image Work"
-          value="Image Work"
-        >
-        </v-list-item>
-        <v-list-item
           to="/students"
           prepend-icon="mdi-account-school"
           title="Students"
