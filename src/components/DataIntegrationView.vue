@@ -10,6 +10,7 @@
       </v-btn>
 
       <v-btn
+        class="d-none"
         @click="doDataIntegration"
         color="primary"
       >
