@@ -188,8 +188,10 @@
             </ul>
           </div>
         </div>
-
-        <div v-if="Object.keys(imageURLsFromDB).length > 0">
+        <div v-if="imagesv2.length > 0">
+          <StorageImagesCollection :images="imagesv2" />
+        </div>
+        <div v-else-if="Object.keys(imageURLsFromDB).length > 0">
           <div class="institution-images-container">
             <div class="img-bg position-relative" 
                  @mouseenter="hoveredImageIndex = 1" 
@@ -974,8 +976,7 @@ import { useSearchFilterSortStore } from '../stores/searchFilterSortStore';
 import StatDisplay from './StatDisplay.vue';
 import TiptapInputA from "./TiptapInputA.vue"
 import SportItem from './SportItem.vue'
-
-// import EthnicityChart from './EthnicityChart.vue';
+import StorageImagesCollection from '@/components/StorageImagesCollection.vue'
 
 export default {
   setup() {
@@ -1156,15 +1157,13 @@ export default {
       });
     },
     async getSports() {
-      // Check if sports array exists and is actually an array
       if (!this.institution?.sports || !Array.isArray(this.institution.sports)) {
         this.sports = [];
         return;
       }
 
-      let sportsArray = [...this.institution.sports]; // Create a copy of the array
+      let sportsArray = [...this.institution.sports];
       
-      // if any field has a value of "" then set it to null
       sportsArray = sportsArray.map(sport => {
         const updatedSport = {};
         for (const [key, value] of Object.entries(sport)) {
@@ -1204,7 +1203,6 @@ export default {
     async getImages() {
       const slugFromURL = this.$route.params.slug;
 
-      // get image URLs from institution_images
       const imageURLsFromDB = collection(dbFireStore, 'institution_images');
       const q = query(imageURLsFromDB, where(documentId(), "==", slugFromURL));
       const docSnap = await getDocs(q);
@@ -1217,7 +1215,6 @@ export default {
         this.imageURLsFromDB = this.imagesData;
       }
 
-      // get Image Credits
       const imageCredits = collection(dbFireStore, 'image_credits');
       const qIC = query(imageCredits, where(documentId(), "==", slugFromURL));
       const docSnapIc = await getDocs(qIC);
@@ -1226,7 +1223,6 @@ export default {
         this.imageCredits = doc.data();
       });
 
-      // get images from institution_images_v2
       try {
         const imageRef = doc(dbFireStore, 'institution_images_v2', slugFromURL);
         const docSnapV2 = await getDoc(imageRef);
@@ -1276,15 +1272,12 @@ export default {
     async addAlias() {
       if (!this.newAlias.trim()) return;
 
-      // Initialize aliases array if it doesn't exist
       if (!this.institution.aliases) {
         this.institution.aliases = [];
       }
 
-      // Add new alias to array
       this.institution.aliases.push(this.newAlias.trim());
 
-      // Update both collections in Firestore
       try {
         await setDoc(doc(dbFireStore, 'manual_institution_data', this.institution["uri"]), {
           aliases: this.institution.aliases
@@ -1294,11 +1287,9 @@ export default {
           aliases: this.institution.aliases
         }, { merge: true });
 
-        // Clear the input field after successful save
         this.newAlias = "";
       } catch (error) {
         console.error("Error saving alias:", error);
-        // Optionally remove the alias from the array if save failed
         this.institution.aliases.pop();
       }
     },
@@ -1309,7 +1300,6 @@ export default {
     },
     async saveEditedAlias(index) {
       try {
-        // Update both collections in Firestore
         await setDoc(doc(dbFireStore, 'manual_institution_data', this.institution["uri"]), {
           aliases: this.institution.aliases
         }, { merge: true });
@@ -1318,7 +1308,6 @@ export default {
           aliases: this.institution.aliases
         }, { merge: true });
 
-        // Remove index from editedAliasIndexes after successful save
         this.editedAliasIndexes = this.editedAliasIndexes.filter(i => i !== index);
       } catch (error) {
         console.error("Error saving edited alias:", error);
@@ -1339,14 +1328,12 @@ export default {
       return gender === 'men' ? divisions.INTM_MEN : divisions.INTM_WMN;
     },
     isUncategorizedSport(sport) {
-      // First check if sport is hidden
       if (sport.hidden) return false;
       
       const divisionKey = `${sport.sport_name.toLowerCase().replace(/ /g, '_')}_divisions`;
       const divisions = sport[divisionKey];
       if (!divisions) return true;
       
-      // Check if all division values are empty strings
       const result = Object.values(divisions).every(value => value === "");
       return result;
     },
@@ -1372,9 +1359,8 @@ export default {
       if (savedStates) {
         this.expandedPanels = JSON.parse(savedStates);
       } else {
-        // Set default states if none exist
         this.expandedPanels = {
-          descriptions: [], // Empty array for multiple selection
+          descriptions: [],
           costAid: false,
           sports: false,
           fieldsOfStudy: false,
@@ -1384,11 +1370,11 @@ export default {
     }
   },
   components: {
-    // EthnicityChart,
     SaveToListDialog,
     StatDisplay,
     TiptapInputA,
     SportItem,
+    StorageImagesCollection,
   },
   computed: {
     menIntercollegiateSports() {
