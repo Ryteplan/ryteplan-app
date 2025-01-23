@@ -4,22 +4,24 @@
       <div class="mb-4">
         <h1 class="mr-4">Image Work</h1>
         <div class="d-flex justify-space-between">
-            <v-btn
-              v-if="prevSchoolId"
-              :to="`/image-work/${prevSchoolId}`"
-              color="primary"
-              variant="text"
-              prepend-icon="mdi-arrow-left"
+            <div>
+              <v-btn
+                v-if="prevSchoolId"
+                :to="`/image-work/${prevSchoolId}`"
+                color="primary"
+                variant="text"
+                prepend-icon="mdi-arrow-left"
               class="mr-2"
             >
-              {{ prevSchoolId }}
-            </v-btn>
-            <v-btn
-              :to="`/institution/${schoolId}`"
-              color="primary"
-              variant="text"
-              class="mr-2"
-              append-icon="mdi-arrow-top-right"
+                {{ prevSchoolId }}
+              </v-btn>
+            </div>
+              <v-btn
+                :to="`/institution/${schoolId}`"
+                color="primary"
+                variant="text"
+                class="mr-2"
+                append-icon="mdi-arrow-top-right"
             >
               View {{ schoolId }}
             </v-btn>
@@ -39,9 +41,31 @@
         <v-col cols="6">
           <v-card class="pa-4">
             <h2 class="text-h6 mb-4">External URL Images</h2>
-            <div v-if="imagesData">
-              <div v-for="(url, key) in imagesData" :key="key" class="mb-4">
-                <div class="d-flex align-center justify-end mb-2">
+            <div v-if="sortedImagesData">
+              <div class="d-flex justify-end mb-4">
+                <v-btn
+                  width="100%"
+                  color="primary"
+                  :loading="isProcessingAll"
+                  @click="transferAllImages"
+                  :disabled="!Object.keys(sortedImagesData).length"
+                >
+                  Transfer All Images
+                </v-btn>
+              </div>
+              <div v-for="(url, key) in sortedImagesData" :key="key" class="mb-4">
+                <a :href="url" target="_blank" class="image-link">
+                  <v-img
+                    :src="url"
+                    cover
+                    class="bg-grey-lighten-2 square-image"
+                  />
+                </a>
+                <div class="mt-2 text-caption">
+                  <div v-if="imageCredits[key]" v-html="imageCredits[key]"></div>
+                  <div v-else class="text-italic">No caption has been entered</div>
+                </div>
+                <div class="d-flex align-center justify-end mt-2">
                   <v-btn
                     size="small"
                     color="primary"
@@ -50,18 +74,6 @@
                   >
                     Transfer →
                   </v-btn>
-                </div>
-                <a :href="url" target="_blank" class="image-link">
-                  <v-img
-                    :src="url"
-                    height="200"
-                    cover
-                    class="bg-grey-lighten-2"
-                  />
-                </a>
-                <div class="mt-2 text-caption">
-                  <div v-if="imageCredits[key]" v-html="imageCredits[key]"></div>
-                  <div v-else class="text-italic">No caption has been entered</div>
                 </div>
                 <v-divider thickness="1" opacity=".3" class="mt-8 "></v-divider>
               </div>
@@ -129,9 +141,8 @@
                 </div>
                 <v-img
                   :src="image.url"
-                  height="200"
                   cover
-                  class="bg-grey-lighten-2"
+                  class="bg-grey-lighten-2 square-image"
                 />
                 <div class="mt-2">
                   <TiptapInputA
@@ -208,6 +219,7 @@ import { collection, query, getDocs, where, documentId, doc, getDoc, setDoc, ord
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import axios from 'axios';
 import TiptapInputA from '../components/TiptapInputA.vue';
+import imageCompression from 'browser-image-compression';
 
 export default {
   name: 'ImageWork',
@@ -232,6 +244,7 @@ export default {
       prevSchoolId: null,
       movedIndex: null,
       affectedIndex: null,
+      isProcessingAll: false,
     }
   },
   computed: {
@@ -240,6 +253,20 @@ export default {
     },
     sortedStorageImages() {
       return [...this.storageImages].sort((a, b) => a.position - b.position);
+    },
+    sortedImagesData() {
+      if (!this.imagesData) return null;
+      
+      // Convert object to array of entries and sort by key
+      const entries = Object.entries(this.imagesData).sort((a, b) => {
+        // Extract numeric part from keys (e.g., "image1" -> 1)
+        const numA = parseInt(a[0].replace(/\D/g, ''));
+        const numB = parseInt(b[0].replace(/\D/g, ''));
+        return numA - numB;
+      });
+      
+      // Convert back to object
+      return Object.fromEntries(entries);
     }
   },
   mounted() {
@@ -292,44 +319,69 @@ export default {
       this.processingImage = key;
       this.results = [];
       let newUrl = null;
-      let ext = null;  // Declare ext outside try block
       
       try {
-        ext = url.startsWith('data:') ? 'png' : url.split('.').pop().split(/[#?]/)[0];
-        const newImageName = `${key}.${ext}`;
+        this.results.push(`Processing ${key}...`);
         
-        this.results.push(`Processing ${newImageName}...`);
-        
-        newUrl = await this.uploadImageToStorage(url, this.schoolId, newImageName);
-        
-        if (newUrl) {
-          // Get existing images array or initialize it
-          const imageRef = doc(dbFireStore, 'institution_images_v2', this.schoolId);
-          const docSnap = await getDoc(imageRef);
-          const images = docSnap.exists() ? (docSnap.data().images || []) : [];
-
-          // Create new image object with position set to array length
-          const imageObject = {
-            URL: newUrl,
-            caption: caption || null,
-            position: images.length
+        // Try to download the image
+        try {
+          const response = await axios.get(url, { responseType: 'blob' });
+          const imageBlob = response.data;
+          
+          // Compress and convert to WebP
+          const options = {
+            maxSizeMB: 3,
+            maxWidthOrHeight: 1920,
+            useWebWorker: true,
+            fileType: 'image/webp'
           };
 
-          // Add new image to array
-          images.push(imageObject);
+          this.results.push('Converting to WebP format...');
+          const compressedFile = await imageCompression(imageBlob, options);
+          
+          // Create a new filename with .webp extension
+          const newImageName = `${key}.webp`;
+          
+          this.results.push(`Uploading ${newImageName}...`);
+          
+          // Upload to Firebase Storage
+          const storage = getStorage();
+          const storageRef = ref(storage, `${this.schoolId}/${newImageName}`);
+          await uploadBytes(storageRef, compressedFile);
+          newUrl = await getDownloadURL(storageRef);
+          
+          if (newUrl) {
+            // Get existing images array or initialize it
+            const imageRef = doc(dbFireStore, 'institution_images_v2', this.schoolId);
+            const docSnap = await getDoc(imageRef);
+            const images = docSnap.exists() ? (docSnap.data().images || []) : [];
 
-          // Update the document with the images array
-          await setDoc(imageRef, {
-            images: images
-          }, { merge: true });
-          
-          // Update local state
-          this.imagesData[key] = newUrl;
-          
-          this.results.push(`✅ Successfully uploaded ${newImageName}`);
-          await this.loadStorageImages();
-        } else {
-          throw new Error('Failed to upload image');
+            // Create new image object with position set to array length
+            const imageObject = {
+              URL: newUrl,
+              caption: caption || null,
+              position: images.length
+            };
+
+            // Add new image to array
+            images.push(imageObject);
+
+            // Update the document with the images array
+            await setDoc(imageRef, {
+              images: images
+            }, { merge: true });
+            
+            this.results.push(`✅ Successfully uploaded ${newImageName}`);
+            await this.loadStorageImages();
+          } else {
+            throw new Error('Failed to upload image');
+          }
+        } catch (downloadError) {
+          // If we get a CORS error, show the manual download dialog
+          this.manualUploadUrl = url;
+          this.showManualDialog = true;
+          this.results.push(`Manual download required for this image`);
+          return;
         }
       } catch (error) {
         console.error('Error processing image:', error);
@@ -340,7 +392,7 @@ export default {
           try {
             // Delete from storage
             const storage = getStorage();
-            const imageRef = ref(storage, `${this.schoolId}/${key}.${ext}`);
+            const imageRef = ref(storage, `${this.schoolId}/${key}.webp`);
             await deleteObject(imageRef);
             
             // Remove from institution_images_v2 if it was added
@@ -404,10 +456,26 @@ export default {
 
       this.uploading = true;
       try {
+        // Compress and convert to WebP
+        const options = {
+          maxSizeMB: 3,
+          maxWidthOrHeight: 1920,
+          useWebWorker: true,
+          fileType: 'image/webp'
+        };
+
+        this.results.push(`📦 Processing image (${(file.size / (1024 * 1024)).toFixed(2)}MB)...`);
+        const compressedFile = await imageCompression(file, options);
+        this.results.push(`✅ Processed to ${(compressedFile.size / (1024 * 1024)).toFixed(2)}MB`);
+
+        // Create a new filename with .webp extension
+        const originalName = file.name.split('.')[0];
+        const newFileName = `${originalName}.webp`;
+
         const storage = getStorage();
-        const storageRef = ref(storage, `${this.schoolId}/${file.name}`);
+        const storageRef = ref(storage, `${this.schoolId}/${newFileName}`);
         
-        await uploadBytes(storageRef, file);
+        await uploadBytes(storageRef, compressedFile);
         const downloadURL = await getDownloadURL(storageRef);
         
         // Get existing images array or initialize it
@@ -430,11 +498,11 @@ export default {
           images: images
         }, { merge: true });
 
-        this.results.push(`✅ Successfully uploaded ${file.name}`);
+        this.results.push(`✅ Successfully uploaded ${newFileName}`);
         await this.loadStorageImages();
       } catch (error) {
         console.error('Error uploading file:', error);
-        this.results.push(`❌ Failed to upload ${file.name}: ${error.message}`);
+        this.results.push(`❌ Failed to upload: ${error.message}`);
       } finally {
         this.uploading = false;
         // Reset the file input
@@ -461,9 +529,15 @@ export default {
 
       this.deletingImage = image.name;
       try {
+        // Extract the actual file path from the URL
+        const fileName = image.name.split('?')[0]; // Remove query parameters
+        const decodedFileName = decodeURIComponent(fileName); // Handle URL encoding
+        console.log('decodedFileName', decodedFileName)
+
         // Delete from storage
         const storage = getStorage();
-        const imageRef = ref(storage, `${this.schoolId}/${image.name}`);
+        const imageRef = ref(storage, `${decodedFileName}`);
+        console.log('imageRef', imageRef)
         await deleteObject(imageRef);
 
         // Update Firestore document
@@ -616,6 +690,31 @@ export default {
         this.results.push(`❌ Failed to update positions: ${error.message}`);
       }
     },
+
+    async transferAllImages() {
+      if (!confirm('Are you sure you want to transfer all images?')) return;
+      
+      this.isProcessingAll = true;
+      this.results = [];
+      
+      try {
+        const entries = Object.entries(this.sortedImagesData);
+        
+        for (const [key, url] of entries) {
+          this.results.push(`\n--- Processing ${key} ---`);
+          await this.transferSingleImage(key, url, this.imageCredits[key]);
+          // Add a small delay between transfers to prevent overwhelming the server
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+        
+        this.results.push('\n✅ Completed processing all images');
+      } catch (error) {
+        console.error('Error in batch transfer:', error);
+        this.results.push(`\n❌ Batch transfer error: ${error.message}`);
+      } finally {
+        this.isProcessingAll = false;
+      }
+    },
   },
   watch: {
     schoolId: {
@@ -640,8 +739,9 @@ export default {
   transition: opacity 0.2s;
 }
 
-.image-link:hover {
-  opacity: 0.9;
+.square-image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
 }
 
 .caption-editor {
@@ -687,4 +787,5 @@ export default {
 .v-card {
   transition: background-color 1s ease;
 }
+
 </style>

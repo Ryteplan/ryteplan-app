@@ -63,6 +63,12 @@ export default {
         return
       }
 
+      // Remove empty paragraph if value is empty
+      if (!value || value === '<p></p>') {
+        this.editor.commands.setContent('', false)
+        return
+      }
+
       this.editor.commands.setContent(value, false)
     },
   },
