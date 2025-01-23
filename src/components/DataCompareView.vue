@@ -33,6 +33,7 @@
       item-value="id"
       expand-on-click
       :expanded="expanded"  
+      @update:options="handleTableUpdate"
       >
       <template v-slot:expanded-row="{ item }" >
         <tr>
@@ -61,15 +62,14 @@
       <template #item="{ item }">
         <tr>
           <td>
-            <div class="d-flex justify-space-between align-center">
-              <span class="font-weight-bold">{{ item.name }}</span>
+            <div class="d-flex align-center">
               <router-link 
                 :to="`/institution/${item.id}`" 
                 target="_blank"
-                class="view-link"
+                class="view-link text-decoration-none"
               >
-                View Details
-                <v-icon size="small" class="ml-1">mdi-arrow-top-right</v-icon>
+                <span class="text-black font-weight-bold mr-1">{{ item.name }}</span>
+                <v-icon size="small" color="black">mdi-arrow-top-right</v-icon>
               </router-link>
             </div>
           </td>
@@ -159,12 +159,21 @@ export default {
     },
     handleSearch() {
       // The v-data-table handles the search automatically with the :search prop
+    },
+    handleTableUpdate() {
+      setTimeout(() => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      }, 0);
     }
   }
 }
 </script>
 
 <style>
+
 .grid-container {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr; 
