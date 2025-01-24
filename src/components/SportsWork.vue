@@ -3,12 +3,24 @@
     <div class="image-work">      
       <div class="d-flex justify-space-between align-center">
         <h1>Edit Sports & Athletics for {{ institutionName }}</h1>
+      </div>
+      <div class="d-flex align-center mt-8">
         <v-btn
           color="primary"
           @click="showAddSportDialog = true"
+          class="me-4"
         >
           Add Sport
         </v-btn>
+        <v-switch
+          v-model="isNAIAMember"
+          label="NAIA Member"
+          color="primary"
+          hide-details
+          density="compact"
+          class="ms-4"
+          @update:model-value="toggleNAIA"
+        ></v-switch>
       </div>
     </div>
 
@@ -201,7 +213,8 @@ export default {
           INTM_MEN: '',
           INTM_WMN: ''
         }
-      }
+      },
+      isNAIAMember: false,
     }
   },
   computed: {
@@ -222,6 +235,7 @@ export default {
       if (docSnap.exists()) {
         const data = docSnap.data();
         this.institutionName = data.name;
+        this.isNAIAMember = data.assnAthlNaia === 'TRUE';
         if (data.sports) {
           this.sports = data.sports;
         }
@@ -314,7 +328,24 @@ export default {
         await this.saveSportsToFirestore(updatedSports);
         this.sports = updatedSports;
       }
-    }
+    },
+    async toggleNAIA(value) {
+      const naiaValue = value ? 'TRUE' : 'FALSE';
+      try {
+        // Save to institutions_integrated
+        await setDoc(doc(dbFireStore, 'institutions_integrated', this.institutionSlug), {
+          assnAthlNaia: naiaValue
+        }, { merge: true });
+
+        // Save to manual_institution_data
+        await setDoc(doc(dbFireStore, 'manual_institution_data', this.institutionSlug), {
+          assnAthlNaia: naiaValue
+        }, { merge: true });
+
+      } catch (error) {
+        console.error('Error saving NAIA status:', error);
+      }
+    },
   }
 }
 </script>

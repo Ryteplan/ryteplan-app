@@ -164,7 +164,7 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
         if (state.filters.division === 'X') {  // 'X' is the value for intramural
           conditions.push(`(sports.${divisionFieldName}.INTM_MEN:='X' || sports.${divisionFieldName}.INTM_WMN:='X')`);
         } else if (state.filters.division === 'NAIA') {
-          conditions.push('assnAthlNaia:true');
+          conditions.push('assnAthlNaia:="TRUE"');
           if (state.filters.gender) {
             // For NAIA + gender, just check if the gender has any division
             const genderField = state.filters.gender === 'men' ? 'INTC_MEN' : 'INTC_WMN';

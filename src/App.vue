@@ -25,7 +25,7 @@
           <template v-slot:item="data">
             <v-list-item
               class="suggestion-link"
-              @click-once="() => handleSearchClick(data.item.props)"
+              @click-once="(event) => handleSearchClick(data.item.props, event)"
             >
               <v-list-item-title>
                 <div class="d-flex align-center ga-2">
@@ -333,13 +333,18 @@ export default {
         }
       });
     },
-    handleSearchClick(item) {
+    handleSearchClick(item, event) {
+      const isModifierClick = event.metaKey || event.ctrlKey;
+
       if (item.type === "suggestion") {
         this.searchFilterSortStore.activeSearchTerms = item.name;
         this.performSearch("fromSuggestion");
       } else {
-        this.searchInput = null;
-        this.$router.push(`/institution/${item.value}`);
+        if (isModifierClick) {
+          window.open(`/institution/${item.value}`, '_blank');
+        } else {
+          this.$router.push(`/institution/${item.value}`);
+        }
       }
       document.activeElement.blur();
     },

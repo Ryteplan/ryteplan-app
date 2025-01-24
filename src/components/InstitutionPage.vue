@@ -672,7 +672,7 @@
                 <h3>Intercollegiate</h3>
                 <div class="ms-2">
                   <v-chip
-                    v-if="institution.assnAthlNaia"
+                    v-if="institution.assnAthlNaia !== 'FALSE'"
                     size="small"
                     class="me-1"
                     color="primary"
