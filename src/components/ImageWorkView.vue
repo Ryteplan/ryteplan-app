@@ -3,7 +3,8 @@
     <div class="image-work">      
       <div class="mb-4">
         <h1 class="mr-4">Image Work</h1>
-        <div class="d-flex justify-space-between">
+        
+        <div class="d-flex justify-space-between align-end">
             <div>
               <v-btn
                 v-if="prevSchoolId"
@@ -11,20 +12,25 @@
                 color="primary"
                 variant="text"
                 prepend-icon="mdi-arrow-left"
-              class="mr-2"
-            >
+                class="mr-2"
+              >
                 {{ prevSchoolId }}
               </v-btn>
             </div>
+            <div class="flex-column text-center align-center">
+              <div v-if="hiddenValue" class="text-caption mr-4">
+                Note: This university is hidden.
+              </div>
               <v-btn
                 :to="`/institution/${schoolId}`"
                 color="primary"
                 variant="text"
                 class="mr-2"
                 append-icon="mdi-arrow-top-right"
-            >
-              View {{ schoolId }}
-            </v-btn>
+              >
+                View {{ schoolId }}
+              </v-btn>
+            </div>
             <v-btn
               v-if="nextSchoolId"
               :to="`/image-work/${nextSchoolId}`"
@@ -245,6 +251,7 @@ export default {
       movedIndex: null,
       affectedIndex: null,
       isProcessingAll: false,
+      hiddenValue: null,
     }
   },
   computed: {
@@ -284,6 +291,13 @@ export default {
       docSnap.forEach((doc) => {
         this.imagesData = doc.data();
       });
+
+      // Load hidden value
+      const manualDataRef = doc(dbFireStore, 'manual_institution_data', this.schoolId);
+      const manualDataSnap = await getDoc(manualDataRef);
+      if (manualDataSnap.exists()) {
+        this.hiddenValue = manualDataSnap.data().hidden;
+      }
 
       // Load storage images
       await this.loadStorageImages();
