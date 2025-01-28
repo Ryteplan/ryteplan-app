@@ -91,6 +91,7 @@
     <v-navigation-drawer v-if="isLoggedIn" permanent>
       <v-list nav>
         <v-list-item
+          class="d-none"
           to="/"
           prepend-icon="mdi-magnify"
           title="Institutions"
@@ -98,6 +99,7 @@
         >
         </v-list-item>
         <v-list-item
+          class="d-none"
           to="/lists"
           prepend-icon="mdi-list-box-outline"
           title="Lists"
@@ -105,6 +107,7 @@
         >
         </v-list-item>
         <v-list-item
+          class="d-none"
           to="/playground"
           prepend-icon="mdi-slide"
           title="Playground"
@@ -119,6 +122,7 @@
         >
         </v-list-item>
         <v-list-item
+          class="d-none"
           to="/data-integration"
           prepend-icon="mdi-call-merge"
           title="Data Integration"
@@ -126,6 +130,7 @@
         >
         </v-list-item>
         <v-list-item
+          class="d-none"
           to="/students"
           prepend-icon="mdi-account-school"
           title="Students"
@@ -133,6 +138,7 @@
         >
         </v-list-item>
         <v-list-item
+          class="d-none"
           to="/account"
           prepend-icon="mdi-cog"
           title="Account"
@@ -155,7 +161,7 @@
         >
         </v-switch>
         <v-switch
-          class="px-4"
+          class="d-none px-4"
           label="Paid User"
           v-model="userStore.paidUser"
           color="primary"
