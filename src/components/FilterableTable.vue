@@ -74,7 +74,7 @@
             :height="tableHeight"
             fixed-header 
             return-object
-            :headers="tableStore.filteredHeadersData()" 
+            :headers="tableStore.tableHeaders.filter(header => header.show !== false)"
             :items="tableStore.tableData" 
             :items-per-page="-1"
             @click:row="navigateToInstitution" 
@@ -171,7 +171,7 @@
                   :label="header.title"
                   hide-details
                   density="comfortable"
-                  @change="tableStore.saveHeaderState"
+                  @change="onHeaderChange()"
                 ></v-checkbox>
               </v-list-item-title>
             </v-list-item>
@@ -378,6 +378,17 @@ export default {
       } else {
         this.showFiltersDialog = true;
       }
+    },
+    onHeaderChange() {
+      this.tableStore.saveHeaderState();
+      this.tableStore.updateHeaders();
+      
+      // Force table refresh by temporarily clearing and resetting the data
+      const tempData = [...this.tableStore.tableData];
+      this.tableStore.tableData = [];
+      this.$nextTick(() => {
+        this.tableStore.tableData = tempData;
+      });
     }
   },
   computed: {

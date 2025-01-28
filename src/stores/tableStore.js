@@ -71,6 +71,7 @@ export const useTableStore = defineStore('table', {
         searchFilterSortStore.searchParameters.q !== '' &&
         searchFilterSortStore.searchParameters.q !== '*'
       ) {
+        console.log("fetchTableData from local storage");
         this.tableData = JSON.parse(localStorage.getItem("tableData"));
         this.loading = false;
         return;
@@ -99,6 +100,7 @@ export const useTableStore = defineStore('table', {
           const result = await client.collections('institutions_integratedv5').documents().search(searchFilterSort.searchParameters);
           this.resultsFound = result.found;
           this.tableData = result.hits.map(hit => hit.document);
+          console.log(this.tableData);
           if (this.tableData.length < this.resultsFound) {
             this.tableData.push({name: "Load more"});
           }
@@ -255,6 +257,8 @@ export const useTableStore = defineStore('table', {
         return acc;
       }, {});
       localStorage.setItem('tableHeaderState', JSON.stringify(headerState));
+      this.freshSearch = true;
+      this.fetchTableData(); // Reload the table data
     },
     loadHeaderState() {
       // Load header visibility state from localStorage
