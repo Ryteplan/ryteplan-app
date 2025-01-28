@@ -162,7 +162,8 @@ export const useTableStore = defineStore('table', {
       }
       else {
         this.tableHeaders = [
-          { title: 'id', key: 'id', width: "300px", show: false, align: "d-none" },
+          { title: 'id', key: 'id', width: "300px", show: false, align: "d-none", hideFromColumnsEditor: true },
+          { title: 'Hidden', key: 'hidden', width: "100px", show: false, hideFromColumnsEditor: false },
           { title: 'Institution name', key: 'name', width: "300px", fixed: true, sortable: false },
           { title: 'State', key: 'stateCleaned', width: "130px", show: true, sortable: false },
           { title: 'Sector', key: 'mainInstControlDesc', width: "140px", show: true, sortable: false },
@@ -191,13 +192,15 @@ export const useTableStore = defineStore('table', {
           { title: 'Admission Consideration Factors ', key: 'adFactorCode', width: "290px", show: false },          
           { title: 'Admission Consideration Factors, Level of Importance', key: 'adFactorLevel', width: "420px", show: false },          
           { title: 'Early Action is Restrictive', key: 'apEactRestrict', width: "250px", show: false },
-          { title: 'Hidden', key: 'hidden', width: "100px", show: false, hideFromUser: true },
           // { title: 'Main Type of Degree Offered', key: 'mainFunctionType', width: "260px", show: true },
         ];  
       }
     },
     filteredHeadersData(){
       return this.tableHeaders.filter(header => header.title !== "id")
+    },
+    filteredHeadersDataForColumnsEditor(){
+      return this.tableHeaders.filter(header => header.title !== "id" && header.title !== "Hidden")
     },
     updateHeaders() {
       const filteredArray = this.tableHeaders.map(x => (x.show === false ? { ...x, align: " d-none" } : { ...x, align: "" }));

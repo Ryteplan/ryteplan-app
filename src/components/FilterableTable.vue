@@ -151,6 +151,7 @@
       width="100%"
       max-width="600px"
       scrollable
+      height="80vh"
       class="ma-4"
     >
       <v-card>
@@ -161,7 +162,7 @@
         <v-card-text>
           <v-list>
             <v-list-item
-              v-for="header in tableStore.tableHeaders"
+              v-for="header in tableStore.filteredHeadersDataForColumnsEditor()"
               :key="header.key"
             >
               <v-list-item-title>
