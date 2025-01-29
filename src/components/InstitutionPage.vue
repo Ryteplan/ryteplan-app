@@ -572,7 +572,14 @@
               <h3>Academics</h3>
             </v-expansion-panel-title>
             <v-expansion-panel-text>
-              <p class="">{{ descriptions.academics }}</p>
+              <div v-if="userStore.adminMode">
+                <TiptapInputA 
+                  v-model="descriptions.academics" 
+                  placeholder="Enter academic description"
+                  @update:modelValue="saveDescription('academics', $event)"
+                />
+              </div>
+              <p v-else>{{ descriptions.academics }}</p>
             </v-expansion-panel-text>
           </v-expansion-panel>
           <v-expansion-panel>
@@ -580,7 +587,14 @@
               <h3>Surrounding Area</h3>
             </v-expansion-panel-title>
             <v-expansion-panel-text>
-              <p class="">{{ descriptions.surroundingArea }}</p>
+              <div v-if="userStore.adminMode">
+                <TiptapInputA 
+                  v-model="descriptions.surroundingArea" 
+                  placeholder="Enter surrounding area description"
+                  @update:modelValue="saveDescription('surroundingArea', $event)"
+                />
+              </div>
+              <p v-else>{{ descriptions.surroundingArea }}</p>
             </v-expansion-panel-text>
           </v-expansion-panel>
           <v-expansion-panel>
@@ -588,7 +602,14 @@
               <h3>Transportation</h3>
             </v-expansion-panel-title>
             <v-expansion-panel-text>
-              <p class="">{{ descriptions.transportation }}</p>
+              <div v-if="userStore.adminMode">
+                <TiptapInputA 
+                  v-model="descriptions.transportation" 
+                  placeholder="Enter transportation description"
+                  @update:modelValue="saveDescription('transportation', $event)"
+                />
+              </div>
+              <p v-else>{{ descriptions.transportation }}</p>
             </v-expansion-panel-text>
           </v-expansion-panel>
           <v-expansion-panel>
@@ -596,7 +617,14 @@
               <h3>Social Life</h3>
             </v-expansion-panel-title>
             <v-expansion-panel-text>
-              <p class="">{{ descriptions.socialLife }}</p>
+              <div v-if="userStore.adminMode">
+                <TiptapInputA 
+                  v-model="descriptions.socialLife" 
+                  placeholder="Enter social life description"
+                  @update:modelValue="saveDescription('socialLife', $event)"
+                />
+              </div>
+              <p v-else>{{ descriptions.socialLife }}</p>
             </v-expansion-panel-text>
           </v-expansion-panel>
           <v-expansion-panel>
@@ -604,7 +632,14 @@
               <h3>Campus</h3>
             </v-expansion-panel-title>
             <v-expansion-panel-text>
-              <p class="">{{ descriptions.campus }}</p>
+              <div v-if="userStore.adminMode">
+                <TiptapInputA 
+                  v-model="descriptions.campus" 
+                  placeholder="Enter campus description"
+                  @update:modelValue="saveDescription('campus', $event)"
+                />
+              </div>
+              <p v-else>{{ descriptions.campus }}</p>
             </v-expansion-panel-text>
           </v-expansion-panel>
           <v-expansion-panel>
@@ -612,7 +647,14 @@
               <h3>Top 5 Popular Majors</h3>
             </v-expansion-panel-title>
             <v-expansion-panel-text>
-              <p class="">{{ descriptions.top5PopularMajors }}</p>
+              <div v-if="userStore.adminMode">
+                <TiptapInputA 
+                  v-model="descriptions.top5PopularMajors" 
+                  placeholder="Enter top 5 popular majors description"
+                  @update:modelValue="saveDescription('top5PopularMajors', $event)"
+                />
+              </div>
+              <p v-else>{{ descriptions.top5PopularMajors }}</p>
             </v-expansion-panel-text>
           </v-expansion-panel>
           <v-expansion-panel>
@@ -620,7 +662,14 @@
               <h3>Strengths and Areas of Growth</h3>
             </v-expansion-panel-title>
             <v-expansion-panel-text>
-              <p class="">{{ descriptions.strengthsAndAreasOfGrowth }}</p>
+              <div v-if="userStore.adminMode">
+                <TiptapInputA 
+                  v-model="descriptions.strengthsAndAreasOfGrowth" 
+                  placeholder="Enter strengths and areas of growth description"
+                  @update:modelValue="saveDescription('strengthsAndAreasOfGrowth', $event)"
+                />
+              </div>
+              <p v-else>{{ descriptions.strengthsAndAreasOfGrowth }}</p>
             </v-expansion-panel-text>
           </v-expansion-panel>
         </v-expansion-panels>
@@ -1366,6 +1415,17 @@ export default {
           fieldsOfStudy: false,
           ethnicity: false
         };
+      }
+    },
+    async saveDescription(field, value) {
+      console.log(field, value);
+      try {
+        const docRef = doc(dbFireStore, "Descriptions", this.institution.uri);
+        await setDoc(docRef, {
+          [field]: value 
+        }, { merge: true });
+      } catch (error) {
+        console.error("Error saving description:", error);
       }
     }
   },

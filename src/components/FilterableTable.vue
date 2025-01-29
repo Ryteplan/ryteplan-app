@@ -265,7 +265,6 @@ export default {
       const hasMoreResults = this.tableStore.tableData.length < this.tableStore.resultsFound;
       
       if (isAtBottom && !this.tableStore.loadingMore && hasMoreResults) {
-        console.log('Reached bottom of table');
         this.tableStore.loadMoreItems();
       }
     },
