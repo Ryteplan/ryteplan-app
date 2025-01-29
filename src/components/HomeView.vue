@@ -1,17 +1,14 @@
 <template>
   <FilterableTable></FilterableTable>
-  <!-- <BrowseAndSearch></BrowseAndSearch> -->
 </template>
  
 <script>
 import FilterableTable from './FilterableTable.vue'
-// import BrowseAndSearch from './BrowseAndSearch.vue'
 
 export default {
   name: "HomeView",
   components: {
     FilterableTable,
-    // BrowseAndSearch
   },
   setup() {
   },

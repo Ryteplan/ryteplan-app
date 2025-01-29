@@ -34,7 +34,6 @@
                     {{ $vuetify.display.lgAndUp ? (showFilters ? 'Hide Filters' : 'Show Filters') : 'Filters' }}
                   </v-btn>
                   <v-btn
-                    v-if="userStore.isLoggedIn && userStore.adminMode"
                     size="x-small"
                     elevation="1"
                     @click="showColumnsDialog = true"
@@ -257,8 +256,17 @@ export default {
   },
   methods: {
     onScroll(e) {
-      localStorage.setItem("tableViewScrollPositionY", e.target.scrollTop);
-      localStorage.setItem("tableViewScrollPositionX", e.target.scrollLeft);
+      const target = e.target;
+      localStorage.setItem("tableViewScrollPositionY", target.scrollTop);
+      localStorage.setItem("tableViewScrollPositionX", target.scrollLeft);
+      
+      // Check if scrolled to bottom and not currently loading
+      const isAtBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + 1;
+      if (isAtBottom && !this.tableStore.loadingMore) {
+        // You can trigger loading more data here
+        console.log('Reached bottom of table');
+        this.tableStore.loadMoreItems();
+      }
     },
     scrollToLastKnownPosition() {
       if (
@@ -385,16 +393,7 @@ export default {
         return currentFilters[key] !== defaultFilters[key];
       });
     },
-    groupHeaders() {
-      return (columns) => columns.filter(column => column.children);
-    },
-    
-    visibleChildren() {
-      return (children) => children.filter(child => child.show !== false);
-    },
-
     filteredHeaders() {
-      console.log(this.tableStore.tableHeaders);
       return this.tableStore.tableHeaders.filter(header => header.show !== false);
     }
   },

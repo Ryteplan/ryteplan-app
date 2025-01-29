@@ -20,6 +20,7 @@ export const useTableStore = defineStore('table', {
   persist: false,
   actions: {
     async loadMoreItems() {
+      this.loadingMore = true;
       this.tableData.pop();
       try {
         const searchFilterSort = useSearchFilterSortStore()
@@ -48,6 +49,8 @@ export const useTableStore = defineStore('table', {
 
       } catch (error) {
         console.error('Error fetching data from Typesense:', error);
+      } finally {
+        this.loadingMore = false;
       }      
     },
     async fetchTableData() {
@@ -171,8 +174,8 @@ export const useTableStore = defineStore('table', {
           { title: 'Sector', key: 'mainInstControlDesc', minWidth: "140px", show: true, sortable: false },
           { title: 'Calendar', key: 'mainCalendar', minWidth: "140px", show: false, sortable: false },          
           { title: 'Zipcode', key: 'zipcode', minWidth: "130px", show: false },
-          { title: 'Country', key: 'countryCode', minWidth: "130px", show: true },
-          { title: 'Main Type of Degree Offered', key: 'mainFunctionType', minWidth: "260px", show: false },
+          { title: 'Country', key: 'countryCode', minWidth: "130px", show: false, sortable: false },
+          { title: 'Main Type of Degree Offered', key: 'mainFunctionType', minWidth: "260px", show: false, sortable: false },
           { title: 'Religious Affiliation', key: 'denomDesc', minWidth: "140px", show: false, sortable: false },
           { title: 'Campus Acreage', key: 'cmpsSizeN', minWidth: "140px", show: false, sortable: false },
           { title: 'Campus Setting', key: 'cmpsSetting', minWidth: "140px", show: true, sortable: false },          
@@ -211,14 +214,14 @@ export const useTableStore = defineStore('table', {
             key: 'admissionFactors',
             show: false,
             children: [
-              { title: 'Activities', key: 'activ', minWidth: "140px", show: true },          
-              { title: 'Legacy', key: 'alum', minWidth: "140px", show: true },          
-              { title: 'Demonstrated Interest', key: 'apint', minWidth: "140px", show: true },          
-              { title: 'Interview', key: 'iview', minWidth: "140px", show: true },          
-              { title: 'Character', key: 'char', minWidth: "140px", show: true },          
-              { title: 'Essay', key: 'essay', minWidth: "140px", show: true },          
-              { title: 'First Generation', key: 'first', minWidth: "140px", show: true },          
-              { title: 'Geographic Residence', key: 'geog', minWidth: "140px", show: true },          
+              { title: 'Activities', key: 'activ', minWidth: "140px", show: true, sortable: false },          
+              { title: 'Legacy', key: 'alum', minWidth: "140px", show: true, sortable: false },          
+              { title: 'Demonstrated Interest', key: 'apint', minWidth: "140px", show: true, sortable: false },          
+              { title: 'Interview', key: 'iview', minWidth: "140px", show: true, sortable: false },          
+              { title: 'Character', key: 'char', minWidth: "140px", show: true, sortable: false },          
+              { title: 'Essay', key: 'essay', minWidth: "140px", show: true, sortable: false },          
+              { title: 'First Generation', key: 'first', minWidth: "140px", show: true, sortable: false },          
+              { title: 'Geographic Residence', key: 'geog', minWidth: "140px", show: true, sortable: false },          
               { title: 'Rank', key: 'rank', minWidth: "140px", show: true, sortable: false },
               { title: 'Recommendations', key: 'recom', minWidth: "140px", show: true, sortable: false },
               { title: 'Religion', key: 'relig', minWidth: "140px", show: true, sortable: false },
