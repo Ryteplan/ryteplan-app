@@ -576,8 +576,17 @@
                 <TiptapInputA 
                   v-model="descriptions.academics" 
                   placeholder="Enter academic description"
-                  @update:modelValue="saveDescription('academics', $event)"
+                  @update:modelValue="markDescriptionAsEdited('academics', $event)"
                 />
+                <v-btn
+                  v-if="editedDescriptions.academics"
+                  color="primary"
+                  class="mt-2"
+                  :loading="savingDescription === 'academics'"
+                  @click="saveDescription('academics', descriptions.academics)"
+                >
+                  Save Changes
+                </v-btn>
               </div>
               <p v-else>{{ descriptions.academics }}</p>
             </v-expansion-panel-text>
@@ -591,8 +600,17 @@
                 <TiptapInputA 
                   v-model="descriptions.surroundingArea" 
                   placeholder="Enter surrounding area description"
-                  @update:modelValue="saveDescription('surroundingArea', $event)"
+                  @update:modelValue="markDescriptionAsEdited('surroundingArea', $event)"
                 />
+                <v-btn
+                  v-if="editedDescriptions.surroundingArea"
+                  color="primary"
+                  class="mt-2"
+                  :loading="savingDescription === 'surroundingArea'"
+                  @click="saveDescription('surroundingArea', descriptions.surroundingArea)"
+                >
+                  Save Changes
+                </v-btn>
               </div>
               <p v-else>{{ descriptions.surroundingArea }}</p>
             </v-expansion-panel-text>
@@ -606,8 +624,17 @@
                 <TiptapInputA 
                   v-model="descriptions.transportation" 
                   placeholder="Enter transportation description"
-                  @update:modelValue="saveDescription('transportation', $event)"
+                  @update:modelValue="markDescriptionAsEdited('transportation', $event)"
                 />
+                <v-btn
+                  v-if="editedDescriptions.transportation"
+                  color="primary"
+                  class="mt-2"
+                  :loading="savingDescription === 'transportation'"
+                  @click="saveDescription('transportation', descriptions.transportation)"
+                >
+                  Save Changes
+                </v-btn>
               </div>
               <p v-else>{{ descriptions.transportation }}</p>
             </v-expansion-panel-text>
@@ -621,8 +648,17 @@
                 <TiptapInputA 
                   v-model="descriptions.socialLife" 
                   placeholder="Enter social life description"
-                  @update:modelValue="saveDescription('socialLife', $event)"
+                  @update:modelValue="markDescriptionAsEdited('socialLife', $event)"
                 />
+                <v-btn
+                  v-if="editedDescriptions.socialLife"
+                  color="primary"
+                  class="mt-2"
+                  :loading="savingDescription === 'socialLife'"
+                  @click="saveDescription('socialLife', descriptions.socialLife)"
+                >
+                  Save Changes
+                </v-btn>
               </div>
               <p v-else>{{ descriptions.socialLife }}</p>
             </v-expansion-panel-text>
@@ -636,8 +672,17 @@
                 <TiptapInputA 
                   v-model="descriptions.campus" 
                   placeholder="Enter campus description"
-                  @update:modelValue="saveDescription('campus', $event)"
+                  @update:modelValue="markDescriptionAsEdited('campus', $event)"
                 />
+                <v-btn
+                  v-if="editedDescriptions.campus"
+                  color="primary"
+                  class="mt-2"
+                  :loading="savingDescription === 'campus'"
+                  @click="saveDescription('campus', descriptions.campus)"
+                >
+                  Save Changes
+                </v-btn>
               </div>
               <p v-else>{{ descriptions.campus }}</p>
             </v-expansion-panel-text>
@@ -651,8 +696,17 @@
                 <TiptapInputA 
                   v-model="descriptions.top5PopularMajors" 
                   placeholder="Enter top 5 popular majors description"
-                  @update:modelValue="saveDescription('top5PopularMajors', $event)"
+                  @update:modelValue="markDescriptionAsEdited('top5PopularMajors', $event)"
                 />
+                <v-btn
+                  v-if="editedDescriptions.top5PopularMajors"
+                  color="primary"
+                  class="mt-2"
+                  :loading="savingDescription === 'top5PopularMajors'"
+                  @click="saveDescription('top5PopularMajors', descriptions.top5PopularMajors)"
+                >
+                  Save Changes
+                </v-btn>
               </div>
               <p v-else>{{ descriptions.top5PopularMajors }}</p>
             </v-expansion-panel-text>
@@ -666,8 +720,17 @@
                 <TiptapInputA 
                   v-model="descriptions.strengthsAndAreasOfGrowth" 
                   placeholder="Enter strengths and areas of growth description"
-                  @update:modelValue="saveDescription('strengthsAndAreasOfGrowth', $event)"
+                  @update:modelValue="markDescriptionAsEdited('strengthsAndAreasOfGrowth', $event)"
                 />
+                <v-btn
+                  v-if="editedDescriptions.strengthsAndAreasOfGrowth"
+                  color="primary"
+                  class="mt-2"
+                  :loading="savingDescription === 'strengthsAndAreasOfGrowth'"
+                  @click="saveDescription('strengthsAndAreasOfGrowth', descriptions.strengthsAndAreasOfGrowth)"
+                >
+                  Save Changes
+                </v-btn>
               </div>
               <p v-else>{{ descriptions.strengthsAndAreasOfGrowth }}</p>
             </v-expansion-panel-text>
@@ -1109,6 +1172,8 @@ export default {
         ethnicity: false
       },
       imagesv2: [],
+      editedDescriptions: {},
+      savingDescription: null,
     }
   },
   methods: {
@@ -1417,15 +1482,22 @@ export default {
         };
       }
     },
+    markDescriptionAsEdited(field, value) {
+      this.editedDescriptions[field] = true;
+      this.descriptions[field] = value;
+    },
     async saveDescription(field, value) {
-      console.log(field, value);
+      this.savingDescription = field;
       try {
         const docRef = doc(dbFireStore, "Descriptions", this.institution.uri);
         await setDoc(docRef, {
           [field]: value 
         }, { merge: true });
+        this.editedDescriptions[field] = false;
       } catch (error) {
         console.error("Error saving description:", error);
+      } finally {
+        this.savingDescription = null;
       }
     }
   },
