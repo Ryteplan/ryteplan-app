@@ -74,7 +74,7 @@
             :height="tableHeight"
             fixed-header 
             return-object
-            :headers="tableStore.tableHeaders.filter(header => header.show !== false)"
+            :headers="filteredHeaders"
             :items="tableStore.tableData" 
             :items-per-page="-1"
             @click:row="navigateToInstitution" 
@@ -82,25 +82,6 @@
             v-model="tableStore.selectedRows"
             density="comfortable"
           >
-            <template v-slot:headers="{ columns, isSorted, getSortIcon }">
-              <tr>
-                <template v-for="(column, index) in columns" :key="column.key">
-                  <th 
-                    v-if="column.show !== false" 
-                    :class="thClasses(index)" 
-                    :style="thStyle(column.width)"
-                    @click="tableStore.customSort(column)"
-                  >
-                    <div class="v-data-table-header__content">
-                      <span>{{ column.title }}</span>
-                      <template v-if="isSorted(column)">
-                        <v-icon :icon="getSortIcon(column)"></v-icon>
-                      </template>
-                    </div>
-                  </th>
-                </template>
-              </tr>
-            </template>
             <template #bottom></template>
           </v-data-table>
         </v-col>
@@ -403,6 +384,18 @@ export default {
         }
         return currentFilters[key] !== defaultFilters[key];
       });
+    },
+    groupHeaders() {
+      return (columns) => columns.filter(column => column.children);
+    },
+    
+    visibleChildren() {
+      return (children) => children.filter(child => child.show !== false);
+    },
+
+    filteredHeaders() {
+      console.log(this.tableStore.tableHeaders);
+      return this.tableStore.tableHeaders.filter(header => header.show !== false);
     }
   },
   created() {
@@ -521,7 +514,7 @@ tr td:first-of-type {
   z-index: 10;
 }
 
-tr th:first-of-type {
+table > thead > tr:nth-child(1) > th.v-data-table__td.v-data-table-column--fixed.v-data-table-column--last-fixed.v-data-table-column--align-.v-data-table__th--fixed.v-data-table__th {
   z-index: 6 !important;
 }
 
@@ -588,5 +581,9 @@ tr td {
   .v-card-text {
     padding: 16px;
   }
+}
+
+.v-data-table-header__content {
+  text-wrap: nowrap;
 }
 </style>

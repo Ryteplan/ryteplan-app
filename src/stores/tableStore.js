@@ -71,7 +71,6 @@ export const useTableStore = defineStore('table', {
         searchFilterSortStore.searchParameters.q !== '' &&
         searchFilterSortStore.searchParameters.q !== '*'
       ) {
-        console.log("fetchTableData from local storage");
         this.tableData = JSON.parse(localStorage.getItem("tableData"));
         this.loading = false;
         return;
@@ -100,7 +99,6 @@ export const useTableStore = defineStore('table', {
           const result = await client.collections('institutions_integratedv5').documents().search(searchFilterSort.searchParameters);
           this.resultsFound = result.found;
           this.tableData = result.hits.map(hit => hit.document);
-          console.log(this.tableData);
           if (this.tableData.length < this.resultsFound) {
             this.tableData.push({name: "Load more"});
           }
@@ -124,7 +122,6 @@ export const useTableStore = defineStore('table', {
         } 
 
         const searchFilterSort = useSearchFilterSortStore()
-        console.log(searchFilterSort.filterByString);
         searchFilterSort.searchParameters.page = 1;
         searchFilterSort.searchParameters.filter_by = searchFilterSort.filterByString;
 
@@ -159,42 +156,81 @@ export const useTableStore = defineStore('table', {
       this.selectedRows = selectedRows;
     },
     async loadTableHeaders() {
+      // clear tableHeaders from local storage
+      localStorage.removeItem("tableHeaders");
       if (localStorage.getItem("tableHeaders")) {
         this.tableHeaders = JSON.parse(localStorage.getItem("tableHeaders"));
       }
       else {
         this.tableHeaders = [
-          { title: 'id', key: 'id', width: "300px", show: false, align: "d-none", hideFromColumnsEditor: true },
-          { title: 'Hidden', key: 'hidden', width: "100px", show: false, hideFromColumnsEditor: false },
-          { title: 'Institution name', key: 'name', width: "300px", fixed: true, sortable: false },
-          { title: 'State', key: 'stateCleaned', width: "130px", show: true, sortable: false },
-          { title: 'Sector', key: 'mainInstControlDesc', width: "140px", show: true, sortable: false },
-          { title: 'Calendar', key: 'mainCalendar', width: "140px", show: true, sortable: false },          
-          { title: 'Difficulty', key: 'adDiffAll', width: "140px", show: true, sortable: false },          
-          { title: 'Undergraduates', key: 'enTotUgN', width: "140px", show: true, sortable: false },
-          { title: 'Locale', key: 'cmpsSetting', width: "140px", show: true, sortable: false },          
-          { title: 'City', key: 'city', width: "220px", show: false },
-          { title: 'Country', key: 'countryCode', width: "130px", show: false },
-          { title: 'Zipcode', key: 'zipcode', width: "130px", show: false },
-          { title: 'Campus Size', key: 'cmpsSizeUnit', width: "210px", show: false },          
-          { title: 'Average GPA', key: 'frshGpa', width: "160px", show: false, sortable: false },          
-          { title: 'Applicants', key: 'apRecd1stN', width: "140px", show: false, sortable: false },          
-          { title: 'Admits', key: 'apAdmt1stN', width: "140px", show: false, sortable: false },          
-          { title: 'HBCU', key: 'hbcu', width: "100px", show: false },
-          { title: 'Tribal', key: 'tribal', width: "100px", show: false },
-          { title: 'Early Decision Applicants', key: 'apRecdEdecN', width: "240px", show: false },          
-          { title: 'Early Decision Admits', key: 'apAdmtEdecN', width: "240px", show: false },          
-          { title: 'Early Action Applicants', key: 'apRecdEactN', width: "240px", show: false },          
-          { title: 'Early Action Admits', key: 'apAdmtEactN', width: "200px", show: false },          
-          { title: 'Enrolled #Submitted SAT', key: 'submitSat1P', width: "240px", show: false },          
-          { title: 'Enrolled #Submitted ACT', key: 'submitActP', width: "240px", show: false },          
-          { title: 'Total Cost (Resident)', key: 'totResD', width: "200px", show: false },          
-          { title: 'Tuition Non-Resident', key: 'tuitNres1StFtD', width: "200px", show: false },          
-          { title: 'Tuition In-State', key: 'tuitState1StFtD', width: "200px", show: false },          
-          { title: 'Admission Consideration Factors ', key: 'adFactorCode', width: "290px", show: false },          
-          { title: 'Admission Consideration Factors, Level of Importance', key: 'adFactorLevel', width: "420px", show: false },          
-          { title: 'Early Action is Restrictive', key: 'apEactRestrict', width: "250px", show: false },
-          // { title: 'Main Type of Degree Offered', key: 'mainFunctionType', width: "260px", show: true },
+          { title: 'id', key: 'id', minWidth: "300px", show: false, align: "d-none", hideFromColumnsEditor: true },
+          { title: 'Hidden', key: 'hidden', minWidth: "100px", show: false, hideFromColumnsEditor: false },
+          { title: 'Institution name', key: 'name', minWidth: "250px",  fixed: true, sortable: false, hideFromColumnsEditor: true  },
+          { title: 'City', key: 'city', minWidth: "120px", show: false },
+          { title: 'State', key: 'stateCleaned', minWidth: "130px", show: true, sortable: false },
+          { title: 'Sector', key: 'mainInstControlDesc', minWidth: "140px", show: true, sortable: false },
+          { title: 'Calendar', key: 'mainCalendar', minWidth: "140px", show: false, sortable: false },          
+          { title: 'Zipcode', key: 'zipcode', minWidth: "130px", show: false },
+          { title: 'Country', key: 'countryCode', minWidth: "130px", show: true },
+          { title: 'Main Type of Degree Offered', key: 'mainFunctionType', minWidth: "260px", show: false },
+          { title: 'Religious Affiliation', key: 'denomDesc', minWidth: "140px", show: false, sortable: false },
+          { title: 'Campus Acreage', key: 'cmpsSizeN', minWidth: "140px", show: false, sortable: false },
+          { title: 'Campus Setting', key: 'cmpsSetting', minWidth: "140px", show: true, sortable: false },          
+          { title: 'Undergraduates', key: 'enTotUgN', minWidth: "140px", show: true, sortable: false },
+          { title: 'Ungergraduate Male Poplulation', key: 'enTotUgN', minWidth: "140px", show: false, sortable: false },
+          { title: 'Undergraduate Female Population', key: 'enUgFtWmnN', minWidth: "140px", show: false, sortable: false },
+          { title: 'Total Graduates', key: 'enTotGradN', minWidth: "140px", show: false, sortable: false },
+          { title: 'Difficulty', key: 'adDiffAll', minWidth: "140px", show: true, sortable: false },          
+          { title: 'Admission Testing Policy', key: 'adTestPolicyT', minWidth: "140px", show: false, sortable: false },
+          { title: 'SAT Verbal 50th', key: 'satVerb50thP', minWidth: "140px", show: false, sortable: false },
+          { title: 'SAT Math 50th', key: 'satMath50thP', minWidth: "140px", show: false, sortable: false },
+          { title: 'ACT 50th', key: 'actComp50thP', minWidth: "140px", show: false, sortable: false },
+          { title: 'Admit Rate', key: 'admitRate', minWidth: "140px", show: false, sortable: false },
+          { title: 'Average GPA', key: 'frshGpa', minWidth: "160px", show: false, sortable: false },          
+          { title: 'Undergraduate Applications Received', key: 'apRecd1stN', minWidth: "140px", show: false, sortable: false },          
+          { title: 'Undergraduates Admitted', key: 'apAdmt1stN', minWidth: "140px", show: false, sortable: false },          
+          { title: 'Total Cost (Resident)', key: 'totResD2024', minWidth: "200px", show: false },          
+          { title: 'Tuition Non-Resident', key: 'tuitNresFtD2024', minWidth: "200px", show: false },          
+          { title: 'Tuition In-State', key: 'tuitStateFtD2024', minWidth: "200px", show: false },          
+          { title: 'Tuition: International', key: 'tuitIntlFtD2024', minWidth: "140px", show: false, sortable: false },
+          { title: 'Early Decision Applicants', key: 'apRecdEdecN', minWidth: "240px", show: false },          
+          { title: 'Early Decision Admits', key: 'apAdmtEdecN', minWidth: "240px", show: false },          
+          { title: 'Early Action Applicants', key: 'apRecdEactN', minWidth: "240px", show: false },          
+          { title: 'Early Action Admits', key: 'apAdmtEactN', minWidth: "200px", show: false },          
+          { title: 'Early Action is Restrictive', key: 'apEactRestrict', minWidth: "250px", show: false },
+          { title: 'Enrolled #Submitted SAT', key: 'submitSat1P', minWidth: "240px", show: false },          
+          { title: 'Enrolled #Submitted ACT', key: 'submitActP', minWidth: "240px", show: false },          
+          { title: 'Application Deadline', key: 'regDecDead', minWidth: "140px", show: false, sortable: false },
+          { title: 'Early Decision 1 Deadline', key: 'earlyDecision1Dead', minWidth: "140px", show: false, sortable: false },
+          { title: 'Early Decision 2 Deadline', key: 'earlyDecision2Dead', minWidth: "140px", show: false, sortable: false },
+          { title: 'Early Action Deadline', key: 'earlyActionDeadline', minWidth: "140px", show: false, sortable: false },
+          { title: 'Class sections 100+', key: 'classSec7', minWidth: "140px", show: false, sortable: false },          
+          { title: 'Priority Application Deadline', key: 'fallFreshPrio', minWidth: "140px", show: false, sortable: false },
+          { title: 'Admission Factors',
+            align: "center",
+            key: 'admissionFactors',
+            show: false,
+            children: [
+              { title: 'Activities', key: 'activ', minWidth: "140px", show: true },          
+              { title: 'Legacy', key: 'alum', minWidth: "140px", show: true },          
+              { title: 'Demonstrated Interest', key: 'apint', minWidth: "140px", show: true },          
+              { title: 'Interview', key: 'iview', minWidth: "140px", show: true },          
+              { title: 'Character', key: 'char', minWidth: "140px", show: true },          
+              { title: 'Essay', key: 'essay', minWidth: "140px", show: true },          
+              { title: 'First Generation', key: 'first', minWidth: "140px", show: true },          
+              { title: 'Geographic Residence', key: 'geog', minWidth: "140px", show: true },          
+              { title: 'Rank', key: 'rank', minWidth: "140px", show: true, sortable: false },
+              { title: 'Recommendations', key: 'recom', minWidth: "140px", show: true, sortable: false },
+              { title: 'Religion', key: 'relig', minWidth: "140px", show: true, sortable: false },
+              { title: 'Rigor', key: 'rigor', minWidth: "140px", show: true, sortable: false },
+              { title: 'State', key: 'state', minWidth: "140px", show: true, sortable: false },
+              { title: 'Talent', key: 'talnt', minWidth: "140px", show: true, sortable: false },
+              { title: 'Test Scores', key: 'tstsc', minWidth: "140px", show: true, sortable: false },
+              { title: 'Volunteerism', key: 'volun', minWidth: "140px", show: true, sortable: false },
+              { title: 'Employment', key: 'work', minWidth: "140px", show: true, sortable: false },
+            ]
+          },
+          // { title: 'xxx', key: 'xxx', minWidth: "140px", show: true, sortable: false },
         ];  
       }
     },
@@ -202,7 +238,11 @@ export const useTableStore = defineStore('table', {
       return this.tableHeaders.filter(header => header.title !== "id")
     },
     filteredHeadersDataForColumnsEditor(){
-      return this.tableHeaders.filter(header => header.title !== "id" && header.title !== "Hidden")
+      return this.tableHeaders.filter(header => 
+        header.title !== "id" && 
+        header.title !== "Hidden" && 
+        !header.hideFromColumnsEditor
+      );
     },
     updateHeaders() {
       const filteredArray = this.tableHeaders.map(x => (x.show === false ? { ...x, align: " d-none" } : { ...x, align: "" }));
