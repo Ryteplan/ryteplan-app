@@ -260,10 +260,11 @@ export default {
       localStorage.setItem("tableViewScrollPositionY", target.scrollTop);
       localStorage.setItem("tableViewScrollPositionX", target.scrollLeft);
       
-      // Check if scrolled to bottom and not currently loading
+      // Check if scrolled to bottom, not currently loading, and there are more results to load
       const isAtBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + 1;
-      if (isAtBottom && !this.tableStore.loadingMore) {
-        // You can trigger loading more data here
+      const hasMoreResults = this.tableStore.tableData.length < this.tableStore.resultsFound;
+      
+      if (isAtBottom && !this.tableStore.loadingMore && hasMoreResults) {
         console.log('Reached bottom of table');
         this.tableStore.loadMoreItems();
       }
