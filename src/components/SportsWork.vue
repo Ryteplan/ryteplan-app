@@ -293,6 +293,11 @@ export default {
     async addSport() {
       if (!this.newSport.sport_name) return;
 
+      // Ensure this.sports is an array
+      if (!Array.isArray(this.sports)) {
+        this.sports = [];
+      }
+
       const sportName = this.newSport.sport_name.toLowerCase();
       const divisionsKey = `${sportName.replace(/ /g, '_')}_divisions`;
       
