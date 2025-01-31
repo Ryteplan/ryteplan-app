@@ -99,7 +99,6 @@
         >
         </v-list-item>
         <v-list-item
-          class="d-none"
           to="/lists"
           prepend-icon="mdi-list-box-outline"
           title="Lists"

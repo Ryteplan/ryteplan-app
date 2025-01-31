@@ -62,7 +62,6 @@
 import { dbFireStore } from "../firebase";
 import { getDoc, doc, getDocs, query, collection, where } from 'firebase/firestore'
 import ShareDialog from './ShareDialog'
-import { toRaw } from 'vue';
 
 
 export default {
@@ -95,19 +94,46 @@ export default {
   },
   methods: {
     async loadList() {
-      const lists = collection(dbFireStore, 'lists');
-      const idFromURL = this.$route.params.id;
-      const q = query(lists, where("id", "==", idFromURL));
-      const docSnap = await getDocs(q);
-      docSnap.forEach((doc) => {
-        this.list = doc.data();
-      });
+      try {
+        // Get list document
+        const lists = collection(dbFireStore, 'lists');
+        const idFromURL = this.$route.params.id;
+        const q = query(lists, where("id", "==", idFromURL));
+        const querySnapshot = await getDocs(q);
 
-      const listOfInstitutionIDs = toRaw(this.list.institutions);
-      listOfInstitutionIDs.forEach(async (institutionID)=>{
-        const snap = await getDoc(doc(dbFireStore, 'institutions_v11', institutionID));
-        this.institutions.push(snap.data());
-      })
+        if (querySnapshot.empty) {
+          console.error('No list found with this ID');
+          return;
+        }
+
+        // Get the first (and should be only) document
+        const listDoc = querySnapshot.docs[0];
+        this.list = listDoc.data();
+
+        // Check if institutions array exists
+        if (!this.list?.institutions?.length) {
+          console.log('No institutions in this list');
+          return;
+        }
+
+        // Clear existing institutions
+        this.institutions = [];
+
+        // Fetch all institutions in parallel
+        const institutionPromises = this.list.institutions.map(institutionID => 
+          getDoc(doc(dbFireStore, 'institutions_v11', institutionID))
+        );
+
+        const institutionDocs = await Promise.all(institutionPromises);
+        
+        // Filter out any null results and add valid institutions to the array
+        this.institutions = institutionDocs
+          .filter(doc => doc.exists())
+          .map(doc => doc.data());
+
+      } catch (error) {
+        console.error('Error loading list:', error);
+      }
     },
     onUpdateMenu(open) {
       if (open) {

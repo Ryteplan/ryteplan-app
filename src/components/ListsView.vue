@@ -14,7 +14,6 @@
         </div>
         <div class="mt-5">
           <h2>Your lists</h2>
-          <h2>Tab for student lists</h2>
           <ul class="mt-4">
             <v-list>
             <v-list-item 
