@@ -63,7 +63,45 @@
             </div>
           </div>
 
+          <div class="d-flex align-center mb-4">
+            <v-switch
+              v-model="isCardView"
+              label="Card View"
+              color="primary"
+              hide-details
+              density="comfortable"
+            />
+          </div>
+
+          <!-- Card View -->
+          <div v-if="isCardView" style="overflow-y: scroll; height: 80vh;" >
+            <v-card
+              v-for="item in tableStore.tableData"
+              :key="item.name"
+              class="institution-card mb-4"
+              :class="{ 'hidden-institution': item.hidden }"
+              elevation="2"
+              @click="navigateToInstitution($event, { item })"
+            >
+              <v-card-title class="text-h6">
+                {{ item.name }}
+              </v-card-title>
+              <v-card-text>
+                <div class="d-flex" style="gap: 24px">
+                  <div v-for="header in filteredHeaders" :key="header.key">
+                    <template v-if="header.show && item[header.key]">
+                      <div class="text-grey">{{ header.title }}</div>
+                      <div>{{ item[header.key] }}</div>
+                    </template>
+                  </div>
+                </div>
+              </v-card-text>
+            </v-card>
+          </div>
+
+          <!-- Table View -->
           <v-data-table 
+            v-else
             v-show="isTableHeightCalculated"
             id="dataTable" 
             ref="dataTable" 
@@ -251,7 +289,8 @@ export default {
       tableHeight: 'auto',
       showFilters: true,
       showFiltersDialog: false,
-      showColumnsDialog: false
+      showColumnsDialog: false,
+      isCardView: false
     }
   },
   methods: {
@@ -584,5 +623,30 @@ tr td {
 
 .v-data-table-header__content {
   text-wrap: nowrap;
+}
+
+.institution-card {
+  height: fit-content;
+  cursor: pointer;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+
+  .v-card-title {
+    font-size: 1.1rem;
+    line-height: 1.4;
+  }
+
+  &.hidden-institution {
+    opacity: 0.6;
+  }
+}
+
+.text-truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>
