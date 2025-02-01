@@ -4,37 +4,63 @@
       <v-col cols="6">
         <div class="d-flex align-center justify-start">
           <h1>Lists</h1>
+        </div>
+        <div v-if="userLists.length > 0" class="mt-5">
+          <div class="d-flex align-center justify-start">
+            <h2>Your lists</h2>
+            <v-btn
+              size="30"
+              @click="showCreateListDialog = true"
+              class="ml-6"
+            >
+              <v-icon>mdi-plus</v-icon>
+            </v-btn>
+          </div>
+          <ul class="mt-4">
+            <v-list>
+              <v-list-item 
+                v-for="list in userLists" 
+                :key="list.id"
+                :to="`/list/${list.id}`"
+              >
+                <div class="d-flex">
+                  <v-list-item-title>{{ list.name }}</v-list-item-title>
+                </div>
+              </v-list-item>
+            </v-list>
+          </ul>
+        </div>
+        <div v-else>
+          Create a list to get started
           <v-btn
             class="ml-5"
-            @click="createNewList"
+            @click="showCreateListDialog = true"
             prepend-icon="mdi-plus"
             density="compact"
           > Create new list
           </v-btn>
         </div>
-        <div class="mt-5">
-          <h2>Your lists</h2>
-          <ul class="mt-4">
-            <v-list>
-            <v-list-item 
-              v-for="list in userLists" 
-              :key="list.id"
-              :to="`/list/${list.id}`"
-            >
-              <div class="d-flex">
-                <v-list-item-title>{{ list.name }}</v-list-item-title>
-              </div>
-            </v-list-item>
-          </v-list>
-          </ul>
-        </div>
       </v-col>
       <v-col cols="4">
-        <v-text-field       
-          type="text"       
-          placeholder="Name"       
-          v-model="createNewListName"     
-        />     
+        <v-dialog v-model="showCreateListDialog" max-width="500">
+          <v-card>
+            <v-card-title>
+              <span>Create New List</span>
+            </v-card-title>
+            <v-card-text>
+              <v-text-field       
+                type="text"       
+                placeholder="Name"       
+                v-model="createNewListName"     
+              />
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="primary" @click="createNewList">Create</v-btn>
+              <v-btn text @click="showCreateListDialog = false">Cancel</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-col>
     </v-row>
   </v-container>
@@ -63,7 +89,8 @@ export default {
     return {
       createNewListName: "",
       userLists: {},
-      userID: ""
+      userID: "",
+      showCreateListDialog: false
     }
   },
   methods: {
@@ -89,6 +116,9 @@ export default {
           updated: Timestamp.fromDate(new Date())
         }
       );
+      this.showCreateListDialog = false;
+      this.createNewListName = "";
+      this.loadUserLists();
     }
   }
 };
