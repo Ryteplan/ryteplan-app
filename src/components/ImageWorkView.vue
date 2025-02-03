@@ -258,8 +258,6 @@ export default {
         
         if (docSnap.exists()) {
           const data = docSnap.data();
-          console.log('schoolId', this.schoolId)
-          console.log('data', data)
           // Convert the images array into the same format as before
           this.storageImages = data.images.map(image => ({
             url: image.URL || image.url,

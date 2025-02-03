@@ -17,7 +17,7 @@
         />
       </div>
       <div class="institution-images-grid">
-        <template v-for="i in 4" :key="i">
+        <template v-for="i in images.length - 1" :key="i">
           <div class="img-bg position-relative"
                @mouseenter="hoveredImageIndex = i + 1" 
                @mouseleave="hoveredImageIndex = null">
@@ -118,6 +118,7 @@ export default {
   flex: 1;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
   gap: 8px;
 }
 
