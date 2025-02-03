@@ -73,7 +73,8 @@
                   'affected-item': affectedIndex === index
                 }"
               >
-                <div class="d-flex align-center justify-end mb-2">
+                <div class="d-flex align-center justify-space-between mb-1">
+                  <span class="mr-2 text-caption">{{ index + 1 }} / {{ storageImages.length }}</span>
                   <div class="d-flex align-center">
                     <v-btn
                       icon="mdi-arrow-up"
@@ -488,18 +489,16 @@ export default {
       }
       
       this.deletingImage = image.url;
+      this.deletingImagePosition = image.position;
       try {
-        console.log('image', image);
 
         // Extract the actual file path from the URL
         const url = new URL(image.url);
         const fileName = decodeURIComponent(url.pathname.split('/').pop());
-        console.log('fileName', fileName);
 
         // Attempt to delete from storage
         const storage = getStorage();
         const imageRef = ref(storage, `${fileName}`);
-        console.log('imageRef', imageRef);
         await deleteObject(imageRef);
 
       } catch (error) {
@@ -512,8 +511,9 @@ export default {
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
             const data = docSnap.data();
-
-            const updatedImages = data.images.filter(img => img.url || img.URL !== this.deletingImage);
+            console.log('this.deletingImage', this.deletingImage);
+            console.log('this.deletingImagePosition', this.deletingImagePosition);
+            const updatedImages = data.images.filter(img => img.position !== this.deletingImagePosition);
             
             console.log('updatedImages', updatedImages);
             // Update positions of remaining images
