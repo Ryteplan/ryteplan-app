@@ -4,10 +4,10 @@
       <v-row class="d-flex justify-space-between mt-0">
         <v-col cols="12">
           <h1 class="text-h6">{{ institution["name"] }}</h1>
-          <div>
-            <span v-if="userStore.adminMode">{{ institution["uri"] }}</span>
+          <div v-if="userStore.adminMode">
+            <span>{{ institution["uri"] }}</span>
             <span class="mx-2">—</span>
-            <span v-if="userStore.adminMode">{{ institution["inunId"] }}</span>
+            <span>{{ institution["inunId"] }}</span>
           </div>
         </v-col>
       </v-row>
