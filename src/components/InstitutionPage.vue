@@ -2,13 +2,13 @@
   <v-container class="pt-0 px-3 px-lg-0">
     <div style="margin: 0 auto 64px; max-width: 1200px;">
       <v-row class="d-flex justify-space-between mt-0">
-        <v-col cols="12" class="d-flex">
-          <h1 class="text-h6">{{ institution["name"] }}
-            <span v-if="userStore.adminMode">
-              — {{ institution["inunId"] }}
-            </span>
-          </h1>
-          <span v-if="userStore.adminMode">{{ institution["uri"] }}</span>
+        <v-col cols="12">
+          <h1 class="text-h6">{{ institution["name"] }}</h1>
+          <div>
+            <span v-if="userStore.adminMode">{{ institution["uri"] }}</span>
+            <span class="mx-2">—</span>
+            <span v-if="userStore.adminMode">{{ institution["inunId"] }}</span>
+          </div>
         </v-col>
       </v-row>
       <v-btn
