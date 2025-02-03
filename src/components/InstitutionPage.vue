@@ -2,17 +2,16 @@
   <v-container class="pt-0 px-3 px-lg-0">
     <div style="margin: 0 auto 64px; max-width: 1200px;">
       <v-row class="d-flex justify-space-between mt-0">
-        <v-col cols="12" md="6">
+        <v-col cols="12" md="6" class="d-flex">
           <h1 class="text-h6">{{ institution["name"] }}
             <span v-if="userStore.adminMode">
               — {{ institution["inunId"] }}
             </span>
           </h1>
           <span v-if="userStore.adminMode">{{ institution["uri"] }}</span>
-        </v-col>
-        <v-col cols="12" md="6" class="d-md-flex align-center justify-end pt-0">
           <v-btn
-            class="d-none"
+            class="ml-8"
+            size="small"
             @click="showSaveToListDialog = true"
           >
             Add to list
@@ -188,41 +187,7 @@
             </ul>
           </div>
         </div>
-        <div v-if="imagesv2.length > 0">
-          <StorageImagesCollection :images="imagesv2" />
-        </div>
-        <div v-else-if="Object.keys(imageURLsFromDB).length > 0">
-          <div class="institution-images-container">
-            <div class="img-bg position-relative" 
-                 @mouseenter="hoveredImageIndex = 1" 
-                 @mouseleave="hoveredImageIndex = null">
-              <img class="institution-image" :src="imageURLsFromDB.image1" />
-              <v-btn
-                v-show="hoveredImageIndex === 1"
-                icon="mdi-information"
-                size="small"
-                class="image-info-btn"
-                @click="showImageCreditInfo(1)"
-              />
-            </div>
-            <div class="institution-images-grid">
-              <template v-for="i in 4" :key="i">
-                <div class="img-bg position-relative"
-                     @mouseenter="hoveredImageIndex = i + 1" 
-                     @mouseleave="hoveredImageIndex = null">
-                  <img class="institution-image" :src="imageURLsFromDB[`image${i+1}`]" />
-                  <v-btn
-                    v-show="hoveredImageIndex === i + 1"
-                    icon="mdi-information"
-                    size="small"
-                    class="image-info-btn"
-                    @click="showImageCreditInfo(i + 1)"
-                  />
-                </div>
-              </template>
-            </div>
-          </div>
-        </div>
+        <StorageImagesCollection :images="imagesv2" />
       </div>
       <div class="section-container three-by-three-stat-grid mt-8">
         <div class="stat-container">

@@ -3,7 +3,7 @@
     <v-row class="d-flex justify-space-between">
       <v-col cols="3">
         <v-btn to="/lists">
-        Back
+          Back
         </v-btn>
       </v-col>
       <v-col cols="4" class="d-flex justify-end align-center">
@@ -14,7 +14,7 @@
               v-bind="props"
               @click="onUpdateMenu"
             >
-            three dots
+              three dots
             </v-btn>
           </template>
           <v-list>
@@ -32,24 +32,20 @@
         </v-menu>
       </v-col>
     </v-row>
+
     <v-row class="mt-4">
-      <v-col cols="6">
-        <h2>{{ list.name }}</h2>
-        <v-list class="mt-4">
-          <v-list-item
-            v-for="(item, index) in institutions"
-            :to="`/institution/${item.slug}`"
-            :key="index"
-          >
-            <div class="d-flex">
-              <v-list-item-title>{{ item.institutionName }}</v-list-item-title>
-            </div>
-          </v-list-item>
-        </v-list>
-        <div class="mt-4">
-          <p>We'll want to customly sort this list too</p>
-          <p>Also add ability to remove a school from the list</p>
-        </div>
+      <v-col cols="12">
+        <v-data-table
+          :headers="filteredHeaders"
+          :items="institutions"
+          @click:row="navigateToInstitution" 
+          item-key="name"
+          class="elevation-1"
+          density="comfortable"
+          fixed-header 
+          return-object
+        >
+        </v-data-table>
       </v-col>
     </v-row>
   </v-container>
@@ -57,20 +53,25 @@
     v-model="showShareDialog" 
   />
 </template>
-<script>
 
+<script>
 import { dbFireStore } from "../firebase";
 import { getDoc, doc, getDocs, query, collection, where } from 'firebase/firestore'
 import ShareDialog from './ShareDialog'
-
+import { useTableStore } from '../stores/tableStore';
 
 export default {
-  beforeMount() {
+  setup() {
+    const tableStore = useTableStore();
+    if (tableStore.tableHeaders.length == 0) {
+      tableStore.loadTableHeaders();
+      tableStore.loadHeaderState();
+      tableStore.updateHeaders();
+    }
+    return { tableStore };
   },
   mounted() {    
     this.loadList();
-  },
-  beforeUnmount() {
   },
   data() {
     return {
@@ -93,9 +94,31 @@ export default {
     }
   },
   methods: {
+    navigateToInstitution(event, item) {
+      const institution = JSON.parse(JSON.stringify(item));
+      const targetRowKey = institution.item.name;
+
+      if (targetRowKey == "Load more") {
+        this.tableStore.loadMoreItems();
+      } else {
+        localStorage.setItem("lastClickedRow", targetRowKey);
+
+        const slug = JSON.parse(JSON.stringify(item.item.uri));
+
+        let route = this.$router.resolve({
+          name: 'institutionPage',
+          params: {
+            slug: slug,
+          }
+        });
+
+        // Always open in new tab
+        window.open(route.href, '_blank');
+      }
+    },
+
     async loadList() {
       try {
-        // Get list document
         const lists = collection(dbFireStore, 'lists');
         const idFromURL = this.$route.params.id;
         const q = query(lists, where("id", "==", idFromURL));
@@ -106,27 +129,22 @@ export default {
           return;
         }
 
-        // Get the first (and should be only) document
         const listDoc = querySnapshot.docs[0];
         this.list = listDoc.data();
 
-        // Check if institutions array exists
         if (!this.list?.institutions?.length) {
           console.log('No institutions in this list');
           return;
         }
 
-        // Clear existing institutions
         this.institutions = [];
 
-        // Fetch all institutions in parallel
         const institutionPromises = this.list.institutions.map(institutionID => 
-          getDoc(doc(dbFireStore, 'institutions_v11', institutionID))
-        );
+          getDoc(doc(dbFireStore, 'institutions_integrated', institutionID))
+        );      
 
         const institutionDocs = await Promise.all(institutionPromises);
-        
-        // Filter out any null results and add valid institutions to the array
+
         this.institutions = institutionDocs
           .filter(doc => doc.exists())
           .map(doc => doc.data());
@@ -144,11 +162,16 @@ export default {
       this.showShareDialog = true;
     },
   },
+  computed: {
+    filteredHeaders() {
+      
+      return this.tableStore.tableHeaders.filter(header => header.key !== "hidden" && header.key !== "id");
+    }
+  },
   components: {
     ShareDialog
   } 
 };
-
 </script>
 
 <style>

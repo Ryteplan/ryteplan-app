@@ -103,7 +103,6 @@ export default {
       onSnapshot(listsQuery,(snapshot)=>{
         this.userLists = snapshot.docs.map((doc) => doc.data());
       });
-
     },
     async createNewList() {
       const newDocRef = doc(collection(dbFireStore, "lists"));

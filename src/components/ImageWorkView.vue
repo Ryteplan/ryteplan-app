@@ -2,8 +2,7 @@
   <v-container class="pt-4">
     <div class="image-work">      
       <div class="mb-4">
-        <h1 class="mr-4">Image Work</h1>
-        
+        <h1 class="mr-4">Image Work</h1>        
         <div class="d-flex justify-space-between align-end">
             <div>
               <v-btn
@@ -43,61 +42,8 @@
         </div>
       </div>  
       <v-row>
-        <!-- Database Images Column -->
-        <v-col cols="6">
-          <v-card class="pa-4">
-            <h2 class="text-h6 mb-4">External URL Images</h2>
-            <div v-if="sortedImagesData">
-              <div class="d-flex justify-end mb-4">
-                <v-btn
-                  width="100%"
-                  color="primary"
-                  :loading="isProcessingAll"
-                  @click="transferAllImages"
-                  :disabled="!Object.keys(sortedImagesData).length"
-                >
-                  Transfer All Images
-                </v-btn>
-              </div>
-              <div v-for="(url, key) in sortedImagesData" :key="key" class="mb-4">
-                <a :href="url" target="_blank" class="image-link">
-                  <v-img
-                    :src="url"
-                    cover
-                    class="bg-grey-lighten-2 square-image"
-                  />
-                </a>
-                <div class="mt-2 text-caption">
-                  <div v-if="imageCredits[key]" v-html="imageCredits[key]"></div>
-                  <div v-else class="text-italic">No caption has been entered</div>
-                </div>
-                <div class="d-flex align-center justify-end mt-2">
-                  <v-btn
-                    size="small"
-                    color="primary"
-                    :loading="processingImage === key"
-                    @click="transferSingleImage(key, url, imageCredits[key])"
-                  >
-                    Transfer →
-                  </v-btn>
-                </div>
-                <v-divider thickness="1" opacity=".3" class="mt-8 "></v-divider>
-              </div>
-            </div>
-            <div v-else class="text-center py-4">
-              No database images found
-            </div>
-            <!-- Add results for external images -->
-            <v-card v-if="processingImage" class="mt-4 pa-4">
-              <div v-for="(result, index) in results" :key="index" class="mb-2">
-                {{ result }}
-              </div>
-            </v-card>
-          </v-card>
-        </v-col>
-
         <!-- Storage Images Column -->
-        <v-col cols="6">
+        <v-col cols="12">
           <v-card class="pa-4">
             <div class="d-flex justify-space-between align-center mb-4">
               <h2 class="text-h6">Self Hosted Images</h2>
@@ -117,7 +63,7 @@
                 @change="handleFileUpload"
               >
             </div>
-            <div v-if="storageImages.length">
+            <div v-if="storageImages.length" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
               <div 
                 v-for="(image, index) in sortedStorageImages" 
                 :key="image.url"
@@ -172,7 +118,7 @@
                   class="mt-4"
                   size="small"
                   color="error"
-                  :loading="deletingImage === image.name"
+                  :loading="deletingImage === image.url"
                   @click="deleteImage(image)"
                 >
                     Delete
@@ -309,12 +255,14 @@ export default {
         const imageRef = doc(dbFireStore, 'institution_images_v2', this.schoolId);
         const docSnap = await getDoc(imageRef);
         
+        
         if (docSnap.exists()) {
           const data = docSnap.data();
+          console.log('schoolId', this.schoolId)
+          console.log('data', data)
           // Convert the images array into the same format as before
-          this.storageImages = (data.images || []).map(image => ({
-            name: image.URL.split('/').pop(), // Extract filename from URL
-            url: image.URL,
+          this.storageImages = data.images.map(image => ({
+            url: image.URL || image.url,
             caption: image.caption,
             position: image.position
           }));
@@ -499,7 +447,7 @@ export default {
 
         // Create new image object
         const imageObject = {
-          URL: downloadURL,
+          url: downloadURL,
           caption: null,
           position: images.length
         };
@@ -537,40 +485,56 @@ export default {
     },
 
     async deleteImage(image) {
-      if (!confirm(`Are you sure you want to delete ${image.name}?`)) {
+      if (!confirm(`Are you sure you want to delete this image?`)) {
         return;
       }
-
-      this.deletingImage = image.name;
+      
+      this.deletingImage = image.url;
       try {
-        // Extract the actual file path from the URL
-        const fileName = image.name.split('?')[0]; // Remove query parameters
-        const decodedFileName = decodeURIComponent(fileName); // Handle URL encoding
-        console.log('decodedFileName', decodedFileName)
+        console.log('image', image);
 
-        // Delete from storage
+        // Extract the actual file path from the URL
+        const url = new URL(image.url);
+        const fileName = decodeURIComponent(url.pathname.split('/').pop());
+        console.log('fileName', fileName);
+
+        // Attempt to delete from storage
         const storage = getStorage();
-        const imageRef = ref(storage, `${decodedFileName}`);
-        console.log('imageRef', imageRef)
+        const imageRef = ref(storage, `${fileName}`);
+        console.log('imageRef', imageRef);
         await deleteObject(imageRef);
 
-        // Update Firestore document
-        const docRef = doc(dbFireStore, 'institution_images_v2', this.schoolId);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          const updatedImages = data.images.filter(img => img.URL !== image.url);
-          await setDoc(docRef, { images: updatedImages }, { merge: true });
-        }
-
-        // Update local state
-        this.results.push(`✅ Successfully deleted ${image.name}`);
-        await this.loadStorageImages();
       } catch (error) {
-        console.error('Error deleting image:', error);
-        this.results.push(`❌ Failed to delete ${image.name}: ${error.message}`);
+        console.error('Error deleting image from storage:', error);
+        this.results.push(`⚠️ Failed to delete from storage: ${error.message}`);
       } finally {
-        this.deletingImage = null;
+        try {
+          // Update Firestore document regardless of storage deletion outcome
+          const docRef = doc(dbFireStore, 'institution_images_v2', this.schoolId);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+
+            const updatedImages = data.images.filter(img => img.url || img.URL !== this.deletingImage);
+            
+            console.log('updatedImages', updatedImages);
+            // Update positions of remaining images
+            updatedImages.forEach((img, index) => {
+              img.position = index;
+            });
+
+            await setDoc(docRef, { images: updatedImages }, { merge: true });
+          }
+
+          // Update local state
+          this.results.push(`✅ Successfully deleted image`);
+          await this.loadStorageImages();
+        } catch (firestoreError) {
+          console.error('Error updating Firestore document:', firestoreError);
+          this.results.push(`❌ Failed to update Firestore: ${firestoreError.message}`);
+        } finally {
+          this.deletingImage = null;
+        }
       }
     },
 
@@ -650,9 +614,8 @@ export default {
 
     async changePosition(index, direction) {
       const images = [...this.storageImages];
-      const currentImage = images[index];
       let swapIndex;
-      
+
       if (direction === 'up' && index > 0) {
         swapIndex = index - 1;
       } else if (direction === 'down' && index < images.length - 1) {
@@ -660,6 +623,13 @@ export default {
       } else {
         return;
       }
+
+      // Swap the images in the array
+      [images[index], images[swapIndex]] = [images[swapIndex], images[index]];
+
+      // Update positions
+      images[index].position = index;
+      images[swapIndex].position = swapIndex;
 
       // Set animation indices
       this.movedIndex = index;
@@ -671,32 +641,11 @@ export default {
         this.affectedIndex = null;
       }, 1000);
 
-      // Swap positions
-      const tempPosition = currentImage.position;
-      currentImage.position = images[swapIndex].position;
-      images[swapIndex].position = tempPosition;
-
       try {
-        // Map and validate the data before saving
-        const validatedImages = images.map(img => {
-          if (!img.url) {
-            console.error('Missing URL for image:', img);
-            throw new Error('Image URL is required');
-          }
-          
-          return {
-            URL: img.url,
-            caption: img.caption || null,
-            position: typeof img.position === 'number' ? img.position : 0
-          };
-        });
-
         // Update Firestore with validated data
         const docRef = doc(dbFireStore, 'institution_images_v2', this.schoolId);
-        await setDoc(docRef, { 
-          images: validatedImages
-        }, { merge: true });
-        
+        await setDoc(docRef, { images }, { merge: true });
+
         // Reload images to ensure proper sorting
         await this.loadStorageImages();
       } catch (error) {

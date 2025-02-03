@@ -63,7 +63,6 @@
               </div>
             </div>
           </div>
-
           <v-data-table 
             v-show="isTableHeightCalculated"
             id="dataTable" 

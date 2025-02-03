@@ -6,7 +6,7 @@
     <v-card>
       <div class="pa-8">
         <div
-          v-if="!showCreateNewListInput" 
+          v-if="!showCreateNewListInput && !listCreated" 
         >        
         <h2 class="mb-6 text-center">Add to list</h2>
         <v-list>
@@ -52,6 +52,25 @@
             Create New List
           </v-btn>
         </div>
+        <div v-if="listCreated">
+          <h2 class="text-center">List Created Successfully!</h2>
+          <v-btn
+            block
+            class="mt-5"
+            color="primary" 
+            @click="navigateToList"
+          >
+            Go to List
+          </v-btn>
+          <v-btn
+            block
+            class="mt-2"
+            color="secondary" 
+            @click="show = false"
+          >
+            Close
+          </v-btn>
+        </div>
       </div>
       <v-card-actions>
         <v-btn 
@@ -68,8 +87,10 @@
 
 <script>
 import { dbFireStore } from "../firebase";
-import { collection, getDocs, doc, updateDoc, arrayUnion, } from 'firebase/firestore'
+import { query, collection, doc, orderBy, onSnapshot, where, updateDoc, arrayUnion, getDoc, setDoc } from 'firebase/firestore'
 import { toRaw } from 'vue';
+import { getAuth } from 'firebase/auth';
+
 
 export default {
   name: "SaveToListDialog",
@@ -79,7 +100,12 @@ export default {
      selectedRows: Object
   },
   beforeMount() {
-    this.loadUserLists();
+    getAuth().onAuthStateChanged((user) =>{
+      if(user) {
+        this.userID = user.uid;
+        this.loadUserLists();
+      } 
+    });
   },
   computed: {
     show: {
@@ -98,26 +124,47 @@ export default {
     return {
       newListName: "",
       userLists: {},
-      showCreateNewListInput: false
+      showCreateNewListInput: false,
+      listCreated: false,
+      createdListId: null
     }
   },
   methods: {
     async loadUserLists() {
-      const lists = collection(dbFireStore, 'lists');
-      const docSnap = await getDocs(lists);
-      this.userLists = docSnap.docs.map(doc => doc.data());
+      const listsQuery = query(
+        collection(dbFireStore,"lists"),
+        orderBy('created', 'desc'), 
+        where("createdBy", "==", this.userID)
+      );
+      onSnapshot(listsQuery,(snapshot)=>{
+        this.userLists = snapshot.docs.map((doc) => doc.data());
+      });
     },
     async addInstitutionToList(listId) {
-      
       let listIDToSaveInstitutionTo;
 
       if (listId == null) {
-        listIDToSaveInstitutionTo = this.createNewListName;
+        listIDToSaveInstitutionTo = this.newListName;
       } else {
-        listIDToSaveInstitutionTo = listId
+        listIDToSaveInstitutionTo = listId;
       }
 
       const listRef = doc(dbFireStore, "lists", listIDToSaveInstitutionTo);
+
+      // Check if the document exists
+      const docSnap = await getDoc(listRef);
+      if (!docSnap.exists()) {
+        // Create the document if it doesn't exist
+        await setDoc(listRef, {
+          name: this.newListName,
+          createdBy: this.userID,
+          created: new Date(),
+          institutions: []
+        });
+        this.listCreated = true;
+        this.createdListId = listIDToSaveInstitutionTo;
+        this.showCreateNewListInput = false;
+      }
 
       if (this.selectedRows) {
         for (const institution of toRaw(this.selectedRows)) {
@@ -131,8 +178,8 @@ export default {
         });
       }
     },
-    saveToList() {
-      console.log()
+    navigateToList() {
+      this.$router.push({ name: 'SingularListView', params: { id: this.createdListId } });
     }
   }
 }

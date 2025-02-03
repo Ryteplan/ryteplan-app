@@ -6,7 +6,7 @@
            @mouseleave="hoveredImageIndex = null">
         <img 
           class="institution-image" 
-          :src="getImageByPosition(1)?.URL" 
+          :src="getImageByPosition(1)?.url || getImageByPosition(1)?.URL" 
         />
         <v-btn
           v-show="hoveredImageIndex === 1"
@@ -23,7 +23,7 @@
                @mouseleave="hoveredImageIndex = null">
             <img 
               class="institution-image" 
-              :src="getImageByPosition(i + 1)?.URL" 
+              :src="getImageByPosition(i + 1)?.url || getImageByPosition(i + 1)?.URL" 
             />
             <v-btn
               v-show="hoveredImageIndex === i + 1"
