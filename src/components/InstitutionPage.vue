@@ -2,22 +2,23 @@
   <v-container class="pt-0 px-3 px-lg-0">
     <div style="margin: 0 auto 64px; max-width: 1200px;">
       <v-row class="d-flex justify-space-between mt-0">
-        <v-col cols="12" md="6" class="d-flex">
+        <v-col cols="12" class="d-flex">
           <h1 class="text-h6">{{ institution["name"] }}
             <span v-if="userStore.adminMode">
               — {{ institution["inunId"] }}
             </span>
           </h1>
           <span v-if="userStore.adminMode">{{ institution["uri"] }}</span>
-          <v-btn
-            class="ml-8"
-            size="small"
-            @click="showSaveToListDialog = true"
-          >
-            Add to list
-          </v-btn>
         </v-col>
       </v-row>
+      <v-btn
+          v-if="isLoggedIn"
+          class="my-4"
+          size="small"
+          @click="showSaveToListDialog = true"
+        >
+          Add to list
+        </v-btn>
       <v-row class="mx-0 mt-0 mb-1" v-if="userStore.adminMode">
         <v-col cols="6" lg="3" class="pa-0">
           <v-switch 
