@@ -17,6 +17,12 @@
           Integrate Data
       </v-btn>
 
+      <v-btn
+        @click="updateHiddenFieldInSports"
+        color="primary"
+      >
+        Convert the hidden field in sports to include the sport name
+      </v-btn>
 
       <v-btn
         class="d-none"
@@ -121,6 +127,93 @@ export default {
       }
       
       console.log('Finished updating aliases for all institutions');    
+    },
+    async updateHiddenFieldInSports() {
+      // update manual_institution_data
+      const manualDataQuery = query(collection(dbFireStore, "manual_institution_data"), limit());    
+      const manualSnapshots = await getDocs(manualDataQuery);
+
+      for (const docSnapshot of manualSnapshots.docs) {
+        const docData = docSnapshot.data();
+        const id = docSnapshot.id;
+        const sports = docData.sports;
+
+        if (sports && Array.isArray(sports)) {
+          const updatedSports = sports.map(sport => {
+            // Access the hidden field directly using the sport name
+            const originalHiddenFieldName = `sport_${sport.sport_name}_hidden`;
+            if (sport[originalHiddenFieldName] === true || sport[originalHiddenFieldName] === false) {
+              const originalFieldNameValue = sport[originalHiddenFieldName];
+              const { [originalHiddenFieldName]: removed, ...sportWithNewHiddenField } = sport;  
+              console.log("removed", removed);
+              const fieldNameToInsert = `${sport.sport_name}_hidden`.toLowerCase().replace(/ /g, '_');
+              const fieldValueToInsert = originalFieldNameValue;
+              
+              sportWithNewHiddenField[fieldNameToInsert] = fieldValueToInsert;
+
+              return {
+                ...sportWithNewHiddenField,
+              };
+            }
+            return sport;
+          });
+
+          try {
+            await setDoc(
+              doc(dbFireStore, "manual_institution_data", id),
+              { sports: updatedSports },
+              { merge: true }
+            );
+            console.log(`Successfully updated the manual_institution_data sports for ${id}`);
+          } catch (error) {
+            console.error(`Error updating the manual_institution_data sports for ${id}:`, error);
+          }
+        }        
+      }
+
+      const integratedDataQuery = query(collection(dbFireStore, "institutions_integrated"), limit());    
+      const integratedSnapshots = await getDocs(integratedDataQuery);
+
+      for (const docSnapshot of integratedSnapshots.docs) {
+        const docData = docSnapshot.data();
+        const id = docSnapshot.id;
+        const sports = docData.sports;
+
+        if (sports && Array.isArray(sports)) {
+          const updatedSports = sports.map(sport => {
+            // Access the hidden field directly using the sport name
+            const originalHiddenFieldName = `sport_${sport.sport_name}_hidden`;
+            if (sport[originalHiddenFieldName] === true || sport[originalHiddenFieldName] === false) {
+              const originalFieldNameValue = sport[originalHiddenFieldName];
+              console.log(`Processing ${sport.sport_name}'s hidden field on ${id}`) ;
+              const { [originalHiddenFieldName]: removed, ...sportWithNewHiddenField } = sport;  
+              console.log("removed", removed);
+              const fieldNameToInsert = `${sport.sport_name}_hidden`.toLowerCase().replace(/ /g, '_');
+              const fieldValueToInsert = originalFieldNameValue;
+              
+              sportWithNewHiddenField[fieldNameToInsert] = fieldValueToInsert;
+
+              return {
+                ...sportWithNewHiddenField,
+              };
+            }
+            return sport;
+          });
+
+          try {
+            await setDoc(
+              doc(dbFireStore, "institutions_integrated", id),
+              { sports: updatedSports },
+              { merge: true }
+            );
+            console.log(`Successfully updated the institutions_integrated sports for ${id}`);
+          } catch (error) {
+            console.error(`Error updating the institutions_integrated sports for ${id}:`, error);
+          }
+        }        
+      }
+      
+      console.log('Finished processing all documents');
     },
     async addSportsFromPetersonsToIntegratedData() {
       // Get all documents from institutions_integrated

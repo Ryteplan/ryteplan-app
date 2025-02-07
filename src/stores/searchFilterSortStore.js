@@ -156,10 +156,12 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
 
       let sportFilter = '';
       if (state.filters.sportName && typeof state.filters.sportName === 'string') {
-        const sport = state.filters.sportName;
+        const sport = state.filters.sportName.toLowerCase();
         const divisionFieldName = `${sport.toLowerCase().replace(/ /g, '_')}_divisions`;
-        
-        let conditions = [`sports.sport_name:=${sport}`, 'sports.hidden:!=true'];
+        const sportNameForHidden = sport.toLowerCase().replace(/ /g, '_');
+        const sportHidden = `${sportNameForHidden}_hidden:!=true`;
+
+        let conditions = [`sports.sport_name:=${sport}`, `sports.${sportHidden}`];
         
         if (state.filters.division === 'X') {  // 'X' is the value for intramural
           conditions.push(`(sports.${divisionFieldName}.INTM_MEN:='X' || sports.${divisionFieldName}.INTM_WMN:='X')`);
