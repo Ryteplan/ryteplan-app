@@ -108,18 +108,23 @@
         v-for="sport in sortedSports" 
         :key="sport.sport_name"
         class="mb-4 pa-4 sport-container"
-        :class="{ 'hidden-sport': sport.hidden }"
+        :class="{ 'hidden-sport': isHidden(sport) }"
       >
         <div class="d-flex justify-space-between align-center">
-          <h3>{{ sport.sport_name }}</h3>
+          <h3>
+            {{ sport.sport_name }}
+            <!-- <span>
+              Hidden: {{ isHidden(sport) }}
+            </span> -->
+          </h3>          
           <div>
             <v-btn
-              :color="sport.hidden ? 'success' : 'error'"
+              :color="isHidden(sport) ? 'success' : 'error'"
               variant="text"
               class="me-2"
               @click="toggleSportVisibility(sport.sport_name)"
             >
-              {{ sport.hidden ? 'Show Sport' : 'Hide Sport' }}
+              {{ isHidden(sport) ? 'Show Sport' : 'Hide Sport' }}
             </v-btn>
             <v-btn
               color="error"
@@ -228,6 +233,9 @@ export default {
     this.getSports();
   },
   methods: {
+    isHidden(sport) {
+      return sport[`${sport.sport_name}_hidden`];
+    },
     async getSports() {
       const docRef = doc(dbFireStore, 'institutions_integrated', this.institutionSlug);
       const docSnap = await getDoc(docRef);
@@ -239,18 +247,6 @@ export default {
         if (data.sports) {
           this.sports = data.sports;
         }
-      }
-    },
-    async removeSport(sportName) {
-      if (confirm(`Are you sure you want to hide ${sportName}?`)) {
-        const updatedSports = this.sports.map(s => {
-          if (s.sport_name === sportName) {
-            return { ...s, hidden: true };
-          }
-          return s;
-        });
-        await this.saveSportsToFirestore(updatedSports);
-        this.sports = updatedSports;
       }
     },
     async updateDivision(sport, divisionKey, newValue) {
@@ -275,14 +271,21 @@ export default {
       }
     },
     async toggleSportVisibility(sportName) {
-      const message = this.sports.find(s => s.sport_name === sportName)?.hidden
+      const sport = this.sports.find(s => s.sport_name === sportName);
+      const hiddenFieldName = `${sportName}_hidden`;
+      const currentHiddenState = sport[hiddenFieldName];
+      
+      const message = !currentHiddenState
         ? `Are you sure you want to show ${sportName}?`
         : `Are you sure you want to hide ${sportName}?`;
 
       if (confirm(message)) {
         const updatedSports = this.sports.map(s => {
           if (s.sport_name === sportName) {
-            return { ...s, hidden: !s.hidden };
+            return { 
+              ...s, 
+              [hiddenFieldName]: !currentHiddenState 
+            };
           }
           return s;
         });
