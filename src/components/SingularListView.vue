@@ -32,7 +32,6 @@
         </v-menu>
       </v-col>
     </v-row>
-
     <v-row class="mt-4">
       <v-col cols="12">
         <v-data-table
@@ -49,6 +48,43 @@
       </v-col>
     </v-row>
   </v-container>
+  <v-dialog
+      v-model="showColumnsDialog"
+      width="100%"
+      max-width="600px"
+      scrollable
+      height="80vh"
+      class="ma-4"
+    >
+      <v-card>
+        <v-card-title class="d-flex justify-space-between align-center">
+          <span>Edit Columns</span>
+          <v-btn icon="mdi-close" variant="text" @click="showColumnsDialog = false"></v-btn>
+        </v-card-title>
+        <v-card-text>
+          <v-list>
+            <v-list-item
+              v-for="header in tableStore.filteredHeadersDataForColumnsEditor()"
+              :key="header.key"
+            >
+              <v-list-item-title>
+                <v-checkbox
+                  v-model="header.show"
+                  :label="header.title"
+                  hide-details
+                  density="comfortable"
+                  @change="onHeaderChange()"
+                ></v-checkbox>
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn color="primary" @click="showColumnsDialog = false">Done</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
   <ShareDialog 
     v-model="showShareDialog" 
   />
@@ -59,6 +95,7 @@ import { dbFireStore } from "../firebase";
 import { getDoc, doc, getDocs, query, collection, where } from 'firebase/firestore'
 import ShareDialog from './ShareDialog'
 import { useTableStore } from '../stores/tableStore';
+import { useUserStore } from '../stores/userStore';
 
 export default {
   setup() {
@@ -68,7 +105,11 @@ export default {
       tableStore.loadHeaderState();
       tableStore.updateHeaders();
     }
-    return { tableStore };
+
+    let userStore = useUserStore();
+    userStore.getAdminMode();
+
+    return { tableStore, userStore };
   },
   mounted() {    
     this.loadList();
@@ -79,7 +120,13 @@ export default {
       list: {},
       institutions: [],
       showShareDialog: false,
+      showColumnsDialog: false,
       selectedDropDown: [
+        { 
+          title: 'Edit Columns', 
+          icon: 'mdi-pencil',
+          action: this.editColumnsClicked
+        },
         { 
           title: 'Compare', 
           icon: 'mdi-ab-testing',
@@ -94,6 +141,17 @@ export default {
     }
   },
   methods: {
+    onHeaderChange() {
+      this.tableStore.saveHeaderState();
+      this.tableStore.updateHeaders();
+      
+      // Force table refresh by temporarily clearing and resetting the data
+      const tempData = [...this.tableStore.tableData];
+      this.tableStore.tableData = [];
+      this.$nextTick(() => {
+        this.tableStore.tableData = tempData;
+      });
+    },
     navigateToInstitution(event, item) {
       const institution = JSON.parse(JSON.stringify(item));
       const targetRowKey = institution.item.name;
@@ -161,10 +219,12 @@ export default {
     shareClicked() {
       this.showShareDialog = true;
     },
+    editColumnsClicked() {
+      this.showColumnsDialog = true;
+    },
   },
   computed: {
-    filteredHeaders() {
-      
+    filteredHeaders() {      
       return this.tableStore.tableHeaders.filter(header => header.key !== "hidden" && header.key !== "id");
     }
   },
