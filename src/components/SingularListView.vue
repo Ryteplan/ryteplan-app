@@ -290,7 +290,7 @@ export default {
   },
   computed: {
     filteredHeaders() {      
-      return this.tableStore.tableHeaders.filter(header => header.key !== "hidden" && header.key !== "id");
+      return this.tableStore.tableHeaders.filter(header => header.key !== "hidden" && header.key !== "id" && header.show !== false);
     }
   },
   components: {

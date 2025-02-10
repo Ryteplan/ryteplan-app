@@ -2,7 +2,6 @@
   <v-container class="browse-institution-table-container pt-4">
     <v-container class="pa-0">
       <v-row v-if="tableStore.loading === false && isTableHeightCalculated">
-        <!-- Left Side Filters - Only show on large screens -->
         <v-col
           v-show="showFilters && $vuetify.display.lgAndUp"
           cols="12"
@@ -15,7 +14,6 @@
           />
         </v-col>
 
-        <!-- Right Side Table -->
         <v-col
           class="pt-0"
           :cols="12"
