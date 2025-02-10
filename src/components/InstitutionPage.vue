@@ -1487,27 +1487,27 @@ export default {
   computed: {
     menIntercollegiateSports() {
       return this.sports
-        .filter(sport => !sport.hidden && this.getIntercollegiateDivision(sport, 'men'))
+        .filter(sport => !sport[`${sport.sport_name}_hidden`] && this.getIntercollegiateDivision(sport, 'men'))
         .sort((a, b) => a.sport_name.localeCompare(b.sport_name));
     },
     womenIntercollegiateSports() {
       return this.sports
-        .filter(sport => !sport.hidden && this.getIntercollegiateDivision(sport, 'women'))
+        .filter(sport => !sport[`${sport.sport_name}_hidden`] && this.getIntercollegiateDivision(sport, 'women'))
         .sort((a, b) => a.sport_name.localeCompare(b.sport_name));
     },
     menIntramuralSports() {
       return this.sports
-        .filter(sport => !sport.hidden && this.getIntramuralDivision(sport, 'men'))
+        .filter(sport => !sport[`${sport.sport_name}_hidden`] && this.getIntramuralDivision(sport, 'men'))
         .sort((a, b) => a.sport_name.localeCompare(b.sport_name));
     },
     womenIntramuralSports() {
       return this.sports
-        .filter(sport => !sport.hidden && this.getIntramuralDivision(sport, 'women'))
+        .filter(sport => !sport[`${sport.sport_name}_hidden`] && this.getIntramuralDivision(sport, 'women'))
         .sort((a, b) => a.sport_name.localeCompare(b.sport_name));
     },
     hasAnyIntramural() {
       return this.sports.some(sport => 
-        !sport.hidden && (
+        !sport[`${sport.sport_name}_hidden`] && (
           this.getIntramuralDivision(sport, 'men') || 
           this.getIntramuralDivision(sport, 'women')
         )
