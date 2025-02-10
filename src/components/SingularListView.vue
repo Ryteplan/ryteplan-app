@@ -136,6 +136,11 @@ export default {
           title: 'Share',
           icon: 'mdi-account-plus',
           action: this.shareClicked
+        },
+        {
+          title: 'Export to CSV',
+          icon: 'mdi-file-download',
+          action: this.exportToCSV
         }
       ],
     }
@@ -221,6 +226,66 @@ export default {
     },
     editColumnsClicked() {
       this.showColumnsDialog = true;
+    },
+    exportToCSV() {
+      // Get visible headers from the table store
+      const headers = this.filteredHeaders;
+      console.log(headers);
+
+      // Create CSV header row
+      const headerRow = headers.map(header => {
+        // Escape quotes and wrap in quotes to handle commas in titles
+        const escapedTitle = header.title.replace(/"/g, '""');
+        return `"${escapedTitle}"`;
+      }).join(',');
+      
+      // Create CSV data rows
+      const dataRows = this.institutions.map(institution => {
+        return headers
+          .map(header => {
+            const value = institution[header.key];
+            
+            // Handle different value types
+            if (value === null || value === undefined) {
+              return '""';
+            }
+            
+            if (typeof value === 'boolean') {
+              return value ? '"Yes"' : '"No"';
+            }
+            
+            if (typeof value === 'number') {
+              return `"${value}"`;
+            }
+            
+            // Handle strings - escape quotes and wrap in quotes
+            const escapedValue = String(value).replace(/"/g, '""');
+            return `"${escapedValue}"`;
+          })
+          .join(',');
+      });
+      
+      // Combine headers and data
+      const csvContent = [headerRow, ...dataRows].join('\n');
+      
+      // Create blob and download link
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      
+      // Create download URL
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      
+      // Use institution name in filename if available
+      const timestamp = new Date().toISOString().split('T')[0];
+      const filename = `institution_list_${timestamp}.csv`;
+      link.setAttribute('download', filename);
+      
+      // Trigger download
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
     },
   },
   computed: {
