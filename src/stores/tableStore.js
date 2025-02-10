@@ -209,6 +209,7 @@ export const useTableStore = defineStore('table', {
           { title: 'Early Action Deadline', key: 'earlyActionDeadline', minWidth: "140px", show: false, sortable: false },
           { title: 'Class sections 100+', key: 'classSec7', minWidth: "140px", show: false, sortable: false },          
           { title: 'Priority Application Deadline', key: 'fallFreshPrio', minWidth: "140px", show: false, sortable: false },
+          { title: 'Admission Video', key: 'adVideo', minWidth: "140px", show: false, sortable: false },
           { title: 'Admission Factors',
             align: "center",
             key: 'admissionFactors',
