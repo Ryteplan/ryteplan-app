@@ -96,6 +96,7 @@ import { getDoc, doc, getDocs, query, collection, where } from 'firebase/firesto
 import ShareDialog from './ShareDialog'
 import { useTableStore } from '../stores/tableStore';
 import { useUserStore } from '../stores/userStore';
+import { jsPDF } from 'jspdf';
 
 export default {
   setup() {
@@ -141,7 +142,12 @@ export default {
           title: 'Export to CSV',
           icon: 'mdi-file-download',
           action: this.exportToCSV
-        }
+        },
+        // {
+        //   title: 'Export to PDF',
+        //   icon: 'mdi-file-download',
+        //   action: this.exportToPDF
+        // }
       ],
     }
   },
@@ -226,6 +232,12 @@ export default {
     },
     editColumnsClicked() {
       this.showColumnsDialog = true;
+    },
+    exportToPDF() {
+      const doc = new jsPDF();
+
+      doc.text("Hello world!", 10, 10);
+      doc.save("a4.pdf");
     },
     exportToCSV() {
       // Get visible headers from the table store
