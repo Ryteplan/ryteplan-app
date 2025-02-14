@@ -156,9 +156,10 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
 
       let sportFilter = '';
       if (state.filters.sportName && typeof state.filters.sportName === 'string') {
-        const sport = state.filters.sportName.toLowerCase();
-        const divisionFieldName = `${sport.toLowerCase().replace(/ /g, '_')}_divisions`;
-        const sportNameForHidden = sport.toLowerCase().replace(/ /g, '_');
+        const sport = state.filters.sportName.toLowerCase().replace(/\((.*?)\)/, '$1').trim();
+        const divisionFieldName = `${sport.toLowerCase().replace(/ /g, '_').replace(/\((.*?)\)/, '$1').trim()}_divisions`;
+        const sportNameForHidden = sport.toLowerCase().replace(/ /g, '_').replace(/\((.*?)\)/, '$1').trim();
+        //
         const sportHidden = `${sportNameForHidden}_hidden:!=true`;
 
         let conditions = [`sports.sport_name:=${sport}`, `sports.${sportHidden}`];
@@ -203,6 +204,8 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
         hbcuFilter
         ;
 
+      console.log("filterByString", filterByString);
+      
       return filterByString;
     },
 

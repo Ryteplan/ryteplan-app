@@ -234,7 +234,8 @@ export default {
   },
   methods: {
     isHidden(sport) {
-      return sport[`${sport.sport_name}_hidden`];
+      const hiddenFieldName = `${sport.sport_name.toLowerCase().replace(/ /g, '_').replace(/\((.*?)\)/, '$1').trim()}_hidden`;
+      return sport[hiddenFieldName];
     },
     async getSports() {
       const docRef = doc(dbFireStore, 'institutions_integrated', this.institutionSlug);
@@ -272,7 +273,7 @@ export default {
     },
     async toggleSportVisibility(sportName) {
       const sport = this.sports.find(s => s.sport_name === sportName);
-      const hiddenFieldName = `${sportName}_hidden`;
+      const hiddenFieldName = `${sportName.toLowerCase().replace(/ /g, '_').replace(/\((.*?)\)/, '$1').trim()}_hidden`;
       const currentHiddenState = sport[hiddenFieldName];
       
       const message = !currentHiddenState

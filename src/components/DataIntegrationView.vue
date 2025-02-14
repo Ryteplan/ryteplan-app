@@ -10,10 +10,18 @@
       </v-btn>
 
       <v-btn
+        class="d-none"
         @click="doDataIntegration"
         color="primary"
       >
           Integrate Data
+      </v-btn>
+
+      <v-btn
+        @click="fixSportsWithParenthesesFields"
+        color="primary"
+      >
+        Fix sports with parentheses fields
       </v-btn>
 
       <v-btn
@@ -90,6 +98,125 @@ export default {
     }
   },
   methods: {
+    async fixSportsWithParenthesesFields() {
+      // Get all documents from manual_institution_data
+      const manualDataQuery = query(collection(dbFireStore, "manual_institution_data"));
+      const manualSnapshots = await getDocs(manualDataQuery);
+      
+      for (const docSnapshot of manualSnapshots.docs) {
+        const docData = docSnapshot.data();
+        const id = docSnapshot.id;
+        const sports = docData.sports;
+
+        if (sports && Array.isArray(sports)) {
+          console.log("id", id);
+          const updatedSports = sports.map(sport => {
+
+            if (sport.sport_name?.includes('(')) {
+              console.log("original sport", sport);
+              const originalHiddenFieldName = `${sport.sport_name}_hidden`;              
+              const originalHiddenFieldValue = sport[originalHiddenFieldName];
+
+              const originalDivisionFieldName = `${sport.sport_name.toLowerCase().replace(/ /g, '_')}_divisions`;
+              const originalDivisionFieldValue = sport[originalDivisionFieldName];
+
+              const newSportName = sport.sport_name.replace(/\((.*?)\)/, '$1').trim();
+
+              const hiddenFieldNameToInsert = `${newSportName}_hidden`.toLowerCase().replace(/ /g, '_');
+              const divisionFieldNameToInsert = `${newSportName}_divisions`.toLowerCase().replace(/ /g, '_');
+
+              const sportWithRenamedStuff = {
+                sport_name: newSportName,
+                [divisionFieldNameToInsert]: originalDivisionFieldValue
+              };
+
+              if (originalHiddenFieldValue) {
+                sportWithRenamedStuff[hiddenFieldNameToInsert] = originalHiddenFieldValue;
+              }
+
+              console.log("sportWithRenamedStuff", sportWithRenamedStuff);
+              
+              return {
+                ...sportWithRenamedStuff,
+              };
+          }
+            return sport;
+          });
+        
+          console.log(updatedSports);
+
+          try {
+            await setDoc(
+              doc(dbFireStore, "manual_institution_data", id),
+              { sports: updatedSports },
+              { merge: true }
+            );
+            console.log(`Successfully updated the manual_institution_data sports for ${id}`);
+          } catch (error) {
+            console.error(`Error updating the manual_institution_data sports for ${id}:`, error);
+          }
+        }        
+      }
+
+      const integratedDataQuery = query(collection(dbFireStore, "institutions_integrated"));
+      const integratedSnapshots = await getDocs(integratedDataQuery);
+      
+      for (const docSnapshot of integratedSnapshots.docs) {
+        const docData = docSnapshot.data();
+        const id = docSnapshot.id;
+        const sports = docData.sports;
+
+        if (sports && Array.isArray(sports)) {
+          console.log("id", id);
+          const updatedSports = sports.map(sport => {
+
+            if (sport.sport_name?.includes('(')) {
+              console.log("original sport", sport);
+              const originalHiddenFieldName = `${sport.sport_name}_hidden`;              
+              const originalHiddenFieldValue = sport[originalHiddenFieldName];
+
+              const originalDivisionFieldName = `${sport.sport_name.toLowerCase().replace(/ /g, '_')}_divisions`;
+              const originalDivisionFieldValue = sport[originalDivisionFieldName];
+
+              const newSportName = sport.sport_name.replace(/\((.*?)\)/, '$1').trim();
+
+              const hiddenFieldNameToInsert = `${newSportName}_hidden`.toLowerCase().replace(/ /g, '_');
+              const divisionFieldNameToInsert = `${newSportName}_divisions`.toLowerCase().replace(/ /g, '_');
+
+              const sportWithRenamedStuff = {
+                sport_name: newSportName,
+                [divisionFieldNameToInsert]: originalDivisionFieldValue
+              };
+
+              if (originalHiddenFieldValue) {
+                sportWithRenamedStuff[hiddenFieldNameToInsert] = originalHiddenFieldValue;
+              }
+
+              console.log("sportWithRenamedStuff", sportWithRenamedStuff);
+              
+              return {
+                ...sportWithRenamedStuff,
+              };
+          }
+            return sport;
+          });
+        
+          console.log(updatedSports);
+
+          try {
+            await setDoc(
+              doc(dbFireStore, "institutions_integrated", id),
+              { sports: updatedSports },
+              { merge: true }
+            );
+            console.log(`Successfully updated the manual_institution_data sports for ${id}`);
+          } catch (error) {
+            console.error(`Error updating the manual_institution_data sports for ${id}:`, error);
+          }
+        }        
+      }
+
+    },
     async addAliasesToIntegratedData() {
       // Get all documents from aliases collection
       const aliasesQuery = query(collection(dbFireStore, "aliases"));
