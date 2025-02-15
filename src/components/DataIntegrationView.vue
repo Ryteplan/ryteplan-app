@@ -18,6 +18,14 @@
       </v-btn>
 
       <v-btn
+        @click="fixSportsWithEmptyGenderFields"
+        color="primary"
+      >
+        Fix sports with empty gender fields
+      </v-btn>
+
+      <v-btn
+        class="d-none"
         @click="fixSportsWithParenthesesFields"
         color="primary"
       >
@@ -98,6 +106,50 @@ export default {
     }
   },
   methods: {
+    async fixSportsWithEmptyGenderFields() {
+      const manualDataQuery = query(collection(dbFireStore, "manual_institution_data"), limit(2));
+      const manualSnapshots = await getDocs(manualDataQuery);
+      
+      for (const docSnapshot of manualSnapshots.docs) {
+        const docData = docSnapshot.data();
+        const id = docSnapshot.id;
+        const sports = docData.sports;
+
+        if (sports && Array.isArray(sports)) {
+          console.log("id", id);
+          const updatedSports = sports.map(sport => {
+            const divisionFieldName = `${sport.sport_name.toLowerCase().replace(/ /g, '_')}_divisions`;
+            let divisionObjectFieldValue = sport[divisionFieldName]
+            console.log(divisionObjectFieldValue);
+            if (divisionObjectFieldValue) {
+              divisionObjectFieldValue = divisionObjectFieldValue.map(divisionFieldValue => {
+                if (divisionFieldValue === "") {
+                  divisionFieldValue = '—'
+                }
+                return divisionFieldValue;
+              });
+              console.log(divisionObjectFieldValue);
+            }
+            return {
+              ...sport,
+              [divisionFieldName]: divisionObjectFieldValue
+            };
+          });
+          console.log(updatedSports);
+        }
+        
+        // try {
+        //   await setDoc(
+        //     doc(dbFireStore, "manual_institution_data", id),
+        //     { sports: updatedSports },
+        //     { merge: true }
+        //   );
+        //   console.log(`Successfully updated the manual_institution_data sports for ${id}`);
+        // } catch (error) {
+        //   console.error(`Error updating the manual_institution_data sports for ${id}:`, error);
+        // }      
+      }
+    },
     async fixSportsWithParenthesesFields() {
       // Get all documents from manual_institution_data
       const manualDataQuery = query(collection(dbFireStore, "manual_institution_data"));
