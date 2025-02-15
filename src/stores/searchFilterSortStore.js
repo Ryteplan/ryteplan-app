@@ -159,7 +159,7 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
         const sport = state.filters.sportName.toLowerCase().replace(/\((.*?)\)/, '$1').trim();
         const divisionFieldName = `${sport.toLowerCase().replace(/ /g, '_').replace(/\((.*?)\)/, '$1').trim()}_divisions`;
         const sportNameForHidden = sport.toLowerCase().replace(/ /g, '_').replace(/\((.*?)\)/, '$1').trim();
-        //
+        
         const sportHidden = `${sportNameForHidden}_hidden:!=true`;
 
         let conditions = [`sports.sport_name:=${sport}`, `sports.${sportHidden}`];
@@ -171,7 +171,7 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
           if (state.filters.gender) {
             // For NAIA + gender, just check if the gender has any division
             const genderField = state.filters.gender === 'men' ? 'INTC_MEN' : 'INTC_WMN';
-            conditions.push(`sports.${divisionFieldName}.${genderField}:!=null`);
+            conditions.push(`sports.${divisionFieldName}.${genderField}:!='None selected'`);
           }
         } else if (state.filters.gender) {
           // Gender selected for intercollegiate sports
@@ -179,7 +179,7 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
           if (state.filters.division) {
             conditions.push(`sports.${divisionFieldName}.${genderField}:=${state.filters.division}`);
           } else {
-            conditions.push(`sports.${divisionFieldName}.${genderField}:!=null`);
+            conditions.push(`sports.${divisionFieldName}.${genderField}:!='None selected'`);
           }
         } else if (state.filters.division) {
           conditions.push(`(sports.${divisionFieldName}.INTC_MEN:=${state.filters.division} || sports.${divisionFieldName}.INTC_WMN:=${state.filters.division})`);

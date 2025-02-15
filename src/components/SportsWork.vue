@@ -207,7 +207,7 @@ export default {
       institutionSlug: this.$route.params.slug,
       institutionName: '',
       sports: [],
-      divisionOptions: ['', '1', '2', '3', 'A', 'B', 'C', 'X'],
+      divisionOptions: ['None selected', '1', '2', '3', 'A', 'B', 'C', 'X'],
       showAddSportDialog: false,
       sportList,
       newSport: {
