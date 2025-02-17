@@ -82,6 +82,7 @@
         variant="outlined"
         hide-details 
         clearable 
+        multiple
         label="Division"
         :items="divisions"
         item-title="title"

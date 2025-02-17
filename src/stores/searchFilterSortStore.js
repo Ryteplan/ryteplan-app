@@ -176,13 +176,13 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
         } else if (state.filters.gender) {
           // Gender selected for intercollegiate sports
           const genderField = state.filters.gender === 'men' ? 'INTC_MEN' : 'INTC_WMN';
-          if (state.filters.division) {
-            conditions.push(`sports.${divisionFieldName}.${genderField}:=${state.filters.division}`);
+          if (state.filters.division && state.filters.division.length > 0) {
+            conditions.push(`sports.${divisionFieldName}.${genderField}:=[${state.filters.division}]`);
           } else {
             conditions.push(`sports.${divisionFieldName}.${genderField}:!='None selected'`);
           }
-        } else if (state.filters.division) {
-          conditions.push(`(sports.${divisionFieldName}.INTC_MEN:=${state.filters.division} || sports.${divisionFieldName}.INTC_WMN:=${state.filters.division})`);
+        } else if (state.filters.division && state.filters.division.length > 0) {
+          conditions.push(`(sports.${divisionFieldName}.INTC_MEN:=[${state.filters.division}] || sports.${divisionFieldName}.INTC_WMN:=[${state.filters.division}])`);
         }
         
         sportFilter = `&& (${conditions.join(' && ')})`;
