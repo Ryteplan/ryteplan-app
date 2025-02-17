@@ -1,5 +1,5 @@
 export const sportList = [
-  // "Acrobatics and Tumbling",
+  "Acrobatics and Tumbling",
   // "archery",
   // "badminton",
   "baseball",
