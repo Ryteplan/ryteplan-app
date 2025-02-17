@@ -399,16 +399,6 @@
             valueType="percentageWholeNumbers"
           />
         </div>
-        <StatDisplay
-            label="Admission Video"
-            :uri="institution['uri']"
-            field="adVideo"
-            :valueFromIntegrated="institution['adVideo']" 
-            :valueFromPetersons="petersonsInstitution['adVideo']" 
-            :valueFromManual="manualInstitionData['adVideo']"
-            valueType="string"
-          />
-
       </div>
       <div class="section-container mt-8 d-none">
         <h2>Deadline dates</h2>
