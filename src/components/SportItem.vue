@@ -29,8 +29,8 @@ export default {
         '1': 'NCAA Division 1',
         '2': 'NCAA Division 2',
         '3': 'NCAA Division 3',
-        'A': 'NCAA Division 1-A',
-        'B': 'NCAA Division 1-AA',
+        'A': 'NCAA Division 1 FBS',
+        'B': 'NCAA Division 1 FCS',
         'C': 'Club',
         'X': ''
       };

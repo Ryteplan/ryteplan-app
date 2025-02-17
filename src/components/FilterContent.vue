@@ -22,44 +22,43 @@
     <div class="filters-content flex-grow-1">
       <div class="filters-content-section">
         <h4>Location</h4>
-      <v-select 
-        class="mt-4" 
-        density="compact"
-        variant="outlined"
-        hide-details 
-        clearable 
-        label="Country"
-        :items="searchFilterSortStore.CountryList" 
-        v-model="searchFilterSortStore.filters.Country"
-        @update:menu="onUpdateMenu"
-      />
-      <v-autocomplete
-        class="mt-4" 
-        density="compact"
-        variant="outlined"
-        hide-details 
-        multiple 
-        clearable 
-        chips 
-        label="State(s)"
-        :items="searchFilterSortStore.StatesList" 
-        v-model="searchFilterSortStore.filters.State"
-        @update:menu="onUpdateMenu" 
-      />
-      <v-select 
-        class="mt-4" 
-        density="compact"
-        variant="outlined"
-        hide-details 
-        multiple 
-        clearable 
-        label="Campus Setting"
-        :items="searchFilterSortStore.campusSettingList" 
-        v-model="searchFilterSortStore.filters.campusSetting"
-        @update:menu="onUpdateMenu"
-      />
+        <v-select 
+          class="mt-4" 
+          density="compact"
+          variant="outlined"
+          hide-details 
+          clearable 
+          label="Country"
+          :items="searchFilterSortStore.CountryList" 
+          v-model="searchFilterSortStore.filters.Country"
+          @update:menu="onUpdateMenu"
+        />
+        <v-autocomplete
+          class="mt-4" 
+          density="compact"
+          variant="outlined"
+          hide-details 
+          multiple 
+          clearable 
+          chips 
+          label="State(s)"
+          :items="searchFilterSortStore.StatesList" 
+          v-model="searchFilterSortStore.filters.State"
+          @update:menu="onUpdateMenu" 
+        />
+        <v-select 
+          class="mt-4" 
+          density="compact"
+          variant="outlined"
+          hide-details 
+          multiple 
+          clearable 
+          label="Campus Setting"
+          :items="searchFilterSortStore.campusSettingList" 
+          v-model="searchFilterSortStore.filters.campusSetting"
+          @update:menu="onUpdateMenu"
+        />
       </div>
-
       <div class="filters-content-section">
         <h4>Athletics</h4>
       <v-autocomplete 
@@ -293,8 +292,8 @@ export default {
         { value: '1', title: 'NCAA Division 1' },
         { value: '2', title: 'NCAA Division 2' },
         { value: '3', title: 'NCAA Division 3' },
-        { value: 'A', title: 'NCAA Division 1-A' },
-        { value: 'B', title: 'NCAA Division 1-AA' },
+        { value: 'A', title: 'NCAA Division 1 FBS' },
+        { value: 'B', title: 'NCAA Division 1 FCS' },
         { value: 'NAIA', title: 'NAIA' },
       ]
     }
