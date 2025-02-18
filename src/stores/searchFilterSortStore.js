@@ -162,7 +162,7 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
         
         const sportHidden = `${sportNameForHidden}_hidden:!=true`;
 
-        let conditions = [`sports.sport_name:=${sport}`, `sports.${sportHidden}`];
+        let conditions = [`sports.sport_name:=${sport}`, `sports.${sportHidden}`, `(sports.${divisionFieldName}.INTM_MEN:!='X' || sports.${divisionFieldName}.INTM_WMN:!='X')`];
         
         if (state.filters.division === 'X') {  // 'X' is the value for intramural
           conditions.push(`(sports.${divisionFieldName}.INTM_MEN:='X' || sports.${divisionFieldName}.INTM_WMN:='X')`);
