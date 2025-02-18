@@ -808,7 +808,7 @@
                 </div>
               </div>
             </div>
-            <div class="mt-4" v-if="hasAnyIntramural">
+            <div class="mt-4 d-none" v-if="hasAnyIntramural">
               <h3>Intramural</h3>
               <div class="d-flex">
                 <div class="flex-grow-1 mr-4" v-if="menIntramuralSports.length > 0">

@@ -121,13 +121,15 @@ export default {
           const id = docSnapshot.id;
           const sports = docData.sports;
 
-          if (sports && Array.isArray(sports)) {
+          if (sports && Array.isArray(sports) ) {
             console.log("id", id);
             console.log("collection", collectionName);
             const updatedSports = sports.map(sport => {
+              if (sport.sport_name === "Acrobatics and Tumbling") {
+                console.log("sport", sport);
+              } 
               const divisionFieldName = `${sport.sport_name.toLowerCase().replace(/ /g, '_')}_divisions`;
               let divisionObjectFieldValue = sport[divisionFieldName];
-              console.log(divisionObjectFieldValue);
               if (divisionObjectFieldValue) {
                 // Convert empty strings to em dashes for each division type
                 const updatedDivisions = {};
