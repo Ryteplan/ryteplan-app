@@ -1241,9 +1241,18 @@ export default {
         this.sports = [];
         return;
       }
-
-      let sportsArray = [...this.institution.sports];
       
+      let sportsArray = [...this.institution.sports];
+
+      // remove sports that are hidden
+      sportsArray = sportsArray.filter(sport => {
+        const sportName = sport.sport_name.toLowerCase().replace(/ /g, '_').replace(/\((.*?)\)/, '$1').trim();
+        if (sport[`${sportName}_hidden`]) {
+          return false;
+        }
+        return true;
+      });
+
       sportsArray = sportsArray.map(sport => {
         const updatedSport = {};
         for (const [key, value] of Object.entries(sport)) {
