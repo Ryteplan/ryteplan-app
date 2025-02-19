@@ -554,7 +554,7 @@
                   Save Changes
                 </v-btn>
               </div>
-              <p v-else>{{ descriptions.academics }}</p>
+              <div v-html="descriptions.academics" v-else></div>
             </v-expansion-panel-text>
           </v-expansion-panel>
           <v-expansion-panel>
@@ -578,7 +578,7 @@
                   Save Changes
                 </v-btn>
               </div>
-              <p v-else>{{ descriptions.surroundingArea }}</p>
+              <div v-html="descriptions.surroundingArea" v-else></div>
             </v-expansion-panel-text>
           </v-expansion-panel>
           <v-expansion-panel>
@@ -602,7 +602,7 @@
                   Save Changes
                 </v-btn>
               </div>
-              <p v-else>{{ descriptions.transportation }}</p>
+              <div v-html="descriptions.transportation" v-else></div>
             </v-expansion-panel-text>
           </v-expansion-panel>
           <v-expansion-panel>
@@ -626,7 +626,7 @@
                   Save Changes
                 </v-btn>
               </div>
-              <p v-else>{{ descriptions.socialLife }}</p>
+              <div v-html="descriptions.socialLife" v-else></div>
             </v-expansion-panel-text>
           </v-expansion-panel>
           <v-expansion-panel>
@@ -650,7 +650,7 @@
                   Save Changes
                 </v-btn>
               </div>
-              <p v-else>{{ descriptions.campus }}</p>
+              <div v-html="descriptions.campus" v-else></div>
             </v-expansion-panel-text>
           </v-expansion-panel>
           <v-expansion-panel>
@@ -674,7 +674,7 @@
                   Save Changes
                 </v-btn>
               </div>
-              <p v-else>{{ descriptions.top5PopularMajors }}</p>
+              <div v-html="descriptions.top5PopularMajors" v-else></div>
             </v-expansion-panel-text>
           </v-expansion-panel>
           <v-expansion-panel>
@@ -698,7 +698,7 @@
                   Save Changes
                 </v-btn>
               </div>
-              <p v-else>{{ descriptions.strengthsAndAreasOfGrowth }}</p>
+              <div v-html="descriptions.strengthsAndAreasOfGrowth" v-else></div>
             </v-expansion-panel-text>
           </v-expansion-panel>
         </v-expansion-panels>
@@ -1319,6 +1319,7 @@ export default {
         if (docSnapV2.exists()) {
           const data = docSnapV2.data();
           this.imagesv2 = data.images || [];
+          console.log('imagesv2', this.imagesv2);
         } else {
           this.imagesv2 = [];
         }
@@ -1740,6 +1741,10 @@ export default {
     max-height: 400px;
     object-fit: contain;
     border-radius: 4px;
+  }
+
+  p + p {
+    margin-top: 12px;
   }
 
 </style>

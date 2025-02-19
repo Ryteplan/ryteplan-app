@@ -549,14 +549,10 @@ export default {
         if (docSnap.exists()) {
           const data = docSnap.data();
           const images = data.images;
-          const imageIndex = images.findIndex(img => img.URL === image.url);
-          
-          if (imageIndex !== -1) {
-            images[imageIndex].caption = image.caption;
-            await setDoc(docRef, { images }, { merge: true });
-            this.editedCaptions[index] = false;
-            this.results.push('✅ Caption saved successfully');
-          }
+          images[index].caption = image.caption;
+          await setDoc(docRef, { images }, { merge: true });
+          this.editedCaptions[index] = false;
+          this.results.push('✅ Caption saved successfully');
         }
       } catch (error) {
         console.error('Error saving caption:', error);

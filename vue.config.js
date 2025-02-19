@@ -10,6 +10,7 @@ module.exports = defineConfig({
     devtool: 'source-map',
     plugins: [
         new webpack.DefinePlugin({
+            __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'false',
             'process.env.node_env': {
                 PACKAGE_VERSION: '"' + version + '"'
             }
