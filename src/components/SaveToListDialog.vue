@@ -6,28 +6,28 @@
     <v-card>
       <div class="pa-8">
         <div
-          v-if="!showCreateNewListInput && !listCreated" 
+          v-if="!showCreateNewListInput && !showGoToList" 
         >        
-        <h2 class="mb-6 text-center">Add to list</h2>
-        <v-list>
-          <v-list-item
-            v-for="list in userLists"
-            @click="addInstitutionToList(list.id)"
-            :key="list.id"
-          >
-            <div class="d-flex">
-              <v-list-item-title>{{ list.name }}</v-list-item-title>
-            </div>
-          </v-list-item>
-        </v-list>
-        <v-btn
-          block
-          class="mt-5"
-          color="primary" 
-          @click="showCreateNewListInput = true"
-          >
-          Create New List
-        </v-btn>
+          <h2 class="mb-6 text-center">Add to list</h2>
+          <v-list>
+            <v-list-item
+              v-for="list in userLists"
+              @click="addInstitutionToList(list.id)"
+              :key="list.id"
+            >
+              <div class="d-flex">
+                <v-list-item-title>{{ list.name }}</v-list-item-title>
+              </div>
+            </v-list-item>
+          </v-list>
+          <v-btn
+            block
+            class="d-none mt-5"
+            color="primary" 
+            @click="showCreateNewListInput = true"
+            >
+            Create New List
+          </v-btn>
         </div>
         <div 
           class="create-new-list-form hide"
@@ -52,8 +52,8 @@
             Create New List
           </v-btn>
         </div>
-        <div v-if="listCreated">
-          <h2 class="text-center">List Created Successfully!</h2>
+        <div v-if="showGoToList">
+          <h2 class="text-center">Saved to List Successfully!</h2>
           <v-btn
             block
             class="mt-5"
@@ -62,25 +62,8 @@
           >
             Go to List
           </v-btn>
-          <v-btn
-            block
-            class="mt-2"
-            color="secondary" 
-            @click="show = false"
-          >
-            Close
-          </v-btn>
         </div>
       </div>
-      <v-card-actions>
-        <v-btn 
-          color="primary" 
-          block 
-          @click="show=false"
-        >
-          Close
-        </v-btn>
-      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
@@ -126,7 +109,10 @@ export default {
       userLists: {},
       showCreateNewListInput: false,
       listCreated: false,
-      createdListId: null
+      createdListId: null,
+      savingToExistingList: false,
+      showGoToList: false,
+      listTheItemWasSavedTo: null
     }
   },
   methods: {
@@ -143,18 +129,16 @@ export default {
     async addInstitutionToList(listId) {
       let listIDToSaveInstitutionTo;
 
-      if (listId == null) {
-        listIDToSaveInstitutionTo = this.newListName;
-      } else {
+      if (listId !== null) {
         listIDToSaveInstitutionTo = listId;
+        this.savingToExistingList = true;
       }
 
       const listRef = doc(dbFireStore, "lists", listIDToSaveInstitutionTo);
 
-      // Check if the document exists
       const docSnap = await getDoc(listRef);
+
       if (!docSnap.exists()) {
-        // Create the document if it doesn't exist
         await setDoc(listRef, {
           name: this.newListName,
           createdBy: this.userID,
@@ -162,9 +146,9 @@ export default {
           institutions: []
         });
         this.listCreated = true;
-        this.createdListId = listIDToSaveInstitutionTo;
-        this.showCreateNewListInput = false;
       }
+
+      this.listTheItemWasSavedTo = listIDToSaveInstitutionTo;
 
       if (this.selectedRows) {
         for (const institution of toRaw(this.selectedRows)) {
@@ -176,10 +160,11 @@ export default {
         await updateDoc(listRef, {
           institutions: arrayUnion(this.institutionId)
         });
+        this.showGoToList = true;
       }
     },
     navigateToList() {
-      this.$router.push({ name: 'SingularListView', params: { id: this.createdListId } });
+      this.$router.push({ name: 'SingularListView', params: { id: this.listTheItemWasSavedTo } });
     }
   }
 }
