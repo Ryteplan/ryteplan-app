@@ -18,7 +18,15 @@
       </v-btn>
 
       <v-btn
-        @click="fixSportsWithEmptyGenderFields"
+        @click="fixUniversitiesWithWrongState"
+        color="primary"
+      >
+        Fix universities with wrong state
+      </v-btn>
+
+      <v-btn
+        class="d-none"
+      @click="fixSportsWithEmptyGenderFields"
         color="primary"
       >
         Fix sports with empty gender fields
@@ -106,6 +114,24 @@ export default {
     }
   },
   methods: {
+    async fixUniversitiesWithWrongState(){
+      const dataQuery = query(collection(dbFireStore, "institutions_integrated"));
+      const snapshots = await getDocs(dataQuery);
+
+      snapshots.docs.forEach(async (docSnapshot) => {
+        const data = docSnapshot.data();
+        if (data.countryCode === "CAN") {          
+          console.log(data.stateCleaned);
+          await setDoc(
+            doc(dbFireStore, "institutions_integrated", docSnapshot.id),
+            {
+              stateCleaned: "—"
+            },
+            { merge: true }
+          );
+        }
+      });
+    },
     async fixSportsWithEmptyGenderFields() {
       const collections = [
         "manual_institution_data",
