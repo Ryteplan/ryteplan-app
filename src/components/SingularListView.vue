@@ -95,7 +95,7 @@
 
 <script>
 import { dbFireStore } from "../firebase";
-import { getDoc, doc } from 'firebase/firestore'
+import { getDoc, doc, deleteDoc } from 'firebase/firestore'
 import ShareDialog from './ShareDialog'
 import { useTableStore } from '../stores/tableStore';
 import { useUserStore } from '../stores/userStore';
@@ -150,6 +150,11 @@ export default {
           title: 'Export to PDF',
           icon: 'mdi-file-download',
           action: this.exportToPDF
+        },
+        {
+          title: 'Delete List',
+          icon: 'mdi-delete',
+          action: this.deleteList
         }
       ],
     }
@@ -307,6 +312,23 @@ export default {
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
+    },
+    async deleteList() {
+      // Confirm deletion
+      if (!confirm('Are you sure you want to delete this list?')) {
+        return;
+      }
+
+      try {
+        const idFromURL = this.$route.params.id;
+        await deleteDoc(doc(dbFireStore, 'lists', idFromURL));
+        
+        // Navigate back to lists page
+        this.$router.push('/lists');
+      } catch (error) {
+        console.error('Error deleting list:', error);
+        alert('Failed to delete list');
+      }
     },
   },
   computed: {
