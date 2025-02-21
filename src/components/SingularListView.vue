@@ -1,5 +1,5 @@
 <template>
-  <v-container class="pt-8 px-8">
+  <v-container class="pt-8">
     <v-row class="d-flex justify-space-between">
       <v-col cols="3">
         <v-btn to="/lists">

@@ -1,5 +1,5 @@
 <template>
-  <v-container class="pt-8 px-8">
+  <v-container class="pt-8">
     <v-row class="">
       <v-col cols="6">
         <div class="d-flex align-center justify-start">

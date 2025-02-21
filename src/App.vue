@@ -59,11 +59,10 @@
             ></v-icon>
           </template>
         </v-combobox>
-        <div class="d-none d-md-block">
+        <div class="d-none d-md-flex">
           <v-btn
-            cols="2"
+            class="d-none"
             block
-            class="max-w-24"
             color="primary"
             variant="outlined"
             href="https://forms.gle/TkssoDbsbAaiuSnA6"
@@ -71,6 +70,55 @@
           >
             Submit feedback
           </v-btn>
+          <div v-if="isLoggedIn">
+            <v-btn
+              class="ml-3"
+              v-bind="props"            
+              @click="() => this.$router.push('/lists')"
+              variant="text"
+            >
+              Lists
+            </v-btn>
+          </div>
+          <v-menu
+            location="bottom end"
+          >
+            <template v-slot:activator="{ props }">
+              <v-btn
+                class="ml-3"
+                v-bind="props"
+                
+                @click="onUpdateMenu"
+                variant="text"
+              >
+                Menu
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item v-if="isLoggedIn">
+                <div class="d-flex justify-space-between align-center px-4" @click.stop>
+                  <v-list-item-title>Admin Mode</v-list-item-title>
+                  <v-switch
+                    v-model="userStore.adminMode"
+                    color="primary"
+                    hide-details
+                    density="compact"
+                    @change="userStore.saveAdminModeState"
+                  ></v-switch>
+                </div>
+              </v-list-item>
+              <v-list-item
+                v-for="item in filteredDropDownItems"
+                @click="item.action"
+                :key="item.title"
+              >
+                <div class="d-flex justify-end align-center">
+                  <v-list-item-title>{{ item.title }}</v-list-item-title>
+                  <v-icon class="ml-3" :icon="item.icon"></v-icon>
+                </div>
+              </v-list-item>
+            </v-list>
+          </v-menu>
         </div>
         <!-- <div v-if="!isLoggedIn">
           <v-btn 
@@ -88,110 +136,26 @@
         </div> -->
       </div>
     </v-app-bar>
-    <v-navigation-drawer v-if="isLoggedIn" permanent>
-      <v-list nav>
-        <v-list-item
-          class="d-none"
-          to="/"
-          prepend-icon="mdi-magnify"
-          title="Institutions"
-          value="Institution Search"
-        >
-        </v-list-item>
-        <v-list-item
-          to="/lists"
-          prepend-icon="mdi-list-box-outline"
-          title="Lists"
-          value="Saved Lists"
-        >
-        </v-list-item>
-        <v-list-item
-          class="d-none"
-          to="/playground"
-          prepend-icon="mdi-slide"
-          title="Playground"
-          value="Playground"
-        >
-        </v-list-item>
-        <v-list-item
-          to="/data-compare"
-          prepend-icon="mdi-compare-horizontal"
-          title="Data Compare"
-          value="Data Compare"
-        >
-        </v-list-item>
-        <v-list-item
-          class="d-none"
-          to="/data-integration"
-          prepend-icon="mdi-call-merge"
-          title="Data Integration"
-          value="Data Integration"
-        >
-        </v-list-item>
-        <v-list-item
-          class="d-none"
-          to="/students"
-          prepend-icon="mdi-account-school"
-          title="Students"
-          value="Students"
-        >
-        </v-list-item>
-        <v-list-item
-          class="d-none"
-          to="/account"
-          prepend-icon="mdi-cog"
-          title="Account"
-          value="Account"
-        >
-        </v-list-item>
-        <v-list-item
-          prepend-icon="mdi-logout"
-          title="Logout"
-          value="Logout"
-          @click="handleSignOut"
-        >
-        </v-list-item>
-        <v-switch
-          class="px-4"
-          label="Admin Mode"
-          v-model="userStore.adminMode"
-          color="primary"
-          @change="userStore.saveAdminModeState"
-        >
-        </v-switch>
-        <v-switch
-          class="d-none px-4"
-          label="Paid User"
-          v-model="userStore.paidUser"
-          color="primary"
-          @change="userStore.savePaidUserState"
-        >
-        </v-switch>
-        <!-- <v-list-item
-          v-if="userStore.adminMode"
-          prepend-icon="mdi-table"
-          title="Refresh Headers"
-          value="Refresh Headers"
-          @click="tableStore.refreshTableHeaders"
-        >
-        </v-list-item> -->
-      </v-list>
-    </v-navigation-drawer>
     <v-main class="d-flex flex-column">
       <router-view :key="$route.fullPath"></router-view>
       <v-spacer></v-spacer>
       <v-container class="footer-container pt-0">
         <v-footer class="pb-4 ml-0 mr-0 pl-0 pr-0">
           <v-row class="align-end">
-            <v-col cols="12">
+            <v-col cols="8">
               <div style="font-size: 13px; margin-bottom: 0; gap: 8px; display: flex;">
                 <span>Version: {{ appVersionStore.getVersion() }}</span> 
                 <span>·</span>
                 <span>Ryteplan LLC © 2025</span>
                 <span>·</span>
                 <router-link to="/terms" class="terms-link" target="_blank">Terms and Conditions</router-link>
-            </div>
+              </div>
             </v-col>
+            <!-- <v-col cols="4">
+              <div style="font-size: 13px; margin-bottom: 0; gap: 8px; display: flex; justify-content: flex-end;">
+                <router-link to="/" style="text-decoration: none; background: #000; color: #fff; padding: 4px 8px; border-radius: 4px;" target="_blank">Submit Feedback</router-link>
+              </div>
+            </v-col> -->
           </v-row>
         </v-footer>
       </v-container>
@@ -270,7 +234,39 @@ export default {
       searchInput: "",
       suggestedResults: [],
       isLoadingSuggestion: false,
-      initialLoading: true
+      initialLoading: true,
+      dropDownItems: [
+        {
+          title: 'Data Compare',
+          icon: 'mdi-ab-testing',
+          action: () => { 
+            this.$router.push('/compare');
+          },
+          hideFromLoggedOut: true
+        },
+        {
+          title: 'Register or Login',
+          icon: 'mdi-account-plus',
+          action: () => { 
+            this.$router.push('/login');
+          },
+          hideFromLoggedIn: true
+        },
+        {
+          title: 'Submit Feedback',
+          icon: 'mdi-comment-quote-outline',
+          action: () => { 
+            window.open('https://forms.gle/TkssoDbsbAaiuSnA6', '_blank');
+          },
+        },
+        {
+          title: 'Logout',
+          icon: 'mdi-logout',
+          action: this.handleSignOut,
+          hideFromLoggedOut: true
+        }
+      ],
+
     };
   },
   methods: {
@@ -359,6 +355,15 @@ export default {
       this.performSearch("fromSuggestion");
       document.activeElement.blur();
     },
+  },
+  computed: {
+    filteredDropDownItems() {
+      if (this.isLoggedIn) {
+        return this.dropDownItems.filter(item => item.hideFromLoggedIn ? false : true);
+      } else {
+        return this.dropDownItems.filter(item => item.hideFromLoggedOut ? false : true);
+      }
+    }
   },
   watch: {
     searchInput(val) {
