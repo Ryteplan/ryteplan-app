@@ -38,6 +38,7 @@
     <v-row class="mt-4">
       <v-col cols="12">
         <v-data-table
+          id="listTable"
           :headers="filteredHeaders"
           :items="institutions"
           @click:row="navigateToInstitution" 
@@ -100,6 +101,8 @@ import ShareDialog from './ShareDialog'
 import { useTableStore } from '../stores/tableStore';
 import { useUserStore } from '../stores/userStore';
 import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable'  // Add this import
+
 
 export default {
   setup() {
@@ -249,9 +252,49 @@ export default {
     },
     exportToPDF() {
       const doc = new jsPDF();
+      const timestamp = new Date().toISOString().split('T')[0];
+      
+      // Add logo from assets
+      const logo = new Image();
+      logo.src = require('@/assets/ryteplan-logo-green-black.png');
+      
+      logo.onload = () => {
+        // Add logo to PDF
+        doc.addImage(logo, 'PNG', 15, 10, 46, 11);
+        
+        // Add title
+        doc.setFontSize(16);
+        doc.text(`${this.list.name}`, 15, 30);
+        
+        // Add timestamp
+        doc.setFontSize(10);
+        doc.text(`Generated: ${timestamp}`, 15, 40);
+        
+        // Add table with some styling
+        autoTable(doc, { 
+          html: '#listTable table',
+          startY: 50,
+          styles: {
+            fontSize: 10,
+            cellPadding: 3,
+            lineColor: [243, 243, 243],
+            lineWidth: 0.1,
+            fillColor: [250, 250, 250],
+          },
+          alternateRowStyles: {
+            fillColor: [255, 255, 255],
+          },
+          headStyles: {
+            fillColor: [243, 243, 243], // Ryteplan green color (#6899A4)
+            textColor: 0,
+            fontSize: 10,
+            fontStyle: 'medium'
+          },
+        });
 
-      doc.text("Hello world!", 10, 10);
-      doc.save("a4.pdf");
+        // Save the PDF
+        doc.save(`Ryteplan Institution List - ${this.list.name} - ${timestamp}.pdf`);
+      };
     },
     exportToCSV() {
       // Get visible headers from the table store
@@ -304,7 +347,7 @@ export default {
       
       // Use institution name in filename if available
       const timestamp = new Date().toISOString().split('T')[0];
-      const filename = `institution_list_${timestamp}.csv`;
+      const filename = `Ryteplan Institution List - ${this.list.name}  - ${timestamp}.csv`;
       link.setAttribute('download', filename);
       
       // Trigger download
