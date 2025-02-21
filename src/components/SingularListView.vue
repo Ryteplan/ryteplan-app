@@ -17,7 +17,7 @@
               v-bind="props"
               @click="onUpdateMenu"
             >
-              three dots
+              Options
             </v-btn>
           </template>
           <v-list>
@@ -133,11 +133,6 @@ export default {
           title: 'Edit Columns', 
           icon: 'mdi-pencil',
           action: this.editColumnsClicked
-        },
-        { 
-          title: 'Compare', 
-          icon: 'mdi-ab-testing',
-          action: this.compareClicked
         },
         { 
           title: 'Share',

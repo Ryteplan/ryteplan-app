@@ -2,7 +2,6 @@
   <v-container class="pt-4">
     <div class="data-integration">
       <v-btn
-        class="d-none"
         @click="duplicateCollection"
         color="primary"
       >
@@ -18,6 +17,7 @@
       </v-btn>
 
       <v-btn
+        class="d-none"
         @click="fixUniversitiesWithWrongState"
         color="primary"
       >
@@ -532,10 +532,10 @@ export default {
       });
 
       this.integratedData.forEach(async (institution) => {
-        setDoc(doc(dbFireStore, 'institutions_integrated_v14_backup_1', institution["uri"]), {
+        setDoc(doc(dbFireStore, 'institutions_integrated_v15_backup_1', institution["uri"]), {
           ...institution
         }, { merge: true })
-        console.log('done adding: ' + institution.name + ' to institutions_integrated_v14_backup_1');
+        console.log('done adding: ' + institution.name + ' to institutions_integrated_v15_backup_1');
       })
     },
     async doDataIntegration() {

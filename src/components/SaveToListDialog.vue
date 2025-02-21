@@ -42,7 +42,7 @@
           class="create-new-list-form hide"
           v-if="showCreateNewListInput && !listCreated" 
         >
-          <h2 class="text-center">Name your new list</h2>
+          <h2 class="mb-3">Name your new list</h2>
           <v-text-field
             v-model="newListName"
             label="Enter List Name"

@@ -5,36 +5,37 @@
   >
     <v-card>
       <div class="pa-8">
-        <div>        
+        <div v-if="!shareSuccess">        
           <h2 class="mb-6 text-center">Share List</h2>
-            <v-text-field
-              v-model="emailShareAddress"
-              label="Enter email address"
-              density="compact"
-              variant="solo"
-              single-line
-              hide-details
-              clearable
-            ></v-text-field>
-            <v-btn
-              class="mt-2" 
-              color="primary" 
-              block 
-              @click="shareList(emailShareAddress)"
-            >
-              Share
-            </v-btn>
+          <v-text-field
+            v-model="emailShareAddress"
+            label="Enter email address"
+            density="compact"
+            variant="solo"
+            single-line
+            hide-details
+            clearable
+          ></v-text-field>
+          <v-btn
+            class="mt-2" 
+            color="primary" 
+            block 
+            @click="shareList(emailShareAddress)"
+          >
+            Share
+          </v-btn>
+        </div>
+        <div v-else>
+          <h2 class="mb-6 text-center">List Shared Successfully!</h2>
+          <v-btn
+            color="primary"
+            block
+            @click="show = false"
+          >
+            Close
+          </v-btn>
         </div>
       </div>
-      <v-card-actions>
-        <v-btn 
-          color="primary" 
-          block 
-          @click="show=false"
-        >
-          Close
-        </v-btn>
-      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
@@ -63,7 +64,7 @@ export default {
     });
     const route=useRoute();
     const path = route.path;
-    this.link = "https://ryteplan.com" + path;
+    this.link = "https://app.ryteplan.com" + path;
   },
   computed: {
     show: {
@@ -79,15 +80,16 @@ export default {
     return {
       emailShareAddress: "",
       userFullName: "",
-      link: ""
+      link: "",
+      shareSuccess: false
     }
   },
   methods: {
     async shareList(emailAddress) {
-      console.log(emailAddress);
-      const newDocRef = doc(collection(dbFireStore, "emails"));
-      await setDoc(newDocRef, 
-        {
+      try {
+        console.log(emailAddress);
+        const newDocRef = doc(collection(dbFireStore, "emails"));
+        await setDoc(newDocRef, {
           to: [
             {
               email: this.emailShareAddress,
@@ -118,8 +120,12 @@ export default {
             email: 'reply_to@example.com',
             name: 'Reply to name'
           },
-        }
-      );
+        });
+        this.shareSuccess = true;
+        this.emailShareAddress = "";
+      } catch (error) {
+        console.error("Error sharing list:", error);
+      }
     }      
   }
 }
