@@ -4,11 +4,20 @@
     width="400px"
   >
     <v-card>
+      <v-card-title class="d-flex justify-space-between align-center">
+        <div class="text-h5 ps-2">
+          Add to list
+        </div>
+        <v-btn
+          icon="mdi-close"
+          variant="text"
+          @click="show = false"
+        ></v-btn>
+      </v-card-title>
       <div class="pa-8">
         <div
           v-if="!showCreateNewListInput && !showGoToList" 
         >        
-          <h2 class="mb-6 text-center">Add to list</h2>
           <v-list>
             <v-list-item
               v-for="list in userLists"
@@ -22,7 +31,7 @@
           </v-list>
           <v-btn
             block
-            class="d-none mt-5"
+            class="mt-5"
             color="primary" 
             @click="showCreateNewListInput = true"
             >
@@ -31,7 +40,7 @@
         </div>
         <div 
           class="create-new-list-form hide"
-          v-if="showCreateNewListInput" 
+          v-if="showCreateNewListInput && !listCreated" 
         >
           <h2 class="text-center">Name your new list</h2>
           <v-text-field
@@ -70,7 +79,7 @@
 
 <script>
 import { dbFireStore } from "../firebase";
-import { query, collection, doc, orderBy, onSnapshot, where, updateDoc, arrayUnion, getDoc, setDoc } from 'firebase/firestore'
+import { query, collection, doc, orderBy, onSnapshot, where, updateDoc, arrayUnion, getDoc, setDoc, Timestamp } from 'firebase/firestore'
 import { toRaw } from 'vue';
 import { getAuth } from 'firebase/auth';
 
@@ -123,7 +132,10 @@ export default {
         where("createdBy", "==", this.userID)
       );
       onSnapshot(listsQuery,(snapshot)=>{
-        this.userLists = snapshot.docs.map((doc) => doc.data());
+        this.userLists = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data()
+        }));
       });
     },
     async addInstitutionToList(listId) {
@@ -132,6 +144,11 @@ export default {
       if (listId !== null) {
         listIDToSaveInstitutionTo = listId;
         this.savingToExistingList = true;
+      } else {
+        // Generate a new document ID for the list
+
+        const newListRef = doc(collection(dbFireStore, "lists"));
+        listIDToSaveInstitutionTo = newListRef.id;
       }
 
       const listRef = doc(dbFireStore, "lists", listIDToSaveInstitutionTo);
@@ -142,7 +159,8 @@ export default {
         await setDoc(listRef, {
           name: this.newListName,
           createdBy: this.userID,
-          created: new Date(),
+          created: Timestamp.fromDate(new Date()),
+          updated: Timestamp.fromDate(new Date()),
           institutions: []
         });
         this.listCreated = true;

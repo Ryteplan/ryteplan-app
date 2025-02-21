@@ -1,8 +1,8 @@
 <template>
   <v-container class="pt-0 px-3 px-lg-0">
     <div style="margin: 0 auto 64px; max-width: 1200px;">
-      <v-row class="d-flex justify-space-between mt-0">
-        <v-col cols="12">
+      <v-row class="d-flex justify-space-between mt-2">
+        <v-col cols="6">
           <h1 class="text-h6">{{ institution["name"] }}</h1>
           <div v-if="userStore.adminMode">
             <span>{{ institution["uri"] }}</span>
@@ -10,15 +10,17 @@
             <span>{{ institution["inunId"] }}</span>
           </div>
         </v-col>
+        <v-col cols="6" class="d-flex justify-end">
+          <v-btn
+            v-if="isLoggedIn"
+            size="small"
+            @click="showSaveToListDialog = true"
+            class="mr-6"
+          >
+            Add to list
+          </v-btn>
+        </v-col>
       </v-row>
-      <v-btn
-          v-if="isLoggedIn"
-          class="my-4"
-          size="small"
-          @click="showSaveToListDialog = true"
-        >
-          Add to list
-        </v-btn>
       <v-row class="mx-0 mt-0 mb-1" v-if="userStore.adminMode">
         <v-col cols="6" lg="3" class="pa-0">
           <v-switch 

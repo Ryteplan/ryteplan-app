@@ -6,6 +6,9 @@
           Back
         </v-btn>
       </v-col>
+      <v-col cols="3" class="d-flex justify-center align-center">
+        <h1>{{ list.name }}</h1>
+      </v-col>
       <v-col cols="4" class="d-flex justify-end align-center">
         <v-menu>
           <template v-slot:activator="{ props }">
@@ -92,7 +95,7 @@
 
 <script>
 import { dbFireStore } from "../firebase";
-import { getDoc, doc, getDocs, query, collection, where } from 'firebase/firestore'
+import { getDoc, doc } from 'firebase/firestore'
 import ShareDialog from './ShareDialog'
 import { useTableStore } from '../stores/tableStore';
 import { useUserStore } from '../stores/userStore';
@@ -143,11 +146,11 @@ export default {
           icon: 'mdi-file-download',
           action: this.exportToCSV
         },
-        // {
-        //   title: 'Export to PDF',
-        //   icon: 'mdi-file-download',
-        //   action: this.exportToPDF
-        // }
+        {
+          title: 'Export to PDF',
+          icon: 'mdi-file-download',
+          action: this.exportToPDF
+        }
       ],
     }
   },
@@ -164,6 +167,9 @@ export default {
       });
     },
     navigateToInstitution(event, item) {
+      // Handle case where item might be undefined
+      if (!item || !item.item) return;
+
       const institution = JSON.parse(JSON.stringify(item));
       const targetRowKey = institution.item.name;
 
@@ -181,25 +187,28 @@ export default {
           }
         });
 
-        // Always open in new tab
-        window.open(route.href, '_blank');
+        // Open in new tab for right click or if holding Ctrl/Cmd key
+        if (event.ctrlKey || event.metaKey) {
+          window.open(route.href, '_blank');
+        } else {
+          // Navigate in current tab for normal left click
+          this.$router.push(route);
+        }
       }
     },
-
     async loadList() {
       try {
-        const lists = collection(dbFireStore, 'lists');
         const idFromURL = this.$route.params.id;
-        const q = query(lists, where("id", "==", idFromURL));
-        const querySnapshot = await getDocs(q);
+        console.log(idFromURL);
 
-        if (querySnapshot.empty) {
+        const querySnapshot = await getDoc(doc(dbFireStore, 'lists', idFromURL));
+
+        if (!querySnapshot.exists()) {
           console.error('No list found with this ID');
           return;
         }
 
-        const listDoc = querySnapshot.docs[0];
-        this.list = listDoc.data();
+        this.list = querySnapshot.data();
 
         if (!this.list?.institutions?.length) {
           console.log('No institutions in this list');

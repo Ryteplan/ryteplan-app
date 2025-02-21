@@ -74,7 +74,7 @@
             :headers="filteredHeaders"
             :items="tableStore.tableData" 
             :items-per-page="-1"
-            @click:row="navigateToInstitution" 
+            @click:row="(event, item) => navigateToInstitution(event, item, false)"
             item-value="institution name" 
             v-model="tableStore.selectedRows"
             density="comfortable"
@@ -289,6 +289,9 @@ export default {
 
     },
     navigateToInstitution(event, item) {
+      // Handle case where item might be undefined
+      if (!item || !item.item) return;
+
       const institution = JSON.parse(JSON.stringify(item));
       const targetRowKey = institution.item.name;
 
@@ -306,8 +309,13 @@ export default {
           }
         });
 
-        // Always open in new tab
-        window.open(route.href, '_blank');
+        // Open in new tab for right click or if holding Ctrl/Cmd key
+        if (event.ctrlKey || event.metaKey) {
+          window.open(route.href, '_blank');
+        } else {
+          // Navigate in current tab for normal left click
+          this.$router.push(route);
+        }
       }
     },
     onUpdateMenu(open) {

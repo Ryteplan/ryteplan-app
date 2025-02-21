@@ -21,7 +21,7 @@
               <v-list-item 
                 v-for="list in userLists" 
                 :key="list.id"
-                :to="`/list/${list.id}`"
+                @click="navigateToList($event, list)"
               >
                 <div class="d-flex">
                   <v-list-item-title>{{ list.name }}</v-list-item-title>
@@ -102,14 +102,17 @@ export default {
         where("createdBy", "==", this.userID)
       );
       onSnapshot(listsQuery,(snapshot)=>{
-        this.userLists = snapshot.docs.map((doc) => doc.data());
+        this.userLists = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        console.log(this.userLists);
       });
     },
     async createNewList() {
       const newDocRef = doc(collection(dbFireStore, "lists"));
       await setDoc(newDocRef, 
         {
-          id: newDocRef.id,
           name: this.createNewListName,
           createdBy: this.userID,
           created: Timestamp.fromDate(new Date()),
@@ -119,6 +122,22 @@ export default {
       this.showCreateListDialog = false;
       this.createNewListName = "";
       this.loadUserLists();
+    },
+    navigateToList(event, list) {
+      let route = this.$router.resolve({
+        name: 'SingularListView',
+        params: {
+          id: list.id,
+        }
+      });
+
+      // Open in new tab for right click or if holding Ctrl/Cmd key
+      if (event.ctrlKey || event.metaKey) {
+        window.open(route.href, '_blank');
+      } else {
+        // Navigate in current tab for normal left click
+        this.$router.push(route);
+      }
     }
   }
 };
