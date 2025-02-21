@@ -2,6 +2,7 @@
   <v-container class="pt-4">
     <div class="data-integration">
       <v-btn
+        class="d-none"
         @click="duplicateCollection"
         color="primary"
       >
@@ -9,7 +10,6 @@
       </v-btn>
 
       <v-btn
-        class="d-none"
         @click="doDataIntegration"
         color="primary"
       >
@@ -541,7 +541,7 @@ export default {
     async doDataIntegration() {
       console.log('doing data integration')
       
-      const petersonsDataQuery = query(collection(dbFireStore, "institutions_v15"));      
+      const petersonsDataQuery = query(collection(dbFireStore, "institutions_v18"));      
       const petersonsSnapshots = await getDocs(petersonsDataQuery);
 
       petersonsSnapshots.docs.forEach(doc => {

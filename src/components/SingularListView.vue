@@ -48,6 +48,7 @@
           fixed-header 
           return-object
         >
+          <template #bottom></template>
         </v-data-table>
       </v-col>
     </v-row>
