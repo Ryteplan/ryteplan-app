@@ -324,10 +324,10 @@
           <StatDisplay
             label="SAT 50th%ile"
             :uri="institution['uri']"
-            field="sat1CompMean"
-            :valueFromIntegrated="institution['sat1CompMean']" 
-            :valueFromPetersons="petersonsInstitution['sat1CompMean']" 
-            :valueFromManual="manualInstitionData['sat1CompMean']"
+            field="sat1Combined50th"
+            :valueFromIntegrated="institution['sat1Combined50th']" 
+            :valueFromPetersons="petersonsInstitution['sat1Combined50th']" 
+            :valueFromManual="manualInstitionData['sat1Combined50th']"
             valueType="numberNoComma"
           />
           <StatDisplay
