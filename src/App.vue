@@ -73,7 +73,6 @@
           <div v-if="isLoggedIn">
             <v-btn
               class="ml-3"
-              v-bind="props"            
               @click="() => this.$router.push('/lists')"
               variant="text"
             >
@@ -87,8 +86,6 @@
               <v-btn
                 class="ml-3"
                 v-bind="props"
-                
-                @click="onUpdateMenu"
                 variant="text"
               >
                 Menu
