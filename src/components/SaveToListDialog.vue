@@ -24,9 +24,12 @@
               @click="addInstitutionToList(list.id)"
               :key="list.id"
             >
-              <div class="d-flex">
-                <v-list-item-title>{{ list.name }}</v-list-item-title>
-              </div>
+              <span class="d-flex justify-space-between align-center w-100">
+                {{ list.name }}
+                <span class="text-caption" style="color: #888888">
+                  ({{ list.institutions.length }}/30)
+                </span>
+              </span>
             </v-list-item>
           </v-list>
           <v-btn

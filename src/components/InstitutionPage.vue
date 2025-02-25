@@ -1321,7 +1321,6 @@ export default {
         if (docSnapV2.exists()) {
           const data = docSnapV2.data();
           this.imagesv2 = data.images || [];
-          console.log('imagesv2', this.imagesv2);
         } else {
           this.imagesv2 = [];
         }

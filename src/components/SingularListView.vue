@@ -6,10 +6,13 @@
           Back
         </v-btn>
       </v-col>
-      <v-col cols="3" class="d-flex justify-center align-center">
+      <v-col cols="6" class="d-flex justify-center align-center">
         <h1>{{ list.name }}</h1>
+        <span class="text-caption" style="color: #888888">
+          ({{ institutions.length }}/30)
+        </span>
       </v-col>
-      <v-col cols="4" class="d-flex justify-end align-center">
+      <v-col cols="3" class="d-flex justify-end align-center">
         <v-menu>
           <template v-slot:activator="{ props }">
             <v-btn
