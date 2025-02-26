@@ -1,6 +1,15 @@
 <template>
   <v-container class="pt-4">
     <div class="data-integration">
+
+      <p>Output the merge candidate institution data</p>
+      <div v-for="(item, index) in mergeCandidateInstitutionData" :key="index">
+        <h2>{{ index }}</h2>
+        {{ item }}
+        <p>{{ item.name }}</p>
+        <p>{{ item.tuition }}</p>
+      </div>
+
       <v-btn
         class="d-none"
         @click="duplicateCollection"
@@ -10,6 +19,7 @@
       </v-btn>
 
       <v-btn
+        class="d-none"
         @click="doDataIntegration"
         color="primary"
       >
@@ -110,8 +120,34 @@ export default {
     return {
       petersonsData: [],
       manualData: [],
-      integratedData: []
+      integratedData: [],
+      mergeCandidates: [],
+      mergeCandidateInstitutionData: {}
     }
+  },
+  async beforeMount() {
+    const mergeCandidatesQuery = query(collection(dbFireStore, "jab_merge_candidates"));
+    const mergeCandidatesSnapshots = await getDocs(mergeCandidatesQuery);
+
+    mergeCandidatesSnapshots.docs.forEach(doc => {
+      this.mergeCandidates.push(doc.data().mergeCandidateCollectionId);
+    });
+
+    // Process each collection sequentially
+    for (const collectionId of this.mergeCandidates) {
+      const institutionDataQuery = query(collection(dbFireStore, collectionId));
+      const institutionDataSnapshots = await getDocs(institutionDataQuery);
+
+      // Initialize array for this collection
+      this.mergeCandidateInstitutionData[collectionId] = [];
+
+      // Add all documents from this collection
+      institutionDataSnapshots.docs.forEach(doc => {
+        this.mergeCandidateInstitutionData[collectionId].push(doc.data());
+      });
+    }
+    // json parse
+    console.log(this.mergeCandidateInstitutionData);
   },
   methods: {
     async fixUniversitiesWithWrongState(){
