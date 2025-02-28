@@ -50,6 +50,7 @@
           density="comfortable"
           fixed-header 
           return-object
+          :items-per-page="-1"
         >
           <template #bottom></template>
         </v-data-table>
