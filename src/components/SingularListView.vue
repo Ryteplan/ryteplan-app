@@ -1,11 +1,18 @@
 <template>
   <v-container class="pt-8">
-    <v-row class="d-flex justify-space-between">
-      <v-col cols="3">
-        <v-btn to="/lists">
-          Back
+    <v-row v-if="this.$route.params.showBackButton">
+      {{ this.$route.params.id }}
+      <v-col>
+        <v-btn
+          prepend-icon="mdi-arrow-left"
+          variant="text"
+          @click="$emit('back')"
+        >
+          Back to Search Results
         </v-btn>
       </v-col>
+    </v-row>
+    <v-row class="d-flex justify-space-between">      
       <v-col cols="6" class="d-flex justify-center align-center">
         <h1>{{ list.name }}</h1>
         <span class="text-caption" style="color: #888888">
@@ -110,7 +117,7 @@ import autoTable from 'jspdf-autotable'  // Add this import
 
 
 export default {
-  setup() {
+ setup() {
     const tableStore = useTableStore();
     if (tableStore.tableHeaders.length == 0) {
       tableStore.loadTableHeaders();
@@ -124,10 +131,12 @@ export default {
     return { tableStore, userStore };
   },
   mounted() {    
+    console.log(this.$route);
     this.loadList();
   },
   data() {
     return {
+      showBackButton: this.$route.params.showBackButton,
       createNewListName: "",
       list: {},
       institutions: [],
