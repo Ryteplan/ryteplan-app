@@ -13,9 +13,9 @@
       </v-col>
     </v-row>
     <v-row class="d-flex justify-space-between">      
-      <v-col cols="6" class="d-flex justify-center align-center">
+      <v-col cols="9" class="d-flex align-end">
         <h1>{{ list.name }}</h1>
-        <span class="text-caption" style="color: #888888">
+        <span style="color: #888888; margin-left: 10px; margin-bottom: 8px; font-size: 18px;">
           ({{ institutions.length }}/30)
         </span>
       </v-col>

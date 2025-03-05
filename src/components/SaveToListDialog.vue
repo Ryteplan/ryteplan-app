@@ -26,6 +26,13 @@
             >
               <span class="d-flex justify-space-between align-center w-100">
                 {{ list.name }}
+                <span 
+                  v-if="list.institutions.length"
+                  class="text-caption" 
+                  style="color: #888888"
+                >
+                  ({{ list.institutions.length }}/30)
+                </span>
               </span>
             </v-list-item>
           </v-list>
@@ -108,7 +115,7 @@ export default {
         this.$emit('update:modelValue', value)
         setTimeout(()=>{
           this.showCreateNewListInput = false;
-        },1000);
+        }, 1000);
       }
     }
   },
