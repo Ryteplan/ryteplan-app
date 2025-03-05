@@ -1122,7 +1122,6 @@ export default {
         image5: "",
       },
       showImageCredits: false,
-      sat50thPercentile: 0,
       majors: [],
       sports: [],
       ethnicityPopulationTotal: 0,
@@ -1225,8 +1224,6 @@ export default {
       this.getImages();
       this.getDescriptions();
       this.getEthnicityPopulationTotal();
-      this.sat50thPercentile = this.institution["satVerb50thP"] + this.institution["satMath50thP"];
-
       document.title = this.institution["name"] + " | Ryteplan College Search";
     },
     async getDescriptions() {
