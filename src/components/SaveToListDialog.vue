@@ -27,11 +27,11 @@
               <span class="d-flex justify-space-between align-center w-100">
                 {{ list.name }}
                 <span 
-                  v-if="list.institutions.length"
+                  v-if="list.institutions && list.institutions.length"
                   class="text-caption" 
                   style="color: #888888"
                 >
-                  ({{ list.institutions.length }}/30)
+                  ({{ list.institutions.length || 0 }}/30)
                 </span>
               </span>
             </v-list-item>
