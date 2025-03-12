@@ -117,20 +117,6 @@
             </v-list>
           </v-menu>
         </div>
-        <!-- <div v-if="!isLoggedIn">
-          <v-btn 
-            :to="{name: 'login', query: { tabDestination: 'Sign Up' }}"
-            class="no-active"
-          >
-            Sign up
-          </v-btn>
-          <v-btn 
-            class="no-active"
-            :to="{name: 'login', query: { tabDestination: 'Login' }}"
-          >
-            Login
-          </v-btn>
-        </div> -->
       </div>
     </v-app-bar>
     <v-main class="d-flex flex-column">
@@ -148,11 +134,11 @@
                 <router-link to="/terms" class="terms-link" target="_blank">Terms and Conditions</router-link>
               </div>
             </v-col>
-            <!-- <v-col cols="4">
+            <v-col cols="4">
               <div style="font-size: 13px; margin-bottom: 0; gap: 8px; display: flex; justify-content: flex-end;">
-                <router-link to="/" style="text-decoration: none; background: #000; color: #fff; padding: 4px 8px; border-radius: 4px;" target="_blank">Submit Feedback</router-link>
+                <span>Some university data provided by <a style="color: #1d1d1d;" href="https://www.petersons.com" target="_blank">Petersons</a></span>
               </div>
-            </v-col> -->
+            </v-col>
           </v-row>
         </v-footer>
       </v-container>
