@@ -105,8 +105,7 @@ export default {
         this.userLists = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data()
-        }));
-        console.log(this.userLists);
+        })).sort((a, b) => a.name.localeCompare(b.name));
       });
     },
     async createNewList() {
