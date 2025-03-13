@@ -1199,12 +1199,13 @@ export default {
     },
     async loadPetersonsData() {
       const slugFromURL = this.$route.params.slug;
-      const institutions = collection(dbFireStore, 'institutions_v13');
+      const institutions = collection(dbFireStore, 'institutions_v18');
       const q = query(institutions, where("uri", "==", slugFromURL));
       const docSnap = await getDocs(q);
       docSnap.forEach((doc) => {
         this.petersonsInstitution = doc.data();
       });
+      console.log(this.petersonsInstitution);
     },
     async loadIntegratedInstitutionData() {
       const slugFromURL = this.$route.params.slug;

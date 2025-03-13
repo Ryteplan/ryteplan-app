@@ -314,7 +314,8 @@ export default {
           window.open(route.href, '_blank');
         } else {
           // Navigate in current tab for normal left click
-          this.$router.push(route);
+          window.open(route.href, '_blank');
+          // this.$router.push(route);
         }
       }
     },

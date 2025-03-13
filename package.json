@@ -1,6 +1,6 @@
 {
   "name": "college-counselor",
-  "version": "0.50.1",
+  "version": "0.50.2",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",

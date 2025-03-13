@@ -38,6 +38,8 @@ export const useTableStore = defineStore('table', {
           searchFilterSort.searchParameters.sort_by = 'name:asc';
         }
 
+        console.log(searchFilterSort.searchParameters);
+
         const result = await client.collections('institutions_integratedv5').documents().search(searchFilterSort.searchParameters);
         this.tableData = this.tableData.concat(result.hits.map(hit => hit.document));
         if (this.tableData.length < this.resultsFound) {
