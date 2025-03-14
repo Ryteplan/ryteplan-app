@@ -124,26 +124,27 @@
       </div>
       <div class="filters-content-section">
         <h4>Undergraduates</h4>
-        <div class="d-flex mt-4" style="gap: 16px;">
+        <div class="mt-4 flex-column" style="gap: 16px;">
           <v-text-field 
-          v-model="searchFilterSortStore.filters.UndergraduatesMin" 
-          label="Minimum"
-          type="number" 
-          clearable 
-          hide-details
-          density="compact"
-          variant="outlined"
-          hide-spin-buttons
-        />
-        <v-text-field 
-          v-model="searchFilterSortStore.filters.UndergraduatesMax" 
-          label="Maximum"
-          type="number" 
-          density="compact"
-          variant="outlined"
-          clearable 
-          hide-details
-          hide-spin-buttons
+            v-model="searchFilterSortStore.filters.UndergraduatesMax" 
+            label="Maximum"
+            type="number" 
+            density="compact"
+            variant="outlined"
+            clearable 
+            hide-details
+            hide-spin-buttons
+          />
+          <v-text-field 
+            class="mt-4"
+            v-model="searchFilterSortStore.filters.UndergraduatesMin" 
+            label="Minimum"
+            type="number" 
+            clearable 
+            hide-details
+            density="compact"
+            variant="outlined"
+            hide-spin-buttons
           />
         </div>
       </div>
