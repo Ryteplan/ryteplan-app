@@ -277,95 +277,164 @@ export default {
         doc.setFontSize(10);
         doc.text(`Generated: ${timestamp}`, 15, 40);
         
-         // Starting Y position for the first card
-      let yPosition = 50;
-      const pageWidth = doc.internal.pageSize.width;
-      const margin = 15;
-      const cardWidth = pageWidth - (margin * 2);
-
-        // For each institution, create a card
-    this.institutions.forEach((institution) => {
-      // Check if we need a new page
-      if (yPosition > 250) {
-        doc.addPage();
-        yPosition = 20;
-      }
-      
-      // Card background
-      doc.setFillColor(250, 250, 250);
-      doc.setDrawColor(220, 220, 220);
-      doc.roundedRect(margin, yPosition, cardWidth, 60, 3, 3, 'FD');
-      
-      // Institution name
-      doc.setFontSize(14);
-      doc.setFont(undefined, 'bold');
-      doc.text(institution.name, margin + 5, yPosition + 10);
-      
-      // Reset font
-      doc.setFont(undefined, 'normal');
-      doc.setFontSize(10);
-      
-      // Add key information in two columns
-      let leftCol = margin + 5;
-      let rightCol = margin + cardWidth / 2;
-      let rowHeight = 12;
-      
-      // Row 1
-      if (institution.city && institution.state) {
-        doc.text(`Location: ${institution.city}, ${institution.state}`, leftCol, yPosition + 25);
-      }
-      if (institution.type) {
-        doc.text(`Type: ${institution.type}`, rightCol, yPosition + 25);
-      }
-      
-      // Row 2
-      if (institution.enrollment) {
-        doc.text(`Enrollment: ${institution.enrollment.toLocaleString()}`, leftCol, yPosition + 25 + rowHeight);
-      }
-      if (institution.acceptance_rate) {
-        doc.text(`Acceptance Rate: ${(institution.acceptance_rate * 100).toFixed(1)}%`, rightCol, yPosition + 25 + rowHeight);
-      }
-      
-      // Row 3
-      if (institution.tuition_in_state || institution.tuition_out_of_state) {
-        const tuition = institution.tuition_in_state 
-          ? `$${institution.tuition_in_state.toLocaleString()}`
-          : institution.tuition_out_of_state 
-            ? `$${institution.tuition_out_of_state.toLocaleString()} (out-of-state)`
-            : 'N/A';
-        doc.text(`Tuition: ${tuition}`, leftCol, yPosition + 25 + (rowHeight * 2));
-      }
-      if (institution.website) {
-        doc.text(`Website: ${institution.website}`, rightCol, yPosition + 25 + (rowHeight * 2));
-      }
-      
-      // Move position for next card
-      yPosition += 70; // Card height + spacing
-    });
+        // Starting Y position for the first card
+        let yPosition = 50;
+        const pageWidth = doc.internal.pageSize.width;
+        const margin = 15;
+        const cardWidth = pageWidth - (margin * 2);
         
-
-        // Add table with some styling
-        // autoTable(doc, { 
-        //   html: '#listTable table',
-        //   startY: 50,
-        //   styles: {
-        //     fontSize: 10,
-        //     cellPadding: 3,
-        //     lineColor: [243, 243, 243],
-        //     lineWidth: 0.1,
-        //     fillColor: [250, 250, 250],
-        //   },
-        //   alternateRowStyles: {
-        //     fillColor: [255, 255, 255],
-        //   },
-        //   headStyles: {
-        //     fillColor: [243, 243, 243], // Ryteplan green color (#6899A4)
-        //     textColor: 0,
-        //     fontSize: 10,
-        //     fontStyle: 'medium'
-        //   },
-        // });
-
+        // Get the filtered headers that are currently displayed in the table
+        const visibleHeaders = this.filteredHeaders;
+        
+        // For each institution, create a card
+        this.institutions.forEach((institution) => {
+          // Check if we need a new page
+          if (yPosition > 250) {
+            doc.addPage();
+            yPosition = 20;
+          }
+          
+          // Record the starting position of this card
+          const cardStartY = yPosition;
+          
+          // Determine if we should use one or two columns
+          const useColumns = visibleHeaders.length > 3;
+          const colWidth = useColumns ? cardWidth / 2 - 10 : cardWidth - 10;
+          
+          // Institution name (always show this regardless of selected fields)
+          doc.setFontSize(14);
+          doc.setFont(undefined, 'bold');
+          doc.text(institution.name, margin + 5, yPosition + 10);
+          
+          // Reset font
+          doc.setFont(undefined, 'normal');
+          doc.setFontSize(10);
+          
+          // Add fields based on visible headers
+          let leftY = yPosition + 25;
+          let rightY = yPosition + 25;
+          
+          visibleHeaders.forEach((header, index) => {
+            // Skip the name field as we already displayed it
+            if (header.key === 'name') return;
+            
+            const value = institution[header.key];
+            let displayValue = '';
+            
+            // Format the value based on its type
+            if (value === null || value === undefined) {
+              displayValue = 'N/A';
+            } else if (typeof value === 'boolean') {
+              displayValue = value ? 'Yes' : 'No';
+            } else if (typeof value === 'number') {
+              if (header.key.includes('rate') || header.key.includes('percentage')) {
+                displayValue = `${(value * 100).toFixed(1)}%`;
+              } else if (header.key.includes('tuition') || header.key.includes('cost')) {
+                displayValue = `$${value.toLocaleString()}`;
+              } else {
+                displayValue = value.toLocaleString();
+              }
+            } else {
+              displayValue = String(value);
+            }
+            
+            const fieldText = `${header.title}: ${displayValue}`;
+            
+            // Split text if it's too long for the column
+            const maxWidth = useColumns ? colWidth - 10 : cardWidth - 10;
+            
+            // Determine which column to place the field
+            if (useColumns) {
+              if (index % 2 === 0) {
+                // Left column
+                const textLines = doc.splitTextToSize(fieldText, maxWidth);
+                doc.text(textLines, margin + 5, leftY);
+                leftY += 12 * textLines.length; // Increase Y position based on number of lines
+              } else {
+                // Right column
+                const textLines = doc.splitTextToSize(fieldText, maxWidth);
+                doc.text(textLines, margin + cardWidth/2, rightY);
+                rightY += 12 * textLines.length; // Increase Y position based on number of lines
+              }
+            } else {
+              // Single column
+              const textLines = doc.splitTextToSize(fieldText, maxWidth);
+              doc.text(textLines, margin + 5, leftY);
+              leftY += 12 * textLines.length; // Increase Y position based on number of lines
+            }
+          });
+          
+          // Find the maximum Y position reached
+          const maxY = Math.max(leftY, rightY);
+          
+          // Calculate the actual card height based on content
+          const cardHeight = maxY - cardStartY;
+          
+          // Now draw the card background (after we know the height)
+          doc.setFillColor(250, 250, 250);
+          doc.setDrawColor(220, 220, 220);
+          doc.roundedRect(margin, cardStartY, cardWidth, cardHeight, 3, 3, 'FD');
+          
+          // Redraw the text on top of the background
+          // Institution name
+          doc.setFontSize(14);
+          doc.setFont(undefined, 'bold');
+          doc.text(institution.name, margin + 5, cardStartY + 10);
+          
+          // Reset font
+          doc.setFont(undefined, 'normal');
+          doc.setFontSize(10);
+          
+          // Redraw all fields
+          leftY = cardStartY + 25;
+          rightY = cardStartY + 25;
+          
+          visibleHeaders.forEach((header, index) => {
+            if (header.key === 'name') return;
+            
+            const value = institution[header.key];
+            let displayValue = '';
+            
+            if (value === null || value === undefined) {
+              displayValue = 'N/A';
+            } else if (typeof value === 'boolean') {
+              displayValue = value ? 'Yes' : 'No';
+            } else if (typeof value === 'number') {
+              if (header.key.includes('rate') || header.key.includes('percentage')) {
+                displayValue = `${(value * 100).toFixed(1)}%`;
+              } else if (header.key.includes('tuition') || header.key.includes('cost')) {
+                displayValue = `$${value.toLocaleString()}`;
+              } else {
+                displayValue = value.toLocaleString();
+              }
+            } else {
+              displayValue = String(value);
+            }
+            
+            const fieldText = `${header.title}: ${displayValue}`;
+            const maxWidth = useColumns ? colWidth - 10 : cardWidth - 10;
+            
+            if (useColumns) {
+              if (index % 2 === 0) {
+                const textLines = doc.splitTextToSize(fieldText, maxWidth);
+                doc.text(textLines, margin + 5, leftY);
+                leftY += 12 * textLines.length;
+              } else {
+                const textLines = doc.splitTextToSize(fieldText, maxWidth);
+                doc.text(textLines, margin + cardWidth/2, rightY);
+                rightY += 12 * textLines.length;
+              }
+            } else {
+              const textLines = doc.splitTextToSize(fieldText, maxWidth);
+              doc.text(textLines, margin + 5, leftY);
+              leftY += 12 * textLines.length;
+            }
+          });
+          
+          // Move position for next card
+          yPosition = maxY + 10; // Add some spacing between cards
+        });
+        
         // Save the PDF
         doc.save(`Ryteplan Institution List - ${this.list.name} - ${timestamp}.pdf`);
       };

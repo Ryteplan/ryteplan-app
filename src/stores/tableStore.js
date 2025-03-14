@@ -197,7 +197,7 @@ export const useTableStore = defineStore('table', {
           { title: 'Ungergraduate Male Poplulation', key: 'enTotUgN', minWidth: "140px", show: false, sortable: false },
           { title: 'Undergraduate Female Population', key: 'enUgFtWmnN', minWidth: "140px", show: false, sortable: false },
           { title: 'Total Graduates', key: 'enTotGradN', minWidth: "140px", show: false, sortable: false },
-          { title: 'Difficulty', key: 'adDiffAll', minWidth: "140px", show: true, sortable: false },          
+          { title: 'Admission Difficulty', key: 'adDiffAll', minWidth: "140px", show: false, sortable: false },          
           { title: 'Admission Testing Policy', key: 'adTestPolicyT', minWidth: "140px", show: false, sortable: false },
           { title: 'Waitlist Rank', key: 'waitlistRank', minWidth: "140px", show: false, sortable: false },
           { title: 'SAT Verbal 50th', key: 'sat1Verb50thP', minWidth: "140px", show: false, sortable: false },
