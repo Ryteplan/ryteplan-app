@@ -113,7 +113,6 @@ import ShareDialog from './ShareDialog'
 import { useTableStore } from '../stores/tableStore';
 import { useUserStore } from '../stores/userStore';
 import { jsPDF } from 'jspdf';
-import autoTable from 'jspdf-autotable'  // Add this import
 
 
 export default {
@@ -263,7 +262,6 @@ export default {
       const doc = new jsPDF();
       const timestamp = new Date().toISOString().split('T')[0];
       
-      // Add logo from assets
       const logo = new Image();
       logo.src = require('@/assets/ryteplan-logo-green-black.png');
       
@@ -279,27 +277,94 @@ export default {
         doc.setFontSize(10);
         doc.text(`Generated: ${timestamp}`, 15, 40);
         
+         // Starting Y position for the first card
+      let yPosition = 50;
+      const pageWidth = doc.internal.pageSize.width;
+      const margin = 15;
+      const cardWidth = pageWidth - (margin * 2);
+
+        // For each institution, create a card
+    this.institutions.forEach((institution) => {
+      // Check if we need a new page
+      if (yPosition > 250) {
+        doc.addPage();
+        yPosition = 20;
+      }
+      
+      // Card background
+      doc.setFillColor(250, 250, 250);
+      doc.setDrawColor(220, 220, 220);
+      doc.roundedRect(margin, yPosition, cardWidth, 60, 3, 3, 'FD');
+      
+      // Institution name
+      doc.setFontSize(14);
+      doc.setFont(undefined, 'bold');
+      doc.text(institution.name, margin + 5, yPosition + 10);
+      
+      // Reset font
+      doc.setFont(undefined, 'normal');
+      doc.setFontSize(10);
+      
+      // Add key information in two columns
+      let leftCol = margin + 5;
+      let rightCol = margin + cardWidth / 2;
+      let rowHeight = 12;
+      
+      // Row 1
+      if (institution.city && institution.state) {
+        doc.text(`Location: ${institution.city}, ${institution.state}`, leftCol, yPosition + 25);
+      }
+      if (institution.type) {
+        doc.text(`Type: ${institution.type}`, rightCol, yPosition + 25);
+      }
+      
+      // Row 2
+      if (institution.enrollment) {
+        doc.text(`Enrollment: ${institution.enrollment.toLocaleString()}`, leftCol, yPosition + 25 + rowHeight);
+      }
+      if (institution.acceptance_rate) {
+        doc.text(`Acceptance Rate: ${(institution.acceptance_rate * 100).toFixed(1)}%`, rightCol, yPosition + 25 + rowHeight);
+      }
+      
+      // Row 3
+      if (institution.tuition_in_state || institution.tuition_out_of_state) {
+        const tuition = institution.tuition_in_state 
+          ? `$${institution.tuition_in_state.toLocaleString()}`
+          : institution.tuition_out_of_state 
+            ? `$${institution.tuition_out_of_state.toLocaleString()} (out-of-state)`
+            : 'N/A';
+        doc.text(`Tuition: ${tuition}`, leftCol, yPosition + 25 + (rowHeight * 2));
+      }
+      if (institution.website) {
+        doc.text(`Website: ${institution.website}`, rightCol, yPosition + 25 + (rowHeight * 2));
+      }
+      
+      // Move position for next card
+      yPosition += 70; // Card height + spacing
+    });
+        
+
         // Add table with some styling
-        autoTable(doc, { 
-          html: '#listTable table',
-          startY: 50,
-          styles: {
-            fontSize: 10,
-            cellPadding: 3,
-            lineColor: [243, 243, 243],
-            lineWidth: 0.1,
-            fillColor: [250, 250, 250],
-          },
-          alternateRowStyles: {
-            fillColor: [255, 255, 255],
-          },
-          headStyles: {
-            fillColor: [243, 243, 243], // Ryteplan green color (#6899A4)
-            textColor: 0,
-            fontSize: 10,
-            fontStyle: 'medium'
-          },
-        });
+        // autoTable(doc, { 
+        //   html: '#listTable table',
+        //   startY: 50,
+        //   styles: {
+        //     fontSize: 10,
+        //     cellPadding: 3,
+        //     lineColor: [243, 243, 243],
+        //     lineWidth: 0.1,
+        //     fillColor: [250, 250, 250],
+        //   },
+        //   alternateRowStyles: {
+        //     fillColor: [255, 255, 255],
+        //   },
+        //   headStyles: {
+        //     fillColor: [243, 243, 243], // Ryteplan green color (#6899A4)
+        //     textColor: 0,
+        //     fontSize: 10,
+        //     fontStyle: 'medium'
+        //   },
+        // });
 
         // Save the PDF
         doc.save(`Ryteplan Institution List - ${this.list.name} - ${timestamp}.pdf`);
