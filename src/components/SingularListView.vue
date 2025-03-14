@@ -243,6 +243,8 @@ export default {
           .filter(doc => doc.exists())
           .map(doc => doc.data());
 
+        console.log(this.institutions);
+
       } catch (error) {
         console.error('Error loading list:', error);
       }
@@ -259,6 +261,8 @@ export default {
       this.showColumnsDialog = true;
     },
     exportToPDF() {
+      // Add this debug log at the start
+      console.log('Visible Headers:', JSON.parse(JSON.stringify(this.filteredHeaders)));      
       const doc = new jsPDF();
       const timestamp = new Date().toISOString().split('T')[0];
       
@@ -315,14 +319,22 @@ export default {
           let rightY = yPosition + 25;
           
           visibleHeaders.forEach((header, index) => {
-            // Skip the name field as we already displayed it
             if (header.key === 'name') return;
             
-            const value = institution[header.key];
+            let value = institution[header.key];
             let displayValue = '';
             
-            // Format the value based on its type
-            if (value === null || value === undefined) {
+            // Special handling for admission factors section
+            if (header.key === 'admissionFactors') {
+              // Create a list of admission factors
+              const factors = header.children.map(child => {
+                const factorValue = institution[child.key];
+                return `${child.title}: ${factorValue || 'N/A'}`;
+              }).join('\n');
+              displayValue = factors;
+            }
+            // Regular field handling
+            else if (value === null || value === undefined) {
               displayValue = 'N/A';
             } else if (typeof value === 'boolean') {
               displayValue = value ? 'Yes' : 'No';
@@ -338,7 +350,9 @@ export default {
               displayValue = String(value);
             }
             
-            const fieldText = `${header.title}: ${displayValue}`;
+            const fieldText = header.key === 'admissionFactors' 
+              ? 'Admission Factors:\n' + displayValue
+              : `${header.title}: ${displayValue}`;
             
             // Split text if it's too long for the column
             const maxWidth = useColumns ? colWidth - 10 : cardWidth - 10;
@@ -392,10 +406,20 @@ export default {
           visibleHeaders.forEach((header, index) => {
             if (header.key === 'name') return;
             
-            const value = institution[header.key];
+            let value = institution[header.key];
             let displayValue = '';
             
-            if (value === null || value === undefined) {
+            // Special handling for admission factors section
+            if (header.key === 'admissionFactors') {
+              // Create a list of admission factors
+              const factors = header.children.map(child => {
+                const factorValue = institution[child.key];
+                return `${child.title}: ${factorValue || 'N/A'}`;
+              }).join('\n');
+              displayValue = factors;
+            }
+            // Regular field handling
+            else if (value === null || value === undefined) {
               displayValue = 'N/A';
             } else if (typeof value === 'boolean') {
               displayValue = value ? 'Yes' : 'No';
@@ -411,7 +435,9 @@ export default {
               displayValue = String(value);
             }
             
-            const fieldText = `${header.title}: ${displayValue}`;
+            const fieldText = header.key === 'admissionFactors' 
+              ? 'Admission Factors:\n' + displayValue
+              : `${header.title}: ${displayValue}`;
             const maxWidth = useColumns ? colWidth - 10 : cardWidth - 10;
             
             if (useColumns) {
