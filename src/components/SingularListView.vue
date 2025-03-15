@@ -296,7 +296,7 @@ export default {
           // Add separator line before each institution (except the first one)
           if (index > 0) {
             doc.setDrawColor(220, 220, 220);
-            doc.setLineWidth(0.5);
+            doc.setLineWidth(0.1);
             doc.line(margin, yPosition - 6, pageWidth - margin, yPosition - 6);
           }
           
