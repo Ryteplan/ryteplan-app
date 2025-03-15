@@ -165,7 +165,7 @@
           </span>
         </v-btn>
       </div>
-      <div class="section-container location-links-images-container mt-4">
+      <div class="section-container location-links-images-container mt-4" style="gap: 20px;">
         <div class="d-flex flex-column">
           <div class="location-container d-flex flex-column" style="gap: 12px">
             <div class="stat-container">
@@ -176,11 +176,15 @@
               <span class="stat-label">City</span>
               <span class="stat-content">{{ institution["city"] }}</span>
             </div>
-
-            <div class="stat-container" v-if="institution['countryCode'] !== 'CAN'">
-              <span class="stat-label">State</span>
-              <span class="stat-content">{{ institution["stateCleaned"] }}</span>
-            </div>
+            <StatDisplay
+              label="State"
+              :uri="institution['uri']"
+              field="stateCleaned"
+              :valueFromIntegrated="institution['stateCleaned']" 
+              :valueFromPetersons="petersonsInstitution['stateCleaned']" 
+              :valueFromManual="manualInstitionData['stateCleaned']"
+              valueType="string"
+            />
           </div>
           <div class="external-links mt-4">
             <ul class="mt-3 header-links d-flex flex-column no-wrap" style="gap: 12px;">
@@ -1205,7 +1209,6 @@ export default {
       docSnap.forEach((doc) => {
         this.petersonsInstitution = doc.data();
       });
-      console.log(this.petersonsInstitution);
     },
     async loadIntegratedInstitutionData() {
       const slugFromURL = this.$route.params.slug;
