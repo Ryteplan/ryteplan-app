@@ -261,79 +261,70 @@ export default {
       this.showColumnsDialog = true;
     },
     exportToPDF() {
-      // Add this debug log at the start
-      console.log('Visible Headers:', JSON.parse(JSON.stringify(this.filteredHeaders)));      
       const doc = new jsPDF();
       const timestamp = new Date().toISOString().split('T')[0];
+      const margin = 15;
       
       const logo = new Image();
       logo.src = require('@/assets/ryteplan-logo-green-black.png');
       
       logo.onload = () => {
         // Add logo to PDF
-        doc.addImage(logo, 'PNG', 15, 10, 46, 11);
+        doc.addImage(logo, 'PNG', margin, 10, 46, 11);
         
-        // Add title
-        doc.setFontSize(16);
-        doc.text(`${this.list.name}`, 15, 30);
+        // Add title (reduced from 16 to 14)
+        doc.setFontSize(14);
+        doc.text(`${this.list.name}`, margin, 30);
         
-        // Add timestamp
-        doc.setFontSize(10);
-        doc.text(`Generated: ${timestamp}`, 15, 40);
+        // Add timestamp (reduced from 10 to 8)
+        doc.setFontSize(8);
+        doc.text(`Generated: ${timestamp}`, margin, 40);
         
-        // Starting Y position for the first card
+        // Starting positions
         let yPosition = 50;
         const pageWidth = doc.internal.pageSize.width;
-        const margin = 15;
-        const cardWidth = pageWidth - (margin * 2);
         
         // Get the filtered headers that are currently displayed in the table
         const visibleHeaders = this.filteredHeaders;
         
         // For each institution, create a card
-        this.institutions.forEach((institution) => {
+        this.institutions.forEach((institution, index) => {
           // Check if we need a new page
           if (yPosition > 250) {
             doc.addPage();
             yPosition = 20;
           }
+
+          // Add separator line before each institution (except the first one)
+          if (index > 0) {
+            doc.setDrawColor(220, 220, 220);
+            doc.setLineWidth(0.5);
+            doc.line(margin, yPosition - 6, pageWidth - margin, yPosition - 6);
+          }
           
-          // Record the starting position of this card
-          const cardStartY = yPosition;
-          
-          // Determine if we should use one or two columns
-          const useColumns = visibleHeaders.length > 3;
-          const colWidth = useColumns ? cardWidth / 2 - 10 : cardWidth - 10;
-          
-          // Institution name (always show this regardless of selected fields)
-          doc.setFontSize(14);
+          // Institution name (reduced from 14 to 12)
+          doc.setFontSize(12);
           doc.setFont(undefined, 'bold');
-          doc.text(institution.name, margin + 5, yPosition + 10);
+          doc.text(institution.name, margin, yPosition + 5);
           
-          // Reset font
+          // Reset font for fields (reduced from 10 to 8)
           doc.setFont(undefined, 'normal');
-          doc.setFontSize(10);
+          doc.setFontSize(8);
           
-          // Add fields based on visible headers
-          let leftY = yPosition + 25;
-          let rightY = yPosition + 25;
+          let currentY = yPosition + 15;
+          let currentX = margin;
+          const lineHeight = 6; // Reduced from 8 to 6 to match smaller font
+          const fieldSpacing = 8; // Reduced from 10 to 8
           
-          visibleHeaders.forEach((header, index) => {
+          visibleHeaders.forEach((header) => {
             if (header.key === 'name') return;
             
             let value = institution[header.key];
             let displayValue = '';
             
-            // Special handling for admission factors section
             if (header.key === 'admissionFactors') {
-              // Create a list of admission factors
-              const factors = header.children.map(child => {
-                const factorValue = institution[child.key];
-                return `${child.title}: ${factorValue || 'N/A'}`;
-              }).join('\n');
-              displayValue = factors;
+              return;
             }
-            // Regular field handling
             else if (value === null || value === undefined) {
               displayValue = 'N/A';
             } else if (typeof value === 'boolean') {
@@ -350,115 +341,46 @@ export default {
               displayValue = String(value);
             }
             
-            const fieldText = header.key === 'admissionFactors' 
-              ? 'Admission Factors:\n' + displayValue
-              : `${header.title}: ${displayValue}`;
+            const fieldText = `${header.title}: ${displayValue}`;
+            const textWidth = doc.getTextWidth(fieldText);
             
-            // Split text if it's too long for the column
-            const maxWidth = useColumns ? colWidth - 10 : cardWidth - 10;
-            
-            // Determine which column to place the field
-            if (useColumns) {
-              if (index % 2 === 0) {
-                // Left column
-                const textLines = doc.splitTextToSize(fieldText, maxWidth);
-                doc.text(textLines, margin + 5, leftY);
-                leftY += 12 * textLines.length; // Increase Y position based on number of lines
-              } else {
-                // Right column
-                const textLines = doc.splitTextToSize(fieldText, maxWidth);
-                doc.text(textLines, margin + cardWidth/2, rightY);
-                rightY += 12 * textLines.length; // Increase Y position based on number of lines
-              }
-            } else {
-              // Single column
-              const textLines = doc.splitTextToSize(fieldText, maxWidth);
-              doc.text(textLines, margin + 5, leftY);
-              leftY += 12 * textLines.length; // Increase Y position based on number of lines
+            if (currentX + textWidth > pageWidth - margin) {
+              currentX = margin;
+              currentY += lineHeight;
             }
+            
+            doc.text(fieldText, currentX, currentY);
+            currentX += textWidth + fieldSpacing;
           });
           
-          // Find the maximum Y position reached
-          const maxY = Math.max(leftY, rightY);
-          
-          // Calculate the actual card height based on content
-          const cardHeight = maxY - cardStartY;
-          
-          // Now draw the card background (after we know the height)
-          doc.setFillColor(250, 250, 250);
-          doc.setDrawColor(220, 220, 220);
-          doc.roundedRect(margin, cardStartY, cardWidth, cardHeight, 3, 3, 'FD');
-          
-          // Redraw the text on top of the background
-          // Institution name
-          doc.setFontSize(14);
-          doc.setFont(undefined, 'bold');
-          doc.text(institution.name, margin + 5, cardStartY + 10);
-          
-          // Reset font
-          doc.setFont(undefined, 'normal');
-          doc.setFontSize(10);
-          
-          // Redraw all fields
-          leftY = cardStartY + 25;
-          rightY = cardStartY + 25;
-          
-          visibleHeaders.forEach((header, index) => {
-            if (header.key === 'name') return;
+          // Handle admission factors
+          const admissionFactors = visibleHeaders.find(h => h.key === 'admissionFactors');
+          if (admissionFactors) {
+            currentX = margin;
+            currentY += lineHeight * 1.5;
             
-            let value = institution[header.key];
-            let displayValue = '';
+            const factors = admissionFactors.children.map(child => {
+              const factorValue = institution[child.key];
+              return `${child.title}: ${factorValue || 'N/A'}`;
+            });
             
-            // Special handling for admission factors section
-            if (header.key === 'admissionFactors') {
-              // Create a list of admission factors
-              const factors = header.children.map(child => {
-                const factorValue = institution[child.key];
-                return `${child.title}: ${factorValue || 'N/A'}`;
-              }).join('\n');
-              displayValue = factors;
-            }
-            // Regular field handling
-            else if (value === null || value === undefined) {
-              displayValue = 'N/A';
-            } else if (typeof value === 'boolean') {
-              displayValue = value ? 'Yes' : 'No';
-            } else if (typeof value === 'number') {
-              if (header.key.includes('rate') || header.key.includes('percentage')) {
-                displayValue = `${(value * 100).toFixed(1)}%`;
-              } else if (header.key.includes('tuition') || header.key.includes('cost')) {
-                displayValue = `$${value.toLocaleString()}`;
-              } else {
-                displayValue = value.toLocaleString();
+            doc.text('Admission Factors:', currentX, currentY);
+            currentY += lineHeight;
+            
+            factors.forEach(factor => {
+              const textWidth = doc.getTextWidth(factor);
+              
+              if (currentX + textWidth > pageWidth - margin) {
+                currentX = margin;
+                currentY += lineHeight;
               }
-            } else {
-              displayValue = String(value);
-            }
-            
-            const fieldText = header.key === 'admissionFactors' 
-              ? 'Admission Factors:\n' + displayValue
-              : `${header.title}: ${displayValue}`;
-            const maxWidth = useColumns ? colWidth - 10 : cardWidth - 10;
-            
-            if (useColumns) {
-              if (index % 2 === 0) {
-                const textLines = doc.splitTextToSize(fieldText, maxWidth);
-                doc.text(textLines, margin + 5, leftY);
-                leftY += 12 * textLines.length;
-              } else {
-                const textLines = doc.splitTextToSize(fieldText, maxWidth);
-                doc.text(textLines, margin + cardWidth/2, rightY);
-                rightY += 12 * textLines.length;
-              }
-            } else {
-              const textLines = doc.splitTextToSize(fieldText, maxWidth);
-              doc.text(textLines, margin + 5, leftY);
-              leftY += 12 * textLines.length;
-            }
-          });
+              
+              doc.text(factor, currentX, currentY);
+              currentX += textWidth + fieldSpacing;
+            });
+          }
           
-          // Move position for next card
-          yPosition = maxY + 10; // Add some spacing between cards
+          yPosition = currentY + 15;
         });
         
         // Save the PDF
@@ -472,15 +394,37 @@ export default {
 
       // Create CSV header row
       const headerRow = headers.map(header => {
-        // Escape quotes and wrap in quotes to handle commas in titles
-        const escapedTitle = header.title.replace(/"/g, '""');
-        return `"${escapedTitle}"`;
+        if (header.key === 'admissionFactors') {
+          // Add admission factor headers
+          const factorHeaders = header.children.map(child => {
+            const escapedTitle = child.title.replace(/"/g, '""');
+            return `"${escapedTitle}"`;
+          });
+          return factorHeaders.join(',');
+        } else {
+          // Handle regular headers
+          const escapedTitle = header.title.replace(/"/g, '""');
+          return `"${escapedTitle}"`;
+        }
       }).join(',');
       
       // Create CSV data rows
       const dataRows = this.institutions.map(institution => {
         return headers
           .map(header => {
+            if (header.key === 'admissionFactors') {
+              // Handle admission factors
+              return header.children.map(child => {
+                const value = institution[child.key];
+                if (value === null || value === undefined) {
+                  return '""';
+                }
+                // Handle strings - escape quotes and wrap in quotes
+                const escapedValue = String(value).replace(/"/g, '""');
+                return `"${escapedValue}"`;
+              }).join(',');
+            }
+
             const value = institution[header.key];
             
             // Handle different value types
@@ -493,6 +437,11 @@ export default {
             }
             
             if (typeof value === 'number') {
+              if (header.key.includes('rate') || header.key.includes('percentage')) {
+                return `"${(value * 100).toFixed(1)}%"`;
+              } else if (header.key.includes('tuition') || header.key.includes('cost')) {
+                return `"$${value.toLocaleString()}"`;
+              }
               return `"${value}"`;
             }
             
