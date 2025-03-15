@@ -243,8 +243,6 @@ export default {
           .filter(doc => doc.exists())
           .map(doc => doc.data());
 
-        console.log(this.institutions);
-
       } catch (error) {
         console.error('Error loading list:', error);
       }
@@ -390,17 +388,17 @@ export default {
     exportToCSV() {
       // Get visible headers from the table store
       const headers = this.filteredHeaders;
-      console.log(headers);
-
+      
       // Create CSV header row
       const headerRow = headers.map(header => {
         if (header.key === 'admissionFactors') {
-          // Add admission factor headers
+          // Add main "Admission Factors" column followed by individual factor columns
+          const mainHeader = `"${header.title}"`;
           const factorHeaders = header.children.map(child => {
             const escapedTitle = child.title.replace(/"/g, '""');
             return `"${escapedTitle}"`;
           });
-          return factorHeaders.join(',');
+          return [mainHeader, ...factorHeaders].join(',');
         } else {
           // Handle regular headers
           const escapedTitle = header.title.replace(/"/g, '""');
@@ -413,16 +411,17 @@ export default {
         return headers
           .map(header => {
             if (header.key === 'admissionFactors') {
-              // Handle admission factors
-              return header.children.map(child => {
+              // Add empty column for main "Admission Factors" followed by individual factor values
+              const emptyMainColumn = '""';
+              const factorValues = header.children.map(child => {
                 const value = institution[child.key];
                 if (value === null || value === undefined) {
                   return '""';
                 }
-                // Handle strings - escape quotes and wrap in quotes
                 const escapedValue = String(value).replace(/"/g, '""');
                 return `"${escapedValue}"`;
-              }).join(',');
+              });
+              return [emptyMainColumn, ...factorValues].join(',');
             }
 
             const value = institution[header.key];
