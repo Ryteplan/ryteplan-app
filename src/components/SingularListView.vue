@@ -15,17 +15,18 @@
     <v-row class="d-flex justify-space-between">      
       <v-col cols="9" class="d-flex align-end">
         <h1>{{ list.name }}</h1>
-        <span style="color: #888888; margin-left: 10px; margin-bottom: 8px; font-size: 18px;">
+        <span style="color: #888888; margin-left: 10px; margin-bottom: 10px; font-size: 18px;">
           ({{ institutions.length }}/30)
         </span>
       </v-col>
       <v-col cols="3" class="d-flex justify-end align-center">
-        <v-menu>
+        <v-menu location="bottom end">
           <template v-slot:activator="{ props }">
             <v-btn
-              class="ml-3"
+              class="mr-3"
               v-bind="props"
               @click="onUpdateMenu"
+              
             >
               Options
             </v-btn>
@@ -43,21 +44,45 @@
             </v-list-item>
           </v-list>
         </v-menu>
+        <v-menu location="bottom end">
+          <template v-slot:activator="{ props }">
+            <v-btn
+              v-if="selectedInstitutions.length > 0"
+              v-bind="props"
+              :disabled="selectedInstitutions.length === 0"
+            >
+              {{ selectedInstitutions.length }} selected 
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item
+              @click="deleteSelectedInstitutions"
+              :disabled="selectedInstitutions.length === 0"
+            >
+              <div class="d-flex align-center">
+                <v-icon class="mr-2" color="error">mdi-delete</v-icon>
+                <v-list-item-title>Remove from List</v-list-item-title>
+              </div>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </v-col>
     </v-row>
-    <v-row class="mt-4">
+    <v-row class="mt-0">
       <v-col cols="12">
         <v-data-table
           id="listTable"
           :headers="filteredHeaders"
           :items="institutions"
           @click:row="navigateToInstitution" 
-          item-key="name"
+          item-key="uri"
           class="elevation-1"
           density="comfortable"
           fixed-header 
           return-object
           :items-per-page="-1"
+          show-select
+          v-model="selectedInstitutions"
         >
           <template #bottom></template>
         </v-data-table>
@@ -108,7 +133,7 @@
 
 <script>
 import { dbFireStore } from "../firebase";
-import { getDoc, doc, deleteDoc } from 'firebase/firestore'
+import { getDoc, doc, deleteDoc, updateDoc } from 'firebase/firestore'
 import ShareDialog from './ShareDialog'
 import { useTableStore } from '../stores/tableStore';
 import { useUserStore } from '../stores/userStore';
@@ -130,7 +155,6 @@ export default {
     return { tableStore, userStore };
   },
   mounted() {    
-    console.log(this.$route);
     this.loadList();
   },
   data() {
@@ -141,6 +165,7 @@ export default {
       institutions: [],
       showShareDialog: false,
       showColumnsDialog: false,
+      selectedInstitutions: [],
       selectedDropDown: [
         { 
           title: 'Edit Columns', 
@@ -215,7 +240,6 @@ export default {
     async loadList() {
       try {
         const idFromURL = this.$route.params.id;
-        console.log(idFromURL);
 
         const querySnapshot = await getDoc(doc(dbFireStore, 'lists', idFromURL));
 
@@ -491,6 +515,43 @@ export default {
         alert('Failed to delete list');
       }
     },
+    async deleteSelectedInstitutions() {
+      if (!confirm(`Are you sure you want to remove ${this.selectedInstitutions.length} institution(s) from this list?`)) {
+        return;
+      }
+
+      try {
+        const idFromURL = this.$route.params.id;
+        const listRef = doc(dbFireStore, 'lists', idFromURL);
+        
+        // Get current list data
+        const listDoc = await getDoc(listRef);
+        const listData = listDoc.data();
+        
+        // Filter out the selected institutions
+        const selectedUris = this.selectedInstitutions.map(inst => inst.uri);
+        const updatedInstitutions = listData.institutions.filter(
+          id => !selectedUris.includes(id)
+        );
+        
+        // Update Firestore
+        await updateDoc(listRef, {
+          institutions: updatedInstitutions
+        });
+        
+        // Update local state
+        this.institutions = this.institutions.filter(
+          inst => !selectedUris.includes(inst.uri)
+        );
+        
+        // Clear selection
+        this.selectedInstitutions = [];
+        
+      } catch (error) {
+        console.error('Error removing institutions from list:', error);
+        alert('Failed to remove institutions from list');
+      }
+    }
   },
   computed: {
     filteredHeaders() {      

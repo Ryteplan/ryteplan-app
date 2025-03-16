@@ -56,8 +56,8 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="primary" @click="createNewList">Create</v-btn>
               <v-btn text @click="showCreateListDialog = false">Cancel</v-btn>
+              <v-btn color="primary" @click="createNewList">Create</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
