@@ -1,5 +1,5 @@
 <template>
-  <v-container class="pt-8">
+  <v-container class="pt-4">
     <v-row v-if="this.$route.params.showBackButton">
       {{ this.$route.params.id }}
       <v-col>
@@ -14,8 +14,8 @@
     </v-row>
     <v-row class="d-flex justify-space-between">      
       <v-col cols="9" class="d-flex align-end">
-        <h1>{{ list.name }}</h1>
-        <span style="color: #888888; margin-left: 10px; margin-bottom: 10px; font-size: 18px;">
+        <h1 class="text-h6">{{ list.name }}</h1>
+        <span style="color: #888888; margin-left: 10px; margin-bottom: 5px; font-size: 14px;">
           ({{ institutions.length }}/30)
         </span>
       </v-col>
@@ -26,7 +26,7 @@
               class="mr-3"
               v-bind="props"
               @click="onUpdateMenu"
-              
+              size="small"              
             >
               Options
             </v-btn>
@@ -47,6 +47,7 @@
         <v-menu location="bottom end">
           <template v-slot:activator="{ props }">
             <v-btn
+              size="small"
               v-if="selectedInstitutions.length > 0"
               v-bind="props"
               :disabled="selectedInstitutions.length === 0"
@@ -325,7 +326,6 @@ export default {
             doc.line(margin, yPosition - 6, pageWidth - margin, yPosition - 6);
           }
           
-          // Institution name (reduced from 14 to 12)
           doc.setFontSize(12);
           doc.setFont(undefined, 'bold');
           doc.text(institution.name, margin, yPosition + 5);
@@ -565,5 +565,7 @@ export default {
 </script>
 
 <style>
- 
+.v-data-table__td--select-row {
+  background-color: #f7f7f7;  
+}
 </style>

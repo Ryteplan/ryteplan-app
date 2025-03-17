@@ -1,21 +1,18 @@
 <template>
-  <v-container class="pt-8">
+  <v-container class="pt-4">
     <v-row class="">
       <v-col cols="6">
-        <div class="d-flex align-center justify-start">
-          <h1>Lists</h1>
+        <div class="d-flex align-center" >
+          <h1 class="text-h6">Your lists</h1>
+          <v-btn
+            size="28"
+            @click="showCreateListDialog = true"
+            class="ml-6"
+          >
+            <v-icon>mdi-plus</v-icon>
+          </v-btn>
         </div>
         <div v-if="userLists.length > 0" class="mt-5">
-          <div class="d-flex align-center justify-start">
-            <h2>Your lists</h2>
-            <v-btn
-              size="30"
-              @click="showCreateListDialog = true"
-              class="ml-6"
-            >
-              <v-icon>mdi-plus</v-icon>
-            </v-btn>
-          </div>
           <ul class="mt-4">
             <v-list>
               <v-list-item 
