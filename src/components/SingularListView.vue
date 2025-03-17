@@ -425,38 +425,31 @@ export default {
       const headers = this.filteredHeaders;
       
       // Create CSV header row
-      const headerRow = headers.map(header => {
-        if (header.key === 'admissionFactors') {
-          // Add main "Admission Factors" column followed by individual factor columns
-          const mainHeader = `"${header.title}"`;
-          const factorHeaders = header.children.map(child => {
-            const escapedTitle = child.title.replace(/"/g, '""');
-            return `"${escapedTitle}"`;
-          });
-          return [mainHeader, ...factorHeaders].join(',');
-        } else {
-          // Handle regular headers
-          const escapedTitle = header.title.replace(/"/g, '""');
-          return `"${escapedTitle}"`;
-        }
-      }).join(',');
+      const headerRow = headers
+        .map(header => {
+          if (header.children) {
+            // For headers: use the parent title and each child's title
+            const mainColumn = `"${header.title}"`;
+            const childColumns = header.children.map(child => `"${child.title}"`);
+            return [mainColumn, ...childColumns].join(',');
+          }
+          return `"${header.title}"`;
+        })
+        .join(',');
       
       // Create CSV data rows
       const dataRows = this.institutions.map(institution => {
         return headers
           .map(header => {
-            if (header.key === 'admissionFactors') {
-              // Add empty column for main "Admission Factors" followed by individual factor values
+            if (header.children) {
               const emptyMainColumn = '""';
-              const factorValues = header.children.map(child => {
+              const childValues = header.children.map(child => {
                 const value = institution[child.key];
-                if (value === null || value === undefined) {
-                  return '""';
-                }
-                const escapedValue = String(value).replace(/"/g, '""');
-                return `"${escapedValue}"`;
+                const showPolicy = institution[`show${child.key.replace('adms', '')}TestingPolicy`];
+                const formattedValue = this.formatTestingValue(value, showPolicy);
+                return `"${formattedValue === '—' ? '' : formattedValue}"`;
               });
-              return [emptyMainColumn, ...factorValues].join(',');
+              return [emptyMainColumn, ...childValues].join(',');
             }
 
             const value = institution[header.key];
@@ -563,25 +556,23 @@ export default {
       }
     },
     formatTestingValue(value, showPolicy) {
-      console.log(value, showPolicy);
       if (showPolicy === true || !value) return '—';
       
-      let formattedValue = value;
-      if (typeof formattedValue === 'string') {
-        if (formattedValue.includes('SAT or ACT')) {
-          formattedValue = 'SAT or ACT';
+      if (typeof value === 'string') {
+        if (value.includes('SAT or ACT')) {
+          value = 'SAT or ACT';
         }
-        if (formattedValue.includes('Other standardized tests')) {
-          formattedValue = formattedValue.replace(/Other standardized tests/g, '');
+        if (value.includes('Other standardized tests')) {
+          value = value.replace(/Other standardized tests/g, '');
         }
-        if (formattedValue.includes('SAT Subject Tests')) {
-          formattedValue = formattedValue.replace(/SAT Subject Tests/g, '');
+        if (value.includes('SAT Subject Tests')) {
+          value = value.replace(/SAT Subject Tests/g, '');
         }
-        if (formattedValue === '') {
+        if (value === '') {
           return '—';
         }
       }
-      return formattedValue;
+      return value;
     }
   },
   computed: {
