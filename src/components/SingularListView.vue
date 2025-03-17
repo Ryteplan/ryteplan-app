@@ -649,7 +649,11 @@ export default {
 </script>
 
 <style>
-.v-data-table__td--select-row {
-  background-color: #f7f7f7;  
-}
+  #listTable .v-data-table__thead tr th:first-child {
+    z-index: 7;
+  }
+
+  .v-data-table__td--select-row {
+    background-color: #f7f7f7;  
+  }
 </style>
