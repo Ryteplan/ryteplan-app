@@ -649,8 +649,8 @@ export default {
 </script>
 
 <style>
-  #listTable .v-data-table__thead tr th:first-child {
-    z-index: 7;
+  #listTable th:has(.v-checkbox-btn) {
+    z-index: 7 !important;
   }
 
   .v-data-table__td--select-row {
