@@ -90,13 +90,13 @@
             {{ item.testingPolicy || '—' }}
           </template>
           <template #[`item.admsReq`]="{ item }">
-            {{ item.showRequiredTestingPolicy === true ? '—' : (item.admsReq || '—') }}
+            {{ formatTestingValue(item.admsReq, item.showRequiredTestingPolicy) }}
           </template>
           <template #[`item.admsConsider`]="{ item }">
-            {{ item.showConsideredTestingPolicy === true ? '—' : (item.admsConsider || '—') }}
+            {{ formatTestingValue(item.admsConsider, item.showConsideredTestingPolicy) }}
           </template>
           <template #[`item.admsNotUsed`]="{ item }">
-            {{ item.showNotUsedTestingPolicy === true ? '—' : (item.admsNotUsed || '—') }}
+            {{ formatTestingValue(item.admsNotUsed, item.showNotUsedTestingPolicy) }}
           </template>
         </v-data-table>
       </v-col>
@@ -561,6 +561,27 @@ export default {
         console.error('Error removing institutions from list:', error);
         alert('Failed to remove institutions from list');
       }
+    },
+    formatTestingValue(value, showPolicy) {
+      console.log(value, showPolicy);
+      if (showPolicy === true || !value) return '—';
+      
+      let formattedValue = value;
+      if (typeof formattedValue === 'string') {
+        if (formattedValue.includes('SAT or ACT')) {
+          formattedValue = 'SAT or ACT';
+        }
+        if (formattedValue.includes('Other standardized tests')) {
+          formattedValue = formattedValue.replace(/Other standardized tests/g, '');
+        }
+        if (formattedValue.includes('SAT Subject Tests')) {
+          formattedValue = formattedValue.replace(/SAT Subject Tests/g, '');
+        }
+        if (formattedValue === '') {
+          return '—';
+        }
+      }
+      return formattedValue;
     }
   },
   computed: {
