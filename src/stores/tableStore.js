@@ -174,14 +174,14 @@ export const useTableStore = defineStore('table', {
           { title: 'City', key: 'city', minWidth: "120px", show: false },
           { title: 'State', key: 'stateCleaned', minWidth: "130px", show: true, sortable: false },
           { title: 'Sector', key: 'mainInstControlDesc', minWidth: "140px", show: true, sortable: false },
-          { title: 'Calendar', key: 'mainCalendar', minWidth: "140px", show: true, sortable: false },          
+          { title: 'Calendar', key: 'mainCalendar', minWidth: "80px", show: true, sortable: false },          
           { title: 'Zipcode', key: 'zipcode', minWidth: "130px", show: false },
           { title: 'Country', key: 'countryCode', minWidth: "130px", show: false, sortable: false },
-          { title: 'Full time faculty', key: 'ftN', minWidth: "130px", show: false, sortable: false },
-          { title: 'Part time faculty', key: 'ptN', minWidth: "130px", show: false, sortable: false },
-          { title: 'Student to faculty ratio', key: 'ugRatio', minWidth: "130px", show: false, sortable: false },
-          { title: 'Male Faculty', key: 'totMenN', minWidth: "130px", show: false, sortable: false },
-          { title: 'Female Faculty', key: 'totWmnN', minWidth: "130px", show: false, sortable: false },
+          { title: 'Full time faculty', key: 'ftN', minWidth: "130px", show: false, sortable: false, align: "end" },
+          { title: 'Part time faculty', key: 'ptN', minWidth: "130px", show: false, sortable: false, align: "end" },
+          { title: 'Student to faculty ratio', key: 'ugRatio', minWidth: "130px", show: false, sortable: false, align: "end" },
+          { title: 'Male Faculty', key: 'totMenN', minWidth: "130px", show: false, sortable: false, align: "end" },
+          { title: 'Female Faculty', key: 'totWmnN', minWidth: "130px", show: false, sortable: false, align: "end" },
           { title: 'Offer Co-op', key: 'coop', minWidth: "130px", show: false, sortable: false },
           { title: 'ROTC Army', key: 'rotcArmy', minWidth: "130px", show: false, sortable: false },
           { title: 'ROTC Navy', key: 'rotcNavy', minWidth: "130px", show: false, sortable: false },
@@ -191,14 +191,13 @@ export const useTableStore = defineStore('table', {
           { title: 'Names of institutions other than this one where 3-2 offered', key: 'deg32EngT', minWidth: "130px", show: false, sortable: false },
           { title: 'Main Type of Degree Offered', key: 'mainFunctionType', minWidth: "260px", show: false, sortable: false },
           { title: 'Religious Affiliation', key: 'denomDesc', minWidth: "140px", show: false, sortable: false },
-          { title: 'Undergraduates', key: 'enTotUgN', minWidth: "140px", show: true, sortable: false },
+          { title: 'Undergraduates', key: 'enTotUgN', minWidth: "80px", show: true, sortable: false, align: "end" },
           { title: 'Campus Acreage', key: 'cmpsSizeN', minWidth: "140px", show: false, sortable: false },
           { title: 'Campus Setting', key: 'cmpsSetting', minWidth: "140px", show: true, sortable: false },          
           { title: 'Ungergraduate Male Poplulation', key: 'enTotUgN', minWidth: "140px", show: false, sortable: false },
           { title: 'Undergraduate Female Population', key: 'enUgFtWmnN', minWidth: "140px", show: false, sortable: false },
           { title: 'Total Graduates', key: 'enTotGradN', minWidth: "140px", show: false, sortable: false },
           { title: 'Admission Difficulty', key: 'adDiffAll', minWidth: "140px", show: false, sortable: false },
-          // { title: 'Admission Testing Policy', key: 'testingPolicy', minWidth: "300px", show: false, sortable: false },
           {
             title: 'Admission Testing Policy',
             key: 'admissionTestingPolicy',
@@ -238,9 +237,8 @@ export const useTableStore = defineStore('table', {
           { title: 'Early Action Deadline', key: 'earlyActionDeadline', minWidth: "140px", show: false, sortable: false },
           { title: 'Class sections 100+', key: 'classSec7', minWidth: "140px", show: false, sortable: false },          
           { title: 'Priority Application Deadline', key: 'fallFreshPrio', minWidth: "140px", show: false, sortable: false },
-          { title: 'Admission Video', key: 'adVideo', minWidth: "140px", show: false, sortable: false },
+          // { title: 'Admission Video', key: 'adVideo', minWidth: "140px", show: false, sortable: false },
           { title: 'Admission Factors',
-            align: "center",
             key: 'admissionFactors',
             show: false,
             children: [
@@ -263,7 +261,6 @@ export const useTableStore = defineStore('table', {
               { title: 'Employment', key: 'work', minWidth: "140px", show: true, sortable: false },
             ]
           },
-          // { title: 'xxx', key: 'xxx', minWidth: "140px", show: true, sortable: false },
         ];  
       }
     },
@@ -278,7 +275,17 @@ export const useTableStore = defineStore('table', {
       );
     },
     updateHeaders() {
-      const filteredArray = this.tableHeaders.map(x => (x.show === false ? { ...x, align: " d-none" } : { ...x, align: "" }));
+      const filteredArray = this.tableHeaders.map(x => {
+        // Get existing alignment, excluding d-none if present
+        const currentAlign = (x.align || '').replace('d-none', '').trim();
+        
+        return {
+          ...x,
+          align: x.show === false 
+            ? `${currentAlign} d-none`.trim()  // Add d-none while preserving existing alignment
+            : currentAlign                      // Keep existing alignment
+        };
+      });
       this.tableHeaders = filteredArray;
       let tableHeaders = JSON.stringify(filteredArray);
       localStorage.setItem("tableHeaders", tableHeaders);

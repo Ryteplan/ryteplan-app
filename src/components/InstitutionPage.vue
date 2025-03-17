@@ -226,9 +226,11 @@
           <span v-if="institution['denomDesc'] == '—' && institution['afilDesc'] == '—'" class="stat-content">—</span>
         </div>
 
-        <div class="stat-container">
-          <span class="stat-label">Admission Difficulty</span>
-          <span class="stat-content">{{ toTitleCase(institution["adDiffAll"]?.toLocaleString() || '—') }}</span>
+        <div class="stat-container d-none">
+          <div class="d-none">
+            <span class="stat-label">Admission Difficulty</span>
+            <span class="stat-content">{{ toTitleCase(institution["adDiffAll"]?.toLocaleString() || '—') }}</span>
+          </div>
         </div>
         <StatDisplay
           label="Admission Rate"

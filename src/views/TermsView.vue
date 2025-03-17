@@ -80,7 +80,7 @@ export default {
         },
         {
           title: '11. Governing Law',
-          content: 'These Terms are governed by and construed in accordance with the laws of Delaware, without regard to its conflict of law principles. Any disputes will be resolved in the courts of Delaware.'
+          content: 'These Terms are governed by and construed in accordance with the laws of Wyoming, without regard to its conflict of law principles. Any disputes will be resolved in the courts of Wyoming.'
         },
         {
           title: '12. Termination',
