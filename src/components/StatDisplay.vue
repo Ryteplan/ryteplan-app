@@ -140,6 +140,7 @@ export default {
         this.testingPoliciesEmptyState = false;
         }
       }
+      console.log(this.testingPoliciesEmptyState);
     },
     getPolicyVisibilityValues(header) {
       
@@ -217,16 +218,25 @@ export default {
           setDoc(doc(dbFireStore, 'manual_institution_data', this.uri), {
             showRequiredTestingPolicy: this.testingPolicySwitchVisibiltyValues.showRequiredTestingPolicy,
           }, { merge: true });
+          setDoc(doc(dbFireStore, 'institutions_integrated', this.uri), {
+            showRequiredTestingPolicy: this.testingPolicySwitchVisibiltyValues.showRequiredTestingPolicy,
+          }, { merge: true });
           break;
         case 'Considered':
           this.testingPolicySwitchVisibiltyValues.showConsideredTestingPolicy = !this.testingPolicySwitchVisibiltyValues.showConsideredTestingPolicy;
           setDoc(doc(dbFireStore, 'manual_institution_data', this.uri), {
             showConsideredTestingPolicy: this.testingPolicySwitchVisibiltyValues.showConsideredTestingPolicy,
           }, { merge: true });
+          setDoc(doc(dbFireStore, 'institutions_integrated', this.uri), {
+            showConsideredTestingPolicy: this.testingPolicySwitchVisibiltyValues.showConsideredTestingPolicy,
+          }, { merge: true });
           break;
         case 'Not used':
           this.testingPolicySwitchVisibiltyValues.showNotUsedTestingPolicy = !this.testingPolicySwitchVisibiltyValues.showNotUsedTestingPolicy;
           setDoc(doc(dbFireStore, 'manual_institution_data', this.uri), {
+            showNotUsedTestingPolicy: this.testingPolicySwitchVisibiltyValues.showNotUsedTestingPolicy,
+          }, { merge: true });
+          setDoc(doc(dbFireStore, 'institutions_integrated', this.uri), {
             showNotUsedTestingPolicy: this.testingPolicySwitchVisibiltyValues.showNotUsedTestingPolicy,
           }, { merge: true });
           break;

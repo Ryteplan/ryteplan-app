@@ -198,20 +198,20 @@ export const useTableStore = defineStore('table', {
           { title: 'Undergraduate Female Population', key: 'enUgFtWmnN', minWidth: "140px", show: false, sortable: false },
           { title: 'Total Graduates', key: 'enTotGradN', minWidth: "140px", show: false, sortable: false },
           { title: 'Admission Difficulty', key: 'adDiffAll', minWidth: "140px", show: false, sortable: false },
-          { title: 'Admission Testing Policy', key: 'testingPolicy', minWidth: "300px", show: false, sortable: false },
-          // {
-          //   title: 'Admission Testing Policy',
-          //   key: 'admissionTestingPolicy',
-          //   minWidth: "140px",
-          //   show: false,
-          //   sortable: false,
-          //   children: [
-          //     { title: 'Rya\'s Note', key: 'testingPolicy', minWidth: "240px", sortable: false },
-          //     { title: 'Required', key: 'admsReq', minWidth: "140px", sortable: false },
-          //     { title: 'Considered', key: 'admsConsider', minWidth: "140px", sortable: false },
-          //     { title: 'Not used', key: 'admsNotUsed', minWidth: "140px", sortable: false }
-          //   ]
-          // },          
+          // { title: 'Admission Testing Policy', key: 'testingPolicy', minWidth: "300px", show: false, sortable: false },
+          {
+            title: 'Admission Testing Policy',
+            key: 'admissionTestingPolicy',
+            minWidth: "140px",
+            show: false,
+            sortable: false,
+            children: [
+              { title: 'Rya\'s Note', key: 'testingPolicy', minWidth: "240px", sortable: false },
+              { title: 'Required', key: 'admsReq', minWidth: "140px", sortable: false },
+              { title: 'Considered', key: 'admsConsider', minWidth: "140px", sortable: false },
+              { title: 'Not used', key: 'admsNotUsed', minWidth: "140px", sortable: false }
+            ]
+          },          
           { title: 'Waitlist Rank', key: 'waitlistRank', minWidth: "140px", show: false, sortable: false },
           { title: 'SAT Verbal 50th', key: 'sat1Verb50thP', minWidth: "140px", show: false, sortable: false },
           { title: 'SAT Math 50th', key: 'sat1Math50thP', minWidth: "140px", show: false, sortable: false },
@@ -346,4 +346,22 @@ export const useTableStore = defineStore('table', {
       }
     },
   },
+  getters: {
+    getTestingPolicy: () => {
+      return (institution) => {
+
+        const showRequired = institution.showRequiredTestingPolicy !== false;
+        const showConsidered = institution.showConsideredTestingPolicy !== false;
+        const showNotUsed = institution.showNotUsedTestingPolicy !== false;
+
+        const policies = [];
+        if (institution.admsReq && showRequired) policies.push('Required');
+        if (institution.admsConsider && showConsidered) policies.push('Considered');
+        if (institution.admsNotUsed && showNotUsed) policies.push('Not used');
+
+        // If we have policies to display, join them, otherwise show em dash
+        return policies.length > 0 ? policies.join(', ') : '—';
+      }
+    }
+  }
 });

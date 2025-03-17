@@ -86,6 +86,18 @@
           v-model="selectedInstitutions"
         >
           <template #bottom></template>
+          <template #[`item.testingPolicy`]="{ item }">
+            {{ item.testingPolicy || '—' }}
+          </template>
+          <template #[`item.admsReq`]="{ item }">
+            {{ item.showRequiredTestingPolicy === true ? '—' : (item.admsReq || '—') }}
+          </template>
+          <template #[`item.admsConsider`]="{ item }">
+            {{ item.showConsideredTestingPolicy === true ? '—' : (item.admsConsider || '—') }}
+          </template>
+          <template #[`item.admsNotUsed`]="{ item }">
+            {{ item.showNotUsedTestingPolicy === true ? '—' : (item.admsNotUsed || '—') }}
+          </template>
         </v-data-table>
       </v-col>
     </v-row>
@@ -229,12 +241,10 @@ export default {
           }
         });
 
-        // Open in new tab for right click or if holding Ctrl/Cmd key
         if (event.ctrlKey || event.metaKey) {
           window.open(route.href, '_blank');
         } else {
-          // Navigate in current tab for normal left click
-          this.$router.push(route);
+          window.open(route.href, '_blank');
         }
       }
     },
