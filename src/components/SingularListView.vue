@@ -412,6 +412,56 @@ export default {
               currentX += textWidth + fieldSpacing;
             });
           }
+
+          // Handle testing policies
+          const testingPolicies = visibleHeaders.find(h => h.key === 'admissionTestingPolicy');
+          if (testingPolicies) {
+            currentX = margin;
+            currentY += lineHeight * 1.5;
+            
+            // Filter out policies that have no value or are not visible
+            const validPolicies = testingPolicies.children
+              .map(child => {
+                const value = institution[child.key];
+                let showPolicy;
+                switch (child.key) {
+                  case 'admsReq':
+                    showPolicy = institution.showRequiredTestingPolicy;
+                    break;
+                  case 'admsConsider':
+                    showPolicy = institution.showConsideredTestingPolicy;
+                    break;
+                  case 'admsNotUsed':
+                    showPolicy = institution.showNotUsedTestingPolicy;
+                    break;
+                }
+                const formattedValue = this.formatTestingValue(value, showPolicy);
+                // Only return policies that have a value and aren't em dashes
+                if (value && formattedValue !== '—' && (showPolicy !== undefined || showPolicy !== false)) {
+                  return `${child.title}: ${formattedValue}`;
+                }
+                return null;
+              })
+              .filter(policy => policy !== null); // Remove null entries
+            
+            // Only add the section if there are valid policies to show
+            if (validPolicies.length > 0) {
+              doc.text('Testing Policies:', currentX, currentY);
+              currentY += lineHeight;
+              
+              validPolicies.forEach(policy => {
+                const textWidth = doc.getTextWidth(policy);
+                
+                if (currentX + textWidth > pageWidth - margin) {
+                  currentX = margin;
+                  currentY += lineHeight;
+                }
+                
+                doc.text(policy, currentX, currentY);
+                currentX += textWidth + fieldSpacing;
+              });
+            }
+          }
           
           yPosition = currentY + 15;
         });
@@ -568,7 +618,6 @@ export default {
       }
     },
     formatTestingValue(value, showPolicy) {
-      console.log(value, showPolicy);
       if (showPolicy === true || !value) return '—';
       
       if (typeof value === 'string') {
