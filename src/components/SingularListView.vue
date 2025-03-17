@@ -428,7 +428,6 @@ export default {
       const headerRow = headers
         .map(header => {
           if (header.children) {
-            // For headers: use the parent title and each child's title
             const mainColumn = `"${header.title}"`;
             const childColumns = header.children.map(child => `"${child.title}"`);
             return [mainColumn, ...childColumns].join(',');
@@ -437,24 +436,36 @@ export default {
         })
         .join(',');
       
-      // Create CSV data rows
+      // Create CSV data rows using the same templates as v-data-table
       const dataRows = this.institutions.map(institution => {
         return headers
           .map(header => {
             if (header.children) {
               const emptyMainColumn = '""';
               const childValues = header.children.map(child => {
-                const value = institution[child.key];
-                const showPolicy = institution[`show${child.key.replace('adms', '')}TestingPolicy`];
-                const formattedValue = this.formatTestingValue(value, showPolicy);
-                return `"${formattedValue === '—' ? '' : formattedValue}"`;
+                let value;
+                // Use the same template logic as v-data-table
+                if (child.key === 'admsReq') {
+                  value = this.formatTestingValue(institution.admsReq, institution.showRequiredTestingPolicy);
+                } else if (child.key === 'admsConsider') {
+                  value = this.formatTestingValue(institution.admsConsider, institution.showConsideredTestingPolicy);
+                } else if (child.key === 'admsNotUsed') {
+                  value = this.formatTestingValue(institution.admsNotUsed, institution.showNotUsedTestingPolicy);
+                } else {
+                  value = institution[child.key];
+                }
+                // Don't include em dashes in the CSV
+                return `"${value === '—' ? '' : value}"`;
               });
               return [emptyMainColumn, ...childValues].join(',');
             }
 
+            // For non-child columns, use the same template logic
+            if (header.key === 'testingPolicy') {
+              return `"${institution.testingPolicy || ''}"`;
+            }
+
             const value = institution[header.key];
-            
-            // Handle different value types
             if (value === null || value === undefined) {
               return '""';
             }
@@ -463,6 +474,7 @@ export default {
               return value ? '"Yes"' : '"No"';
             }
             
+            // Handle numbers
             if (typeof value === 'number') {
               if (header.key.includes('rate') || header.key.includes('percentage')) {
                 return `"${(value * 100).toFixed(1)}%"`;
@@ -472,7 +484,7 @@ export default {
               return `"${value}"`;
             }
             
-            // Handle strings - escape quotes and wrap in quotes
+            // Handle strings
             const escapedValue = String(value).replace(/"/g, '""');
             return `"${escapedValue}"`;
           })
@@ -556,6 +568,7 @@ export default {
       }
     },
     formatTestingValue(value, showPolicy) {
+      console.log(value, showPolicy);
       if (showPolicy === true || !value) return '—';
       
       if (typeof value === 'string') {
