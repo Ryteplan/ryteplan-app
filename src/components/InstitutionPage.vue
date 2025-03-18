@@ -408,7 +408,10 @@
           />
         </div>
       </div>
-      <div class="section-container mt-8 d-none">
+      <div 
+        class="section-container mt-8"
+        v-if="userStore.adminMode"
+      >
         <h2>Deadline dates</h2>
         <div class="three-by-three-stat-grid mt-4">
           <StatDisplay
