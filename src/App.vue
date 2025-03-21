@@ -136,7 +136,7 @@
             </v-col>
             <v-col cols="4">
               <div style="font-size: 13px; margin-bottom: 0; gap: 8px; display: flex; justify-content: flex-end;">
-                <span>Some university data provided by <a style="color: #1d1d1d;" href="https://www.petersons.com" target="_blank">Petersons</a></span>
+                <span><a style="color: #1d1d1d;" href="https://www.petersons.com" target="_blank"> Peterson's Data</a></span>
               </div>
             </v-col>
           </v-row>
