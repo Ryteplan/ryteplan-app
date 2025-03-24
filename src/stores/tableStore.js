@@ -192,10 +192,10 @@ export const useTableStore = defineStore('table', {
           { title: 'Main Type of Degree Offered', key: 'mainFunctionType', minWidth: "260px", show: false, sortable: false },
           { title: 'Religious Affiliation', key: 'denomDesc', minWidth: "140px", show: false, sortable: false },
           { title: 'Undergraduates', key: 'enTotUgN', minWidth: "80px", show: true, sortable: false, align: "end" },
+          { title: 'Ungergraduate Male Poplulation', key: 'enUgFtMenN', minWidth: "140px", align: "end", show: false, sortable: false },
+          { title: 'Undergraduate Female Population', key: 'enUgFtWmnN', minWidth: "140px", align: "end", show: false, sortable: false },
           { title: 'Campus Acreage', key: 'cmpsSizeN', minWidth: "140px", show: false, sortable: false },
           { title: 'Campus Setting', key: 'cmpsSetting', minWidth: "140px", show: true, sortable: false },          
-          { title: 'Ungergraduate Male Poplulation', key: 'enTotUgN', minWidth: "140px", show: false, sortable: false },
-          { title: 'Undergraduate Female Population', key: 'enUgFtWmnN', minWidth: "140px", show: false, sortable: false },
           { title: 'Total Graduates', key: 'enTotGradN', minWidth: "140px", show: false, sortable: false },
           { title: 'Admission Difficulty', key: 'adDiffAll', minWidth: "140px", show: false, sortable: false },
           {

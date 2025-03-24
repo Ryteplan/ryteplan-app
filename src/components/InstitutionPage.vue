@@ -218,7 +218,7 @@
           :valueFromManual="manualInstitionData['enTotGradN']"
         />
         <div class="stat-container">
-          <span class="stat-label">Religious </span>
+          <span class="stat-label">Religious</span>
           <div>
             <span v-if="institution['denomDesc'] !== '—'" class="stat-content">{{ institution["denomDesc"] }}</span> 
             <span v-if="institution['afilDesc'] !== '—'" class="stat-content">{{ institution["afilDesc"] }}</span>
@@ -260,23 +260,23 @@
           />
         </div>
         <div class="d-flex flex-column">
-            <span class="d-block stat-label">Full Time Undergrad</span>
+            <span class="d-block stat-label">Full Time Undergraduate</span>
             <div class="multiple-stat-container d-flex flex-row">
               <StatDisplay
                 label="Men"
                 :uri="institution['uri']"
-                field="enTotFtMenN"
-                :valueFromIntegrated="institution['enTotFtMenN']" 
-                :valueFromPetersons="petersonsInstitution['enTotFtMenN']" 
-                :valueFromManual="manualInstitionData['enTotFtMenN']"
+                field="enUgFtMenN"
+                :valueFromIntegrated="institution['enUgFtMenN']" 
+                :valueFromPetersons="petersonsInstitution['enUgFtMenN']" 
+                :valueFromManual="manualInstitionData['enUgFtMenN']"
               />
               <StatDisplay
                 label="Women"
                 :uri="institution['uri']"
-                field="enTotFtWmnN"
-                :valueFromIntegrated="institution['enTotFtWmnN']" 
-                :valueFromPetersons="petersonsInstitution['enTotFtWmnN']" 
-                :valueFromManual="manualInstitionData['enTotFtWmnN']"
+                field="enUgFtWmnN"
+                :valueFromIntegrated="institution['enUgFtWmnN']" 
+                :valueFromPetersons="petersonsInstitution['enUgFtWmnN']" 
+                :valueFromManual="manualInstitionData['enUgFtWmnN']"
               />
           </div>
         </div>
