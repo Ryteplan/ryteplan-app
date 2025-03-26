@@ -27,16 +27,6 @@
             </v-list>
           </ul>
         </div>
-        <div v-else>
-          Create a list to get started
-          <v-btn
-            class="ml-5"
-            @click="showCreateListDialog = true"
-            prepend-icon="mdi-plus"
-            density="compact"
-          > Create new list
-          </v-btn>
-        </div>
       </v-col>
       <v-col cols="4">
         <v-dialog v-model="showCreateListDialog" max-width="500">
