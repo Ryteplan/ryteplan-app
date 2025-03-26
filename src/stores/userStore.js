@@ -10,17 +10,11 @@ export const useUserStore = defineStore('user', {
       isLoggedIn: false
   }),
   actions: {
-    async isLoggedIn() {
-        let auth;
-        auth = getAuth();
+    async getIsLoggedIn() {
+        const auth = getAuth();
         onAuthStateChanged(auth, (user) => {
-            if (user) {
-                this.isLoggedIn = true;
-            } else {
-                this.isLoggedIn = false;
-            }
-        })
-        return this.isLoggedIn;
+          this.isLoggedIn = !!user;  // Update the state property
+        });
     },
     getAdminMode() {
         if (localStorage.getItem("adminMode") !== null) {

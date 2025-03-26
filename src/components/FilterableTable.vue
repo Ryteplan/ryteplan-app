@@ -13,7 +13,6 @@
             @clear-filters="clearFilters"
           />
         </v-col>
-
         <v-col
           class="pt-0"
           :cols="12"
@@ -40,6 +39,29 @@
                   >
                     Edit Columns
                   </v-btn>
+                  <v-menu location="bottom end">
+                    <template v-slot:activator="{ props }">
+                      <v-btn
+                        size="x-small"
+                        v-if="selectedInstitutions.length > 0"
+                        v-bind="props"
+                        :disabled="selectedInstitutions.length === 0"
+                      >
+                        {{ selectedInstitutions.length }} selected 
+                      </v-btn>
+                    </template>
+                    <v-list>
+                      <v-list-item
+                        @click="showSaveToListDialog = true"
+                        :disabled="selectedInstitutions.length === 0"
+                      >
+                        <div class="d-flex align-center">
+                          <v-icon class="mr-2" color="primary">mdi-list-box-outline</v-icon>
+                          <v-list-item-title>Add to list</v-list-item-title>
+                        </div>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
                 </div>
                 <div class="d-flex align-center">
                   <v-switch 
@@ -76,7 +98,8 @@
             :items-per-page="-1"
             @click:row="(event, item) => navigateToInstitution(event, item, false)"
             item-value="institution name" 
-            v-model="tableStore.selectedRows"
+            v-model="selectedInstitutions"
+            :show-select="!!userStore.isLoggedIn"            
             density="comfortable"
           >
             <template #bottom></template>
@@ -93,7 +116,10 @@
         ></v-progress-circular>
       </v-row>
     </v-container>
-    <SaveToListDialog v-model="showSaveToListDialog" :selectedRows="tableStore.selectedRows" />
+    <SaveToListDialog 
+      v-model="showSaveToListDialog" 
+      :selectedRows="selectedInstitutions"
+    />
     <ShareDialog v-model="showShareDialog" :selectedRows="tableStore.selectedRows" />
 
     <!-- Add new dialog for filters -->
@@ -178,6 +204,8 @@ export default {
 
     let userStore = useUserStore();
     userStore.getAdminMode();
+    userStore.getIsLoggedIn();
+
 
     let tableStore = useTableStore();
 
@@ -225,6 +253,7 @@ export default {
   },
   data() {
     return {
+      selectedInstitutions: [],
       filterDialog: false,
       showShareDialog: false,
       showSaveToListDialog: false,
