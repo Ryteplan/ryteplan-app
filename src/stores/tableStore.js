@@ -262,6 +262,8 @@ export const useTableStore = defineStore('table', {
               { title: 'Employment', key: 'work', minWidth: "140px", show: true, sortable: false },
             ]
           },
+          { title: '% admit in top 10% of senior class', key: 'frshHsRank10P', minWidth: "140px", show: false, sortable: false, align: "end" },
+          { title: '% admit in top 25% of senior class', key: 'frshHsRank25P', minWidth: "140px", show: false, sortable: false, align: "end" },
         ];  
       }
     },

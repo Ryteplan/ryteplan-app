@@ -1,14 +1,15 @@
 <template>
   <v-container class="pt-4">
     <div class="data-integration">
-
-      <p>Output the merge candidate institution data</p>
-      <div v-for="(item, index) in mergeCandidateInstitutionData" :key="index">
-        <h2>{{ index }}</h2>
-        {{ item }}
-        <p>{{ item.name }}</p>
-        <p>{{ item.tuition }}</p>
-      </div>
+      <!-- 
+        <p>Output the merge candidate institution data</p>
+        <div v-for="(item, index) in mergeCandidateInstitutionData" :key="index">
+          <h2>{{ index }}</h2>
+          {{ item }}
+          <p>{{ item.name }}</p>
+          <p>{{ item.tuition }}</p>
+        </div>
+      -->
 
       <v-btn
         class="d-none"
@@ -126,28 +127,28 @@ export default {
     }
   },
   async beforeMount() {
-    const mergeCandidatesQuery = query(collection(dbFireStore, "jab_merge_candidates"));
-    const mergeCandidatesSnapshots = await getDocs(mergeCandidatesQuery);
+    // const mergeCandidatesQuery = query(collection(dbFireStore, "jab_merge_candidates"));
+    // const mergeCandidatesSnapshots = await getDocs(mergeCandidatesQuery);
 
-    mergeCandidatesSnapshots.docs.forEach(doc => {
-      this.mergeCandidates.push(doc.data().mergeCandidateCollectionId);
-    });
+    // mergeCandidatesSnapshots.docs.forEach(doc => {
+    //   this.mergeCandidates.push(doc.data().mergeCandidateCollectionId);
+    // });
 
-    // Process each collection sequentially
-    for (const collectionId of this.mergeCandidates) {
-      const institutionDataQuery = query(collection(dbFireStore, collectionId));
-      const institutionDataSnapshots = await getDocs(institutionDataQuery);
+    // // Process each collection sequentially
+    // for (const collectionId of this.mergeCandidates) {
+    //   const institutionDataQuery = query(collection(dbFireStore, collectionId));
+    //   const institutionDataSnapshots = await getDocs(institutionDataQuery);
 
-      // Initialize array for this collection
-      this.mergeCandidateInstitutionData[collectionId] = [];
+    //   // Initialize array for this collection
+    //   this.mergeCandidateInstitutionData[collectionId] = [];
 
-      // Add all documents from this collection
-      institutionDataSnapshots.docs.forEach(doc => {
-        this.mergeCandidateInstitutionData[collectionId].push(doc.data());
-      });
-    }
+    //   // Add all documents from this collection
+    //   institutionDataSnapshots.docs.forEach(doc => {
+    //     this.mergeCandidateInstitutionData[collectionId].push(doc.data());
+    //   });
+    // }
     // json parse
-    console.log(this.mergeCandidateInstitutionData);
+    // console.log(this.mergeCandidateInstitutionData);
   },
   methods: {
     async fixUniversitiesWithWrongState(){
@@ -568,16 +569,16 @@ export default {
       });
 
       this.integratedData.forEach(async (institution) => {
-        setDoc(doc(dbFireStore, 'institutions_integrated_v15_backup_1', institution["uri"]), {
+        setDoc(doc(dbFireStore, 'institutions_integrated_v18_backup_1', institution["uri"]), {
           ...institution
         }, { merge: true })
-        console.log('done adding: ' + institution.name + ' to institutions_integrated_v15_backup_1');
+        console.log('done adding: ' + institution.name + ' to institutions_integrated_v18_backup_1');
       })
     },
     async doDataIntegration() {
       console.log('doing data integration')
       
-      const petersonsDataQuery = query(collection(dbFireStore, "institutions_v18"));      
+      const petersonsDataQuery = query(collection(dbFireStore, "institutions_v19"));      
       const petersonsSnapshots = await getDocs(petersonsDataQuery);
 
       petersonsSnapshots.docs.forEach(doc => {
@@ -625,7 +626,7 @@ export default {
 
       // add all the things to the institutions_integrated collection
       this.petersonsData.forEach(async (institution) => {
-        setDoc(doc(dbFireStore, 'institutions_integrated', institution["uri"]), {
+        setDoc(doc(dbFireStore, 'institutions_integrated_test', institution["uri"]), {
           ...institution
         }, { merge: true })
 
