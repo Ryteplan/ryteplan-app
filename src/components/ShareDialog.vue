@@ -62,7 +62,7 @@ export default {
         this.userFullName = user.displayName;
       } 
     });
-    const route=useRoute();
+    const route = useRoute();
     const path = route.path;
     this.link = "https://app.ryteplan.com" + path;
   },
@@ -85,9 +85,8 @@ export default {
     }
   },
   methods: {
-    async shareList(emailAddress) {
+    async shareList() {
       try {
-        console.log(emailAddress);
         const newDocRef = doc(collection(dbFireStore, "emails"));
         await setDoc(newDocRef, {
           to: [
@@ -97,7 +96,7 @@ export default {
           ],
           from: {
             email: 'noreply@ryteplan.com',
-            name: 'Ryte Plan'
+            name: 'RytePlan'
           },
           template_id: '351ndgwzp0qgzqx8',
           variables: [
