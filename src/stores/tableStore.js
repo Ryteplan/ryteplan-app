@@ -194,6 +194,7 @@ export const useTableStore = defineStore('table', {
           { title: 'Undergraduates', key: 'enTotUgN', minWidth: "80px", show: true, sortable: false, align: "end" },
           { title: 'Full Time UG Males', key: 'enUgFtMenN', minWidth: "140px", align: "end", show: false, sortable: false },
           { title: 'Full Time UG Females', key: 'enUgFtWmnN', minWidth: "140px", align: "end", show: false, sortable: false },
+          { title: '4-Year Graduation Rate', key: 'grs4YrN', minWidth: "140px", align: "end", show: false, sortable: false },
           { title: 'Campus Acreage', key: 'cmpsSizeN', minWidth: "140px", show: false, sortable: false },
           { title: 'Campus Setting', key: 'cmpsSetting', minWidth: "140px", show: true, sortable: false },          
           { title: 'Total Graduates', key: 'enTotGradN', minWidth: "140px", show: false, sortable: false },
