@@ -6,7 +6,7 @@
         align-tabs="center"
         class="w-50 mx-auto"
       >
-        <v-tab value="Sign Up" disabled>Sign up</v-tab>
+        <v-tab value="Sign Up">Sign up for beta</v-tab>
         <v-tab value="Login">Login</v-tab>
       </v-tabs>
       <v-window class="py-12 w-50 mx-auto text-center" v-model="tab">

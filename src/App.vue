@@ -92,7 +92,7 @@
               </v-btn>
             </template>
             <v-list>
-              <v-list-item v-if="isLoggedIn">
+              <v-list-item v-if="userStore.isAdmin">
                 <div class="d-flex justify-space-between align-center px-4" @click.stop>
                   <v-list-item-title>Admin Mode</v-list-item-title>
                   <v-switch
@@ -102,6 +102,15 @@
                     density="compact"
                     @change="userStore.saveAdminModeState"
                   ></v-switch>
+                </div>
+              </v-list-item>
+              <v-list-item
+                v-if="userStore.isAdmin"
+                @click="() => this.$router.push('/compare')"
+              >
+                <div class="d-flex justify-end align-center">
+                  <v-list-item-title>Data Compare</v-list-item-title>
+                  <v-icon class="ml-3" icon="mdi-ab-testing"></v-icon>
                 </div>
               </v-list-item>
               <v-list-item
@@ -165,6 +174,7 @@ export default {
     appVersionStore.compareVersion();
 
     let userStore = useUserStore();
+    userStore.getIsLoggedIn();
     userStore.getAdminMode();
 
     let tableStore = useTableStore();
@@ -220,14 +230,6 @@ export default {
       initialLoading: true,
       dropDownItems: [
         {
-          title: 'Data Compare',
-          icon: 'mdi-ab-testing',
-          action: () => { 
-            this.$router.push('/compare');
-          },
-          hideFromLoggedOut: true
-        },
-        {
           title: 'Register or Login',
           icon: 'mdi-account-plus',
           action: () => { 
@@ -256,7 +258,6 @@ export default {
     handleSignOut() {
       signOut(auth).then(() => {
         this.userStore.isLoggedIn = false;
-        localStorage.removeItem("adminMode");
         this.$router.push("/");
       });
     },

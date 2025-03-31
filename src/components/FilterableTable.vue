@@ -31,7 +31,7 @@
                     {{ $vuetify.display.lgAndUp ? (showFilters ? 'Hide Filters' : 'Show Filters') : 'Filters' }}
                   </v-btn>
                   <v-btn
-                    v-if="userStore.isLoggedIn && userStore.adminMode"
+                    v-if="userStore.isLoggedIn"
                     size="x-small"
                     elevation="1"
                     @click="showColumnsDialog = true"
