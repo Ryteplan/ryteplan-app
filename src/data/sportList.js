@@ -13,6 +13,7 @@ export const sportList = [
   "fencing",
   "field hockey",
   "football",
+  "flag football",
   "golf",
   "gymnastics",
   "ice hockey",
