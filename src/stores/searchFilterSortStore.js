@@ -161,8 +161,12 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
         const sportNameForHidden = sport.toLowerCase().replace(/ /g, '_').replace(/\((.*?)\)/, '$1').trim();      
         const sportHidden = `${sportNameForHidden}_hidden:!=true`;
         let conditions = [`sports.sport_name:=${sport}`, `sports.${sportHidden}`];
-        const divisionListWithoutNAIA = state.filters.division.filter(sportDivision => sportDivision !== 'NAIA');
-        
+
+        let divisionListWithoutNAIA = [];
+        if (state.filters.division) {
+          divisionListWithoutNAIA = state.filters.division.filter(sportDivision => sportDivision !== 'NAIA');
+        }
+
         if (state.filters.division) {
           if (state.filters.division.includes('NAIA')) {
             conditions.push('assnAthlNaia:="TRUE"');
