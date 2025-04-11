@@ -1,0 +1,7 @@
+functions-framework==3.*
+google-cloud-storage
+google-cloud-bigquery
+pandas
+pandas_gbq
+pyarrow
+firebase_functions~=0.1.0
