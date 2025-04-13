@@ -40,27 +40,27 @@
           <td :colspan="headers.length">
             <div class="grid-container field-headers mt-2 mb-2">
               <h4>field name</h4>
-              <h4>V12</h4>
-              <h4>V13</h4>
-              <h4>V14</h4>
-              <h4>manual</h4>
+              <h4>Petersons - V19</h4>
+              <h4>Petersons - 20250313</h4>
+              <h4>Manual</h4>
+              <h4>Live</h4>
             </div>
             <div 
               class="grid-container field-container py-2"
               v-for="field in getFilteredFields(item)" 
               :key='field.name'
             >
-              <p>{{ field.name }}</p>
-              <p>{{ getPetersonsField1(item.id, field.name) }}</p>
-              <p>{{ getPetersonsField2(item.id, field.name) }}</p>
-              <p>{{ getPetersonsField3(item.id, field.name) }}</p>
-              <p>{{ field.value }}</p>
+              <span>{{ field.name }}</span>
+              <span>{{ getPetersonsField1(item.id, field.name) }}</span>
+              <span>{{ getPetersonsField2(item.id, field.name) }}</span>
+              <span>{{ field.value }}</span>
+              <span>{{ getPetersonsField3(item.id, field.name) }}</span>
             </div>
           </td>
         </tr>
       </template>
       <template #item="{ item }">
-        <tr>
+        <tr class="mb-4">
           <td>
             <div class="d-flex align-center">
               <router-link 
@@ -126,15 +126,15 @@ export default {
 
       // Get petersons data
       const collections = [
-        { name: "institutions_petersons_processed_v12", target: this.petersonsData1 },
-        { name: "institutions_v13", target: this.petersonsData2 },
-        { name: "institutions_v14", target: this.petersonsData3 }
+        { name: "institutions_v19", target: this.petersonsData1 },
+        { name: "institutions_petersons_processed_20250313", target: this.petersonsData2 },
+        { name: "institutions_integrated", target: this.petersonsData3 }
       ];
 
       for (const col of collections) {
         const dataQuery = query(collection(dbFireStore, col.name));
         const snapshots = await getDocs(dataQuery);
-        col.target.push(...snapshots.docs.map(doc => ({ ...doc.data(), id: doc.id })));
+        col.target.push(...snapshots.docs.map(doc => ({ ...doc.data(), id: doc.data().uri })));
       }
 
       this.expanded = this.schools.map(item => item.id);

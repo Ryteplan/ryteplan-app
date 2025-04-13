@@ -20,7 +20,6 @@
       </v-btn>
 
       <v-btn
-        class="d-none"
         @click="doDataIntegration"
         color="primary"
       >
@@ -569,16 +568,16 @@ export default {
       });
 
       this.integratedData.forEach(async (institution) => {
-        setDoc(doc(dbFireStore, 'institutions_integrated_v18_backup_1', institution["uri"]), {
+        setDoc(doc(dbFireStore, 'institutions_integrated_v19_backup_1', institution["uri"]), {
           ...institution
         }, { merge: true })
-        console.log('done adding: ' + institution.name + ' to institutions_integrated_v18_backup_1');
+        console.log('done adding: ' + institution.name + ' to institutions_integrated_v19_backup_1');
       })
     },
     async doDataIntegration() {
       console.log('doing data integration')
       
-      const petersonsDataQuery = query(collection(dbFireStore, "institutions_v19"));      
+      const petersonsDataQuery = query(collection(dbFireStore, "institutions_petersons_processed_20250313"));      
       const petersonsSnapshots = await getDocs(petersonsDataQuery);
 
       petersonsSnapshots.docs.forEach(doc => {
@@ -631,6 +630,8 @@ export default {
         }, { merge: true })
 
         console.log('done adding: ' + institution.name);
+        // set a timeout for 2 seconds
+        await new Promise(resolve => setTimeout(resolve, 2000));
       })
     }
   }

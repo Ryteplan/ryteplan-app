@@ -106,7 +106,7 @@
               </v-list-item>
               <v-list-item
                 v-if="userStore.isAdmin"
-                @click="() => this.$router.push('/compare')"
+                @click="() => this.$router.push('/data-compare')"
               >
                 <div class="d-flex justify-end align-center">
                   <v-list-item-title>Data Compare</v-list-item-title>
