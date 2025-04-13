@@ -39,9 +39,9 @@
         <tr>
           <td :colspan="headers.length">
             <div class="grid-container field-headers mt-2 mb-2">
-              <h4>field name</h4>
-              <h4>Petersons - V19</h4>
-              <h4>Petersons - 20250313</h4>
+              <h4>Field name</h4>
+              <h4>Petersons - December 2024</h4>
+              <h4>Petersons - March 2025</h4>
               <h4>Manual</h4>
               <h4>Live</h4>
             </div>
