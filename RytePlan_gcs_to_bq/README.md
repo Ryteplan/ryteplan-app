@@ -1,6 +1,6 @@
 # PROJECT RYTEPLAN: PETERSONS RAW DATABASE GOOGLE CLOUD PIPELINE
 
-## CLOUD FUNCTION: GCS_TO_BQ_PRODUCTION
+## CLOUD FUNCTION: GCS_TO_BQ
   - This is the first function in the pipeline. 
   - Detects the instance of a new folder named 'new_uploads_ug_uf_YYYYMMDD' in a defined storage bucket. Only csv files in this folder are uploaded into BigQuery with dataset name to match the folder name.
 
@@ -35,9 +35,9 @@
   - Will not run if FOLDER_NAME_PATTERN is mismatched.
 
 ## RELATED FUNCTIONS:
-  - bq-query-process.py
-  - send-bq-to-fs-gcs.py
-  - add-to-merge-candidates.py
+  - bq-query-process
+  - send-bq-to-fs-gcs
+  - add-to-merge-candidates
 
 ## VERSION NOTES:
-  - gcs_to_bq_v1_github.py
+  - main.py "Initial version used in Beta"
