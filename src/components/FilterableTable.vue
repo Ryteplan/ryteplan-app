@@ -52,7 +52,7 @@
                     </template>
                     <v-list>
                       <v-list-item
-                        @click="showSaveToListDialog = true"
+                        @click="saveToListClicked()"
                         :disabled="selectedInstitutions.length === 0"
                       >
                         <div class="d-flex align-center">
@@ -357,7 +357,12 @@ export default {
       this.shareDialog = true;
     },
     saveToListClicked() {
-      this.showSaveToListDialog = true;
+      if (this.selectedInstitutions.length > 30) {
+        alert("You can only select up to 30 institutions to a list at a time.");
+        return;
+      } else {
+        this.showSaveToListDialog = true;
+      }
     },
     compareClicked() {
       alert("Compare Clicked");
