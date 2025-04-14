@@ -5,18 +5,40 @@
         <div class="d-flex align-center" >
           <h1 class="text-h6">Your lists</h1>
           <v-btn
-            size="28"
             @click="showCreateListDialog = true"
             class="ml-6"
           >
             <v-icon>mdi-plus</v-icon>
+            <span class="ml-2">Create new list</span>
           </v-btn>
         </div>
-        <div v-if="userLists.length > 0" class="mt-5">
-          <ul class="mt-4">
+        <div class="mt-8 d-flex justify-end">
+          <v-menu class="" offset-y>
+              <template v-slot:activator="{ props }">
+                <v-btn
+                text
+                v-bind="props"
+              >
+                <v-icon left>mdi-sort</v-icon>
+                Sort by: {{ sortOptions.find(opt => opt.value === currentSort).text }}
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item
+                v-for="option in sortOptions"
+                :key="option.value"
+                @click="currentSort = option.value"
+              >
+                <v-list-item-title>{{ option.text }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </div>
+        <div v-if="userLists.length > 0" class="mt-4">
+          <ul class="">
             <v-list>
               <v-list-item 
-                v-for="list in userLists" 
+                v-for="list in sortedLists" 
                 :key="list.id"
                 @click="navigateToList($event, list)"
               >
@@ -76,9 +98,33 @@ export default {
   data() {
     return {
       createNewListName: "",
-      userLists: {},
+      userLists: [],
       userID: "",
-      showCreateListDialog: false
+      showCreateListDialog: false,
+      currentSort: 'name',
+      sortOptions: [
+        { text: 'Name (A-Z)', value: 'name' },
+        { text: 'Name (Z-A)', value: 'name-desc' },
+        { text: 'Recently Created', value: 'created' },
+        { text: 'Oldest Created', value: 'created-asc' }
+      ]
+    }
+  },
+  computed: {
+    sortedLists() {
+      const lists = [...this.userLists];
+      switch (this.currentSort) {
+        case 'name':
+          return lists.sort((a, b) => a.name.localeCompare(b.name));
+        case 'name-desc':
+          return lists.sort((a, b) => b.name.localeCompare(a.name));
+        case 'created':
+          return lists.sort((a, b) => b.created.toDate() - a.created.toDate());
+        case 'created-asc':
+          return lists.sort((a, b) => a.created.toDate() - b.created.toDate());
+        default:
+          return lists;
+      }
     }
   },
   methods: {
@@ -92,7 +138,7 @@ export default {
         this.userLists = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data()
-        })).sort((a, b) => a.name.localeCompare(b.name));
+        }));
       });
     },
     async createNewList() {
