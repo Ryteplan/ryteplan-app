@@ -153,14 +153,44 @@ export default {
         this.savingToExistingList = true;
       } else {
         // Generate a new document ID for the list
-
         const newListRef = doc(collection(dbFireStore, "lists"));
         listIDToSaveInstitutionTo = newListRef.id;
       }
 
       const listRef = doc(dbFireStore, "lists", listIDToSaveInstitutionTo);
-
       const docSnap = await getDoc(listRef);
+
+      // Get current list and its institutions
+      let currentListSize = 0;
+      let currentInstitutions = [];
+      if (docSnap.exists()) {
+        const listData = docSnap.data();
+        currentInstitutions = listData.institutions || [];
+        currentListSize = currentInstitutions.length;
+      }
+
+      // Calculate new and duplicate items
+      const selectedInstitutions = this.selectedRows ? toRaw(this.selectedRows) : [];
+      const duplicateInstitutions = selectedInstitutions.filter(institution => 
+        currentInstitutions.includes(institution.id)
+      );
+      const newInstitutions = selectedInstitutions.filter(institution => 
+        !currentInstitutions.includes(institution.id)
+      );
+      const newItemsCount = newInstitutions.length;
+
+      // If there are duplicates, notify the user
+      if (duplicateInstitutions.length > 0) {
+        const duplicateNames = duplicateInstitutions.map(inst => inst.name).join(', ');
+        alert(`Note: ${duplicateInstitutions.length} institution(s) are already in this list:\n${duplicateNames}`);
+      }
+
+      // Check if adding new items would exceed the limit
+      if (currentListSize + newItemsCount > 30) {
+        alert(`Cannot add ${newItemsCount} new items to this list. The list would exceed the maximum limit of 30 items. The list currently has ${currentListSize} items.`);
+        this.show = false;
+        return;
+      }
 
       if (!docSnap.exists()) {
         await setDoc(listRef, {
@@ -174,19 +204,15 @@ export default {
       }
 
       this.listTheItemWasSavedTo = listIDToSaveInstitutionTo;
-
+      
       if (this.selectedRows) {
         for (const institution of toRaw(this.selectedRows)) {
           await updateDoc(listRef, {
             institutions: arrayUnion(institution.id)
           });
         }
-      } else if (this.institutionId) {
-        await updateDoc(listRef, {
-          institutions: arrayUnion(this.institutionId)
-        });
         this.showGoToList = true;
-      }
+      } 
     },
     navigateToList() {
       this.$router.push({ 
