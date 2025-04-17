@@ -12,42 +12,45 @@
             <span class="ml-2">Create new list</span>
           </v-btn>
         </div>
-        <div class="mt-8 d-flex justify-end">
-          <v-menu class="" offset-y>
-              <template v-slot:activator="{ props }">
-                <v-btn
-                text
-                v-bind="props"
-              >
-                <v-icon left>mdi-sort</v-icon>
-                Sort by: {{ sortOptions.find(opt => opt.value === currentSort).text }}
-              </v-btn>
-            </template>
-            <v-list>
-              <v-list-item
-                v-for="option in sortOptions"
-                :key="option.value"
-                @click="currentSort = option.value"
-              >
-                <v-list-item-title>{{ option.text }}</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </div>
-        <div v-if="userLists.length > 0" class="mt-4">
-          <ul class="">
-            <v-list>
-              <v-list-item 
-                v-for="list in sortedLists" 
-                :key="list.id"
-                @click="navigateToList($event, list)"
-              >
-                <div class="d-flex">
-                  <v-list-item-title>{{ list.name }}</v-list-item-title>
-                </div>
-              </v-list-item>
-            </v-list>
-          </ul>
+        <div v-if="userLists.length > 0">
+          <div class="mt-8 d-flex justify-end">
+            <v-menu class="" offset-y>
+                <template v-slot:activator="{ props }">
+                  <v-btn
+                  text
+                  v-bind="props"
+                >
+                  <v-icon left>mdi-sort</v-icon>
+                  Sort by: {{ sortOptions.find(opt => opt.value === currentSort).text }}
+                </v-btn>
+              </template>
+              <v-list>
+                <v-list-item
+                  v-for="option in sortOptions"
+                  :key="option.value"
+                  @click="currentSort = option.value"
+                >
+                  <v-list-item-title>{{ option.text }}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </div>
+          <div class="mt-4">
+            <ul class="">
+              <v-list>
+                <v-list-item 
+                  v-for="list in sortedLists" 
+                  :key="list.id"
+                  @click="navigateToList($event, list)"
+                >
+                  <div class="d-flex">
+                    <v-list-item-title>{{ list.name }}</v-list-item-title>
+                  </div>
+                </v-list-item>
+              </v-list>
+            </ul>
+          </div>
+
         </div>
       </v-col>
       <v-col cols="4">
