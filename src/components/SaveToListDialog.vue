@@ -6,7 +6,7 @@
     <v-card>
       <v-card-title class="d-flex justify-space-between align-center">
         <div class="text-h5 ps-2">
-          Add to list
+          Add to list (testing)
         </div>
         <v-btn
           icon="mdi-close"
