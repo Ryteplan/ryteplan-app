@@ -169,12 +169,21 @@ export default {
         currentListSize = currentInstitutions.length;
       }
 
-      // Calculate number of new items (excluding duplicates)
+      // Calculate new and duplicate items
       const selectedInstitutions = this.selectedRows ? toRaw(this.selectedRows) : [];
+      const duplicateInstitutions = selectedInstitutions.filter(institution => 
+        currentInstitutions.includes(institution.id)
+      );
       const newInstitutions = selectedInstitutions.filter(institution => 
         !currentInstitutions.includes(institution.id)
       );
       const newItemsCount = newInstitutions.length;
+
+      // If there are duplicates, notify the user
+      if (duplicateInstitutions.length > 0) {
+        const duplicateNames = duplicateInstitutions.map(inst => inst.name).join(', ');
+        alert(`Note: ${duplicateInstitutions.length} institution(s) are already in this list:\n${duplicateNames}`);
+      }
 
       // Check if adding new items would exceed the limit
       if (currentListSize + newItemsCount > 30) {
