@@ -6,7 +6,7 @@
     <v-card>
       <v-card-title class="d-flex justify-space-between align-center">
         <div class="text-h5 ps-2">
-          Add to list (testing)
+          Add to list
         </div>
         <v-btn
           icon="mdi-close"
@@ -153,14 +153,35 @@ export default {
         this.savingToExistingList = true;
       } else {
         // Generate a new document ID for the list
-
         const newListRef = doc(collection(dbFireStore, "lists"));
         listIDToSaveInstitutionTo = newListRef.id;
       }
 
       const listRef = doc(dbFireStore, "lists", listIDToSaveInstitutionTo);
-
       const docSnap = await getDoc(listRef);
+
+      // Get current list and its institutions
+      let currentListSize = 0;
+      let currentInstitutions = [];
+      if (docSnap.exists()) {
+        const listData = docSnap.data();
+        currentInstitutions = listData.institutions || [];
+        currentListSize = currentInstitutions.length;
+      }
+
+      // Calculate number of new items (excluding duplicates)
+      const selectedInstitutions = this.selectedRows ? toRaw(this.selectedRows) : [];
+      const newInstitutions = selectedInstitutions.filter(institution => 
+        !currentInstitutions.includes(institution.id)
+      );
+      const newItemsCount = newInstitutions.length;
+
+      // Check if adding new items would exceed the limit
+      if (currentListSize + newItemsCount > 30) {
+        alert(`Cannot add ${newItemsCount} new items to this list. The list would exceed the maximum limit of 30 items. The list currently has ${currentListSize} items.`);
+        this.show = false;
+        return;
+      }
 
       if (!docSnap.exists()) {
         await setDoc(listRef, {
@@ -174,19 +195,15 @@ export default {
       }
 
       this.listTheItemWasSavedTo = listIDToSaveInstitutionTo;
-
+      
       if (this.selectedRows) {
         for (const institution of toRaw(this.selectedRows)) {
           await updateDoc(listRef, {
             institutions: arrayUnion(institution.id)
           });
         }
-      } else if (this.institutionId) {
-        await updateDoc(listRef, {
-          institutions: arrayUnion(this.institutionId)
-        });
         this.showGoToList = true;
-      }
+      } 
     },
     navigateToList() {
       this.$router.push({ 
