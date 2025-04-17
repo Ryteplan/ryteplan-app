@@ -2,55 +2,58 @@
   <v-container class="pt-4">
     <v-row class="">
       <v-col cols="6">
-        <div class="d-flex align-center" >
-          <h1 class="text-h6">Your lists</h1>
-          <v-btn
-            @click="showCreateListDialog = true"
-            class="ml-6"
-          >
-            <v-icon>mdi-plus</v-icon>
-            <span class="ml-2">Create new list</span>
-          </v-btn>
+        <div class="d-flex align-center justify-space-between">
+          <div class="d-flex align-center">
+            <h1 class="text-h6">Your lists</h1>
+            <v-btn
+              @click="showCreateListDialog = true"
+              class="ml-6"
+              :disabled="userLists.length >= 30"
+            >
+              <v-icon>mdi-plus</v-icon>
+              <span class="ml-2">Create new list</span>
+            </v-btn>
+          </div>
         </div>
-        <div v-if="userLists.length > 0">
-          <div class="mt-8 d-flex justify-end">
-            <v-menu class="" offset-y>
-                <template v-slot:activator="{ props }">
-                  <v-btn
-                  text
-                  v-bind="props"
-                >
-                  <v-icon left>mdi-sort</v-icon>
-                  Sort by: {{ sortOptions.find(opt => opt.value === currentSort).text }}
-                </v-btn>
-              </template>
-              <v-list>
-                <v-list-item
-                  v-for="option in sortOptions"
-                  :key="option.value"
-                  @click="currentSort = option.value"
-                >
-                  <v-list-item-title>{{ option.text }}</v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu>
-          </div>
-          <div class="mt-4">
-            <ul class="">
-              <v-list>
-                <v-list-item 
-                  v-for="list in sortedLists" 
-                  :key="list.id"
-                  @click="navigateToList($event, list)"
-                >
-                  <div class="d-flex">
-                    <v-list-item-title>{{ list.name }}</v-list-item-title>
-                  </div>
-                </v-list-item>
-              </v-list>
-            </ul>
-          </div>
-
+        <div class="d-flex align-end justify-space-between">
+          <span class="text-caption" style="color: #888888">
+            ({{ userLists.length }}/30)
+          </span>
+          <v-menu class="" offset-y>
+              <template v-slot:activator="{ props }">
+                <v-btn
+                text
+                v-bind="props"
+              >
+                <v-icon left>mdi-sort</v-icon>
+                Sort by: {{ sortOptions.find(opt => opt.value === currentSort).text }}
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item
+                v-for="option in sortOptions"
+                :key="option.value"
+                @click="currentSort = option.value"
+              >
+                <v-list-item-title>{{ option.text }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </div>
+        <div v-if="userLists.length > 0" class="mt-2">
+          <ul class="">
+            <v-list>
+              <v-list-item 
+                v-for="list in sortedLists" 
+                :key="list.id"
+                @click="navigateToList($event, list)"
+              >
+                <div class="d-flex">
+                  <v-list-item-title>{{ list.name }}</v-list-item-title>
+                </div>
+              </v-list-item>
+            </v-list>
+          </ul>
         </div>
       </v-col>
       <v-col cols="4">
@@ -145,6 +148,13 @@ export default {
       });
     },
     async createNewList() {
+      // Check if user has reached the list limit
+      if (this.userLists.length >= 30) {
+        alert("You have reached the maximum limit of 30 lists. Please delete some lists before creating new ones.");
+        this.showCreateListDialog = false;
+        return;
+      }
+      
       const newDocRef = doc(collection(dbFireStore, "lists"));
       await setDoc(newDocRef, 
         {

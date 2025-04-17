@@ -41,9 +41,13 @@
             class="mt-5"
             color="primary" 
             @click="showCreateNewListInput = true"
+            v-if="userLists.length <= 30"
             >
             Create New List
           </v-btn>
+          <span v-if="userLists.length >= 30" class="text-caption" style="color: #888888">
+            You have reached the maximum limit of 30 lists. Please delete some lists before creating new ones.
+          </span>
         </div>
         <div 
           class="create-new-list-form hide"
