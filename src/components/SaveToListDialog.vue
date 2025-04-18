@@ -117,9 +117,11 @@ export default {
       },
       set (value) {
         this.$emit('update:modelValue', value)
-        setTimeout(()=>{
-          this.showCreateNewListInput = false;
-        }, 1000);
+        if (!value) { 
+          setTimeout(() => {
+              this.resetDialogState();
+          }, 300);
+        }
       }
     }
   },
@@ -130,12 +132,19 @@ export default {
       showCreateNewListInput: false,
       listCreated: false,
       createdListId: null,
-      savingToExistingList: false,
       showGoToList: false,
       listTheItemWasSavedTo: null
     }
   },
   methods: {
+    resetDialogState() {
+        this.newListName = "";
+        this.showCreateNewListInput = false;
+        this.listCreated = false;
+        this.createdListId = null;
+        this.showGoToList = false;
+        this.listTheItemWasSavedTo = null;
+    },
     async loadUserLists() {
       const listsQuery = query(
         collection(dbFireStore,"lists"),
@@ -151,72 +160,118 @@ export default {
     },
     async addInstitutionToList(listId) {
       let listIDToSaveInstitutionTo;
+      let isCreatingNewList = false;
 
       if (listId !== null) {
         listIDToSaveInstitutionTo = listId;
-        this.savingToExistingList = true;
       } else {
-        // Generate a new document ID for the list
+        if (!this.newListName || !this.newListName.trim()) {
+          alert("Please enter a name for the new list.");
+          return;
+        }
         const newListRef = doc(collection(dbFireStore, "lists"));
         listIDToSaveInstitutionTo = newListRef.id;
+        isCreatingNewList = true;
       }
 
       const listRef = doc(dbFireStore, "lists", listIDToSaveInstitutionTo);
       const docSnap = await getDoc(listRef);
 
-      // Get current list and its institutions
-      let currentListSize = 0;
       let currentInstitutions = [];
+      let currentListSize = 0;
       if (docSnap.exists()) {
         const listData = docSnap.data();
         currentInstitutions = listData.institutions || [];
         currentListSize = currentInstitutions.length;
       }
 
-      // Calculate new and duplicate items
-      const selectedInstitutions = this.selectedRows ? toRaw(this.selectedRows) : [];
-      const duplicateInstitutions = selectedInstitutions.filter(institution => 
-        currentInstitutions.includes(institution.id)
-      );
-      const newInstitutions = selectedInstitutions.filter(institution => 
-        !currentInstitutions.includes(institution.id)
-      );
-      const newItemsCount = newInstitutions.length;
+      let potentialInstitutions = [];
+      let institutionsToAddIds = [];
+      let duplicateInstitutions = [];
 
-      // If there are duplicates, notify the user
-      if (duplicateInstitutions.length > 0) {
-        const duplicateNames = duplicateInstitutions.map(inst => inst.name).join(', ');
-        alert(`Note: ${duplicateInstitutions.length} institution(s) are already in this list:\n${duplicateNames}`);
-      }
-
-      // Check if adding new items would exceed the limit
-      if (currentListSize + newItemsCount > 30) {
-        alert(`Cannot add ${newItemsCount} new items to this list. The list would exceed the maximum limit of 30 items. The list currently has ${currentListSize} items.`);
-        this.show = false;
+      if (this.selectedRows && this.selectedRows.length > 0) {
+        potentialInstitutions = toRaw(this.selectedRows);
+      } else if (this.institutionId) {
+        potentialInstitutions = [{ id: this.institutionId }]; 
+      } else {
+        console.error("SaveToListDialog: No institution or rows selected.");
+        alert("Error: No institution selected.");
         return;
       }
 
-      if (!docSnap.exists()) {
-        await setDoc(listRef, {
-          name: this.newListName,
-          createdBy: this.userID,
-          created: Timestamp.fromDate(new Date()),
-          updated: Timestamp.fromDate(new Date()),
-          institutions: []
-        });
-        this.listCreated = true;
+      potentialInstitutions.forEach(inst => {
+        if (currentInstitutions.includes(inst.id)) {
+          duplicateInstitutions.push(inst);
+        } else {
+          institutionsToAddIds.push(inst.id);
+        }
+      });
+
+      // Handle duplicates
+      if (duplicateInstitutions.length > 0) {
+        // Check if the *only* item provided was a single institution ID and it was a duplicate
+        if (this.institutionId && !this.selectedRows && duplicateInstitutions.length === 1 && institutionsToAddIds.length === 0) {
+          alert(`Note: This institution is already in the list.`);
+          this.show = false; // Close the dialog
+          return; // Stop execution
+        }
+
+        // Otherwise, prepare and show the general duplicate alert message
+        let duplicateAlertMessage = "";
+         if (this.selectedRows && this.selectedRows.length > 0) {
+            // We have names if selectedRows was used
+            const duplicateNames = duplicateInstitutions.map(inst => inst.name || inst.id).join(', ');
+            duplicateAlertMessage = `Note: ${duplicateInstitutions.length} selected institution(s) are already in this list:\n${duplicateNames}`;
+         } else {
+             duplicateAlertMessage = `Note: This institution is already in the list.`;
+         }
+         alert(duplicateAlertMessage);
       }
 
-      this.listTheItemWasSavedTo = listIDToSaveInstitutionTo;
-      
-      if (this.selectedRows) {
-        for (const institution of toRaw(this.selectedRows)) {
-          await updateDoc(listRef, {
-            institutions: arrayUnion(institution.id)
+      const newItemsCount = institutionsToAddIds.length;
+      if (currentListSize + newItemsCount > 30) {
+        alert(`Cannot add ${newItemsCount} new item(s). The list currently has ${currentListSize} items and adding these would exceed the limit of 30.`);
+        return;
+      }
+
+      if (newItemsCount === 0 && !isCreatingNewList) {
+          this.listTheItemWasSavedTo = listIDToSaveInstitutionTo;
+          this.showCreateNewListInput = false;
+          this.showGoToList = true;
+          return;
+      }
+
+      try {
+        if (isCreatingNewList) {
+          if (institutionsToAddIds.length > 30) {
+              alert(`Cannot create a list with ${institutionsToAddIds.length} items. The maximum limit is 30.`);
+              return;
+          }
+          await setDoc(listRef, {
+            name: this.newListName.trim(),
+            createdBy: this.userID,
+            created: Timestamp.fromDate(new Date()),
+            updated: Timestamp.fromDate(new Date()),
+            institutions: institutionsToAddIds
           });
+          this.listCreated = true;
+        } else {
+          if (newItemsCount > 0) {
+            await updateDoc(listRef, {
+              institutions: arrayUnion(...institutionsToAddIds),
+              updated: Timestamp.fromDate(new Date())
+            });
+          }
         }
+
+        this.listTheItemWasSavedTo = listIDToSaveInstitutionTo;
+        this.showCreateNewListInput = false;
         this.showGoToList = true;
-      } 
+
+      } catch (error) {
+          console.error("Error saving to list:", error);
+          alert(`An error occurred while saving to the list: ${error.message}`);
+      }
     },
     navigateToList() {
       this.$router.push({ 
