@@ -141,6 +141,8 @@
                 <span>Ryteplan LLC © 2025</span>
                 <span>·</span>
                 <router-link to="/terms" class="terms-link" target="_blank">Terms and Conditions</router-link>
+                <span>·</span>
+                <router-link to="/privacy" class="terms-link" target="_blank">Privacy Policy</router-link>
               </div>
             </v-col>
             <v-col cols="4">

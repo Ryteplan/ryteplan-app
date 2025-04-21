@@ -6,7 +6,7 @@
         align-tabs="center"
         class="w-50 mx-auto"
       >
-        <v-tab value="Sign Up">Sign up for beta</v-tab>
+        <v-tab value="Sign Up">Sign up</v-tab>
         <v-tab value="Login">Login</v-tab>
       </v-tabs>
       <v-window class="py-12 w-50 mx-auto text-center" v-model="tab">
@@ -19,7 +19,9 @@
           >
             Sign in with Google
           </v-btn>
-          <form class="mt-6 d-none" @submit.prevent="login"> 
+          <p class="mt-6 mb-6">Or</p>
+          <h2>Use Email</h2>
+          <form class="mt-6" @submit.prevent="login"> 
             <v-text-field       
                 type="email"       
                 placeholder="Email address"       
@@ -48,7 +50,9 @@
           >
             Login With Google
           </v-btn>
-          <form class="mt-6 d-none" @submit.prevent="signIn"> 
+          <p class="mt-6 mb-6">Or</p>
+          <h2>Use Email</h2>
+          <form class="mt-6" @submit.prevent="signIn"> 
             <v-text-field       
                 type="email"       
                 placeholder="Email address"       
