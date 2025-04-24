@@ -117,7 +117,6 @@ export default {
     },
     async register() {
       const authResult = await createUserWithEmailAndPassword(getAuth(), this.email, this.password).catch((error) => {
-        this.processErrorCode(error.code);
         return new Error(error.code);
       });
 
