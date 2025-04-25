@@ -37,7 +37,7 @@
             <v-text-field type="email" placeholder="Email address" v-model="email" />
             <v-text-field type="password" placeholder="Password" v-model="password" />
             <p v-if="errorMessage">{{ errorMessage }}</p>
-            <v-btn type="submit" @click="signIn">
+            <v-btn type="submit">
               Login
             </v-btn>
           </form>
