@@ -41,7 +41,8 @@ export const useUserStore = defineStore('user', {
         return this.adminMode;
     },
     saveAdminModeState() {
-        localStorage.setItem("adminMode", this.adminMode);
+      this.adminMode = !this.adminMode;
+      localStorage.setItem("adminMode", this.adminMode);
     }
   }
 });

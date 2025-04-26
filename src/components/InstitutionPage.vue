@@ -351,7 +351,6 @@
           field="testingPolicy"
           valueType="testingPolicy"
           :valueFromManual="manualInstitionData['testingPolicy']"
-          :valueFromPetersons="this.getTestingPolicy()"
         />
         <StatDisplay
           label="Freshmen Living on Campus"
@@ -1358,14 +1357,14 @@ export default {
     toggleEditImages(){
       this.editMode = !this.editMode;
     },
-    getTestingPolicy() {
-      let policies = {
-        "Required": this.institution["admsReq"],
-        "Considered": this.institution["admsConsider"],
-        "Not used": this.institution["admsNotUsed"]
-      }
-      return policies;
-    },
+    // getTestingPolicy() {
+    //   let policies = {
+    //     "Required": this.institution["admsReq"],
+    //     "Considered": this.institution["admsConsider"],
+    //     "Not used": this.institution["admsNotUsed"]
+    //   }
+    //   return policies;
+    // },
     async addAlias() {
       if (!this.newAlias.trim()) return;
 

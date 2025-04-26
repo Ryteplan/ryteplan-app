@@ -14,19 +14,6 @@
                 <span class="d-block testing-header">Rya's Note</span>
                 <span class="d-block testing-body">{{ manualValue }}</span>
               </div>
-              <span v-if="(this.testingPoliciesEmptyState || this.testingContainers.length == 0) && !manualValue">—</span>
-              <div 
-                v-for="(container, index) in testingContainers" 
-                :key="index"
-                class="testing-container" 
-              >
-                <div 
-                  v-if="getPolicyVisibilityValues(container.header)"
-                >
-                  <span class="d-block testing-header">{{ container.header }}</span>
-                  <span class="d-block testing-body">{{ container.body }}</span>
-                </div>
-              </div>
             </div>
           </span>
         </span>

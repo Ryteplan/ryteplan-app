@@ -86,14 +86,14 @@
             </template>
             <v-list>
               <v-list-item v-if="userStore.isAdmin">
-                <div class="d-flex justify-space-between align-center px-4" @click.stop>
+                <div class="d-flex justify-space-between align-center px-4">
                   <v-list-item-title>Admin Mode</v-list-item-title>
                   <v-switch
                     v-model="userStore.adminMode"
                     color="primary"
                     hide-details
                     density="compact"
-                    @change="userStore.saveAdminModeState"
+                    @click.stop="userStore.saveAdminModeState()"
                   ></v-switch>
                 </div>
               </v-list-item>
@@ -129,14 +129,15 @@
     >
       <v-list>
         <v-list-item v-if="userStore.isAdmin">
-          <div class="d-flex justify-space-between align-center px-4" @click.stop>
+          <div class="d-flex justify-space-between align-center px-4">
             <v-list-item-title>Admin Mode</v-list-item-title>
             <v-switch
               v-model="userStore.adminMode"
               color="primary"
               hide-details
               density="compact"
-              @change="userStore.saveAdminModeState"
+              @change="userStore.saveAdminModeState"   
+              @click.stop           
             ></v-switch>
           </div>
         </v-list-item>
