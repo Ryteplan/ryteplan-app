@@ -9,7 +9,7 @@
         </a>
         <v-combobox
           ref="suggestedSearch"
-          class="ml-8 mr-md-8"
+          class="ml-6 mr-3 ml-md-8 mr-md-8"
           density="compact"
           variant="solo"
           single-line
@@ -29,15 +29,6 @@
             >
               <v-list-item-title>
                 <div class="d-flex align-center ga-2">
-                  <!-- <v-icon
-                    class="ml-3"
-                    :icon="
-                      data.item.props.type === 'real'
-                        ? 'mdi-office-building-marker-outline'
-                        : 'mdi-magnify'
-                    "
-                    size="small"
-                  ></v-icon> -->
                   <span v-if="data.item.props.html" v-html="data.item.props.html"></span>
                   <span v-else>{{ data.item.props.name }}</span>
                 </div>
@@ -59,6 +50,8 @@
             ></v-icon>
           </template>
         </v-combobox>
+
+        <v-app-bar-nav-icon class="d-md-none" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
         <div class="d-none d-md-flex">
           <v-btn
             class="d-none"
@@ -128,6 +121,52 @@
         </div>
       </div>
     </v-app-bar>
+    <v-navigation-drawer
+      v-model="drawer"
+      location="right"
+      temporary
+      class="d-md-none"
+    >
+      <v-list>
+        <v-list-item v-if="userStore.isAdmin">
+          <div class="d-flex justify-space-between align-center px-4" @click.stop>
+            <v-list-item-title>Admin Mode</v-list-item-title>
+            <v-switch
+              v-model="userStore.adminMode"
+              color="primary"
+              hide-details
+              density="compact"
+              @change="userStore.saveAdminModeState"
+            ></v-switch>
+          </div>
+        </v-list-item>
+        <v-list-item
+          v-if="userStore.isAdmin"
+          @click="() => this.$router.push('/data-compare')"
+        >
+          <div class="d-flex justify-start align-center">
+             <v-icon class="mr-3" icon="mdi-ab-testing"></v-icon>
+            <v-list-item-title>Data Compare</v-list-item-title>
+          </div>
+        </v-list-item>
+        <v-list-item v-if="isLoggedIn">
+           <div class="d-flex justify-start align-center" @click="() => this.$router.push('/lists')">
+            <v-icon class="mr-3" icon="mdi-format-list-bulleted"></v-icon>
+            <v-list-item-title>Lists</v-list-item-title>
+           </div>
+        </v-list-item>
+        <v-list-item
+          v-for="item in filteredDropDownItems"
+          @click="item.action"
+          :key="item.title"
+        >
+          <div class="d-flex justify-start align-center">
+             <v-icon class="mr-3" :icon="item.icon"></v-icon>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </div>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
     <v-main class="d-flex flex-column">
       <router-view :key="$route.fullPath"></router-view>
       <v-spacer></v-spacer>
@@ -253,7 +292,7 @@ export default {
           hideFromLoggedOut: true
         }
       ],
-
+      drawer: false,
     };
   },
   methods: {
