@@ -136,9 +136,8 @@
               color="primary"
               hide-details
               density="compact"
-              @change="userStore.saveAdminModeState"   
-              @click.stop           
-            ></v-switch>
+              @click.stop="userStore.saveAdminModeState()"
+              ></v-switch>
           </div>
         </v-list-item>
         <v-list-item
