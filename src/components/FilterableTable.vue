@@ -213,10 +213,12 @@ export default {
 
     if (tableStore.tableHeaders.length == 0) {
       tableStore.loadTableHeaders();
-      tableStore.loadHeaderState();
+      tableStore.loadHeaderState('filterableTable');
     }
-
-    tableStore.updateHeaders();
+    
+    // Set the active headers for this view
+    tableStore.setActiveHeaders('filterableTable');
+    tableStore.updateHeaders('filterableTable');
     tableStore.getHideHidden();
 
     let searchFilterSortStore = useSearchFilterSortStore();
@@ -410,8 +412,8 @@ export default {
       }
     },
     onHeaderChange() {
-      this.tableStore.saveHeaderState();
-      this.tableStore.updateHeaders();
+      this.tableStore.saveHeaderState('filterableTable');
+      this.tableStore.updateHeaders('filterableTable');
       
       // Force table refresh by temporarily clearing and resetting the data
       const tempData = [...this.tableStore.tableData];

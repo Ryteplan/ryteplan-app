@@ -20,13 +20,23 @@
         </span>
       </v-col>
       <v-col cols="3" class="d-flex justify-end align-center">
+        <v-btn
+          v-if="userStore.isLoggedIn"
+          class="mr-3"
+          size="x-small"
+          elevation="1"
+          @click="showColumnsDialog = true"
+          title="Edit Columns"
+        >
+          Edit Columns
+        </v-btn>
         <v-menu location="bottom end">
           <template v-slot:activator="{ props }">
             <v-btn
               class="mr-3"
               v-bind="props"
               @click="onUpdateMenu"
-              size="small"              
+              size="x-small"              
             >
               Options
             </v-btn>
@@ -158,9 +168,12 @@ export default {
     const tableStore = useTableStore();
     if (tableStore.tableHeaders.length == 0) {
       tableStore.loadTableHeaders();
-      tableStore.loadHeaderState();
-      tableStore.updateHeaders();
+      tableStore.loadHeaderState('singularList');
     }
+    
+    // Set the active headers for this view
+    tableStore.setActiveHeaders('singularList');
+    tableStore.updateHeaders('singularList');
 
     let userStore = useUserStore();
     userStore.getAdminMode();
@@ -180,11 +193,6 @@ export default {
       showColumnsDialog: false,
       selectedInstitutions: [],
       selectedDropDown: [
-        { 
-          title: 'Edit Columns', 
-          icon: 'mdi-pencil',
-          action: this.editColumnsClicked
-        },
         { 
           title: 'Share',
           icon: 'mdi-account-plus',
@@ -210,8 +218,8 @@ export default {
   },
   methods: {
     onHeaderChange() {
-      this.tableStore.saveHeaderState();
-      this.tableStore.updateHeaders();
+      this.tableStore.saveHeaderState('singularList');
+      this.tableStore.updateHeaders('singularList');
       
       // Force table refresh by temporarily clearing and resetting the data
       const tempData = [...this.tableStore.tableData];

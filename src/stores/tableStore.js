@@ -14,6 +14,11 @@ export const useTableStore = defineStore('table', {
       searchFromRoute: '',
       selectedRows: [],
       tableHeaders: [],
+      viewHeaders: {
+        default: [],
+        filterableTable: [],
+        singularList: []
+      },
       lastVisible: {},
       resultsFound: 0,
   }),
@@ -167,7 +172,7 @@ export const useTableStore = defineStore('table', {
         this.tableHeaders = JSON.parse(localStorage.getItem("tableHeaders"));
       }
       else {
-        this.tableHeaders = [
+        const defaultHeaders = [
           {
             title: "id",
             key: "id",
@@ -705,8 +710,22 @@ export const useTableStore = defineStore('table', {
             sortable: false,
             align: "end",
           },
-        ];          
+        ];
+        
+        this.tableHeaders = JSON.parse(JSON.stringify(defaultHeaders));
+        this.viewHeaders.default = JSON.parse(JSON.stringify(defaultHeaders));
+        this.viewHeaders.filterableTable = JSON.parse(JSON.stringify(defaultHeaders));
+        this.viewHeaders.singularList = JSON.parse(JSON.stringify(defaultHeaders));
       }
+    },
+    getHeadersForView(view = 'default') {
+      if (!this.viewHeaders[view] || this.viewHeaders[view].length === 0) {
+        this.viewHeaders[view] = JSON.parse(JSON.stringify(this.tableHeaders));
+      }
+      return this.viewHeaders[view];
+    },
+    setActiveHeaders(view = 'default') {
+      this.tableHeaders = this.getHeadersForView(view);
     },
     filteredHeadersData(){
       return this.tableHeaders.filter(header => header.title !== "id")
@@ -718,21 +737,26 @@ export const useTableStore = defineStore('table', {
         !header.hideFromColumnsEditor
       );
     },
-    updateHeaders() {
-      const filteredArray = this.tableHeaders.map(x => {
-        // Get existing alignment, excluding d-none if present
+    updateHeaders(view = 'default') {
+      const headers = this.getHeadersForView(view);
+      const filteredArray = headers.map(x => {
         const currentAlign = (x.align || '').replace('d-none', '').trim();
         
         return {
           ...x,
           align: x.show === false 
-            ? `${currentAlign} d-none`.trim()  // Add d-none while preserving existing alignment
-            : currentAlign                      // Keep existing alignment
+            ? `${currentAlign} d-none`.trim()
+            : currentAlign
         };
       });
-      this.tableHeaders = filteredArray;
+      
+      this.viewHeaders[view] = filteredArray;
+      if (view === 'default' || !this.tableHeaders.length) {
+        this.tableHeaders = filteredArray;
+      }
+      
       let tableHeaders = JSON.stringify(filteredArray);
-      localStorage.setItem("tableHeaders", tableHeaders);
+      localStorage.setItem(`tableHeaders_${view}`, tableHeaders);
     },
     performSearch() {
       
@@ -743,10 +767,8 @@ export const useTableStore = defineStore('table', {
       if (searchFilterSort.searchInput !== '') {
         searchFilterSort.saveThenClearSearchInput();
         searchFilterSort.searchParameters.q = searchFilterSort.activeSearchTerms;
-        // this.fetchTableData();
       } else {
         searchFilterSort.searchParameters.q = "*";
-        // this.fetchTableData();
       }
     },
     getHideHidden() {
@@ -774,26 +796,36 @@ export const useTableStore = defineStore('table', {
       searchFilterSort.customSortString = column.key + ":" + searchFilterSort.customSortDirection + ", " + "name:" + searchFilterSort.nameSortDirection;
       this.applyNewSearch();
     },
-    saveHeaderState() {
-      // Save header visibility state to localStorage
-      const headerState = this.tableHeaders.reduce((acc, header) => {
+    saveHeaderState(view = 'default') {
+      const headers = this.getHeadersForView(view);
+      const headerState = headers.reduce((acc, header) => {
         acc[header.key] = header.show;
         return acc;
       }, {});
-      localStorage.setItem('tableHeaderState', JSON.stringify(headerState));
-      this.freshSearch = true;
-      this.fetchTableData(); // Reload the table data
+      localStorage.setItem(`tableHeaderState_${view}`, JSON.stringify(headerState));
+      
+      this.updateHeaders(view);
+      
+      if (view === 'default') {
+        this.freshSearch = true;
+        this.fetchTableData();
+      }
     },
-    loadHeaderState() {
-      // Load header visibility state from localStorage
-      const savedState = localStorage.getItem('tableHeaderState');
+    loadHeaderState(view = 'default') {
+      this.getHeadersForView(view);
+      
+      const savedState = localStorage.getItem(`tableHeaderState_${view}`);
       if (savedState) {
         const headerState = JSON.parse(savedState);
-        this.tableHeaders.forEach(header => {
+        this.viewHeaders[view].forEach(header => {
           if (Object.prototype.hasOwnProperty.call(headerState, header.key)) {
             header.show = headerState[header.key];
           }
         });
+      }
+      
+      if (view === 'default') {
+        this.tableHeaders = this.viewHeaders[view];
       }
     },
   },
@@ -810,7 +842,6 @@ export const useTableStore = defineStore('table', {
         if (institution.admsConsider && showConsidered) policies.push('Considered');
         if (institution.admsNotUsed && showNotUsed) policies.push('Not used');
 
-        // If we have policies to display, join them, otherwise show em dash
         return policies.length > 0 ? policies.join(', ') : '—';
       }
     }
