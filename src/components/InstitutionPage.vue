@@ -349,7 +349,7 @@
           label="Testing Policy"
           :uri="institution['uri']"
           field="testingPolicy"
-          valueType="testingPolicy"
+          valueType="string"
           :valueFromManual="manualInstitionData['testingPolicy']"
         />
         <StatDisplay
