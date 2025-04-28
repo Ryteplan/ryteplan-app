@@ -1,6 +1,6 @@
 <template>
   <v-container class="pt-4">
-    <div class="data-integration">
+    <div class="data-integration d-flex flex-column">
       <!-- 
         <p>Output the merge candidate institution data</p>
         <div v-for="(item, index) in mergeCandidateInstitutionData" :key="index">
@@ -12,7 +12,6 @@
       -->
 
       <v-btn
-        class="d-none"
         @click="duplicateCollection"
         color="primary"
       >
@@ -20,6 +19,7 @@
       </v-btn>
 
       <v-btn
+        class="mt-8"
         @click="doDataIntegration"
         color="primary"
       >
@@ -568,16 +568,19 @@ export default {
       });
 
       this.integratedData.forEach(async (institution) => {
-        setDoc(doc(dbFireStore, 'institutions_integrated_v19_backup_1', institution["uri"]), {
+        setDoc(doc(dbFireStore, 'institutions_integrated_v20250313_backup_1', institution["uri"]), {
           ...institution
         }, { merge: true })
-        console.log('done adding: ' + institution.name + ' to institutions_integrated_v19_backup_1');
+        console.log('done adding: ' + institution.name + ' to institutions_integrated_v20250313_backup_1');
+
+        // set a timeout for 500 milliseconds
+        await new Promise(resolve => setTimeout(resolve, 500));
       })
     },
     async doDataIntegration() {
       console.log('doing data integration')
       
-      const petersonsDataQuery = query(collection(dbFireStore, "institutions_petersons_processed_20250313"));      
+      const petersonsDataQuery = query(collection(dbFireStore, "institutions_petersons_processed_20250313V2"));      
       const petersonsSnapshots = await getDocs(petersonsDataQuery);
 
       petersonsSnapshots.docs.forEach(doc => {
@@ -625,13 +628,13 @@ export default {
 
       // add all the things to the institutions_integrated collection
       this.petersonsData.forEach(async (institution) => {
-        setDoc(doc(dbFireStore, 'institutions_integrated_test', institution["uri"]), {
+        setDoc(doc(dbFireStore, 'institutions_integrated', institution["uri"]), {
           ...institution
         }, { merge: true })
 
         console.log('done adding: ' + institution.name);
-        // set a timeout for 2 seconds
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        // set a timeout for 500 milliseconds
+        await new Promise(resolve => setTimeout(resolve, 500));
       })
     }
   }
