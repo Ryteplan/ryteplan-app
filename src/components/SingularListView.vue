@@ -755,8 +755,21 @@ export default {
       }
     },
     toggleColumn(header) {
-      // Toggle the visibility directly
-      header.show = !header.show;
+      // Create a deep copy of the header to avoid reference issues
+      const headerCopy = JSON.parse(JSON.stringify(header));
+      headerCopy.show = !headerCopy.show;
+      
+      // Get all headers
+      const headers = this.tableStore.getHeadersForView('singularList');
+      
+      // Find and update the matching header
+      const index = headers.findIndex(h => h.key === headerCopy.key);
+      if (index !== -1) {
+        headers[index] = headerCopy;
+      }
+      
+      // Update the store with the modified headers
+      this.tableStore.viewHeaders['singularList'] = headers;
       
       // Update headers visibility in the store
       this.tableStore.updateHeaders('singularList');
