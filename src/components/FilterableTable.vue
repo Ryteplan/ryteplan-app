@@ -551,13 +551,22 @@ export default {
           }
         });
         
-        // Save changes
-        this.tableStore.viewHeaders['filterableTable'] = headers;
+        // Save changes and update store
+        this.tableStore.viewHeaders['filterableTable'] = JSON.parse(JSON.stringify(headers));
         this.tableStore.saveHeaderState('filterableTable');
         this.tableStore.updateHeaders('filterableTable');
         
-        // Refresh the table
-        this.refreshTable();
+        // Update the visible and hidden columns immediately
+        const reorderedHeaders = this.tableStore.getReorderableHeaders('filterableTable');
+        this.visibleColumns = reorderedHeaders.filter(header => header.show === true);
+        this.hiddenColumns = reorderedHeaders.filter(header => header.show === false);
+        
+        // Refresh table data to reflect changes
+        const tempData = [...this.tableStore.tableData];
+        this.tableStore.tableData = [];
+        this.$nextTick(() => {
+          this.tableStore.tableData = tempData;
+        });
       }
     }
   },
