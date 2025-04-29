@@ -165,6 +165,28 @@ export const useTableStore = defineStore('table', {
     updateSelected(selectedRows) {
       this.selectedRows = selectedRows;
     },
+    processHeadersForView(headers, view) {
+      return headers.map(header => {
+        // Make a clean copy of the header
+        const headerCopy = JSON.parse(JSON.stringify(header));
+        
+        // Apply view-specific visibility rules
+        if (view === 'filterableTable' && headerCopy.showOnFilterableTable === false) {
+          headerCopy.show = false;
+        } else if (view === 'singularList' && headerCopy.showOnSingularList === false) {
+          headerCopy.show = false;
+        } else if (view === 'singularList' && headerCopy.showOnSingularList === true) {
+          headerCopy.show = true;
+        }
+        
+        // Process children if present
+        if (headerCopy.children && headerCopy.children.length > 0) {
+          headerCopy.children = this.processHeadersForView(headerCopy.children, view);
+        }
+        
+        return headerCopy;
+      });
+    },
     async loadTableHeaders() {
       const defaultHeaders = [
         {
@@ -738,7 +760,8 @@ export const useTableStore = defineStore('table', {
       
       // Initialize view headers first to avoid undefined errors
       views.forEach(view => {
-        this.viewHeaders[view] = JSON.parse(JSON.stringify(defaultHeaders));
+        const processedHeaders = this.processHeadersForView(defaultHeaders, view);
+        this.viewHeaders[view] = processedHeaders;
       });
       
       // Load each view's saved headers if they exist
@@ -763,12 +786,26 @@ export const useTableStore = defineStore('table', {
     filteredHeadersData(){
       return this.tableHeaders.filter(header => header.title !== "id")
     },
-    filteredHeadersDataForColumnsEditor(){
-      return this.tableHeaders.filter(header => 
-        header.title !== "id" && 
-        header.title !== "Hidden" && 
-        !header.hideFromColumnsEditor
-      );
+    filteredHeadersDataForColumnsEditor(view = 'default'){
+      return this.tableHeaders.filter(header => {
+        // Skip system headers and those marked to hide from editor
+        if (header.title === "id" || 
+            header.title === "Hidden" || 
+            header.hideFromColumnsEditor) {
+          return false;
+        }
+        
+        // Check view-specific visibility flags
+        if (view === 'filterableTable' && header.showOnFilterableTable === false) {
+          return false;
+        }
+        
+        if (view === 'singularList' && header.showOnSingularList === false) {
+          return false;
+        }
+        
+        return true;
+      });
     },
     updateHeaders(view = 'default') {
       const headers = this.getHeadersForView(view);

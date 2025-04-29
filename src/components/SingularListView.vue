@@ -128,7 +128,7 @@
         <v-card-text>
           <v-list>
             <v-list-item
-              v-for="header in tableStore.filteredHeadersDataForColumnsEditor()"
+              v-for="header in tableStore.filteredHeadersDataForColumnsEditor('singularList')"
               :key="header.key"
             >
               <v-list-item-title>
