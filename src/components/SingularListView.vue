@@ -745,23 +745,19 @@ export default {
           }
         });
         
-        // Save changes
+        // Save changes and update store
         this.tableStore.viewHeaders['singularList'] = JSON.parse(JSON.stringify(headers));
         this.tableStore.saveHeaderState('singularList');
         this.tableStore.updateHeaders('singularList');
         
-        // Force the dialog to update
+        // Force a refresh of the component and table
+        this.$forceUpdate();
+        
+        // Refresh the institutions table
+        const temp = [...this.institutions];
+        this.institutions = [];
         this.$nextTick(() => {
-          // Force a refresh of the computed properties
-          const reorderedHeaders = this.tableStore.getReorderableHeaders('singularList');
-          this.visibleColumns = reorderedHeaders.filter(header => header.show === true);
-          this.hiddenColumns = reorderedHeaders.filter(header => header.show === false);
-          
-          // Force component update
-          this.$forceUpdate();
-          
-          // Refresh the table
-          this.refreshTable();
+          this.institutions = temp;
         });
       }
     },

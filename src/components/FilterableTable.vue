@@ -556,11 +556,6 @@ export default {
         this.tableStore.saveHeaderState('filterableTable');
         this.tableStore.updateHeaders('filterableTable');
         
-        // Update the visible and hidden columns immediately
-        const reorderedHeaders = this.tableStore.getReorderableHeaders('filterableTable');
-        this.visibleColumns = reorderedHeaders.filter(header => header.show === true);
-        this.hiddenColumns = reorderedHeaders.filter(header => header.show === false);
-        
         // Refresh table data to reflect changes
         const tempData = [...this.tableStore.tableData];
         this.tableStore.tableData = [];
