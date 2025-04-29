@@ -904,6 +904,164 @@ export const useTableStore = defineStore('table', {
         }
       }
     },
+    moveColumnUp(key, view = 'default') {
+      const allHeaders = this.getHeadersForView(view);
+      const reorderableHeaders = this.getReorderableHeaders(view);
+      
+      // Find indices in both arrays
+      const reorderableIndex = reorderableHeaders.findIndex(header => header.key === key);
+      const allHeadersIndex = allHeaders.findIndex(header => header.key === key);
+      
+      // Check if we can move up in reorderable headers
+      if (reorderableIndex <= 0) return false;
+      
+      // Check if the previous item has the same visibility
+      const currentHeader = reorderableHeaders[reorderableIndex];
+      const prevHeader = reorderableHeaders[reorderableIndex - 1];
+      
+      if (currentHeader.show !== prevHeader.show) return false;
+      
+      // Find the previous header in allHeaders
+      const prevHeaderIndex = allHeaders.findIndex(header => header.key === prevHeader.key);
+      
+      // Swap in allHeaders
+      [allHeaders[allHeadersIndex], allHeaders[prevHeaderIndex]] = 
+      [allHeaders[prevHeaderIndex], allHeaders[allHeadersIndex]];
+      
+      // Update store and save to localStorage
+      this.viewHeaders[view] = allHeaders;
+      if (view === 'default' || !this.tableHeaders.length) {
+        this.tableHeaders = allHeaders;
+      }
+      
+      this.updateHeaders(view);
+      
+      return true;
+    },
+    
+    moveColumnDown(key, view = 'default') {
+      const allHeaders = this.getHeadersForView(view);
+      const reorderableHeaders = this.getReorderableHeaders(view);
+      
+      // Find indices in both arrays
+      const reorderableIndex = reorderableHeaders.findIndex(header => header.key === key);
+      const allHeadersIndex = allHeaders.findIndex(header => header.key === key);
+      
+      // Check if we can move down in reorderable headers
+      if (reorderableIndex < 0 || reorderableIndex >= reorderableHeaders.length - 1) {
+        return false;
+      }
+      
+      // Check if the next item has the same visibility
+      const currentHeader = reorderableHeaders[reorderableIndex];
+      const nextHeader = reorderableHeaders[reorderableIndex + 1];
+      
+      if (currentHeader.show !== nextHeader.show) return false;
+      
+      // Find the next header in allHeaders
+      const nextHeaderIndex = allHeaders.findIndex(header => header.key === nextHeader.key);
+      
+      // Swap in allHeaders
+      [allHeaders[allHeadersIndex], allHeaders[nextHeaderIndex]] = 
+      [allHeaders[nextHeaderIndex], allHeaders[allHeadersIndex]];
+      
+      // Update store and save to localStorage
+      this.viewHeaders[view] = allHeaders;
+      if (view === 'default' || !this.tableHeaders.length) {
+        this.tableHeaders = allHeaders;
+      }
+      
+      this.updateHeaders(view);
+      
+      return true;
+    },
+
+    // Helper to get only headers that are appropriate for reordering
+    getReorderableHeaders(view = 'default') {
+      // Get the filtered headers for the columns editor
+      const editableHeaders = this.filteredHeadersDataForColumnsEditor(view);
+      
+      // Get the current headers to maintain relative order
+      const currentHeaders = this.getHeadersForView(view);
+      
+      // Split into visible and hidden columns
+      const visibleHeaders = [];
+      const hiddenHeaders = [];
+      
+      editableHeaders.forEach(header => {
+        if (header.show === true) {
+          visibleHeaders.push(header);
+        } else {
+          hiddenHeaders.push(header);
+        }
+      });
+      
+      // Sort the visible headers by position
+      const sortedVisibleHeaders = visibleHeaders.sort((a, b) => {
+        const indexA = currentHeaders.findIndex(h => h.key === a.key);
+        const indexB = currentHeaders.findIndex(h => h.key === b.key);
+        return indexA - indexB;
+      });
+      
+      // Sort hidden headers alphabetically by title
+      const sortedHiddenHeaders = hiddenHeaders.sort((a, b) => {
+        return a.title.localeCompare(b.title);
+      });
+      
+      // Return visible headers first, then alphabetically sorted hidden headers
+      return [...sortedVisibleHeaders, ...sortedHiddenHeaders];
+    },
+    isFirstVisibleHeader(key, view = 'default') {
+      const headers = this.getReorderableHeaders(view);
+      if (headers.length === 0) return true;
+      return headers[0].key === key;
+    },
+    
+    isLastVisibleHeader(key, view = 'default') {
+      const headers = this.getReorderableHeaders(view);
+      if (headers.length === 0) return true;
+      return headers[headers.length - 1].key === key;
+    },
+    getFilteredHeadersForDisplay(view = 'default') {
+      const headers = this.getHeadersForView(view);
+      
+      // Filter out hidden headers
+      const visibleHeaders = headers.filter(header => header.show !== false);
+      
+      // Return visible headers in their stored order
+      return visibleHeaders;
+    },
+    canMoveColumnUp(key, view = 'default') {
+      const reorderableHeaders = this.getReorderableHeaders(view);
+      const index = reorderableHeaders.findIndex(header => header.key === key);
+      
+      // Can't move up if it's already at the top
+      if (index <= 0) return false;
+      
+      // Can't move up if the previous header has different visibility
+      const currentVisibility = reorderableHeaders[index].show === true;
+      const prevVisibility = reorderableHeaders[index - 1].show === true;
+      
+      if (currentVisibility !== prevVisibility) return false;
+      
+      return true;
+    },
+    
+    canMoveColumnDown(key, view = 'default') {
+      const reorderableHeaders = this.getReorderableHeaders(view);
+      const index = reorderableHeaders.findIndex(header => header.key === key);
+      
+      // Can't move down if it's already at the bottom
+      if (index < 0 || index >= reorderableHeaders.length - 1) return false;
+      
+      // Can't move down if the next header has different visibility
+      const currentVisibility = reorderableHeaders[index].show === true;
+      const nextVisibility = reorderableHeaders[index + 1].show === true;
+      
+      if (currentVisibility !== nextVisibility) return false;
+      
+      return true;
+    }
   },
   getters: {
     getTestingPolicy: () => {

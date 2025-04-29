@@ -127,11 +127,57 @@
         </v-card-title>
         <v-card-text>
           <v-list>
+            <!-- Section header for visible columns -->
+            <v-list-subheader class="font-weight-bold text-primary">
+              Visible Columns
+            </v-list-subheader>
+            
+            <!-- Visible columns -->
             <v-list-item
-              v-for="header in tableStore.filteredHeadersDataForColumnsEditor('singularList')"
+              v-for="(header) in visibleColumns"
               :key="header.key"
             >
-              <v-list-item-title>
+              <v-list-item-title class="d-flex align-center">
+                <v-checkbox
+                  v-model="header.show"
+                  :label="header.title"
+                  hide-details
+                  density="comfortable"
+                  @change="onHeaderChange()"
+                ></v-checkbox>
+                <v-spacer></v-spacer>
+                <div class="d-flex">
+                  <v-btn
+                    density="comfortable"
+                    icon="mdi-arrow-up"
+                    size="small"
+                    variant="text"
+                    @click="moveColumnUp(header.key)"
+                    :disabled="isFirstVisibleHeader(header.key)"
+                  ></v-btn>
+                  <v-btn
+                    density="comfortable"
+                    icon="mdi-arrow-down"
+                    size="small"
+                    variant="text"
+                    @click="moveColumnDown(header.key)"
+                    :disabled="isLastVisibleHeader(header.key)"
+                  ></v-btn>
+                </div>
+              </v-list-item-title>
+            </v-list-item>
+            
+            <!-- Section header for hidden columns -->
+            <v-list-subheader class="font-weight-bold text-grey mt-4" v-if="hiddenColumns.length > 0">
+              Hidden Columns
+            </v-list-subheader>
+            
+            <!-- Hidden columns -->
+            <v-list-item
+              v-for="(header) in hiddenColumns"
+              :key="header.key"
+            >
+              <v-list-item-title class="d-flex align-center">
                 <v-checkbox
                   v-model="header.show"
                   :label="header.title"
@@ -144,6 +190,14 @@
           </v-list>
         </v-card-text>
         <v-card-actions class="justify-end">
+          <v-btn 
+            color="error" 
+            variant="text" 
+            class="mr-auto"
+            @click="resetColumnsToDefault"
+          >
+            Reset to Default
+          </v-btn>
           <v-btn color="primary" @click="showColumnsDialog = false">Done</v-btn>
         </v-card-actions>
       </v-card>
@@ -645,11 +699,73 @@ export default {
         }
       }
       return value;
+    },
+    moveColumnUp(key) {
+      if (this.tableStore.moveColumnUp(key, 'singularList')) {
+        this.refreshTable();
+      }
+    },
+    moveColumnDown(key) {
+      if (this.tableStore.moveColumnDown(key, 'singularList')) {
+        this.refreshTable();
+      }
+    },
+    refreshTable() {
+      // Force a refresh of the component
+      this.$forceUpdate();
+    },
+    isFirstVisibleHeader(key) {
+      return !this.tableStore.canMoveColumnUp(key, 'singularList');
+    },
+    isLastVisibleHeader(key) {
+      return !this.tableStore.canMoveColumnDown(key, 'singularList');
+    },
+    resetColumnsToDefault() {
+      if (confirm("This will reset all column settings to their default values. Continue?")) {
+        // Default columns that should be visible
+        const defaultVisibleColumns = [
+          "name", 
+          "stateCleaned", 
+          "mainInstControlDesc", 
+          "mainCalendar", 
+          "enTotUgN", 
+          "cmpsSetting",
+        ];
+        
+        // Get all headers
+        const headers = this.tableStore.getHeadersForView('singularList');
+        
+        // Update visibility based on defaults
+        headers.forEach(header => {
+          if (defaultVisibleColumns.includes(header.key)) {
+            header.show = true;
+          } else if (header.key !== "id" && header.key !== "hidden" && !header.hideFromColumnsEditor) {
+            header.show = false;
+          }
+        });
+        
+        // Save changes
+        this.tableStore.viewHeaders['singularList'] = headers;
+        this.tableStore.saveHeaderState('singularList');
+        this.tableStore.updateHeaders('singularList');
+        
+        // Refresh the component
+        this.refreshTable();
+      }
     }
   },
   computed: {
     filteredHeaders() {      
-      return this.tableStore.tableHeaders.filter(header => header.key !== "hidden" && header.key !== "id" && header.show !== false);
+      return this.tableStore.getFilteredHeadersForDisplay('singularList');
+    },
+    reorderableHeaders() {
+      return this.tableStore.getReorderableHeaders('singularList');
+    },
+    visibleColumns() {
+      return this.reorderableHeaders.filter(header => header.show === true);
+    },
+    hiddenColumns() {
+      return this.reorderableHeaders.filter(header => header.show === false);
     }
   },
   components: {
