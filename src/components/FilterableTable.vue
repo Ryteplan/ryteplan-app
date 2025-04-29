@@ -201,7 +201,6 @@ import FilterContent from './FilterContent.vue'
 
 export default {
   setup() {
-
     let userStore = useUserStore();
     userStore.getAdminMode();
     userStore.getIsLoggedIn();
@@ -219,6 +218,7 @@ export default {
     // Set the active headers for this view
     tableStore.setActiveHeaders('filterableTable');
     tableStore.updateHeaders('filterableTable');
+
     tableStore.getHideHidden();
 
     let searchFilterSortStore = useSearchFilterSortStore();
@@ -412,8 +412,14 @@ export default {
       }
     },
     onHeaderChange() {
+      // Save header state to localStorage for this view
       this.tableStore.saveHeaderState('filterableTable');
+      
+      // Update headers visibility in the store
       this.tableStore.updateHeaders('filterableTable');
+      
+      // Set the active headers to ensure the view is using the updated headers
+      this.tableStore.setActiveHeaders('filterableTable');
       
       // Force table refresh by temporarily clearing and resetting the data
       const tempData = [...this.tableStore.tableData];

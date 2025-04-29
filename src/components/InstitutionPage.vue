@@ -1222,11 +1222,13 @@ export default {
       docSnap.forEach((doc) => {
         this.institutionId = doc.id;
         this.institution = doc.data();
-        this.majors = this.institution.acadProgDesc.split(',');
-        this.majors = this.majors.map(major => major.trimStart());
-        this.majors.sort((a, b) => a.localeCompare(b));
-        this.majors = this.majors.map(major => major.replace(/\//g, ' and '));
-        this.majors = this.majors.map(major => this.toTitleCase(major));
+        if (this.institution.acadProgDesc) {
+          this.majors = this.institution.acadProgDesc.split(',');
+          this.majors = this.majors.map(major => major.trimStart());
+          this.majors.sort((a, b) => a.localeCompare(b));
+          this.majors = this.majors.map(major => major.replace(/\//g, ' and '));
+          this.majors = this.majors.map(major => this.toTitleCase(major));
+        }
       });
       this.getSports();
       this.getImages();

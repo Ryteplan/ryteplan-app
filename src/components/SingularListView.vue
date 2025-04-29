@@ -218,15 +218,17 @@ export default {
   },
   methods: {
     onHeaderChange() {
+      // Save header state to localStorage for this view
       this.tableStore.saveHeaderState('singularList');
+      
+      // Update headers visibility in the store
       this.tableStore.updateHeaders('singularList');
       
-      // Force table refresh by temporarily clearing and resetting the data
-      const tempData = [...this.tableStore.tableData];
-      this.tableStore.tableData = [];
-      this.$nextTick(() => {
-        this.tableStore.tableData = tempData;
-      });
+      // Set the active headers to ensure the view is using the updated headers
+      this.tableStore.setActiveHeaders('singularList');
+      
+      // Force table refresh
+      this.$forceUpdate();
     },
     navigateToInstitution(event, item) {
       // Handle case where item might be undefined
