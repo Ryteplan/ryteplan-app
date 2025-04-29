@@ -97,6 +97,7 @@
             :items="tableStore.tableData" 
             :items-per-page="-1"
             @click:row="(event, item) => navigateToInstitution(event, item, false)"
+            @click:header="(column) => tableStore.customSort(column)"
             item-value="institution name" 
             v-model="selectedInstitutions"
             :show-select="!!userStore.isLoggedIn"            
@@ -177,11 +178,11 @@
             >
               <v-list-item-title class="d-flex align-center">
                 <v-checkbox
-                  v-model="header.show"
+                  :model-value="header.show"
                   :label="header.title"
                   hide-details
                   density="comfortable"
-                  @change="onHeaderChange()"
+                  @click="toggleColumn(header)"
                 ></v-checkbox>
                 <v-spacer></v-spacer>
                 <div class="d-flex">
@@ -217,11 +218,11 @@
             >
               <v-list-item-title class="d-flex align-center">
                 <v-checkbox
-                  v-model="header.show"
+                  :model-value="header.show"
                   :label="header.title"
                   hide-details
                   density="comfortable"
-                  @change="onHeaderChange()"
+                  @click="toggleColumn(header)"
                 ></v-checkbox>
               </v-list-item-title>
             </v-list-item>
@@ -465,22 +466,21 @@ export default {
         this.showFiltersDialog = true;
       }
     },
-    onHeaderChange() {
-      // Save header state to localStorage for this view
-      this.tableStore.saveHeaderState('filterableTable');
+    toggleColumn(header) {
+      // Toggle the visibility directly
+      header.show = !header.show;
       
       // Update headers visibility in the store
       this.tableStore.updateHeaders('filterableTable');
       
+      // Save header state to localStorage for this view
+      this.tableStore.saveHeaderState('filterableTable');
+      
       // Set the active headers to ensure the view is using the updated headers
       this.tableStore.setActiveHeaders('filterableTable');
       
-      // Force table refresh by temporarily clearing and resetting the data
-      const tempData = [...this.tableStore.tableData];
-      this.tableStore.tableData = [];
-      this.$nextTick(() => {
-        this.tableStore.tableData = tempData;
-      });
+      // Force refresh with a simpler approach
+      this.refreshTable();
     },
     moveColumnUp(key) {
       if (this.tableStore.moveColumnUp(key, 'filterableTable')) {
@@ -495,10 +495,18 @@ export default {
     refreshTable() {
       // Force table refresh by temporarily clearing and resetting the data
       const tempData = [...this.tableStore.tableData];
+      
+      // Clear table data
       this.tableStore.tableData = [];
-      this.$nextTick(() => {
+      
+      // Give browser a moment to process the change
+      setTimeout(() => {
+        // Restore the data
         this.tableStore.tableData = tempData;
-      });
+        
+        // Force component update
+        this.$forceUpdate();
+      }, 0);
     },
     isFirstVisibleHeader(key) {
       return !this.tableStore.canMoveColumnUp(key, 'filterableTable');

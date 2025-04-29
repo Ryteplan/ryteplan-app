@@ -86,6 +86,7 @@
           :headers="filteredHeaders"
           :items="institutions"
           @click:row="navigateToInstitution" 
+          @click:header="(column) => tableStore.customSort(column)"
           item-key="uri"
           class="elevation-1"
           density="comfortable"
@@ -139,11 +140,11 @@
             >
               <v-list-item-title class="d-flex align-center">
                 <v-checkbox
-                  v-model="header.show"
+                  :model-value="header.show"
                   :label="header.title"
                   hide-details
                   density="comfortable"
-                  @change="onHeaderChange()"
+                  @click="toggleColumn(header)"
                 ></v-checkbox>
                 <v-spacer></v-spacer>
                 <div class="d-flex">
@@ -179,11 +180,11 @@
             >
               <v-list-item-title class="d-flex align-center">
                 <v-checkbox
-                  v-model="header.show"
+                  :model-value="header.show"
                   :label="header.title"
                   hide-details
                   density="comfortable"
-                  @change="onHeaderChange()"
+                  @click="toggleColumn(header)"
                 ></v-checkbox>
               </v-list-item-title>
             </v-list-item>
@@ -272,16 +273,16 @@ export default {
   },
   methods: {
     onHeaderChange() {
-      // Save header state to localStorage for this view
-      this.tableStore.saveHeaderState('singularList');
-      
       // Update headers visibility in the store
       this.tableStore.updateHeaders('singularList');
+      
+      // Save header state to localStorage for this view
+      this.tableStore.saveHeaderState('singularList');
       
       // Set the active headers to ensure the view is using the updated headers
       this.tableStore.setActiveHeaders('singularList');
       
-      // Force table refresh
+      // Force a simple refresh
       this.$forceUpdate();
     },
     navigateToInstitution(event, item) {
@@ -752,6 +753,29 @@ export default {
         // Refresh the component
         this.refreshTable();
       }
+    },
+    toggleColumn(header) {
+      // Toggle the visibility directly
+      header.show = !header.show;
+      
+      // Update headers visibility in the store
+      this.tableStore.updateHeaders('singularList');
+      
+      // Save header state to localStorage for this view
+      this.tableStore.saveHeaderState('singularList');
+      
+      // Set the active headers to ensure the view is using the updated headers
+      this.tableStore.setActiveHeaders('singularList');
+      
+      // Force a simple refresh
+      this.$forceUpdate();
+      
+      // Also force refresh institutions table
+      const temp = [...this.institutions];
+      this.institutions = [];
+      this.$nextTick(() => {
+        this.institutions = temp;
+      });
     }
   },
   computed: {

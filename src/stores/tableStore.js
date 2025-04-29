@@ -809,6 +809,8 @@ export const useTableStore = defineStore('table', {
     },
     updateHeaders(view = 'default') {
       const headers = this.getHeadersForView(view);
+      
+      // Update align property based on visibility
       const filteredArray = headers.map(x => {
         const currentAlign = (x.align || '').replace('d-none', '').trim();
         
@@ -820,13 +822,17 @@ export const useTableStore = defineStore('table', {
         };
       });
       
+      // Update viewHeaders and possibly tableHeaders
       this.viewHeaders[view] = filteredArray;
       if (view === 'default' || !this.tableHeaders.length) {
         this.tableHeaders = filteredArray;
       }
       
-      let tableHeaders = JSON.stringify(filteredArray);
-      localStorage.setItem(`tableHeaders_${view}`, tableHeaders);
+      // Save to localStorage
+      localStorage.setItem(`tableHeaders_${view}`, JSON.stringify(filteredArray));
+      
+      // Return the updated headers array
+      return filteredArray;
     },
     performSearch() {
       
@@ -859,27 +865,36 @@ export const useTableStore = defineStore('table', {
     customSort(column){
       const searchFilterSort = useSearchFilterSortStore();
 
-      if (column.key == searchFilterSort.customSortColumn) {
+      // Initialize sort direction if it's not set for this column yet
+      if (column.key !== searchFilterSort.customSortColumn) {
+        // First click on a new column - set to ascending by default
+        searchFilterSort.customSortDirection = 'asc';
+        searchFilterSort.customSortColumn = column.key;
+      } else {
+        // Toggle direction on subsequent clicks
         searchFilterSort.customSortDirection = searchFilterSort.customSortDirection === 'asc' ? 'desc' : 'asc';
       }
-      searchFilterSort.customSortColumn = column.key;
+      
+      // Build the sort string
       searchFilterSort.customSortString = column.key + ":" + searchFilterSort.customSortDirection + ", " + "name:" + searchFilterSort.nameSortDirection;
+      
+      // Apply the search with the new sort parameters
       this.applyNewSearch();
     },
     saveHeaderState(view = 'default') {
       const headers = this.getHeadersForView(view);
+      
+      // Create object mapping header keys to their visibility state
       const headerState = headers.reduce((acc, header) => {
         acc[header.key] = header.show;
         return acc;
       }, {});
+      
+      // Save to localStorage
       localStorage.setItem(`tableHeaderState_${view}`, JSON.stringify(headerState));
       
+      // Make sure headers are updated
       this.updateHeaders(view);
-      
-      if (view === 'default') {
-        this.freshSearch = true;
-        this.fetchTableData();
-      }
     },
     loadHeaderState(view = 'default') {
       const headers = this.getHeadersForView(view);
