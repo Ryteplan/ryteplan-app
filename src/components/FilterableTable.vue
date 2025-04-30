@@ -539,7 +539,7 @@ export default {
           "cmpsSetting"
         ];
         
-        // Get all headers
+        // Get fresh headers
         const headers = this.tableStore.getHeadersForView('filterableTable');
         
         // Update visibility based on defaults
@@ -555,12 +555,17 @@ export default {
         this.tableStore.viewHeaders['filterableTable'] = JSON.parse(JSON.stringify(headers));
         this.tableStore.saveHeaderState('filterableTable');
         this.tableStore.updateHeaders('filterableTable');
+        this.tableStore.setActiveHeaders('filterableTable');
         
-        // Refresh table data to reflect changes
+        // Force table refresh
         const tempData = [...this.tableStore.tableData];
         this.tableStore.tableData = [];
+        
+        // Use nextTick to ensure store updates are processed
         this.$nextTick(() => {
           this.tableStore.tableData = tempData;
+          // Force a component update to refresh the dialog
+          this.$forceUpdate();
         });
       }
     }

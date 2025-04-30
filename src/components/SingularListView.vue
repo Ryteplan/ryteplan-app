@@ -733,7 +733,7 @@ export default {
           "cmpsSetting"
         ];
         
-        // Get all headers
+        // Get fresh headers
         const headers = this.tableStore.getHeadersForView('singularList');
         
         // Update visibility based on defaults
@@ -749,15 +749,20 @@ export default {
         this.tableStore.viewHeaders['singularList'] = JSON.parse(JSON.stringify(headers));
         this.tableStore.saveHeaderState('singularList');
         this.tableStore.updateHeaders('singularList');
+        this.tableStore.setActiveHeaders('singularList');
         
-        // Force a refresh of the component and table
+        // Force component update
         this.$forceUpdate();
         
         // Refresh the institutions table
         const temp = [...this.institutions];
         this.institutions = [];
+        
+        // Use nextTick to ensure store updates are processed
         this.$nextTick(() => {
           this.institutions = temp;
+          // Force a component update to refresh the dialog
+          this.$forceUpdate();
         });
       }
     },
