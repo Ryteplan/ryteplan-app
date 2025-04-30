@@ -708,7 +708,7 @@ tr td:first-of-type {
   width: 48px;
 }
 
-.v-table--fixed-header>.v-table__wrapper>table>thead>tr:first-of-type>th {
+.v-table--fixed-header>.v-table__wrapper>table>thead>tr:first-of-type>th:first-of-type {
   z-index: 10;
 }
 
