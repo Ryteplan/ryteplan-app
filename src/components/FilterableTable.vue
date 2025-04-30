@@ -31,6 +31,7 @@
                     {{ $vuetify.display.lgAndUp ? (showFilters ? 'Hide Filters' : 'Show Filters') : 'Filters' }}
                   </v-btn>
                   <v-btn
+                    class="d-none"
                     v-if="userStore.isLoggedIn"
                     size="x-small"
                     elevation="1"

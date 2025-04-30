@@ -486,8 +486,6 @@ export const useTableStore = defineStore('table', {
           key: "compFeeD2025",
           minWidth: "140px",
           show: false,
-          showOnFilterableTable: false,
-          showOnSingularList: true,
         },
         {
           title: "Tuition Non-Resident",
@@ -513,16 +511,12 @@ export const useTableStore = defineStore('table', {
           key: "feesFtD2025",
           minWidth: "140px",
           show: false,
-          showOnFilterableTable: false,
-          showOnSingularList: true,
         },
         {
           title: "Annual room and board, on campus",
           key: "rmBdD2025",
           minWidth: "200px",
           show: false,
-          showOnFilterableTable: false,
-          showOnSingularList: true,
         },
         {
           title: "Early Decision Applicants",
