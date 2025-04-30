@@ -703,7 +703,7 @@ tr td:first-of-type {
   width: 48px;
 }
 
-.v-table--fixed-header>.v-table__wrapper>table>thead {
+.v-table--fixed-header>.v-table__wrapper>table>thead>tr:first-of-type>th {
   z-index: 10;
 }
 
