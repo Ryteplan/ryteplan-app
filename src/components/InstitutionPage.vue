@@ -721,18 +721,18 @@
           <v-expansion-panel-text>
             <v-list v-if="majors !== null">
               <div class="four-column-grid mt-4">
-                <div class="stat-container"><span class="stat-label">Tuition In State</span> <span class="stat-content">${{ institution["tuitStateFtD2024"]?.toLocaleString() || '—' }}</span></div>
-                <div class="stat-container"><span class="stat-label">Tuition Out of State</span> <span class="stat-content">${{ institution["tuitNresFtD2024"]?.toLocaleString() || '—' }}</span></div>
-                <div class="stat-container"><span class="stat-label">Tuition International</span> <span class="stat-content">${{ institution["tuitIntlFtD2024"]?.toLocaleString() || '—' }}</span></div>
-                <div class="stat-container"><span class="stat-label">Tuition Overall</span> <span class="stat-content">${{ institution["tuitOverallFtD2024"]?.toLocaleString() || '—' }}</span></div>
+                <div class="stat-container"><span class="stat-label">Tuition In State</span> <span class="stat-content">{{ institution["tuitStateFtD2025"] === -1 ? '—' : '$' + (institution["tuitStateFtD2025"]?.toLocaleString() || '—') }}</span></div>
+                <div class="stat-container"><span class="stat-label">Tuition Out of State</span> <span class="stat-content">{{ institution["tuitNresFtD2025"] === -1 ? '—' : '$' + (institution["tuitNresFtD2025"]?.toLocaleString() || '—') }}</span></div>
+                <div class="stat-container"><span class="stat-label">Tuition International</span> <span class="stat-content">{{ institution["tuitIntlFtD2025"] === -1 ? '—' : '$' + (institution["tuitIntlFtD2025"]?.toLocaleString() || '—') }}</span></div>
+                <div class="stat-container"><span class="stat-label">Tuition Overall</span> <span class="stat-content">{{ institution["tuitOverallFtD2025"] === -1 ? '—' : '$' + (institution["tuitOverallFtD2025"]?.toLocaleString() || '—') }}</span></div>
               </div>
               <div class="three-by-three-stat-grid mt-8">
-                <div class="stat-container"><span class="stat-label">Undergrad Pell Grants Awarded</span> <span class="stat-content">{{ institution["grsBachInitPellN"]?.toLocaleString() || '—' }}</span></div>
-                <div class="stat-container"><span class="stat-label">Average Need-Based Scholarship</span> <span class="stat-content">${{ institution["ugFtAvgNbGiftD"]?.toLocaleString() || '—' }}</span></div>
+                <div class="stat-container"><span class="stat-label">Undergrad Pell Grants Awarded</span> <span class="stat-content">{{ institution["grsBachInitPellN"] === -1 ? '—' : institution["grsBachInitPellN"]?.toLocaleString() || '—' }}</span></div>
+                <div class="stat-container"><span class="stat-label">Average Need-Based Scholarship</span> <span class="stat-content">{{ institution["ugFtAvgNbGiftD"] === -1 ? '—' : '$' + (institution["ugFtAvgNbGiftD"]?.toLocaleString() || '—') }}</span></div>
               </div>
               <div class="three-by-three-stat-grid mt-8">
-                <div class="stat-container"><span class="stat-label">Merit Scholarships Awarded <br/><span>(excluding athletics)</span> </span> <span class="stat-content">{{ institution["ugFtNnNoneedN"]?.toLocaleString() || '—' }}</span></div>
-                <div class="stat-container"><span class="stat-label">Average Merit Scholarship <br/><span>(excluding athletics)</span> </span> <span class="stat-content">${{ institution["ugFtNnNoneedD"]?.toLocaleString() || '—' }}</span></div>
+                <div class="stat-container"><span class="stat-label">Merit Scholarships Awarded <br/><span>(excluding athletics)</span> </span> <span class="stat-content">{{ institution["ugFtNnNoneedN"] === -1 ? '—' : '$' + (institution["ugFtNnNoneedN"]?.toLocaleString() || '—') }}</span></div>
+                <div class="stat-container"><span class="stat-label">Average Merit Scholarship <br/><span>(excluding athletics)</span> </span> <span class="stat-content">{{ institution["ugFtNnNoneedD"] === -1 ? '—' : '$' + (institution["ugFtNnNoneedD"]?.toLocaleString() || '—') }}</span></div>
               </div>
             </v-list>
           </v-expansion-panel-text>
@@ -1222,11 +1222,13 @@ export default {
       docSnap.forEach((doc) => {
         this.institutionId = doc.id;
         this.institution = doc.data();
-        this.majors = this.institution.acadProgDesc.split(',');
-        this.majors = this.majors.map(major => major.trimStart());
-        this.majors.sort((a, b) => a.localeCompare(b));
-        this.majors = this.majors.map(major => major.replace(/\//g, ' and '));
-        this.majors = this.majors.map(major => this.toTitleCase(major));
+        if (this.institution.acadProgDesc) {
+          this.majors = this.institution.acadProgDesc.split(',');
+          this.majors = this.majors.map(major => major.trimStart());
+          this.majors.sort((a, b) => a.localeCompare(b));
+          this.majors = this.majors.map(major => major.replace(/\//g, ' and '));
+          this.majors = this.majors.map(major => this.toTitleCase(major));
+        }
       });
       this.getSports();
       this.getImages();

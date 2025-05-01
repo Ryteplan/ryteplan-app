@@ -31,7 +31,7 @@
                     {{ $vuetify.display.lgAndUp ? (showFilters ? 'Hide Filters' : 'Show Filters') : 'Filters' }}
                   </v-btn>
                   <v-btn
-                    v-if="userStore.isLoggedIn"
+                    v-if="userStore.adminMode"
                     size="x-small"
                     elevation="1"
                     @click="showColumnsDialog = true"
@@ -97,12 +97,18 @@
             :items="tableStore.tableData" 
             :items-per-page="-1"
             @click:row="(event, item) => navigateToInstitution(event, item, false)"
+            @click:header="(column) => tableStore.customSort(column)"
             item-value="institution name" 
             v-model="selectedInstitutions"
             :show-select="!!userStore.isLoggedIn"            
             density="comfortable"
           >
             <template #bottom></template>
+            
+            <!-- Format cell values -->
+            <template v-for="header in filteredHeaders" :key="header.key" #[`item.${header.key}`]="{ item }">
+              {{ formatCellValue(item[header.key]) }}
+            </template>
           </v-data-table>
         </v-col>
       </v-row>
@@ -165,23 +171,77 @@
         </v-card-title>
         <v-card-text>
           <v-list>
+            <!-- Section header for visible columns -->
+            <v-list-subheader class="font-weight-bold text-primary">
+              Visible Columns
+            </v-list-subheader>
+            
+            <!-- Visible columns -->
             <v-list-item
-              v-for="header in tableStore.filteredHeadersDataForColumnsEditor()"
+              v-for="(header) in visibleColumns"
               :key="header.key"
             >
-              <v-list-item-title>
+              <v-list-item-title class="d-flex align-center">
                 <v-checkbox
-                  v-model="header.show"
+                  :model-value="header.show"
                   :label="header.title"
                   hide-details
                   density="comfortable"
-                  @change="onHeaderChange()"
+                  @click="toggleColumn(header)"
+                ></v-checkbox>
+                <v-spacer></v-spacer>
+                <div class="d-flex">
+                  <v-btn
+                    density="comfortable"
+                    icon="mdi-arrow-up"
+                    size="small"
+                    variant="text"
+                    @click="moveColumnUp(header.key)"
+                    :disabled="isFirstVisibleHeader(header.key)"
+                  ></v-btn>
+                  <v-btn
+                    density="comfortable"
+                    icon="mdi-arrow-down"
+                    size="small"
+                    variant="text"
+                    @click="moveColumnDown(header.key)"
+                    :disabled="isLastVisibleHeader(header.key)"
+                  ></v-btn>
+                </div>
+              </v-list-item-title>
+            </v-list-item>
+            
+            <!-- Section header for hidden columns -->
+            <v-list-subheader class="font-weight-bold text-grey mt-4" v-if="hiddenColumns.length > 0">
+              Hidden Columns
+            </v-list-subheader>
+            
+            <!-- Hidden columns -->
+            <v-list-item
+              v-for="(header) in hiddenColumns"
+              :key="header.key"
+            >
+              <v-list-item-title class="d-flex align-center">
+                <v-checkbox
+                  :model-value="header.show"
+                  :label="header.title"
+                  hide-details
+                  density="comfortable"
+                  @click="toggleColumn(header)"
                 ></v-checkbox>
               </v-list-item-title>
             </v-list-item>
           </v-list>
         </v-card-text>
         <v-card-actions class="justify-end">
+          <v-btn 
+            color="error" 
+            variant="text" 
+            class="mr-auto"
+            @click="resetColumnsToDefault"
+          >
+            Reset to Default
+          </v-btn>
           <v-btn color="primary" @click="showColumnsDialog = false">Done</v-btn>
         </v-card-actions>
       </v-card>
@@ -201,7 +261,6 @@ import FilterContent from './FilterContent.vue'
 
 export default {
   setup() {
-
     let userStore = useUserStore();
     userStore.getAdminMode();
     userStore.getIsLoggedIn();
@@ -213,10 +272,13 @@ export default {
 
     if (tableStore.tableHeaders.length == 0) {
       tableStore.loadTableHeaders();
-      tableStore.loadHeaderState();
+      tableStore.loadHeaderState('filterableTable');
     }
+    
+    // Set the active headers for this view
+    tableStore.setActiveHeaders('filterableTable');
+    tableStore.updateHeaders('filterableTable');
 
-    tableStore.updateHeaders();
     tableStore.getHideHidden();
 
     let searchFilterSortStore = useSearchFilterSortStore();
@@ -409,16 +471,117 @@ export default {
         this.showFiltersDialog = true;
       }
     },
-    onHeaderChange() {
-      this.tableStore.saveHeaderState();
-      this.tableStore.updateHeaders();
+    toggleColumn(header) {
+      // Create a deep copy of the header to avoid reference issues
+      const headerCopy = JSON.parse(JSON.stringify(header));
+      headerCopy.show = !headerCopy.show;
       
+      // Get all headers
+      const headers = this.tableStore.getHeadersForView('filterableTable');
+      
+      // Find and update the matching header
+      const index = headers.findIndex(h => h.key === headerCopy.key);
+      if (index !== -1) {
+        headers[index] = headerCopy;
+      }
+      
+      // Update the store with the modified headers
+      this.tableStore.viewHeaders['filterableTable'] = headers;
+      
+      // Update headers visibility in the store
+      this.tableStore.updateHeaders('filterableTable');
+      
+      // Save header state to localStorage for this view
+      this.tableStore.saveHeaderState('filterableTable');
+      
+      // Set the active headers to ensure the view is using the updated headers
+      this.tableStore.setActiveHeaders('filterableTable');
+      
+      // Force refresh with a simpler approach
+      this.refreshTable();
+    },
+    moveColumnUp(key) {
+      if (this.tableStore.moveColumnUp(key, 'filterableTable')) {
+        this.refreshTable();
+      }
+    },
+    moveColumnDown(key) {
+      if (this.tableStore.moveColumnDown(key, 'filterableTable')) {
+        this.refreshTable(); 
+      }
+    },
+    refreshTable() {
       // Force table refresh by temporarily clearing and resetting the data
       const tempData = [...this.tableStore.tableData];
+      
+      // Clear table data
       this.tableStore.tableData = [];
-      this.$nextTick(() => {
+      
+      // Give browser a moment to process the change
+      setTimeout(() => {
+        // Restore the data
         this.tableStore.tableData = tempData;
-      });
+        
+        // Force component update
+        this.$forceUpdate();
+      }, 0);
+    },
+    isFirstVisibleHeader(key) {
+      return !this.tableStore.canMoveColumnUp(key, 'filterableTable');
+    },
+    isLastVisibleHeader(key) {
+      return !this.tableStore.canMoveColumnDown(key, 'filterableTable');
+    },
+    resetColumnsToDefault() {
+      if (confirm("This will reset all column settings to their default values. Continue?")) {
+        // Default columns that should be visible
+        const defaultVisibleColumns = [
+          "name", 
+          "stateCleaned", 
+          "mainInstControlDesc", 
+          "mainCalendar", 
+          "enTotUgN", 
+          "cmpsSetting"
+        ];
+        
+        // Get fresh headers
+        const headers = this.tableStore.getHeadersForView('filterableTable');
+        
+        // Update visibility based on defaults
+        headers.forEach(header => {
+          if (defaultVisibleColumns.includes(header.key)) {
+            header.show = true;
+          } else if (header.key !== "id" && header.key !== "hidden" && !header.hideFromColumnsEditor) {
+            header.show = false;
+          }
+        });
+        
+        // Save changes and update store
+        this.tableStore.viewHeaders['filterableTable'] = JSON.parse(JSON.stringify(headers));
+        this.tableStore.saveHeaderState('filterableTable');
+        this.tableStore.updateHeaders('filterableTable');
+        this.tableStore.setActiveHeaders('filterableTable');
+        
+        // Force table refresh
+        const tempData = [...this.tableStore.tableData];
+        this.tableStore.tableData = [];
+        
+        // Use nextTick to ensure store updates are processed
+        this.$nextTick(() => {
+          this.tableStore.tableData = tempData;
+          // Force a component update to refresh the dialog
+          this.$forceUpdate();
+        });
+      }
+    },
+    formatCellValue(value) {
+      if (value === -1 || value === '-1' || value === '0' || value === 0 || value === null || value === undefined || value === '-') {
+        return '—';
+      } else if (typeof value === 'string' && value.trim() === '') {
+        return '—';
+      } else {
+        return value;
+      }
     }
   },
   computed: {
@@ -435,7 +598,16 @@ export default {
       });
     },
     filteredHeaders() {
-      return this.tableStore.tableHeaders.filter(header => header.show !== false);
+      return this.tableStore.getFilteredHeadersForDisplay('filterableTable');
+    },
+    reorderableHeaders() {
+      return this.tableStore.getReorderableHeaders('filterableTable');
+    },
+    visibleColumns() {
+      return this.reorderableHeaders.filter(header => header.show === true);
+    },
+    hiddenColumns() {
+      return this.reorderableHeaders.filter(header => header.show === false);
     }
   },
   created() {
@@ -545,12 +717,12 @@ tr.v-data-table__selected {
 tr th:first-of-type,
 tr td:first-of-type {
   position: sticky !important;
-  z-index: 5;
+  z-index: 1;
   left: 0;
   width: 48px;
 }
 
-.v-table--fixed-header>.v-table__wrapper>table>thead {
+.v-table--fixed-header>.v-table__wrapper>table:first-of-type>thead>tr:first-of-type>th:first-of-type {
   z-index: 10;
 }
 
@@ -573,6 +745,7 @@ tr td {
 .v-theme--light .highlight-last-clicked td {
   animation: highlightLastClicked 3s normal forwards ease-out;
 }
+
 
 @keyframes highlightLastClicked {
   from {

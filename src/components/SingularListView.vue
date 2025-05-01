@@ -20,13 +20,23 @@
         </span>
       </v-col>
       <v-col cols="3" class="d-flex justify-end align-center">
+        <v-btn
+          v-if="userStore.isLoggedIn"
+          class="mr-3"
+          size="x-small"
+          elevation="1"
+          @click="showColumnsDialog = true"
+          title="Edit Columns"
+        >
+          Edit Columns
+        </v-btn>
         <v-menu location="bottom end">
           <template v-slot:activator="{ props }">
             <v-btn
               class="mr-3"
               v-bind="props"
               @click="onUpdateMenu"
-              size="small"              
+              size="x-small"              
             >
               Options
             </v-btn>
@@ -76,6 +86,7 @@
           :headers="filteredHeaders"
           :items="institutions"
           @click:row="navigateToInstitution" 
+          @click:header="(column) => tableStore.customSort(column)"
           item-key="uri"
           class="elevation-1"
           density="comfortable"
@@ -98,6 +109,12 @@
           <template #[`item.admsNotUsed`]="{ item }">
             {{ formatTestingValue(item.admsNotUsed, item.showNotUsedTestingPolicy) }}
           </template>
+          
+          <!-- Format cell values for all other columns -->
+          <template v-for="header in formattableCellHeaders" :key="header.key" 
+                   #[`item.${header.key}`]="{ item }">
+            {{ formatCellValue(item[header.key]) }}
+          </template>
         </v-data-table>
       </v-col>
     </v-row>
@@ -117,23 +134,77 @@
         </v-card-title>
         <v-card-text>
           <v-list>
+            <!-- Section header for visible columns -->
+            <v-list-subheader class="font-weight-bold text-primary">
+              Visible Columns
+            </v-list-subheader>
+            
+            <!-- Visible columns -->
             <v-list-item
-              v-for="header in tableStore.filteredHeadersDataForColumnsEditor()"
+              v-for="(header) in visibleColumns"
               :key="header.key"
             >
-              <v-list-item-title>
+              <v-list-item-title class="d-flex align-center">
                 <v-checkbox
-                  v-model="header.show"
+                  :model-value="header.show"
                   :label="header.title"
                   hide-details
                   density="comfortable"
-                  @change="onHeaderChange()"
+                  @click="toggleColumn(header)"
+                ></v-checkbox>
+                <v-spacer></v-spacer>
+                <div class="d-flex">
+                  <v-btn
+                    density="comfortable"
+                    icon="mdi-arrow-up"
+                    size="small"
+                    variant="text"
+                    @click="moveColumnUp(header.key)"
+                    :disabled="isFirstVisibleHeader(header.key)"
+                  ></v-btn>
+                  <v-btn
+                    density="comfortable"
+                    icon="mdi-arrow-down"
+                    size="small"
+                    variant="text"
+                    @click="moveColumnDown(header.key)"
+                    :disabled="isLastVisibleHeader(header.key)"
+                  ></v-btn>
+                </div>
+              </v-list-item-title>
+            </v-list-item>
+            
+            <!-- Section header for hidden columns -->
+            <v-list-subheader class="font-weight-bold text-grey mt-4" v-if="hiddenColumns.length > 0">
+              Hidden Columns
+            </v-list-subheader>
+            
+            <!-- Hidden columns -->
+            <v-list-item
+              v-for="(header) in hiddenColumns"
+              :key="header.key"
+            >
+              <v-list-item-title class="d-flex align-center">
+                <v-checkbox
+                  :model-value="header.show"
+                  :label="header.title"
+                  hide-details
+                  density="comfortable"
+                  @click="toggleColumn(header)"
                 ></v-checkbox>
               </v-list-item-title>
             </v-list-item>
           </v-list>
         </v-card-text>
         <v-card-actions class="justify-end">
+          <v-btn 
+            color="error" 
+            variant="text" 
+            class="mr-auto"
+            @click="resetColumnsToDefault"
+          >
+            Reset to Default
+          </v-btn>
           <v-btn color="primary" @click="showColumnsDialog = false">Done</v-btn>
         </v-card-actions>
       </v-card>
@@ -158,9 +229,12 @@ export default {
     const tableStore = useTableStore();
     if (tableStore.tableHeaders.length == 0) {
       tableStore.loadTableHeaders();
-      tableStore.loadHeaderState();
-      tableStore.updateHeaders();
+      tableStore.loadHeaderState('singularList');
     }
+    
+    // Set the active headers for this view
+    tableStore.setActiveHeaders('singularList');
+    tableStore.updateHeaders('singularList');
 
     let userStore = useUserStore();
     userStore.getAdminMode();
@@ -180,11 +254,6 @@ export default {
       showColumnsDialog: false,
       selectedInstitutions: [],
       selectedDropDown: [
-        { 
-          title: 'Edit Columns', 
-          icon: 'mdi-pencil',
-          action: this.editColumnsClicked
-        },
         { 
           title: 'Share',
           icon: 'mdi-account-plus',
@@ -210,15 +279,17 @@ export default {
   },
   methods: {
     onHeaderChange() {
-      this.tableStore.saveHeaderState();
-      this.tableStore.updateHeaders();
+      // Update headers visibility in the store
+      this.tableStore.updateHeaders('singularList');
       
-      // Force table refresh by temporarily clearing and resetting the data
-      const tempData = [...this.tableStore.tableData];
-      this.tableStore.tableData = [];
-      this.$nextTick(() => {
-        this.tableStore.tableData = tempData;
-      });
+      // Save header state to localStorage for this view
+      this.tableStore.saveHeaderState('singularList');
+      
+      // Set the active headers to ensure the view is using the updated headers
+      this.tableStore.setActiveHeaders('singularList');
+      
+      // Force a simple refresh
+      this.$forceUpdate();
     },
     navigateToInstitution(event, item) {
       // Handle case where item might be undefined
@@ -635,12 +706,131 @@ export default {
         }
       }
       return value;
+    },
+    formatCellValue(value) {
+      if (value === -1 || value === '-1' || value === '0' || value === 0 || value === null || value === undefined || value === '-') {
+        return '—';
+      } else if (typeof value === 'string' && value.trim() === '') {
+        return '—';
+      } else {
+        return value;
+      }
+    },
+    moveColumnUp(key) {
+      if (this.tableStore.moveColumnUp(key, 'singularList')) {
+        this.refreshTable();
+      }
+    },
+    moveColumnDown(key) {
+      if (this.tableStore.moveColumnDown(key, 'singularList')) {
+        this.refreshTable();
+      }
+    },
+    refreshTable() {
+      // Force a refresh of the component
+      this.$forceUpdate();
+    },
+    isFirstVisibleHeader(key) {
+      return !this.tableStore.canMoveColumnUp(key, 'singularList');
+    },
+    isLastVisibleHeader(key) {
+      return !this.tableStore.canMoveColumnDown(key, 'singularList');
+    },
+    resetColumnsToDefault() {
+      if (confirm("This will reset all column settings to their default values. Continue?")) {
+        // Default columns that should be visible
+        const defaultVisibleColumns = [
+          "name", 
+          "stateCleaned", 
+          "mainInstControlDesc", 
+          "mainCalendar", 
+          "enTotUgN", 
+          "cmpsSetting"
+        ];
+        
+        // Get fresh headers
+        const headers = this.tableStore.getHeadersForView('singularList');
+        
+        // Update visibility based on defaults
+        headers.forEach(header => {
+          if (defaultVisibleColumns.includes(header.key)) {
+            header.show = true;
+          } else if (header.key !== "id" && header.key !== "hidden" && !header.hideFromColumnsEditor) {
+            header.show = false;
+          }
+        });
+        
+        // Save changes and update store
+        this.tableStore.viewHeaders['singularList'] = JSON.parse(JSON.stringify(headers));
+        this.tableStore.saveHeaderState('singularList');
+        this.tableStore.updateHeaders('singularList');
+        this.tableStore.setActiveHeaders('singularList');
+        
+        // Force component update
+        this.$forceUpdate();
+        
+        // Refresh the institutions table
+        const temp = [...this.institutions];
+        this.institutions = [];
+        
+        // Use nextTick to ensure store updates are processed
+        this.$nextTick(() => {
+          this.institutions = temp;
+          // Force a component update to refresh the dialog
+          this.$forceUpdate();
+        });
+      }
+    },
+    toggleColumn(header) {
+      // Create a deep copy of the header to avoid reference issues
+      const headerCopy = JSON.parse(JSON.stringify(header));
+      headerCopy.show = !headerCopy.show;
+      
+      // Get all headers
+      const headers = this.tableStore.getHeadersForView('singularList');
+      
+      // Find and update the matching header
+      const index = headers.findIndex(h => h.key === headerCopy.key);
+      if (index !== -1) {
+        headers[index] = headerCopy;
+      }
+      
+      // Update the store with the modified headers
+      this.tableStore.viewHeaders['singularList'] = headers;
+      
+      // Update headers visibility in the store
+      this.tableStore.updateHeaders('singularList');
+      
+      // Save header state to localStorage for this view
+      this.tableStore.saveHeaderState('singularList');
+      
+      // Set the active headers to ensure the view is using the updated headers
+      this.tableStore.setActiveHeaders('singularList');
+      
+      // Force a simple refresh
+      this.$forceUpdate();
+      
+      // Also force refresh institutions table
+      const temp = [...this.institutions];
+      this.institutions = [];
+      this.$nextTick(() => {
+        this.institutions = temp;
+      });
     }
   },
   computed: {
     filteredHeaders() {      
-      return this.tableStore.tableHeaders.filter(header => header.key !== "hidden" && header.key !== "id" && header.show !== false);
-    }
+      return this.tableStore.getFilteredHeadersForDisplay('singularList');
+    },
+    reorderableHeaders() {
+      return this.tableStore.getReorderableHeaders('singularList');
+    },
+    visibleColumns() {
+      return this.reorderableHeaders.filter(header => header.show === true);
+    },
+    hiddenColumns() {
+      return this.reorderableHeaders.filter(header => header.show === false);
+    },
   },
   components: {
     ShareDialog
