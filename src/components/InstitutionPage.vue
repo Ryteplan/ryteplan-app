@@ -334,6 +334,10 @@
             :valueFromIntegrated="institution['sat1Combined50th']" 
             :valueFromPetersons="petersonsInstitution['sat1Combined50th']" 
             :valueFromManual="manualInstitionData['sat1Combined50th']"
+            :valueFromPetersonsMath="petersonsInstitution['sat1Math50thP']"
+            :valueFromPetersonsVerbal="petersonsInstitution['sat1Verb50thP']"
+            :valueFromManualMath="manualInstitionData['sat1Math50thP']"
+            :valueFromManualVerbal="manualInstitionData['sat1Verb50thP']"
             valueType="numberNoComma"
           />
           <StatDisplay
