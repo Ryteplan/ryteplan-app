@@ -248,7 +248,7 @@ export const useTableStore = defineStore('table', {
           minWidth: "130px",
           show: false,
           sortable: false,
-          align: "end",
+          align: "end"
         },
         {
           title: "Part time faculty",
@@ -256,7 +256,7 @@ export const useTableStore = defineStore('table', {
           minWidth: "130px",
           show: false,
           sortable: false,
-          align: "end",
+          align: "end"
         },
         {
           title: "Student to faculty ratio",
@@ -264,7 +264,7 @@ export const useTableStore = defineStore('table', {
           minWidth: "130px",
           show: false,
           sortable: false,
-          align: "end",
+          align: "end"
         },
         {
           title: "Male Faculty",
@@ -272,7 +272,7 @@ export const useTableStore = defineStore('table', {
           minWidth: "130px",
           show: false,
           sortable: false,
-          align: "end",
+          align: "end"
         },
         {
           title: "Female Faculty",
@@ -280,7 +280,7 @@ export const useTableStore = defineStore('table', {
           minWidth: "130px",
           show: false,
           sortable: false,
-          align: "end",
+          align: "end"
         },
         {
           title: "Offer Co-op",
@@ -351,7 +351,7 @@ export const useTableStore = defineStore('table', {
           minWidth: "80px",
           show: true,
           sortable: false,
-          align: "end",
+          align: "end"
         },
         {
           title: "Full Time UG Males",
@@ -383,7 +383,7 @@ export const useTableStore = defineStore('table', {
           minWidth: "140px",
           show: false,
           sortable: false,
-          align: "end",
+          align: "end"
         },
         {
           title: "Campus Setting",
@@ -398,7 +398,7 @@ export const useTableStore = defineStore('table', {
           minWidth: "140px",
           show: false,
           sortable: false,
-          align: "end",
+          align: "end"
         },
         {
           title: "Admission Difficulty",
@@ -473,7 +473,6 @@ export const useTableStore = defineStore('table', {
           show: false,
           sortable: false,
           align: "end",
-
         },
         {
           title: "Undergraduate Applications Received",
@@ -498,28 +497,28 @@ export const useTableStore = defineStore('table', {
           key: "totResD2025",
           minWidth: "200px",
           show: false,
-          align: "end",
+          align: "end"
         },
         {
           title: "Total Cost of Attendance",
           key: "compFeeD2025",
           minWidth: "140px",
           show: false,
-          align: "end",
+          align: "end"
         },
         {
           title: "Tuition Non-Resident",
           key: "tuitNresFtD2025",
           minWidth: "200px",
           show: false,
-          align: "end",
+          align: "end"
         },
         {
           title: "Tuition In-State",
           key: "tuitStateFtD2025",
           minWidth: "200px",
           show: false,
-          align: "end",
+          align: "end"
         },          
         {
           title: "Tuition: International",
@@ -527,21 +526,21 @@ export const useTableStore = defineStore('table', {
           minWidth: "140px",
           show: false,
           sortable: false,
-          align: "end",
+          align: "end"
         },
         {
           title: "Annual fees",
           key: "feesFtD2025",
           minWidth: "140px",
           show: false,
-          align: "end",
+          align: "end"
         },
         {
           title: "Annual room and board, on campus",
           key: "rmBdD2025",
           minWidth: "200px",
           show: false,
-          align: "end",
+          align: "end"
         },
         {
           title: "Early Decision Applicants",
@@ -578,14 +577,14 @@ export const useTableStore = defineStore('table', {
           key: "submitSat1P",
           minWidth: "240px",
           show: false,
-          align: "end",
+          align: "end"
         },
         {
           title: "Enrolled #Submitted ACT",
           key: "submitActP",
           minWidth: "240px",
           show: false,
-          align: "end",
+          align: "end"
         },
         {
           title: "Application Deadline",
@@ -761,7 +760,7 @@ export const useTableStore = defineStore('table', {
           minWidth: "140px",
           show: false,
           sortable: false,
-          align: "end",
+          align: "end"
         },
         {
           title: "% admit in top 25% of senior class",
@@ -769,7 +768,7 @@ export const useTableStore = defineStore('table', {
           minWidth: "140px",
           show: false,
           sortable: false,
-          align: "end",
+          align: "end"
         },
       ];
       
