@@ -623,8 +623,7 @@ export default {
         }, { merge: true })
 
         console.log('done adding: ' + institution.name);
-        // set a timeout for 500 milliseconds
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, 1000));
       })
     }
   }

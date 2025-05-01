@@ -99,21 +99,9 @@
           <template #bottom></template>
           <template #[`item.testingPolicy`]="{ item }">
             {{ item.testingPolicy || '—' }}
-          </template>
-          <template #[`item.admsReq`]="{ item }">
-            {{ formatTestingValue(item.admsReq, item.showRequiredTestingPolicy) }}
-          </template>
-          <template #[`item.admsConsider`]="{ item }">
-            {{ formatTestingValue(item.admsConsider, item.showConsideredTestingPolicy) }}
-          </template>
-          <template #[`item.admsNotUsed`]="{ item }">
-            {{ formatTestingValue(item.admsNotUsed, item.showNotUsedTestingPolicy) }}
-          </template>
-          
-          <!-- Format cell values for all other columns -->
-          <template v-for="header in formattableCellHeaders" :key="header.key" 
-                   #[`item.${header.key}`]="{ item }">
-            {{ formatCellValue(item[header.key]) }}
+          </template>          
+          <template v-for="header in headers" :key="header.key" #[`item.${header.key}`]="{ item }">
+              {{ formatCellValue(item[header.key]) }}
           </template>
         </v-data-table>
       </v-col>
@@ -483,56 +471,6 @@ export default {
               currentX += textWidth + fieldSpacing;
             });
           }
-
-          // // Handle testing policies
-          // const testingPolicies = visibleHeaders.find(h => h.key === 'admissionTestingPolicy');
-          // if (testingPolicies) {
-          //   currentX = margin;
-          //   currentY += lineHeight * 1.5;
-            
-          //   // Filter out policies that have no value or are not visible
-          //   const validPolicies = testingPolicies.children
-          //     .map(child => {
-          //       const value = institution[child.key];
-          //       let showPolicy;
-          //       switch (child.key) {
-          //         case 'admsReq':
-          //           showPolicy = institution.showRequiredTestingPolicy;
-          //           break;
-          //         case 'admsConsider':
-          //           showPolicy = institution.showConsideredTestingPolicy;
-          //           break;
-          //         case 'admsNotUsed':
-          //           showPolicy = institution.showNotUsedTestingPolicy;
-          //           break;
-          //       }
-          //       const formattedValue = this.formatTestingValue(value, showPolicy);
-          //       // Only return policies that have a value and aren't em dashes
-          //       if (value && formattedValue !== '—' && (showPolicy !== undefined || showPolicy !== false)) {
-          //         return `${child.title}: ${formattedValue}`;
-          //       }
-          //       return null;
-          //     })
-          //     .filter(policy => policy !== null); // Remove null entries
-            
-            // Only add the section if there are valid policies to show
-          //   if (validPolicies.length > 0) {
-          //     doc.text('Testing Policies:', currentX, currentY);
-          //     currentY += lineHeight;
-              
-          //     validPolicies.forEach(policy => {
-          //       const textWidth = doc.getTextWidth(policy);
-                
-          //       if (currentX + textWidth > pageWidth - margin) {
-          //         currentX = margin;
-          //         currentY += lineHeight;
-          //       }
-                
-          //       doc.text(policy, currentX, currentY);
-          //       currentX += textWidth + fieldSpacing;
-          //     });
-          //   }
-          // }
           
           yPosition = currentY + 15;
         });
@@ -566,15 +504,7 @@ export default {
               const childValues = header.children.map(child => {
                 let value;
                 // Use the same template logic as v-data-table
-                if (child.key === 'admsReq') {
-                  value = this.formatTestingValue(institution.admsReq, institution.showRequiredTestingPolicy);
-                } else if (child.key === 'admsConsider') {
-                  value = this.formatTestingValue(institution.admsConsider, institution.showConsideredTestingPolicy);
-                } else if (child.key === 'admsNotUsed') {
-                  value = this.formatTestingValue(institution.admsNotUsed, institution.showNotUsedTestingPolicy);
-                } else {
-                  value = institution[child.key];
-                }
+                value = institution[child.key];
                 // Don't include em dashes in the CSV
                 return `"${value === '—' ? '' : value}"`;
               });
