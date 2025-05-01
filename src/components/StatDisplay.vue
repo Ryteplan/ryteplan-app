@@ -78,24 +78,21 @@
               v-model="updateValue"
               @input="saveButtonVisibility"
               disabled
-              clearable
             />
             <v-text-field
               label="Math"
               v-model="updateMathValue" 
               @input="handleSatSubscoreInput"
-              clearable
             />
             <v-text-field
               label="Verbal"
               v-model="updateVerbalValue"
               @input="handleSatSubscoreInput" 
-              clearable
             />
             <v-btn
               color="primary"
               class="mt-4"
-              :disabled="!saveButtonVisible"
+              :disabled="!saveButtonVisibility()"
               @click="this.updateDB"
             >Save</v-btn>
           </div>          
