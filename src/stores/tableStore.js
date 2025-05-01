@@ -383,6 +383,7 @@ export const useTableStore = defineStore('table', {
           minWidth: "140px",
           show: false,
           sortable: false,
+          align: "end",
         },
         {
           title: "Campus Setting",
@@ -397,6 +398,7 @@ export const useTableStore = defineStore('table', {
           minWidth: "140px",
           show: false,
           sortable: false,
+          align: "end",
         },
         {
           title: "Admission Difficulty",
@@ -425,6 +427,8 @@ export const useTableStore = defineStore('table', {
           minWidth: "140px",
           show: false,
           sortable: false,
+          align: "end",
+
         },
         {
           title: "SAT Math 50th",
@@ -432,6 +436,8 @@ export const useTableStore = defineStore('table', {
           minWidth: "140px",
           show: false,
           sortable: false,
+          align: "end",
+
         },
         {
           title: "SAT Combined 50th",
@@ -439,6 +445,8 @@ export const useTableStore = defineStore('table', {
           minWidth: "140px",
           show: false,
           sortable: false,
+          align: "end",
+
         },
         {
           title: "ACT 50th",
@@ -446,6 +454,8 @@ export const useTableStore = defineStore('table', {
           minWidth: "140px",
           show: false,
           sortable: false,
+          align: "end",
+
         },
         {
           title: "Admit Rate",
@@ -453,6 +463,8 @@ export const useTableStore = defineStore('table', {
           minWidth: "140px",
           show: false,
           sortable: false,
+          align: "end",
+
         },
         {
           title: "Average GPA",
@@ -460,6 +472,8 @@ export const useTableStore = defineStore('table', {
           minWidth: "160px",
           show: false,
           sortable: false,
+          align: "end",
+
         },
         {
           title: "Undergraduate Applications Received",
@@ -467,6 +481,8 @@ export const useTableStore = defineStore('table', {
           minWidth: "140px",
           show: false,
           sortable: false,
+          align: "end",
+
         },
         {
           title: "Undergraduates Admitted",
@@ -474,30 +490,36 @@ export const useTableStore = defineStore('table', {
           minWidth: "140px",
           show: false,
           sortable: false,
+          align: "end",
+
         },
         {
           title: "Total Cost (Resident)",
           key: "totResD2025",
           minWidth: "200px",
           show: false,
+          align: "end",
         },
         {
           title: "Total Cost of Attendance",
           key: "compFeeD2025",
           minWidth: "140px",
           show: false,
+          align: "end",
         },
         {
           title: "Tuition Non-Resident",
           key: "tuitNresFtD2025",
           minWidth: "200px",
           show: false,
+          align: "end",
         },
         {
           title: "Tuition In-State",
           key: "tuitStateFtD2025",
           minWidth: "200px",
           show: false,
+          align: "end",
         },          
         {
           title: "Tuition: International",
@@ -505,18 +527,21 @@ export const useTableStore = defineStore('table', {
           minWidth: "140px",
           show: false,
           sortable: false,
+          align: "end",
         },
         {
           title: "Annual fees",
           key: "feesFtD2025",
           minWidth: "140px",
           show: false,
+          align: "end",
         },
         {
           title: "Annual room and board, on campus",
           key: "rmBdD2025",
           minWidth: "200px",
           show: false,
+          align: "end",
         },
         {
           title: "Early Decision Applicants",
@@ -553,12 +578,14 @@ export const useTableStore = defineStore('table', {
           key: "submitSat1P",
           minWidth: "240px",
           show: false,
+          align: "end",
         },
         {
           title: "Enrolled #Submitted ACT",
           key: "submitActP",
           minWidth: "240px",
           show: false,
+          align: "end",
         },
         {
           title: "Application Deadline",

@@ -273,7 +273,7 @@ export default {
     },
     processValue(value, valueType) {
       const numberValue = Number(value);
-      if (numberValue === 0) {
+      if (numberValue === -1 || numberValue === 0 || numberValue === null || numberValue === undefined || numberValue === '-') {
         return '—';
       }
 

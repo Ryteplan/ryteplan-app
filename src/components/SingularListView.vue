@@ -708,7 +708,7 @@ export default {
       return value;
     },
     formatCellValue(value) {
-      if (value === -1 || value === 0 || value === null || value === undefined || value === '-') {
+      if (value === -1 || value === '-1' || value === '0' || value === 0 || value === null || value === undefined || value === '-') {
         return '—';
       } else if (typeof value === 'string' && value.trim() === '') {
         return '—';
