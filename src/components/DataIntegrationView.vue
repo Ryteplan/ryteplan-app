@@ -568,10 +568,10 @@ export default {
       });
 
       this.integratedData.forEach(async (institution) => {
-        setDoc(doc(dbFireStore, 'institutions_integrated_v20250313_backup_1', institution["uri"]), {
+        setDoc(doc(dbFireStore, 'institutions_integrated_v20250313V2_backup_1', institution["uri"]), {
           ...institution
         }, { merge: true })
-        console.log('done adding: ' + institution.name + ' to institutions_integrated_v20250313_backup_1');
+        console.log('done adding: ' + institution.name + ' to institutions_integrated_v20250313V2_backup_1');
 
         // set a timeout for 500 milliseconds
         await new Promise(resolve => setTimeout(resolve, 500));
@@ -580,7 +580,7 @@ export default {
     async doDataIntegration() {
       console.log('doing data integration')
       
-      const petersonsDataQuery = query(collection(dbFireStore, "institutions_petersons_processed_20250313V2"));      
+      const petersonsDataQuery = query(collection(dbFireStore, "institutions_petersons_processed_20250313V3"));      
       const petersonsSnapshots = await getDocs(petersonsDataQuery);
 
       petersonsSnapshots.docs.forEach(doc => {
@@ -604,17 +604,7 @@ export default {
         }
       });
 
-      // // If the field's value is 0, replace it with an em dash
-      // this.petersonsData.map(d => {
-      //   for (let key in d) {
-      //     if (d[key] === 0) {
-      //       d[key] = '—';
-      //     }
-      //   }
-      // });
-
       // // Remove 2YEAR and Private Proprietary
-
       this.petersonsData = this.petersonsData.filter(d => {
         return d.mainFunctionType !== "2YEAR" && d.mainFunctionType !== "Private Proprietary";
       });
