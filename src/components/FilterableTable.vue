@@ -31,8 +31,7 @@
                     {{ $vuetify.display.lgAndUp ? (showFilters ? 'Hide Filters' : 'Show Filters') : 'Filters' }}
                   </v-btn>
                   <v-btn
-                    class="d-none"
-                    v-if="userStore.isLoggedIn"
+                    v-if="userStore.adminMode"
                     size="x-small"
                     elevation="1"
                     @click="showColumnsDialog = true"
@@ -105,6 +104,11 @@
             density="comfortable"
           >
             <template #bottom></template>
+            
+            <!-- Format cell values -->
+            <template v-for="header in filteredHeaders" :key="header.key" #[`item.${header.key}`]="{ item }">
+              {{ formatCellValue(item[header.key]) }}
+            </template>
           </v-data-table>
         </v-col>
       </v-row>
@@ -569,6 +573,15 @@ export default {
           this.$forceUpdate();
         });
       }
+    },
+    formatCellValue(value) {
+      if (value === -1 || value === 0 || value === null || value === undefined || value === '-') {
+        return '—';
+      } else if (typeof value === 'string' && value.trim() === '') {
+        return '—';
+      } else {
+        return value;
+      }
     }
   },
   computed: {
@@ -704,12 +717,12 @@ tr.v-data-table__selected {
 tr th:first-of-type,
 tr td:first-of-type {
   position: sticky !important;
-  z-index: 5;
+  z-index: 1;
   left: 0;
   width: 48px;
 }
 
-.v-table--fixed-header>.v-table__wrapper>table>thead>tr:first-of-type>th:first-of-type {
+.v-table--fixed-header>.v-table__wrapper>table:first-of-type>thead>tr:first-of-type>th:first-of-type {
   z-index: 10;
 }
 
@@ -732,6 +745,7 @@ tr td {
 .v-theme--light .highlight-last-clicked td {
   animation: highlightLastClicked 3s normal forwards ease-out;
 }
+
 
 @keyframes highlightLastClicked {
   from {

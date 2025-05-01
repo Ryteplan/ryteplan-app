@@ -109,6 +109,12 @@
           <template #[`item.admsNotUsed`]="{ item }">
             {{ formatTestingValue(item.admsNotUsed, item.showNotUsedTestingPolicy) }}
           </template>
+          
+          <!-- Format cell values for all other columns -->
+          <template v-for="header in formattableCellHeaders" :key="header.key" 
+                   #[`item.${header.key}`]="{ item }">
+            {{ formatCellValue(item[header.key]) }}
+          </template>
         </v-data-table>
       </v-col>
     </v-row>
@@ -701,6 +707,15 @@ export default {
       }
       return value;
     },
+    formatCellValue(value) {
+      if (value === -1 || value === 0 || value === null || value === undefined || value === '-') {
+        return '—';
+      } else if (typeof value === 'string' && value.trim() === '') {
+        return '—';
+      } else {
+        return value;
+      }
+    },
     moveColumnUp(key) {
       if (this.tableStore.moveColumnUp(key, 'singularList')) {
         this.refreshTable();
@@ -815,7 +830,7 @@ export default {
     },
     hiddenColumns() {
       return this.reorderableHeaders.filter(header => header.show === false);
-    }
+    },
   },
   components: {
     ShareDialog
