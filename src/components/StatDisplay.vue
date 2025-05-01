@@ -72,23 +72,32 @@
         <div 
           v-if="editMode && userStore.adminMode && field == 'sat1Combined50th'"
         >
-          <div class="d-flex flex-column">
-            <v-text-field
-              label="SAT 50th%ile"
-              v-model="updateValue"
-              @input="saveButtonVisibility"
-              disabled
-            />
-            <v-text-field
-              label="Math"
-              v-model="updateMathValue" 
-              @input="handleSatSubscoreInput"
-            />
-            <v-text-field
-              label="Verbal"
-              v-model="updateVerbalValue"
+          <div class="d-flex flex-column" style="gap: 10px;">
+            <div>
+              <span style="font-size: 12px;">{{ valueFromPetersons }}</span>
+              <v-text-field
+                label="SAT 50th%ile"
+                v-model="updateValue"
+                @input="saveButtonVisibility"
+                disabled
+              />
+            </div>
+            <div>
+              <span style="font-size: 12px;">{{ valueFromPetersonsMath }}</span>
+              <v-text-field
+                label="Math"
+                v-model="updateMathValue" 
+                @input="handleSatSubscoreInput"
+              />
+            </div>
+            <div>
+              <span style="font-size: 12px;">{{ valueFromPetersonsVerbal }}</span>
+              <v-text-field
+                label="Verbal"
+                v-model="updateVerbalValue"
               @input="handleSatSubscoreInput" 
-            />
+              />
+            </div>
             <v-btn
               color="primary"
               class="mt-4"
