@@ -412,13 +412,12 @@ export default {
             if (header.key === 'name') return;
             
             let value = institution[header.key];
-            let displayValue = '';
+            // Apply formatting first
+            let displayValue = this.formatCellValue(value);
             
-            if (header.key === 'admissionFactors') {
-              return;
-            }
-            else if (value === null || value === undefined) {
-              displayValue = 'N/A';
+            // Skip further processing if it's already formatted to '—'
+            if (displayValue === '—') {
+              // No specific handling needed here, just use '—'
             } else if (typeof value === 'boolean') {
               displayValue = value ? 'Yes' : 'No';
             } else if (typeof value === 'number') {
@@ -426,13 +425,16 @@ export default {
                 displayValue = `${(value * 100).toFixed(1)}%`;
               } else if (header.key.includes('tuition') || header.key.includes('cost')) {
                 displayValue = `$${value.toLocaleString()}`;
+              } else if (header.key === 'sat1Combined50th' || header.key === 'actComp50thP') {
+                displayValue = String(value);
               } else {
                 displayValue = value.toLocaleString();
               }
             } else {
+              // Value is likely already a string, but ensure it is
               displayValue = String(value);
             }
-            
+
             const fieldText = `${header.title}: ${displayValue}`;
             const textWidth = doc.getTextWidth(fieldText);
             
@@ -500,44 +502,47 @@ export default {
         return headers
           .map(header => {
             if (header.children) {
-              const emptyMainColumn = '""';
               const childValues = header.children.map(child => {
-                let value;
-                // Use the same template logic as v-data-table
-                value = institution[child.key];
-                // Don't include em dashes in the CSV
-                return `"${value === '—' ? '' : value}"`;
+                const rawValue = institution[child.key];
+                let formattedValue = this.formatCellValue(rawValue);
+                let finalCsvValue = formattedValue;
+
+                // Apply specific formatting only if the value isn't already '—'
+                if (formattedValue !== '—') {
+                  if (typeof rawValue === 'number') {
+                      if (child.key.includes('rate') || child.key.includes('percentage')) { finalCsvValue = `${(rawValue * 100).toFixed(1)}%`; }
+                      else if (child.key.includes('tuition') || child.key.includes('cost')) { finalCsvValue = `$${rawValue.toLocaleString()}`; }
+                      else { finalCsvValue = rawValue.toLocaleString(); } // Default number format
+                  } else if (typeof rawValue === 'boolean') {
+                      finalCsvValue = rawValue ? 'Yes' : 'No';
+                  }
+                  // Strings needing no special format fall through
+                }
+                // Escape and return
+                return `"${String(finalCsvValue).replace(/"/g, '""')}"`;
               });
-              return [emptyMainColumn, ...childValues].join(',');
-            }
+              return '""' + ',' + childValues.join(','); // Empty main column placeholder
+            } else {
+              // Logic for regular headers
+              const rawValue = institution[header.key];
+              let formattedValue = this.formatCellValue(rawValue); // Step 1: Basic format
+              let finalCsvValue = formattedValue; // Start with the formatted value
 
-            // For non-child columns, use the same template logic
-            if (header.key === 'testingPolicy') {
-              return `"${institution.testingPolicy || ''}"`;
-            }
-
-            const value = institution[header.key];
-            if (value === null || value === undefined) {
-              return '""';
-            }
-            
-            if (typeof value === 'boolean') {
-              return value ? '"Yes"' : '"No"';
-            }
-            
-            // Handle numbers
-            if (typeof value === 'number') {
-              if (header.key.includes('rate') || header.key.includes('percentage')) {
-                return `"${(value * 100).toFixed(1)}%"`;
-              } else if (header.key.includes('tuition') || header.key.includes('cost')) {
-                return `"$${value.toLocaleString()}"`;
+              // Apply specific formatting only if the value isn't already '—'
+              if (formattedValue !== '—') {
+                if (typeof rawValue === 'number') {
+                    if (header.key.includes('rate') || header.key.includes('percentage')) { finalCsvValue = `${(rawValue * 100).toFixed(1)}%`; }
+                    else if (header.key.includes('tuition') || header.key.includes('cost')) { finalCsvValue = `$${rawValue.toLocaleString()}`; }
+                    else { finalCsvValue = rawValue.toLocaleString(); } // Default number format
+                } else if (typeof rawValue === 'boolean') {
+                    finalCsvValue = rawValue ? 'Yes' : 'No';
+                }
+                // Strings needing no special format fall through
               }
-              return `"${value}"`;
+              
+              // Escape quotes for CSV
+              return `"${String(finalCsvValue).replace(/"/g, '""')}"`;
             }
-            
-            // Handle strings
-            const escapedValue = String(value).replace(/"/g, '""');
-            return `"${escapedValue}"`;
           })
           .join(',');
       });
