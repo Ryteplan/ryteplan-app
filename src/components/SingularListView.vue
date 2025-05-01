@@ -100,8 +100,8 @@
           <template #[`item.testingPolicy`]="{ item }">
             {{ item.testingPolicy || '—' }}
           </template>          
-          <template v-for="header in headers" :key="header.key" #[`item.${header.key}`]="{ item }">
-              {{ formatCellValue(item[header.key]) }}
+          <template v-for="header in filteredHeaders" :key="header.key" #[`item.${header.key}`]="{ item }">
+            {{ formatCellValue(item[header.key]) }}
           </template>
         </v-data-table>
       </v-col>
