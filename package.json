@@ -1,6 +1,6 @@
 {
   "name": "college-counselor",
-  "version": "Testing: SAT Score Updates",
+  "version": "0.67.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
