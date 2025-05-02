@@ -1,5 +1,5 @@
 <template>
-  <v-layout class="app-container" :class="{ 'logged-in': isLoggedIn }">
+  <v-layout class="app-container" :class="{ 'logged-in': userStore.isLoggedIn }">
     <v-app-bar class="elevation-1">
       <div
         class="header-container d-flex align-center justify-space-between ma-auto w-100 px-3 px-lg-0"
@@ -63,7 +63,7 @@
           >
             Submit feedback
           </v-btn>
-          <div v-if="isLoggedIn">
+          <div v-if="userStore.isLoggedIn">
             <v-btn
               class="ml-3"
               @click="() => this.$router.push('/lists')"
@@ -149,7 +149,7 @@
             <v-list-item-title>Data Compare</v-list-item-title>
           </div>
         </v-list-item>
-        <v-list-item v-if="isLoggedIn">
+        <v-list-item v-if="userStore.isLoggedIn">
            <div class="d-flex justify-start align-center" @click="() => this.$router.push('/lists')">
             <v-icon class="mr-3" icon="mdi-format-list-bulleted"></v-icon>
             <v-list-item-title>Lists</v-list-item-title>
@@ -198,7 +198,6 @@
 </template>
 
 <script>
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import LogoGreenBlack from "@/components/svg/LogoGreenBlack.vue";
 import { useAppVersionStore } from ".//stores/appVersionStore";
 import { useUserStore } from ".//stores/userStore";
@@ -207,7 +206,6 @@ import { useSearchFilterSortStore } from ".//stores/searchFilterSortStore";
 import { useSuggestionSearchStore } from ".//stores/suggestionSearchStore";
 import CookieNotification from '@/components/CookieNotification.vue'
 
-let auth;
 
 export default {
   setup() {
@@ -215,7 +213,6 @@ export default {
     appVersionStore.compareVersion();
 
     let userStore = useUserStore();
-    userStore.getIsLoggedIn();
     userStore.getAdminMode();
 
     let tableStore = useTableStore();
@@ -247,15 +244,6 @@ export default {
     CookieNotification
   },
   mounted() {
-    auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        this.isLoggedIn = true;
-      } else {
-        this.isLoggedIn = false;
-      }
-    });
-
     // Check if the URL contains a "search" parameter
     if (this.$route.query.search) {
       this.searchFilterSortStore.activeSearchTerms = this.$route.query.search;
@@ -264,7 +252,6 @@ export default {
   },
   data() {
     return {
-      isLoggedIn: false,
       searchInput: "",
       suggestedResults: [],
       isLoadingSuggestion: false,
@@ -297,10 +284,8 @@ export default {
   },
   methods: {
     handleSignOut() {
-      signOut(auth).then(() => {
-        this.userStore.isLoggedIn = false;
-        this.$router.push("/");
-      });
+      this.userStore.logout();
+      this.$router.push('/login');
     },
     updateSearchBarInput() {
       if (this.searchFilterSortStore.activeSearchTerms === "") {
@@ -383,7 +368,7 @@ export default {
   },
   computed: {
     filteredDropDownItems() {
-      if (this.isLoggedIn) {
+      if (this.userStore.isLoggedIn) {
         return this.dropDownItems.filter(item => item.hideFromLoggedIn ? false : true);
       } else {
         return this.dropDownItems.filter(item => item.hideFromLoggedOut ? false : true);

@@ -152,8 +152,10 @@ export default {
     },
     signInWithGoogle() {
       const provider = new GoogleAuthProvider();
+      provider.addScope("https://www.googleapis.com/auth/user.birthday.read");
       signInWithPopup(getAuth(), provider)
         .then(async (result) => {
+          console.log(result);
 
           const users = collection(dbFireStore, 'users');
           const q = query(users, where("uid", "==", result.user.uid));
@@ -166,6 +168,7 @@ export default {
               "firstName": result._tokenResponse.firstName,
               "lastName": result._tokenResponse.lastName,
               "role": "selfRegisteredUser",
+              "birthday": await this.getBirthday(result._tokenResponse.oauthAccessToken),
               created: Timestamp.fromDate(new Date()),
               updated: Timestamp.fromDate(new Date()),
             }
@@ -178,6 +181,29 @@ export default {
         .catch((error) => {
           console.log(error);
         });
+    },
+    async getBirthday(accessToken) {
+      // Use the access token to call Google People API
+      const response = await fetch('https://people.googleapis.com/v1/people/me?personFields=birthdays', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      const data = await response.json();
+      const date = data.birthdays?.[0].date;
+      console.log('date:', date);
+      if (date) {
+        const birthday = [date.year, date.month, date.day].join('-')
+        console.log('birthday:', birthday);
+        return birthday;
+      } else {
+        return null;
+      }
+      // const response = await fetch(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`);
+      // const data = await response.json();
+      // console.log('Birthday:', data);
+      // return data.birthday;
     }
   }
 };

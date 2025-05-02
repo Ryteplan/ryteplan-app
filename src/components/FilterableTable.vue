@@ -263,7 +263,6 @@ export default {
   setup() {
     let userStore = useUserStore();
     userStore.getAdminMode();
-    userStore.getIsLoggedIn();
 
 
     let tableStore = useTableStore();
