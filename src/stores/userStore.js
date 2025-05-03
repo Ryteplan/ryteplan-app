@@ -118,9 +118,9 @@ export const useUserStore = defineStore('user', {
     async updateUser(updatedUserInfo) {
       console.log('Updating user with:', updatedUserInfo, updateDoc);
       // TODO: Implement actual update logic
-      // this.userInfo = updatedUserInfo;
-      // const userDoc = doc(dbFireStore, 'users', this.userInfo.uid);
-      // await updateDoc(userDoc, this.userInfo);
+      this.userInfo = updatedUserInfo;
+      const userDoc = doc(dbFireStore, 'users', this.userInfo.uid);
+      await updateDoc(userDoc, this.userInfo);
     }
   }
 });

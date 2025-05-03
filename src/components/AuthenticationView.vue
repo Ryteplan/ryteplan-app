@@ -190,6 +190,7 @@ export default {
       await waitForUserDocToExist(userRef);
 
       const newUser = {
+        uid: authResult.user.uid,
         role: this.userRole,
         updated: Timestamp.now()
       }
