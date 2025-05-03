@@ -44,17 +44,11 @@
             />
             <v-select
               v-model="userRole"
-              :items="[
-                { text: 'Student', value: 'student' },
-                { text: 'Educator', value: 'educator' },
-                { text: 'Parent/Guardian', value: 'guardian' }
-              ]"
+              :items="ROLE_OPTIONS"
               label="Select Role"
               placeholder="Select your role"
               required
               outlined
-              item-title="text"
-              item-value="value"
             />
             <p v-if="errorMessage">
               {{ errorMessage }}
@@ -106,7 +100,7 @@
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { doc, setDoc, updateDoc, getDoc, collection, query, where, getCountFromServer, Timestamp } from 'firebase/firestore'
 import { dbFireStore } from "../firebase";
-import { useUserStore } from '@/stores/userStore';
+import { useUserStore, ROLE_OPTIONS } from '@/stores/userStore';
 
 const waitForUserDocToExist = async (userRef, maxAttempts = 10, interval = 500) => {
   let currentDoc = await getDoc(userRef);
@@ -133,7 +127,8 @@ export default {
       email: "",
       password: "",
       errorMessage: "",
-      userRole: ""
+      userRole: "",
+      ROLE_OPTIONS,
     }
   },
   mounted() {
@@ -202,10 +197,13 @@ export default {
     },
     signIn() {
       signInWithEmailAndPassword(getAuth(), this.email, this.password)
-        .then((data) => {
-          console.log(data);
-          console.log("success")
-          this.$router.push('/')
+        .then(async () => {
+          await this.userStore.loadUserInfo();
+          if (this.userStore.isSetupFinished) {
+            this.$router.push('/');
+          } else {
+            this.$router.push('/onboarding');
+          }
         })
         .catch(error => {
           this.processErrorCode(error.code);
@@ -216,8 +214,6 @@ export default {
       provider.addScope("https://www.googleapis.com/auth/user.birthday.read");
       signInWithPopup(getAuth(), provider)
         .then(async (result) => {
-          console.log(result);
-
           const users = collection(dbFireStore, 'users');
           const q = query(users, where("uid", "==", result.user.uid));
           const docSnap = await getCountFromServer(q);
@@ -234,9 +230,12 @@ export default {
               updated: Timestamp.fromDate(new Date()),
             }
             await setDoc(doc(dbFireStore, "users", result.user.uid), { ...userData });
-            this.$router.push('/')
+          }
+          await this.userStore.loadUserInfo();
+          if (this.userStore.isSetupFinished) {
+            this.$router.push('/');
           } else {
-            this.$router.push('/')
+            this.$router.push('/onboarding');
           }
         })
         .catch((error) => {

@@ -160,7 +160,7 @@
 <script>
 import { ref, reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { useUserStore, validRoles } from '@/stores/userStore';
+import { useUserStore, validRoles, ROLE_OPTIONS } from '@/stores/userStore';
 
 export default {
   name: 'OnboardingView',
@@ -193,16 +193,6 @@ export default {
     const termsForm = ref(null);
 
     const router = useRouter();
-
-
-    const roleOptions = [
-      { title: 'Student', value: 'student' },
-      { title: 'Parent / Guardian', value: 'guardian' },
-      { title: 'School Counselor', value: 'educator' },
-      { title: 'CBO', value: 'cbo' },
-      { title: 'IEC', value: 'iec' },
-      { title: 'Other', value: 'other' }
-    ]
 
     const steps = [
       { title: 'Personal Info', value: 1 },
@@ -256,7 +246,7 @@ export default {
       steps,
       valid,
       formData,
-      roleOptions,
+      roleOptions: ROLE_OPTIONS,
       isFormValid,
       nextStep,
       submitForm,

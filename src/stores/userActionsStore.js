@@ -1,4 +1,4 @@
-import { ref, onUnmounted } from 'vue';
+import { ref, onUnmounted, watch } from 'vue';
 import { defineStore } from 'pinia';
 import { doc, collection, setDoc, Timestamp } from 'firebase/firestore';
 
@@ -25,13 +25,22 @@ export const useUserActionsStore = defineStore('userActions', () => {
   const userLists = ref([]);
   const user = useUserStore();
   const dialogStore = useDialogStore();
-  console.log('subscribed to user lists', user);
-  const unsubscribeToUserLists = observeUserLists(
-    user.userInfo.uid,
-    (lists) => {
-      userLists.value = lists;
+  let unsubscribeToUserLists = Promise.resolve();
+  watch(user, async (newUser) => {
+    console.info('user info changed', newUser);
+    await unsubscribeToUserLists;
+    if (newUser.isLoggedIn) {
+      console.info('subscribed to user lists', newUser);
+      unsubscribeToUserLists = observeUserLists(
+        newUser.userInfo.uid,
+        (lists) => {
+          userLists.value = lists;
+        }
+      );
+    } else {
+      unsubscribeToUserLists = Promise.resolve();
     }
-  );
+  });
 
   const checkUserPermissions = (institutionIds) => {
     const action = availableActions.createNewList;
