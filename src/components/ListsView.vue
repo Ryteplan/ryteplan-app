@@ -154,7 +154,12 @@ export default {
       });
     },
     async createNewList() {
-      await this.userActionsStore.createNewList(this.createNewListName);
+      const response = await this.userActionsStore.createNewList(this.createNewListName);
+      if (response.isError) {
+        console.error("Error creating new list:", response);
+      } else {
+        console.info('Created new list:', response);
+      }
       this.showCreateListDialog = false;
       this.createNewListName = "";
       this.loadUserLists();

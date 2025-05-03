@@ -190,10 +190,12 @@ export default {
         const institutionIds = this.institutionId ? [this.institutionId] : this.selectedRows.map(row => row.id);
         const response = await this.userActionsStore.createNewList(newListName, institutionIds);
         if (response.isError) {
+          console.error("Error creating new list:", response);
           this.showCreateNewListInput = false;
           this.showGoToList = false;
           return;
         }
+        console.info('Created new list:', response);
         this.listTheItemWasSavedTo = response.data.listId;
         this.showCreateNewListInput = false;
         this.showGoToList = true;

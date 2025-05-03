@@ -1,6 +1,9 @@
 import { defineStore } from 'pinia';
+import { format } from 'date-fns';
+
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
+
 import { dbFireStore } from "../firebase";
 
 /**
@@ -82,12 +85,9 @@ export const useUserStore = defineStore('user', {
      */
     async loadUserInfo() {
       this.auth = getAuth();
-      console.log('loading user info', this.auth);
       this.adminMode = localStorage.getItem("adminMode") === 'true';
       await this.auth.authStateReady()
-      console.log('auth state ready', this.auth);
       await this.processCurrentUser(this.auth.currentUser)
-      console.log('process current user', this.userInfo);
       this.loading = false;
       onAuthStateChanged(this.auth, async (user) => {
         console.log("subscribed to auth state");
@@ -117,10 +117,14 @@ export const useUserStore = defineStore('user', {
     },
     async updateUser(updatedUserInfo) {
       console.log('Updating user with:', updatedUserInfo, updateDoc);
-      // TODO: Implement actual update logic
-      this.userInfo = updatedUserInfo;
+      updatedUserInfo.birthday = format(updatedUserInfo.birthday, 'yyyy-MM-dd');
+      this.userInfo = {
+        ...this.userInfo,
+        ...updatedUserInfo
+      };
+      
       const userDoc = doc(dbFireStore, 'users', this.userInfo.uid);
-      await updateDoc(userDoc, this.userInfo);
+      await updateDoc(userDoc, updatedUserInfo);
     }
   }
 });

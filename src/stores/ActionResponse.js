@@ -12,14 +12,16 @@ class Action {
     const missingPermissions = this.permissions.filter((permission) =>
       !user.permissions.includes(permission)
     );
-    return new ActionResponse({
-        missingPermissions,
-        name: 'createNewList',
+    if (missingPermissions.length > 0) {
+      return new ActionResponse({
+          missingPermissions,
+          name: 'createNewList',
         status: 'error',
         data: {
             message: `User needs to complete the following steps: ${missingPermissions.join(', ')}`,
         },
-    });
+      });
+    }
   }
   hasPermission(user) {
     return this.checkMissingPermissions(user).missingPermissions.length === 0;

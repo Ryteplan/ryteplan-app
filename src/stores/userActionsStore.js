@@ -33,17 +33,27 @@ export const useUserActionsStore = defineStore('userActions', () => {
     }
   );
 
-  const checkUserPermissions = () => {
+  const checkUserPermissions = (institutionIds) => {
     const action = availableActions.createNewList;
     const missingPermissions = action.checkMissingPermissions(user);
     if (missingPermissions) return missingPermissions;
     const planLimits = checkPlanLimits(userLists);
     if (planLimits) return planLimits;
+    if (institutionIds.length > 30) {
+      return new ActionResponse({
+        missingPermissions: ['basicUser'],
+        name: 'createNewList',
+        status: 'error',
+        data: {
+          message: 'User has reached the maximum limit of 30 institutions per list',
+        },
+      });
+    }
     return;
   };
 
   async function createNewList(listName, institutionIds =[]) {
-    const response = checkUserPermissions();
+    const response = checkUserPermissions(institutionIds);
     if (response) {
       dialogStore.showActionDialog(response)
       return response;
@@ -57,7 +67,6 @@ export const useUserActionsStore = defineStore('userActions', () => {
       updated: Timestamp.now(),
       institutions: institutionIds,
     }
-    console.log(data)
     await setDoc(newDocRef, data);
     return new ActionResponse({
       name: 'createNewList',
@@ -70,7 +79,6 @@ export const useUserActionsStore = defineStore('userActions', () => {
   }
 
   onUnmounted(async () => {
-    console.log('unsubscribeToUserLists', unsubscribeToUserLists);
     await unsubscribeToUserLists;
   });
 

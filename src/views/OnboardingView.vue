@@ -176,16 +176,16 @@ export default {
     console.log(userStore.userInfo)
 
     const formData = reactive({
-      firstName: userStore.userInfo.firstName,
-      lastName: userStore.userInfo.lastName,
-      birthday: userStore.userInfo.birthday,
+      firstName: userStore.userInfo.firstName || '',
+      lastName: userStore.userInfo.lastName || '',
+      birthday: userStore.userInfo.birthday || '',
       role: validRoles.includes(userStore.userInfo.role) ? userStore.userInfo.role : '',
-      highSchool: userStore.userInfo.highSchool,
-      businessName: userStore.userInfo.businessName,
-      graduationYear: userStore.userInfo.graduationYear,
-      zipCode: userStore.userInfo.zipCode,
-      euResident: userStore.userInfo.euResident,
-      acceptTerms: userStore.userInfo.acceptTerms,
+      highSchool: userStore.userInfo.highSchool || '',
+      businessName: userStore.userInfo.businessName || '',
+      graduationYear: userStore.userInfo.graduationYear || '',
+      zipCode: userStore.userInfo.zipCode || '',
+      euResident: userStore.userInfo.euResident || false,
+      acceptTerms: userStore.userInfo.acceptTerms || false,
     });
 
     const personalForm = ref(null);
@@ -244,7 +244,7 @@ export default {
 
         if (personalValid.valid && educationValid.valid && termsValid.valid) {
           userStore.updateUser(formData);
-          console.log(router)
+          router.push('/');
         }
       } catch (error) {
         console.error('Form submission error:', error);
