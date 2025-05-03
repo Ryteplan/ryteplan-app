@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { dbFireStore } from "../firebase";
 
 /**
@@ -8,13 +8,24 @@ import { dbFireStore } from "../firebase";
 * @typedef {Object} User
 * @property {string} email
 * @property {string} role
+* @property {string} labelRole
 * @property {string} firstName
 * @property {string} lastName
+* @property {string} birthday
+* @property {string} highSchool
+* @property {string} businessName
+* @property {string} graduationYear
+* @property {string} zipCode
+* @property {string} euResident
+* @property {string} acceptTerms
 * @property {string} uid
 * @property {string} createdAt
 * @property {string} updatedAt
 * @property {boolean} isAdmin
 */
+
+
+export const validRoles = ['guardian', 'student', 'educator'];
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -33,7 +44,6 @@ export const useUserStore = defineStore('user', {
   }),
   getters: {
     isSetupFinished() {
-      const validRoles = ['guardian', 'student', 'educator'];
       return Boolean(this.isLoggedIn && validRoles.includes(this.userInfo.role) && this.userInfo.firstName && this.userInfo.lastName);
     },
     isLoggedIn() {
@@ -72,9 +82,12 @@ export const useUserStore = defineStore('user', {
      */
     async loadUserInfo() {
       this.auth = getAuth();
+      console.log('loading user info', this.auth);
       this.adminMode = localStorage.getItem("adminMode") === 'true';
       await this.auth.authStateReady()
+      console.log('auth state ready', this.auth);
       await this.processCurrentUser(this.auth.currentUser)
+      console.log('process current user', this.userInfo);
       this.loading = false;
       onAuthStateChanged(this.auth, async (user) => {
         console.log("subscribed to auth state");
@@ -85,6 +98,7 @@ export const useUserStore = defineStore('user', {
       if (user) {
         const userDoc = await getDoc(doc(dbFireStore, 'users', user.uid));
         this.userInfo = userDoc.data() || {};
+        this.userInfo.uid = user.uid;
       } else {
         this.userInfo = {};
       }
@@ -100,6 +114,13 @@ export const useUserStore = defineStore('user', {
     saveAdminModeState() {
       this.adminMode = !this.adminMode;
       localStorage.setItem("adminMode", this.adminMode);
+    },
+    async updateUser(updatedUserInfo) {
+      console.log('Updating user with:', updatedUserInfo, updateDoc);
+      // TODO: Implement actual update logic
+      // this.userInfo = updatedUserInfo;
+      // const userDoc = doc(dbFireStore, 'users', this.userInfo.uid);
+      // await updateDoc(userDoc, this.userInfo);
     }
   }
 });

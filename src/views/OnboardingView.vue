@@ -23,6 +23,7 @@
             <v-form
               ref="personalForm"
               v-model="valid.personal"
+              @submit.prevent
             >
               <v-text-field
                 v-model="formData.firstName"
@@ -36,10 +37,10 @@
                 :rules="[v => !!v || 'Last name is required']"
                 required
               />
-              <v-text-field
+              <v-date-input
                 v-model="formData.birthday"
+                prepend-icon=""
                 label="Date of Birth"
-                type="date"
                 :rules="[v => !!v || 'Date of birth is required']"
                 required
               />
@@ -62,6 +63,7 @@
             <v-form
               ref="educationForm"
               v-model="valid.education"
+              @submit.prevent
             >
               <v-text-field
                 v-model="formData.highSchool"
@@ -102,6 +104,7 @@
             <v-form
               ref="termsForm"
               v-model="valid.terms"
+              @submit.prevent
             >
               <v-checkbox
                 v-model="formData.euResident"
@@ -156,10 +159,13 @@
 
 <script>
 import { ref, reactive, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { useUserStore, validRoles } from '@/stores/userStore';
 
 export default {
   name: 'OnboardingView',
   setup() {
+    const userStore = useUserStore();
     const currentStep = ref(1);
     const valid = reactive({
       personal: false,
@@ -167,26 +173,35 @@ export default {
       terms: false
     });
 
+    console.log(userStore.userInfo)
+
     const formData = reactive({
-      firstName: '',
-      lastName: '',
-      birthday: '',
-      role: '',
-      highSchool: '',
-      businessName: '',
-      graduationYear: null,
-      zipCode: '',
-      euResident: false,
-      acceptTerms: false,
+      firstName: userStore.userInfo.firstName,
+      lastName: userStore.userInfo.lastName,
+      birthday: userStore.userInfo.birthday,
+      role: validRoles.includes(userStore.userInfo.role) ? userStore.userInfo.role : '',
+      highSchool: userStore.userInfo.highSchool,
+      businessName: userStore.userInfo.businessName,
+      graduationYear: userStore.userInfo.graduationYear,
+      zipCode: userStore.userInfo.zipCode,
+      euResident: userStore.userInfo.euResident,
+      acceptTerms: userStore.userInfo.acceptTerms,
     });
+
+    const personalForm = ref(null);
+    const educationForm = ref(null);
+    const termsForm = ref(null);
+
+    const router = useRouter();
+
 
     const roleOptions = [
       { title: 'Student', value: 'student' },
       { title: 'Parent / Guardian', value: 'guardian' },
       { title: 'School Counselor', value: 'educator' },
-      { title: 'CBO', value: 'educator' },
-      { title: 'IEC', value: 'educator' },
-      { title: 'Other', value: 'educator' }
+      { title: 'CBO', value: 'cbo' },
+      { title: 'IEC', value: 'iec' },
+      { title: 'Other', value: 'other' }
     ]
 
     const steps = [
@@ -199,36 +214,40 @@ export default {
       return valid.personal && valid.education && valid.terms;
     });
 
-    const nextStep = () => {
-      let formRef;
-      if (currentStep.value === 1) {
-        formRef = this.$refs.personalForm;
-      } else if (currentStep.value === 2) {
-        formRef = this.$refs.educationForm;
-      }
+    const nextStep = async () => {
+      const validateAndProceed = async (formRef) => {
+        if (formRef.value) {
+          const { valid } = await formRef.value.validate();
+          if (valid) currentStep.value++;
+        }
+      };
 
-      if (formRef) {
-        console.log(formRef);
-        formRef.validate().then(({ valid }) => {
-          if (valid) {
-            currentStep.value++;
-          }
-        });
+      if (currentStep.value === 1) {
+        await validateAndProceed(personalForm);
+      } else if (currentStep.value === 2) {
+        await validateAndProceed(educationForm);
       }
     }
 
     const submitForm = async () => {
-      const validForms =await Promise.all([
-        this.$refs.personalForm.validate(),
-        this.$refs.educationForm.validate(),
-        this.$refs.termsForm.validate()
-      ]);
+      try {
+        if (!personalForm.value || !educationForm.value || !termsForm.value) {
+          console.error('Form references are not initialized');
+          return;
+        }
 
-      if (this.isFormValid && validForms.every(v => v)) {
-        // TODO: Implement form submission logic
-        console.log('Form submitted:', this.formData);
-        // Redirect to dashboard or next step
-        this.$router.push('/');
+        const [personalValid, educationValid, termsValid] = await Promise.all([
+          personalForm.value.validate(),
+          educationForm.value.validate(),
+          termsForm.value.validate()
+        ]);
+
+        if (personalValid.valid && educationValid.valid && termsValid.valid) {
+          userStore.updateUser(formData);
+          console.log(router)
+        }
+      } catch (error) {
+        console.error('Form submission error:', error);
       }
     }
 
@@ -240,7 +259,10 @@ export default {
       roleOptions,
       isFormValid,
       nextStep,
-      submitForm
+      submitForm,
+      personalForm,
+      educationForm,
+      termsForm
     };
   },
 }

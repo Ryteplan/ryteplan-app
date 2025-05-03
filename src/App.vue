@@ -4,9 +4,9 @@
       <div
         class="header-container d-flex align-center justify-space-between ma-auto w-100 px-3 px-lg-0"
       >
-        <a href="/" class="logo">
+        <router-link to="/" class="logo">
           <LogoGreenBlack />
-        </a>
+        </router-link>
         <v-combobox
           ref="suggestedSearch"
           class="ml-6 mr-3 ml-md-8 mr-md-8"

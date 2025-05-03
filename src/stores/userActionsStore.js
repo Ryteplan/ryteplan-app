@@ -25,7 +25,7 @@ export const useUserActionsStore = defineStore('userActions', () => {
   const userLists = ref([]);
   const user = useUserStore();
   const dialogStore = useDialogStore();
-  console.log('subscribed to user lists');
+  console.log('subscribed to user lists', user);
   const unsubscribeToUserLists = observeUserLists(
     user.userInfo.uid,
     (lists) => {
@@ -34,12 +34,11 @@ export const useUserActionsStore = defineStore('userActions', () => {
   );
 
   const checkUserPermissions = () => {
-    // const action = availableActions.createNewList;
-    // const missingPermissions = action.checkMissingPermissions(user);
-    // if (missingPermissions) return missingPermissions;
+    const action = availableActions.createNewList;
+    const missingPermissions = action.checkMissingPermissions(user);
+    if (missingPermissions) return missingPermissions;
     const planLimits = checkPlanLimits(userLists);
     if (planLimits) return planLimits;
-    console.log(availableActions, checkPlanLimits)
     return;
   };
 

@@ -106,7 +106,7 @@
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { doc, setDoc, updateDoc, getDoc, collection, query, where, getCountFromServer, Timestamp } from 'firebase/firestore'
 import { dbFireStore } from "../firebase";
-
+import { useUserStore } from '@/stores/userStore';
 
 const waitForUserDocToExist = async (userRef, maxAttempts = 10, interval = 500) => {
   let currentDoc = await getDoc(userRef);
@@ -122,6 +122,10 @@ const waitForUserDocToExist = async (userRef, maxAttempts = 10, interval = 500) 
 }
 export default {
   setup() {
+    const userStore = useUserStore();
+    return {
+      userStore
+    }
   },
   data() {
     return {
@@ -192,7 +196,8 @@ export default {
       await updateDoc(userRef, newUser);
 
       console.log("success");
-      this.$router.push('/');
+      await this.userStore.loadUserInfo();
+      this.$router.push('/onboarding');
     },
     signIn() {
       signInWithEmailAndPassword(getAuth(), this.email, this.password)
