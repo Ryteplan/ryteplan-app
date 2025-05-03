@@ -28,7 +28,18 @@ import { dbFireStore } from "../firebase";
 */
 
 
-export const validRoles = ['guardian', 'student', 'educator'];
+
+export const ROLE_OPTIONS = [
+  { title: 'Student', value: 'student' },
+  { title: 'Parent / Guardian', value: 'guardian' },
+  { title: 'School Counselor', value: 'educator' },
+  { title: 'CBO', value: 'cbo' },
+  { title: 'IEC', value: 'iec' },
+  { title: 'Other', value: 'other' }
+]
+
+export const validRoles = new Set(ROLE_OPTIONS.map(role => role.value));
+
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -47,7 +58,7 @@ export const useUserStore = defineStore('user', {
   }),
   getters: {
     isSetupFinished() {
-      return Boolean(this.isLoggedIn && validRoles.includes(this.userInfo.role) && this.userInfo.firstName && this.userInfo.lastName);
+      return Boolean(this.isLoggedIn && validRoles.has(this.userInfo.role) && this.userInfo.firstName && this.userInfo.lastName);
     },
     isLoggedIn() {
       return Boolean(this.userInfo.email);

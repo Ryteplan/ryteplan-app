@@ -1,4 +1,8 @@
 {
+  "include": [
+    "src/**/*.vue",
+    "src/**/*.js"
+  ],
   "compilerOptions": {
     "target": "es5",
     "module": "esnext",

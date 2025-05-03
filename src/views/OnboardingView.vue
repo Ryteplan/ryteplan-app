@@ -179,7 +179,7 @@ export default {
       firstName: userStore.userInfo.firstName || '',
       lastName: userStore.userInfo.lastName || '',
       birthday: userStore.userInfo.birthday || '',
-      role: validRoles.includes(userStore.userInfo.role) ? userStore.userInfo.role : '',
+      role: validRoles.has(userStore.userInfo.role) ? userStore.userInfo.role : '',
       highSchool: userStore.userInfo.highSchool || '',
       businessName: userStore.userInfo.businessName || '',
       graduationYear: userStore.userInfo.graduationYear || '',
