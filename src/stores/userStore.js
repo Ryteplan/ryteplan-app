@@ -44,6 +44,22 @@ export const useUserStore = defineStore('user', {
     },
     paidUser() {
       return false;
+    },
+    permissions() {
+      const permissions = [];
+      if (this.isAdmin) {
+        permissions.push('admin')
+      }
+      if (this.isSetupFinished) {
+        permissions.push('accountSetup')
+      }
+      if (this.isLoggedIn) {
+        permissions.push('loggedIn')
+      }
+      return [
+        ...permissions,
+        ...(this.userInfo.permissions || []),
+      ]
     }
   },
   actions: {

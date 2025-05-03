@@ -19,14 +19,20 @@
           :sm="($vuetify.display.lgAndUp && showFilters) ? 9 : 12"
         >
           <div class="d-flex align-center justify-space-between mb-4">
-            <div class="d-flex align-center w-100" style="gap: 40px">
+            <div
+              class="d-flex align-center w-100"
+              style="gap: 40px"
+            >
               <div class="d-flex align-center justify-space-between mt-3 w-100">
-                <div class="d-flex align-center" style="gap: 8px">
+                <div
+                  class="d-flex align-center"
+                  style="gap: 8px"
+                >
                   <v-btn
                     size="x-small"
                     elevation="1"
-                    @click="toggleFilters"
                     :title="showFilters ? 'Hide Filters' : 'Show Filters'"
+                    @click="toggleFilters"
                   >
                     {{ $vuetify.display.lgAndUp ? (showFilters ? 'Hide Filters' : 'Show Filters') : 'Filters' }}
                   </v-btn>
@@ -34,16 +40,16 @@
                     v-if="userStore.adminMode"
                     size="x-small"
                     elevation="1"
-                    @click="showColumnsDialog = true"
                     title="Edit Columns"
+                    @click="showColumnsDialog = true"
                   >
                     Edit Columns
                   </v-btn>
                   <v-menu location="bottom end">
-                    <template v-slot:activator="{ props }">
+                    <template #activator="{ props }">
                       <v-btn
-                        size="x-small"
                         v-if="selectedInstitutions.length > 0"
+                        size="x-small"
                         v-bind="props"
                         :disabled="selectedInstitutions.length === 0"
                       >
@@ -52,11 +58,16 @@
                     </template>
                     <v-list>
                       <v-list-item
-                        @click="saveToListClicked()"
                         :disabled="selectedInstitutions.length === 0"
+                        @click="saveToListClicked()"
                       >
                         <div class="d-flex align-center">
-                          <v-icon class="mr-2" color="primary">mdi-list-box-outline</v-icon>
+                          <v-icon
+                            class="mr-2"
+                            color="primary"
+                          >
+                            mdi-list-box-outline
+                          </v-icon>
                           <v-list-item-title>Add to list</v-list-item-title>
                         </div>
                       </v-list-item>
@@ -66,19 +77,28 @@
                 <div class="d-flex align-center">
                   <v-switch 
                     v-if="userStore.isLoggedIn && userStore.adminMode" 
-                    label="Show hidden results" 
-                    color="primary" 
-                    hide-details
-                    class="inherit-height align-end mr-6" 
                     v-model="tableStore.hideHidden" 
+                    label="Show hidden results" 
+                    color="primary"
+                    hide-details 
+                    class="inherit-height align-end mr-6" 
                     @change="tableStore.saveHideHiddenState"
                   />
                   <div class="text-subtitle-2 mr-4 align-center">
                     Results: 
                     <span v-if="!tableStore.applyFiltersLoading">{{ tableStore.resultsFound }}</span>
-                    <v-progress-circular class="ml-2" style="top: -2px;" v-else :size="20" color="primary" indeterminate></v-progress-circular>
+                    <v-progress-circular
+                      v-else
+                      class="ml-2"
+                      style="top: -2px;"
+                      :size="20"
+                      color="primary"
+                      indeterminate
+                    />
                   </div>
-                  <p class="text-subtitle-2">Page(s) loaded: {{ searchFilterSortStore.searchParameters.page }}</p>
+                  <p class="text-subtitle-2">
+                    Page(s) loaded: {{ searchFilterSortStore.searchParameters.page }}
+                  </p>
                 </div>
               </div>
             </div>
@@ -90,23 +110,27 @@
             class="institutionDataTable" 
             item-key="Institution name"
             selectable-key="Institution name" 
-            :height="tableHeight"
-            fixed-header 
-            return-object
-            :headers="filteredHeaders"
-            :items="tableStore.tableData" 
-            :items-per-page="-1"
-            @click:row="(event, item) => navigateToInstitution(event, item, false)"
-            @click:header="(column) => tableStore.customSort(column)"
-            item-value="institution name" 
             v-model="selectedInstitutions"
-            :show-select="!!userStore.isLoggedIn"            
+            :height="tableHeight" 
+            fixed-header
+            return-object
+            :headers="filteredHeaders" 
+            :items="tableStore.tableData"
+            :items-per-page="-1"
+            item-value="institution name"
+            :show-select="!!userStore.isLoggedIn" 
             density="comfortable"
+            @click:row="(event, item) => navigateToInstitution(event, item, false)"            
+            @click:header="(column) => tableStore.customSort(column)"
           >
-            <template #bottom></template>
+            <template #bottom />
             
             <!-- Format cell values -->
-            <template v-for="header in filteredHeaders" :key="header.key" #[`item.${header.key}`]="{ item }">
+            <template
+              v-for="header in filteredHeaders"
+              :key="header.key"
+              #[`item.${header.key}`]="{ item }"
+            >
               {{ formatCellValue(item[header.key]) }}
             </template>
           </v-data-table>
@@ -119,14 +143,17 @@
           color="primary"
           indeterminate
           size="64"
-        ></v-progress-circular>
+        />
       </v-row>
     </v-container>
     <SaveToListDialog 
       v-model="showSaveToListDialog" 
-      :selectedRows="selectedInstitutions"
+      :selected-rows="selectedInstitutions"
     />
-    <ShareDialog v-model="showShareDialog" :selectedRows="tableStore.selectedRows" />
+    <ShareDialog
+      v-model="showShareDialog"
+      :selected-rows="tableStore.selectedRows"
+    />
 
     <!-- Add new dialog for filters -->
     <v-dialog
@@ -140,17 +167,26 @@
       <v-card>
         <v-card-title class="d-flex justify-space-between align-center">
           <span>Filters</span>
-          <v-btn icon="mdi-close" variant="text" @click="showFiltersDialog = false"></v-btn>
+          <v-btn
+            icon="mdi-close"
+            variant="text"
+            @click="showFiltersDialog = false"
+          />
         </v-card-title>
         <v-card-text>
           <FilterContent 
             :sport-filter-ref="$refs.sportFilter"
-            @clear-filters="clearFilters"
             source="dialog"
+            @clear-filters="clearFilters"
           />
         </v-card-text>
         <v-card-actions class="justify-end">
-          <v-btn color="primary" @click="showFiltersDialog = false">Done</v-btn>
+          <v-btn
+            color="primary"
+            @click="showFiltersDialog = false"
+          >
+            Done
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -167,7 +203,11 @@
       <v-card>
         <v-card-title class="d-flex justify-space-between align-center">
           <span>Edit Columns</span>
-          <v-btn icon="mdi-close" variant="text" @click="showColumnsDialog = false"></v-btn>
+          <v-btn
+            icon="mdi-close"
+            variant="text"
+            @click="showColumnsDialog = false"
+          />
         </v-card-title>
         <v-card-text>
           <v-list>
@@ -188,31 +228,34 @@
                   hide-details
                   density="comfortable"
                   @click="toggleColumn(header)"
-                ></v-checkbox>
-                <v-spacer></v-spacer>
+                />
+                <v-spacer />
                 <div class="d-flex">
                   <v-btn
                     density="comfortable"
                     icon="mdi-arrow-up"
                     size="small"
                     variant="text"
-                    @click="moveColumnUp(header.key)"
                     :disabled="isFirstVisibleHeader(header.key)"
-                  ></v-btn>
+                    @click="moveColumnUp(header.key)"
+                  />
                   <v-btn
                     density="comfortable"
                     icon="mdi-arrow-down"
                     size="small"
                     variant="text"
-                    @click="moveColumnDown(header.key)"
                     :disabled="isLastVisibleHeader(header.key)"
-                  ></v-btn>
+                    @click="moveColumnDown(header.key)"
+                  />
                 </div>
               </v-list-item-title>
             </v-list-item>
             
             <!-- Section header for hidden columns -->
-            <v-list-subheader class="font-weight-bold text-grey mt-4" v-if="hiddenColumns.length > 0">
+            <v-list-subheader
+              v-if="hiddenColumns.length > 0"
+              class="font-weight-bold text-grey mt-4"
+            >
               Hidden Columns
             </v-list-subheader>
             
@@ -228,7 +271,7 @@
                   hide-details
                   density="comfortable"
                   @click="toggleColumn(header)"
-                ></v-checkbox>
+                />
               </v-list-item-title>
             </v-list-item>
           </v-list>
@@ -242,7 +285,12 @@
           >
             Reset to Default
           </v-btn>
-          <v-btn color="primary" @click="showColumnsDialog = false">Done</v-btn>
+          <v-btn
+            color="primary"
+            @click="showColumnsDialog = false"
+          >
+            Done
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -250,10 +298,10 @@
 </template>
 
 <script>
-import { useUserStore } from '../stores/userStore';
-import { useTableStore } from '../stores/tableStore';
-import { useSearchFilterSortStore } from '../stores/searchFilterSortStore';
-import { defaultFilters } from '../data/defaultFilters';
+import { useUserStore } from '@/stores/userStore';
+import { useTableStore } from '@/stores/tableStore';
+import { useSearchFilterSortStore } from '@/stores/searchFilterSortStore';
+import { defaultFilters } from '@/data/defaultFilters';
 import SaveToListDialog from './SaveToListDialog'
 import ShareDialog from './ShareDialog'
 import { debounce } from 'lodash';
@@ -263,7 +311,6 @@ export default {
   setup() {
     let userStore = useUserStore();
     userStore.getAdminMode();
-
 
     let tableStore = useTableStore();
 
@@ -285,7 +332,7 @@ export default {
     return {
       searchFilterSortStore,
       tableStore,
-      userStore
+      userStore,
     };
   },
   mounted() {

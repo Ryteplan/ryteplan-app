@@ -17,8 +17,6 @@ import TermsView from '@/views/TermsView.vue';
 import PrivacyView from '@/views/PrivacyView.vue';
 import OnboardingView from '@/views/OnboardingView.vue';
 
-import { useUserStore } from '@/stores/userStore';
-
 const routes = [
   {
     path: '/image-work/:slug',
@@ -125,36 +123,6 @@ const router = createRouter({
       return { top: 0 };
     }
   },
-});
-
-const publicRoutes = ['/login', '/logout', '/terms', '/privacy'];
-
-router.beforeEach((to, from, next) => {
-  const store = useUserStore();
-  console.log({
-    toName: to.name,
-    fromName: from.name,
-    isLoggedIn: store.isLoggedIn,
-    isSetupFinished: store.isSetupFinished,
-    userInfo: store.userInfo,
-  });
-  if (publicRoutes.includes(to.path)) {
-    next();
-  } else if (store.isSetupFinished) {
-    if (to.name === 'onboarding') {
-      next({ name: 'home' });
-    } else {
-      next();
-    }
-  } else if (store.isLoggedIn) {
-    if (to.name === 'onboarding') {
-      next();
-    } else {
-      next({ name: 'onboarding' });
-    }
-  } else {
-    next({ name: 'login' });
-  }
 });
 
 export default router;

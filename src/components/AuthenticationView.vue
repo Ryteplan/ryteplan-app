@@ -1,42 +1,97 @@
 <template>
   <v-container>
     <div class="AuthenticationView">
-      <v-tabs v-model="tab" align-tabs="center" class="w-50 mx-auto">
-        <v-tab value="Sign Up">Sign up</v-tab>
-        <v-tab value="Login">Login</v-tab>
+      <v-tabs
+        v-model="tab"
+        align-tabs="center"
+        class="w-50 mx-auto"
+      >
+        <v-tab value="Sign Up">
+          Sign up
+        </v-tab>
+        <v-tab value="Login">
+          Login
+        </v-tab>
       </v-tabs>
-      <v-window class="py-12 w-50 mx-auto text-center" v-model="tab">
-        <v-window-item class="px-6" value="Sign Up">
+      <v-window
+        v-model="tab"
+        class="py-12 w-50 mx-auto text-center"
+      >
+        <v-window-item
+          class="px-6"
+          value="Sign Up"
+        >
           <v-btn @click="signInWithGoogle">
             Sign in with Google
           </v-btn>
-          <p class="mt-6 mb-6">Or</p>
+          <p class="mt-6 mb-6">
+            Or
+          </p>
           <h2>Use Email</h2>
-          <form class="mt-6" @submit.prevent="register">
-            <v-text-field type="email" placeholder="Email address" v-model="email" />
-            <v-text-field type="password" placeholder="Password" v-model="password" />
-            <v-select :items="[
-              { text: 'Student', value: 'student' },
-              { text: 'Educator', value: 'educator' },
-              { text: 'Parent/Guardian', value: 'guardian' }
-            ]" v-model="userRole" label="Select Role" placeholder="Select your role" required outlined
-              item-title="text" item-value="value" />
-            <p v-if="errorMessage">{{ errorMessage }}</p>
+          <form
+            class="mt-6"
+            @submit.prevent="register"
+          >
+            <v-text-field
+              v-model="email"
+              type="email"
+              placeholder="Email address"
+            />
+            <v-text-field
+              v-model="password"
+              type="password"
+              placeholder="Password"
+            />
+            <v-select
+              v-model="userRole"
+              :items="[
+                { text: 'Student', value: 'student' },
+                { text: 'Educator', value: 'educator' },
+                { text: 'Parent/Guardian', value: 'guardian' }
+              ]"
+              label="Select Role"
+              placeholder="Select your role"
+              required
+              outlined
+              item-title="text"
+              item-value="value"
+            />
+            <p v-if="errorMessage">
+              {{ errorMessage }}
+            </p>
             <v-btn type="submit">
               Create Account
             </v-btn>
           </form>
         </v-window-item>
-        <v-window-item class="px-6 text-center" value="Login">
+        <v-window-item
+          class="px-6 text-center"
+          value="Login"
+        >
           <v-btn @click="signInWithGoogle">
             Login With Google
           </v-btn>
-          <p class="mt-6 mb-6">Or</p>
+          <p class="mt-6 mb-6">
+            Or
+          </p>
           <h2>Use Email</h2>
-          <form class="mt-6" @submit.prevent="signIn">
-            <v-text-field type="email" placeholder="Email address" v-model="email" />
-            <v-text-field type="password" placeholder="Password" v-model="password" />
-            <p v-if="errorMessage">{{ errorMessage }}</p>
+          <form
+            class="mt-6"
+            @submit.prevent="signIn"
+          >
+            <v-text-field
+              v-model="email"
+              type="email"
+              placeholder="Email address"
+            />
+            <v-text-field
+              v-model="password"
+              type="password"
+              placeholder="Password"
+            />
+            <p v-if="errorMessage">
+              {{ errorMessage }}
+            </p>
             <v-btn type="submit">
               Login
             </v-btn>
@@ -68,15 +123,6 @@ const waitForUserDocToExist = async (userRef, maxAttempts = 10, interval = 500) 
 export default {
   setup() {
   },
-  mounted() {
-    if (this.$route.query.tabDestination == "Login") {
-      this.tab = "Login";
-    } else {
-      this.tab = "Sign Up";
-    }
-  },
-  beforeUnmount() {
-  },
   data() {
     return {
       tab: null,
@@ -85,6 +131,15 @@ export default {
       errorMessage: "",
       userRole: ""
     }
+  },
+  mounted() {
+    if (this.$route.query.tabDestination == "Login") {
+      this.tab = "Login";
+    } else {
+      this.tab = "Sign Up";
+    }
+  },
+  beforeUnmount() {
   },
   methods: {
     processErrorCode(code) {

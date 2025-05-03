@@ -83,11 +83,17 @@
 <script>
 
 import { dbFireStore } from "../firebase";
-import { query, collection, setDoc, doc, Timestamp, orderBy, onSnapshot, where } from 'firebase/firestore'
+import { query, collection, orderBy, onSnapshot, where } from 'firebase/firestore'
 import { getAuth } from 'firebase/auth';
-
+import { useUserActionsStore } from '@/stores/userActionsStore.js';
 
 export default {
+  setup() {
+    const userActionsStore = useUserActionsStore();
+    return {
+      userActionsStore
+    }
+  },
   beforeMount() {
   },
   mounted() {
@@ -148,22 +154,7 @@ export default {
       });
     },
     async createNewList() {
-      // Check if user has reached the list limit
-      if (this.userLists.length >= 30) {
-        alert("You have reached the maximum limit of 30 lists. Please delete some lists before creating new ones.");
-        this.showCreateListDialog = false;
-        return;
-      }
-      
-      const newDocRef = doc(collection(dbFireStore, "lists"));
-      await setDoc(newDocRef, 
-        {
-          name: this.createNewListName,
-          createdBy: this.userID,
-          created: Timestamp.fromDate(new Date()),
-          updated: Timestamp.fromDate(new Date())
-        }
-      );
+      await this.userActionsStore.createNewList(this.createNewListName);
       this.showCreateListDialog = false;
       this.createNewListName = "";
       this.loadUserLists();

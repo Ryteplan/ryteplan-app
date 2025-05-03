@@ -194,6 +194,7 @@
       </v-container>
     </v-main>
     <CookieNotification class="mb-8" style="position: fixed; bottom: 0; left: 0; right: 0;" />
+    <ActionResponseDialog v-model="dialogStore.dialogTemplate" />
   </v-layout>
 </template>
 
@@ -204,13 +205,15 @@ import { useUserStore } from ".//stores/userStore";
 import { useTableStore } from ".//stores/tableStore";
 import { useSearchFilterSortStore } from ".//stores/searchFilterSortStore";
 import { useSuggestionSearchStore } from ".//stores/suggestionSearchStore";
+import { useDialogStore } from "@/stores/dialogStore";
 import CookieNotification from '@/components/CookieNotification.vue'
-
+import ActionResponseDialog from '@/components/ActionResponseDialog.vue'
 
 export default {
   setup() {
     let appVersionStore = useAppVersionStore();
     appVersionStore.compareVersion();
+    const dialogStore = useDialogStore();
 
     let userStore = useUserStore();
     userStore.getAdminMode();
@@ -237,11 +240,13 @@ export default {
       suggestionSearchStore,
       appVersionStore,
       debounce: createDebounce(),
+      dialogStore,
     };
   },
   components: {
     LogoGreenBlack,
-    CookieNotification
+    CookieNotification,
+    ActionResponseDialog
   },
   mounted() {
     // Check if the URL contains a "search" parameter
