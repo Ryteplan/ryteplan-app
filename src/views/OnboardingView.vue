@@ -58,7 +58,7 @@
         <v-stepper-window-item :value="2">
           <v-card class="pa-4">
             <h2 class="text-h5 mb-4">
-              Education Information
+              {{ isStudent || isParent || isEducator ? 'Education Information' : 'Business Information' }}
             </h2>
             <v-form
               ref="educationForm"
@@ -66,18 +66,21 @@
               @submit.prevent
             >
               <v-text-field
+                v-if="isStudent || isParent || isEducator"
                 v-model="formData.highSchool"
-                label="High School of Attendance"
+                :label="isParent ? 'Student\'s High School of Attendance' : 'High School of Attendance'"
                 :rules="[v => !!v || 'High school is required']"
                 required
               />
               <v-text-field
+                v-if="!(isStudent || isParent || isEducator)"
                 v-model="formData.businessName"
                 label="Business Name"
               />
               <v-text-field
+                v-if="isStudent || isParent"
                 v-model="formData.graduationYear"
-                label="Graduation Year"
+                :label="isStudent ? 'Graduation Year' : 'Student\'s Graduation Year'"
                 type="number"
                 :rules="[
                   v => !!v || 'Graduation year is required',
@@ -86,7 +89,7 @@
                 required
               />
               <v-text-field
-                v-if="formData.role === 'student'"
+                v-if="isStudent"
                 v-model="formData.zipCode"
                 label="Zip Code"
                 :rules="[v => !!v || 'Zip code is required']"
@@ -241,6 +244,18 @@ export default {
       }
     }
 
+    const isStudent = computed(() => {
+      return formData.role === 'student';
+    });
+
+    const isParent = computed(() => {
+      return formData.role === 'guardian';
+    });
+
+    const isEducator = computed(() => {
+      return formData.role === 'educator';
+    });
+
     return {
       currentStep,
       steps,
@@ -252,7 +267,10 @@ export default {
       submitForm,
       personalForm,
       educationForm,
-      termsForm
+      termsForm,
+      isStudent,
+      isParent,
+      isEducator
     };
   },
 }
