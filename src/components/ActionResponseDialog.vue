@@ -23,7 +23,8 @@ const dialogTemplate = defineModel({
 const components = {
   "loggedIn": LoginRequired,
   "accountSetup": AccountSetup,
-  "basicUser": BasicUser
+  "basicUser": BasicUser,
+  "olderThan13": BasicUser
 }
 
 defineComponent({

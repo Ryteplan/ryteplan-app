@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { format } from 'date-fns';
+import { format, parse, differenceInYears } from 'date-fns';
 
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
@@ -69,6 +69,15 @@ export const useUserStore = defineStore('user', {
     paidUser() {
       return false;
     },
+    currentAge() {
+      if (this.userInfo.birthday) {
+        const birthday = parse(this.userInfo.birthday, 'yyyy-MM-dd', new Date());
+        const today = new Date();
+        const age = differenceInYears(today, birthday);
+        return age;
+      }
+      return null;
+    },
     permissions() {
       const permissions = [];
       if (this.isAdmin) {
@@ -79,6 +88,9 @@ export const useUserStore = defineStore('user', {
       }
       if (this.isLoggedIn) {
         permissions.push('loggedIn')
+      }
+      if (this.currentAge && this.currentAge >= 13) {
+        permissions.push('olderThan13');
       }
       return [
         ...permissions,
