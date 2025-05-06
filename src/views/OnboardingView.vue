@@ -41,7 +41,10 @@
                 v-model="formData.birthday"
                 prepend-icon=""
                 label="Date of Birth"
-                :rules="[v => !!v || 'Date of birth is required']"
+                :rules="[
+                  v => !!v || 'Date of birth is required',
+                  v => checkAge(v) || 'You must be at least 13 years old'
+                ]"
                 required
               />
               <v-select
@@ -113,6 +116,7 @@
                 v-model="formData.euResident"
                 label="I am a resident of the European Union"
               />
+              <TermsView />
               <v-checkbox
                 v-model="formData.acceptTerms"
                 :rules="[v => !!v || 'You must accept the terms and privacy policy']"
@@ -163,10 +167,16 @@
 <script>
 import { ref, reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { differenceInYears } from 'date-fns';
+
 import { useUserStore, validRoles, ROLE_OPTIONS } from '@/stores/userStore';
+import TermsView from '@/views/TermsView.vue';
 
 export default {
   name: 'OnboardingView',
+  components: {
+    TermsView
+  },
   setup() {
     const userStore = useUserStore();
     const currentStep = ref(1);
@@ -256,6 +266,13 @@ export default {
       return formData.role === 'educator';
     });
 
+    const checkAge = (date) => {
+      const today = new Date();
+      const birthDate = new Date(date);
+      const age = differenceInYears(today, birthDate);
+      return age > 12;
+    };
+
     return {
       currentStep,
       steps,
@@ -270,7 +287,8 @@ export default {
       termsForm,
       isStudent,
       isParent,
-      isEducator
+      isEducator,
+      checkAge,
     };
   },
 }
