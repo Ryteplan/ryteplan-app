@@ -187,21 +187,6 @@
       </v-range-slider>
       </div>
       <div class="filters-content-section">
-        <h4>Admission Difficulty</h4>
-        <v-select
-          class="mt-4"
-          density="compact"
-          variant="outlined"
-          hide-details
-          multiple
-          clearable
-          label="Difficulty Level"
-          :items="searchFilterSortStore.admissionDifficultyList"
-          v-model="searchFilterSortStore.filters.admissionDifficulty"
-          @update:menu="onUpdateMenu"
-        />
-      </div>
-      <div class="filters-content-section">
         <h4>Academics</h4>
         <v-autocomplete 
           class="mt-4" 
