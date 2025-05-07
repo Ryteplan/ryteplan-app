@@ -401,13 +401,6 @@ export const useTableStore = defineStore('table', {
           align: "end"
         },
         {
-          title: "Admission Difficulty",
-          key: "adDiffAll",
-          minWidth: "140px",
-          show: false,
-          sortable: false,
-        },
-        {
           title: "Testing Policy",
           key: "testingPolicy",
           minWidth: "260px",
