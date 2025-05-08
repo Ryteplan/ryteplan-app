@@ -55,6 +55,8 @@
           clearable 
           label="Campus Setting"
           :items="searchFilterSortStore.campusSettingList" 
+          item-title="title"
+          item-value="value"
           v-model="searchFilterSortStore.filters.campusSetting"
           @update:menu="onUpdateMenu"
         />
