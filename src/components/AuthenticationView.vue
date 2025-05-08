@@ -98,7 +98,7 @@
 
 <script>
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { doc, setDoc, updateDoc, getDoc, collection, query, where, getCountFromServer, Timestamp } from 'firebase/firestore'
+import { doc, setDoc, updateDoc, getDoc, Timestamp } from 'firebase/firestore'
 import { dbFireStore } from "../firebase";
 import { useUserStore, ROLE_OPTIONS } from '@/stores/userStore';
 
@@ -214,22 +214,33 @@ export default {
       provider.addScope("https://www.googleapis.com/auth/user.birthday.read");
       signInWithPopup(getAuth(), provider)
         .then(async (result) => {
-          const users = collection(dbFireStore, 'users');
-          const q = query(users, where("uid", "==", result.user.uid));
-          const docSnap = await getCountFromServer(q);
-
-          if (docSnap.data().count == 0) {
-            const userData = {
-              "uid": result.user.uid,
-              "email": result.user.email,
-              "firstName": result._tokenResponse.firstName,
-              "lastName": result._tokenResponse.lastName,
-              "role": "selfRegisteredUser",
-              "birthday": await this.getBirthday(result._tokenResponse.oauthAccessToken),
+          const userRef = doc(dbFireStore, "users", result.user.uid);
+          const userDoc = await getDoc(userRef);
+          const userBaseData = {
+            "uid": result.user.uid,
+            "email": result.user.email,
+            "firstName": result._tokenResponse.firstName,
+            "lastName": result._tokenResponse.lastName,
+            "role": "selfRegisteredUser",
+            "birthday": await this.getBirthday(result._tokenResponse.oauthAccessToken),
+          }
+          if (!userDoc.exists()) {
+            await setDoc(userRef, {
+              ...userBaseData,
               created: Timestamp.fromDate(new Date()),
               updated: Timestamp.fromDate(new Date()),
+            });
+          } else {
+            const newData = {}
+            const userData = userDoc.data()
+            for (const key in userBaseData) {
+              if (userData[key] === undefined) {
+                newData[key] = userBaseData[key];
+              }
             }
-            await setDoc(doc(dbFireStore, "users", result.user.uid), { ...userData });
+            if (Object.keys(newData).length > 0) {
+              await updateDoc(userRef, newData);
+            }
           }
           await this.userStore.loadUserInfo();
           if (this.userStore.isSetupFinished) {

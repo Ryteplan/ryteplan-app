@@ -71,7 +71,7 @@
               <v-text-field
                 v-if="isStudent || isParent || isEducator"
                 v-model="formData.highSchool"
-                :label="isParent ? 'Student\'s High School of Attendance' : 'High School of Attendance'"
+                :label="isParent ? 'Student\'s High School of Attendance' : `High School${isStudent ? ' of Attendance' : ''}`"
                 :rules="[v => !!v || 'High school is required']"
                 required
               />
@@ -117,12 +117,30 @@
                 label="I am a resident of the European Union"
               />
               <TermsView />
+              <PrivacyView />
               <v-checkbox
                 v-model="formData.acceptTerms"
                 :rules="[v => !!v || 'You must accept the terms and privacy policy']"
                 label="I accept the Terms of Service and Privacy Policy"
                 required
               />
+              <v-radio-group
+                v-model="formData.collegeContactConsent"
+                :rules="[v => v !== undefined || 'Please select an option']"
+                required
+              >
+                <template v-slot:label>
+                  <div>Would you like to receive information from colleges?</div>
+                </template>
+                <v-radio
+                  :value="true"
+                  label="I consent to have my contact information shared with colleges so they can send me relevant information about their institutions and opportunities for students."
+                />
+                <v-radio
+                  :value="false"
+                  label="No, please do not share my contact information with colleges."
+                />
+              </v-radio-group>
             </v-form>
           </v-card>
         </v-stepper-window-item>
@@ -171,11 +189,12 @@ import { differenceInYears } from 'date-fns';
 
 import { useUserStore, validRoles, ROLE_OPTIONS } from '@/stores/userStore';
 import TermsView from '@/views/TermsView.vue';
-
+import PrivacyView from '@/views/PrivacyView.vue';
 export default {
   name: 'OnboardingView',
   components: {
-    TermsView
+    TermsView,
+    PrivacyView
   },
   setup() {
     const userStore = useUserStore();
@@ -198,6 +217,7 @@ export default {
       graduationYear: userStore.userInfo.graduationYear || '',
       zipCode: userStore.userInfo.zipCode || '',
       euResident: userStore.userInfo.euResident || false,
+      collegeContactConsent: userStore.userInfo.collegeContactConsent || undefined,
       acceptTerms: userStore.userInfo.acceptTerms || false,
     });
 
