@@ -1211,7 +1211,7 @@ export default {
     },
     async loadPetersonsData() {
       const slugFromURL = this.$route.params.slug;
-      const institutions = collection(dbFireStore, 'institutions_v18');
+      const institutions = collection(dbFireStore, 'institutions_petersons_processed_20250313V3');
       const q = query(institutions, where("uri", "==", slugFromURL));
       const docSnap = await getDocs(q);
       docSnap.forEach((doc) => {
