@@ -1,42 +1,91 @@
 <template>
   <v-container>
     <div class="AuthenticationView">
-      <v-tabs v-model="tab" align-tabs="center" class="w-50 mx-auto">
-        <v-tab value="Sign Up">Sign up</v-tab>
-        <v-tab value="Login">Login</v-tab>
+      <v-tabs
+        v-model="tab"
+        align-tabs="center"
+        class="w-50 mx-auto"
+      >
+        <v-tab value="Sign Up">
+          Sign up
+        </v-tab>
+        <v-tab value="Login">
+          Login
+        </v-tab>
       </v-tabs>
-      <v-window class="py-12 w-50 mx-auto text-center" v-model="tab">
-        <v-window-item class="px-6" value="Sign Up">
+      <v-window
+        v-model="tab"
+        class="py-12 w-50 mx-auto text-center"
+      >
+        <v-window-item
+          class="px-6"
+          value="Sign Up"
+        >
           <v-btn @click="signInWithGoogle">
             Sign in with Google
           </v-btn>
-          <p class="mt-6 mb-6">Or</p>
+          <p class="mt-6 mb-6">
+            Or
+          </p>
           <h2>Use Email</h2>
-          <form class="mt-6" @submit.prevent="register">
-            <v-text-field type="email" placeholder="Email address" v-model="email" />
-            <v-text-field type="password" placeholder="Password" v-model="password" />
-            <v-select :items="[
-              { text: 'Student', value: 'student' },
-              { text: 'Educator', value: 'educator' },
-              { text: 'Parent/Guardian', value: 'guardian' }
-            ]" v-model="userRole" label="Select Role" placeholder="Select your role" required outlined
-              item-title="text" item-value="value" />
-            <p v-if="errorMessage">{{ errorMessage }}</p>
+          <form
+            class="mt-6"
+            @submit.prevent="register"
+          >
+            <v-text-field
+              v-model="email"
+              type="email"
+              placeholder="Email address"
+            />
+            <v-text-field
+              v-model="password"
+              type="password"
+              placeholder="Password"
+            />
+            <v-select
+              v-model="userRole"
+              :items="ROLE_OPTIONS"
+              label="Select Role"
+              placeholder="Select your role"
+              required
+              outlined
+            />
+            <p v-if="errorMessage">
+              {{ errorMessage }}
+            </p>
             <v-btn type="submit">
               Create Account
             </v-btn>
           </form>
         </v-window-item>
-        <v-window-item class="px-6 text-center" value="Login">
+        <v-window-item
+          class="px-6 text-center"
+          value="Login"
+        >
           <v-btn @click="signInWithGoogle">
             Login With Google
           </v-btn>
-          <p class="mt-6 mb-6">Or</p>
+          <p class="mt-6 mb-6">
+            Or
+          </p>
           <h2>Use Email</h2>
-          <form class="mt-6" @submit.prevent="signIn">
-            <v-text-field type="email" placeholder="Email address" v-model="email" />
-            <v-text-field type="password" placeholder="Password" v-model="password" />
-            <p v-if="errorMessage">{{ errorMessage }}</p>
+          <form
+            class="mt-6"
+            @submit.prevent="signIn"
+          >
+            <v-text-field
+              v-model="email"
+              type="email"
+              placeholder="Email address"
+            />
+            <v-text-field
+              v-model="password"
+              type="password"
+              placeholder="Password"
+            />
+            <p v-if="errorMessage">
+              {{ errorMessage }}
+            </p>
             <v-btn type="submit">
               Login
             </v-btn>
@@ -49,9 +98,9 @@
 
 <script>
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { doc, setDoc, updateDoc, getDoc, collection, query, where, getCountFromServer, Timestamp } from 'firebase/firestore'
+import { doc, setDoc, updateDoc, getDoc, Timestamp } from 'firebase/firestore'
 import { dbFireStore } from "../firebase";
-
+import { useUserStore, ROLE_OPTIONS } from '@/stores/userStore';
 
 const waitForUserDocToExist = async (userRef, maxAttempts = 10, interval = 500) => {
   let currentDoc = await getDoc(userRef);
@@ -67,6 +116,20 @@ const waitForUserDocToExist = async (userRef, maxAttempts = 10, interval = 500) 
 }
 export default {
   setup() {
+    const userStore = useUserStore();
+    return {
+      userStore
+    }
+  },
+  data() {
+    return {
+      tab: null,
+      email: "",
+      password: "",
+      errorMessage: "",
+      userRole: "",
+      ROLE_OPTIONS,
+    }
   },
   mounted() {
     if (this.$route.query.tabDestination == "Login") {
@@ -76,15 +139,6 @@ export default {
     }
   },
   beforeUnmount() {
-  },
-  data() {
-    return {
-      tab: null,
-      email: "",
-      password: "",
-      errorMessage: "",
-      userRole: ""
-    }
   },
   methods: {
     processErrorCode(code) {
@@ -131,20 +185,25 @@ export default {
       await waitForUserDocToExist(userRef);
 
       const newUser = {
+        uid: authResult.user.uid,
         role: this.userRole,
         updated: Timestamp.now()
       }
       await updateDoc(userRef, newUser);
 
       console.log("success");
-      this.$router.push('/');
+      await this.userStore.loadUserInfo();
+      this.$router.push('/onboarding');
     },
     signIn() {
       signInWithEmailAndPassword(getAuth(), this.email, this.password)
-        .then((data) => {
-          console.log(data);
-          console.log("success")
-          this.$router.push('/')
+        .then(async () => {
+          await this.userStore.loadUserInfo();
+          if (this.userStore.isSetupFinished) {
+            this.$router.push('/');
+          } else {
+            this.$router.push('/onboarding');
+          }
         })
         .catch(error => {
           this.processErrorCode(error.code);
@@ -152,32 +211,70 @@ export default {
     },
     signInWithGoogle() {
       const provider = new GoogleAuthProvider();
+      provider.addScope("https://www.googleapis.com/auth/user.birthday.read");
       signInWithPopup(getAuth(), provider)
         .then(async (result) => {
-
-          const users = collection(dbFireStore, 'users');
-          const q = query(users, where("uid", "==", result.user.uid));
-          const docSnap = await getCountFromServer(q);
-
-          if (docSnap.data().count == 0) {
-            const userData = {
-              "uid": result.user.uid,
-              "email": result.user.email,
-              "firstName": result._tokenResponse.firstName,
-              "lastName": result._tokenResponse.lastName,
-              "role": "selfRegisteredUser",
+          const userRef = doc(dbFireStore, "users", result.user.uid);
+          const userDoc = await getDoc(userRef);
+          const userBaseData = {
+            "uid": result.user.uid,
+            "email": result.user.email,
+            "firstName": result._tokenResponse.firstName,
+            "lastName": result._tokenResponse.lastName,
+            "role": "selfRegisteredUser",
+            "birthday": await this.getBirthday(result._tokenResponse.oauthAccessToken),
+          }
+          if (!userDoc.exists()) {
+            await setDoc(userRef, {
+              ...userBaseData,
               created: Timestamp.fromDate(new Date()),
               updated: Timestamp.fromDate(new Date()),
-            }
-            await setDoc(doc(dbFireStore, "users", result.user.uid), { ...userData });
-            this.$router.push('/')
+            });
           } else {
-            this.$router.push('/')
+            const newData = {}
+            const userData = userDoc.data()
+            for (const key in userBaseData) {
+              if (userData[key] === undefined) {
+                newData[key] = userBaseData[key];
+              }
+            }
+            if (Object.keys(newData).length > 0) {
+              await updateDoc(userRef, newData);
+            }
+          }
+          await this.userStore.loadUserInfo();
+          if (this.userStore.isSetupFinished) {
+            this.$router.push('/');
+          } else {
+            this.$router.push('/onboarding');
           }
         })
         .catch((error) => {
           console.log(error);
         });
+    },
+    async getBirthday(accessToken) {
+      // Use the access token to call Google People API
+      const response = await fetch('https://people.googleapis.com/v1/people/me?personFields=birthdays', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      const data = await response.json();
+      const date = data.birthdays?.[0].date;
+      console.log('date:', date);
+      if (date) {
+        const birthday = [date.year, date.month, date.day].join('-')
+        console.log('birthday:', birthday);
+        return birthday;
+      } else {
+        return null;
+      }
+      // const response = await fetch(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`);
+      // const data = await response.json();
+      // console.log('Birthday:', data);
+      // return data.birthday;
     }
   }
 };

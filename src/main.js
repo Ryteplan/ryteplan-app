@@ -1,5 +1,4 @@
 import { createApp } from 'vue';
-import { createRouter, createWebHistory } from 'vue-router';
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as labsComponents from 'vuetify/labs/components'
@@ -16,132 +15,12 @@ import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/dist/vuetify.min.css';
 import '/src/assets/css/style.scss';
 
-// Import components
-import HomeView from './components/HomeView.vue';
-import AuthenticationView from './components/AuthenticationView.vue';
-import FilterableTable from './components/FilterableTable.vue';
-import InstitutionPage from './components/InstitutionPage.vue';
-import CompareInstituion from './components/CompareInstituion.vue';
-import StudentsView from './components/StudentsView.vue';
-import ListsView from './components/ListsView.vue';
-import SingularListView from './components/SingularListView.vue';
-import AccountView from './components/AccountView.vue';
-import PlaygroundView from './components/PlaygroundView.vue';
-import DataIntegrationView from './components/DataIntegrationView.vue';
-import DataCompareView from './components/DataCompareView.vue';
-import ImageWorkView from './components/ImageWorkView.vue';
-import TermsView from './views/TermsView.vue';
-import PrivacyView from './views/PrivacyView.vue';
-
+import router from '@/router';
+import { useUserStore } from '@/stores/userStore';
 const app = createApp(App);
 
 // const analytics = getAnalytics(app);
 
-const routes = [
-  {
-    path: '/image-work/:slug',
-    name: 'ImageWork',
-    component: ImageWorkView,
-  },
-  {
-    path: '/playground',
-    name: 'Playground',
-    component: PlaygroundView,
-  },
-  {
-    path: '/data-integration',
-    name: 'DataIntegration',
-    component: DataIntegrationView,
-  },
-  {
-    path: '/data-compare',
-    name: 'DataCompare',
-    component: DataCompareView,
-  },
-  {
-    path: '/',
-    name: 'home',
-    component: HomeView,
-  },
-  {
-    path: '/login',
-    name: 'login',
-    component: AuthenticationView,
-    props: true
-  },
-  {
-    path: '/logout',
-    name: 'logout',
-    component: AuthenticationView,
-    props: true
-  },
-  {
-    path: '/browse',
-    name: 'browse',
-    component: FilterableTable,
-  },
-  {
-    path: '/institution/:slug',
-    name: 'institutionPage',
-    component: InstitutionPage,
-  },
-  {
-    path: '/institution/:slug/sports-work',
-    name: 'SportsWork',
-    component: () => import('./components/SportsWork.vue')
-  },
-  {
-    path: '/compare-instituion',
-    name: 'CompareInstituion',
-    component: CompareInstituion,
-  },
-  {
-    path: '/students',
-    name: 'StudentsView',
-    component: StudentsView,
-  },
-  {
-    path: '/lists',
-    name: 'ListsView',
-    component: ListsView,
-  },
-  {
-    path: '/list/:id',
-    name: 'SingularListView',
-    component: SingularListView,
-  },
-  {
-    path: '/account',
-    name: 'Account',
-    component: AccountView,
-  },
-    {
-    path: '/terms',
-    name: 'terms',
-    component: TermsView
-  },
-  {
-    path: '/privacy',
-    name: 'privacy',
-    component: PrivacyView
-  }
-
-];
-
-const router = createRouter({
-  mode: 'abstract',
-  history: createWebHistory(),
-  routes,
-  scrollBehavior(to, from, savedPosition) {
-    if (savedPosition) {
-      return savedPosition
-    } else {
-      return { top: 0 }
-    }
-  },  
-});
-
-app.use(router);
 
 app.use(VueGtag, {
   config: { id: 'G-N15EGVJW30' }
@@ -150,6 +29,8 @@ app.use(VueGtag, {
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
 app.use(pinia);
+const store = useUserStore();
+await store.loadUserInfo();
 
 const vuetify = createVuetify({
   components: {
@@ -186,6 +67,7 @@ app.use(VueFire, {
   ],
 })
 
+app.use(router);
 router.isReady().then(() => {
   app.mount('#app');
 });
