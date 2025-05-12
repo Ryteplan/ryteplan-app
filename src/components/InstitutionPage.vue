@@ -202,7 +202,7 @@
           <span class="stat-content">{{ institution["mainInstControlDesc"] }}</span>
         </div>
         <StatDisplay
-          label="Undergraduate Enrollment"
+          label="Undergraduate (UG) Enrollment"
           :uri="institution['uri']"
           field="enTotUgN"
           :valueFromIntegrated="institution['enTotUgN']" 
@@ -243,7 +243,7 @@
         />
         <div class="multiple-stat-container">
           <StatDisplay
-            label="Applicants"
+            label="UG Applicants"
             :uri="institution['uri']"
             field="apRecd1stN"
             :valueFromIntegrated="institution['apRecd1stN']" 
@@ -251,7 +251,7 @@
             :valueFromManual="manualInstitionData['apRecd1stN']"
           />
           <StatDisplay
-            label="Admits"
+            label="UG Admits"
             :uri="institution['uri']"
             field="apAdmt1stN"
             :valueFromIntegrated="institution['apAdmt1stN']" 
@@ -870,7 +870,7 @@
       >
         <v-expansion-panel>
           <v-expansion-panel-title>
-            <h3>Student Ethnicity</h3>
+            <h3>Enrolled Students' Ethnicity</h3>
           </v-expansion-panel-title>
           <v-expansion-panel-text>
             <div 
@@ -1012,7 +1012,7 @@
           </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
-      <v-expansion-panels class="mt-8" v-model="expandedPanels.fieldsOfStudy" @update:model-value="savePanelStates">
+      <v-expansion-panels class="d-none mt-8" v-model="expandedPanels.fieldsOfStudy" @update:model-value="savePanelStates">
         <v-expansion-panel>
           <v-expansion-panel-title>
             <h3>Fields of Study</h3>
@@ -1211,7 +1211,7 @@ export default {
     },
     async loadPetersonsData() {
       const slugFromURL = this.$route.params.slug;
-      const institutions = collection(dbFireStore, 'institutions_v18');
+      const institutions = collection(dbFireStore, 'institutions_petersons_processed_20250313V3');
       const q = query(institutions, where("uri", "==", slugFromURL));
       const docSnap = await getDocs(q);
       docSnap.forEach((doc) => {

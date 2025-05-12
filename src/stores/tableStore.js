@@ -346,7 +346,7 @@ export const useTableStore = defineStore('table', {
           sortable: false,
         },
         {
-          title: "Undergraduates",
+          title: "Undergraduate (UG) Enrollment",
           key: "enTotUgN",
           minWidth: "80px",
           show: true,
@@ -399,13 +399,6 @@ export const useTableStore = defineStore('table', {
           show: false,
           sortable: false,
           align: "end"
-        },
-        {
-          title: "Admission Difficulty",
-          key: "adDiffAll",
-          minWidth: "140px",
-          show: false,
-          sortable: false,
         },
         {
           title: "Testing Policy",
@@ -475,7 +468,7 @@ export const useTableStore = defineStore('table', {
           align: "end",
         },
         {
-          title: "Undergraduate Applications Received",
+          title: "UG Applicants",
           key: "apRecd1stN",
           minWidth: "140px",
           show: false,
@@ -484,7 +477,7 @@ export const useTableStore = defineStore('table', {
 
         },
         {
-          title: "Undergraduates Admitted",
+          title: "UG Admits",
           key: "apAdmt1stN",
           minWidth: "140px",
           show: false,

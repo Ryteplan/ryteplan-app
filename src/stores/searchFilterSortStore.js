@@ -18,7 +18,12 @@ export const useSearchFilterSortStore = defineStore('searchFilterSort', {
     CountryList: ["United States", "International"],
     TypeList: ["Private", "Public"],
     admissionDifficultyList: ["—", "Noncompetitive", "Minimal", "Moderate", "Most", "Very"],
-    campusSettingList: ["Rural", "Small", "Suburb", "Urban"],
+    campusSettingList: [
+      { title: "Rural", value: "Rural" },
+      { title: "Small Town", value: "Small" },
+      { title: "Suburb", value: "Suburb" },
+      { title: "Urban", value: "Urban" }
+    ],
     filters: { 
       ...defaultFilters,
     },
