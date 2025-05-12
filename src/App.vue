@@ -1,12 +1,12 @@
 <template>
-  <v-layout class="app-container" :class="{ 'logged-in': isLoggedIn }">
+  <v-layout class="app-container" :class="{ 'logged-in': userStore.isLoggedIn }">
     <v-app-bar class="elevation-1">
       <div
         class="header-container d-flex align-center justify-space-between ma-auto w-100 px-3 px-lg-0"
       >
-        <a href="/" class="logo">
+        <router-link to="/" class="logo">
           <LogoGreenBlack />
-        </a>
+        </router-link>
         <v-combobox
           ref="suggestedSearch"
           class="ml-6 mr-3 ml-md-8 mr-md-8"
@@ -63,7 +63,7 @@
           >
             Submit feedback
           </v-btn>
-          <div v-if="isLoggedIn">
+          <div v-if="userStore.isLoggedIn">
             <v-btn
               class="ml-3"
               @click="() => this.$router.push('/lists')"
@@ -149,7 +149,7 @@
             <v-list-item-title>Data Compare</v-list-item-title>
           </div>
         </v-list-item>
-        <v-list-item v-if="isLoggedIn">
+        <v-list-item v-if="userStore.isLoggedIn">
            <div class="d-flex justify-start align-center" @click="() => this.$router.push('/lists')">
             <v-icon class="mr-3" icon="mdi-format-list-bulleted"></v-icon>
             <v-list-item-title>Lists</v-list-item-title>
@@ -194,28 +194,28 @@
       </v-container>
     </v-main>
     <CookieNotification class="mb-8" style="position: fixed; bottom: 0; left: 0; right: 0;" />
+    <ActionResponseDialog v-model="dialogStore.dialogTemplate" />
   </v-layout>
 </template>
 
 <script>
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import LogoGreenBlack from "@/components/svg/LogoGreenBlack.vue";
 import { useAppVersionStore } from ".//stores/appVersionStore";
 import { useUserStore } from ".//stores/userStore";
 import { useTableStore } from ".//stores/tableStore";
 import { useSearchFilterSortStore } from ".//stores/searchFilterSortStore";
 import { useSuggestionSearchStore } from ".//stores/suggestionSearchStore";
+import { useDialogStore } from "@/stores/dialogStore";
 import CookieNotification from '@/components/CookieNotification.vue'
-
-let auth;
+import ActionResponseDialog from '@/components/ActionResponseDialog.vue'
 
 export default {
   setup() {
     let appVersionStore = useAppVersionStore();
     appVersionStore.compareVersion();
+    const dialogStore = useDialogStore();
 
     let userStore = useUserStore();
-    userStore.getIsLoggedIn();
     userStore.getAdminMode();
 
     let tableStore = useTableStore();
@@ -240,22 +240,15 @@ export default {
       suggestionSearchStore,
       appVersionStore,
       debounce: createDebounce(),
+      dialogStore,
     };
   },
   components: {
     LogoGreenBlack,
-    CookieNotification
+    CookieNotification,
+    ActionResponseDialog
   },
   mounted() {
-    auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        this.isLoggedIn = true;
-      } else {
-        this.isLoggedIn = false;
-      }
-    });
-
     // Check if the URL contains a "search" parameter
     if (this.$route.query.search) {
       this.searchFilterSortStore.activeSearchTerms = this.$route.query.search;
@@ -264,7 +257,6 @@ export default {
   },
   data() {
     return {
-      isLoggedIn: false,
       searchInput: "",
       suggestedResults: [],
       isLoadingSuggestion: false,
@@ -297,10 +289,8 @@ export default {
   },
   methods: {
     handleSignOut() {
-      signOut(auth).then(() => {
-        this.userStore.isLoggedIn = false;
-        this.$router.push("/");
-      });
+      this.userStore.logout();
+      this.$router.push('/login');
     },
     updateSearchBarInput() {
       if (this.searchFilterSortStore.activeSearchTerms === "") {
@@ -383,7 +373,7 @@ export default {
   },
   computed: {
     filteredDropDownItems() {
-      if (this.isLoggedIn) {
+      if (this.userStore.isLoggedIn) {
         return this.dropDownItems.filter(item => item.hideFromLoggedIn ? false : true);
       } else {
         return this.dropDownItems.filter(item => item.hideFromLoggedOut ? false : true);

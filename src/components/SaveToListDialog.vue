@@ -12,7 +12,7 @@
           icon="mdi-close"
           variant="text"
           @click="show = false"
-        ></v-btn>
+        />
       </v-card-title>
       <div class="pa-8">
         <div
@@ -21,8 +21,8 @@
           <v-list>
             <v-list-item
               v-for="list in userLists"
-              @click="addInstitutionToList(list.id)"
               :key="list.id"
+              @click="addInstitutionToList(list.id)"
             >
               <span class="d-flex justify-space-between align-center w-100">
                 {{ list.name }}
@@ -37,23 +37,29 @@
             </v-list-item>
           </v-list>
           <v-btn
-            block
-            class="mt-5"
-            color="primary" 
-            @click="showCreateNewListInput = true"
             v-if="userLists.length <= 30"
-            >
+            block
+            class="mt-5" 
+            color="primary"
+            @click="showCreateNewListInput = true"
+          >
             Create New List
           </v-btn>
-          <span v-if="userLists.length >= 30" class="text-caption" style="color: #888888">
+          <span
+            v-if="userLists.length >= 30"
+            class="text-caption"
+            style="color: #888888"
+          >
             You have reached the maximum limit of 30 lists. Please delete some lists before creating new ones.
           </span>
         </div>
         <div 
-          class="create-new-list-form hide"
-          v-if="showCreateNewListInput && !listCreated" 
+          v-if="showCreateNewListInput && !listCreated"
+          class="create-new-list-form hide" 
         >
-          <h2 class="mb-3">Name your new list</h2>
+          <h2 class="mb-3">
+            Name your new list
+          </h2>
           <v-text-field
             v-model="newListName"
             label="Enter List Name"
@@ -62,18 +68,20 @@
             single-line
             hide-details
             clearable
-          ></v-text-field>
+          />
           <v-btn
             block
             class="mt-5"
             color="primary" 
             @click="addInstitutionToList(null)"
-            >
+          >
             Create New List
           </v-btn>
         </div>
         <div v-if="showGoToList">
-          <h2 class="text-center">Saved to List Successfully!</h2>
+          <h2 class="text-center">
+            Saved to List Successfully!
+          </h2>
           <v-btn
             block
             class="mt-5"
@@ -93,22 +101,31 @@ import { dbFireStore } from "../firebase";
 import { query, collection, doc, orderBy, onSnapshot, where, updateDoc, arrayUnion, getDoc, setDoc, Timestamp } from 'firebase/firestore'
 import { toRaw } from 'vue';
 import { getAuth } from 'firebase/auth';
-
+import { useUserActionsStore } from '@/stores/userActionsStore.js';
 
 export default {
   name: "SaveToListDialog",
+  setup() {
+    const userActionsStore = useUserActionsStore();
+    return {
+      userActionsStore
+    }
+  },
   props: {
      value: Boolean,
      institutionId: String,
      selectedRows: Object
   },
-  beforeMount() {
-    getAuth().onAuthStateChanged((user) =>{
-      if(user) {
-        this.userID = user.uid;
-        this.loadUserLists();
-      } 
-    });
+  data() {
+    return {
+      newListName: "",
+      userLists: {},
+      showCreateNewListInput: false,
+      listCreated: false,
+      createdListId: null,
+      showGoToList: false,
+      listTheItemWasSavedTo: null
+    }
   },
   computed: {
     show: {
@@ -125,16 +142,13 @@ export default {
       }
     }
   },
-  data() {
-    return {
-      newListName: "",
-      userLists: {},
-      showCreateNewListInput: false,
-      listCreated: false,
-      createdListId: null,
-      showGoToList: false,
-      listTheItemWasSavedTo: null
-    }
+  beforeMount() {
+    getAuth().onAuthStateChanged((user) =>{
+      if(user) {
+        this.userID = user.uid;
+        this.loadUserLists();
+      } 
+    });
   },
   methods: {
     resetDialogState() {
@@ -163,16 +177,32 @@ export default {
       let isCreatingNewList = false;
 
       if (listId !== null) {
+        // TODO: Use the userActionsStore to save the institution to the list
         listIDToSaveInstitutionTo = listId;
       } else {
-        if (!this.newListName || !this.newListName.trim()) {
+        const newListName = this.newListName.trim();
+        
+        
+        if (!newListName) {
           alert("Please enter a name for the new list.");
           return;
         }
-        const newListRef = doc(collection(dbFireStore, "lists"));
-        listIDToSaveInstitutionTo = newListRef.id;
-        isCreatingNewList = true;
+        const institutionIds = this.institutionId ? [this.institutionId] : this.selectedRows.map(row => row.id);
+        const response = await this.userActionsStore.createNewList(newListName, institutionIds);
+        if (response.isError) {
+          console.error("Error creating new list:", response);
+          this.showCreateNewListInput = false;
+          this.showGoToList = false;
+          return;
+        }
+        console.info('Created new list:', response);
+        this.listTheItemWasSavedTo = response.data.listId;
+        this.showCreateNewListInput = false;
+        this.showGoToList = true;
+        return
       }
+
+      // TODO: Use the userActionsStore to save the institution to the list
 
       const listRef = doc(dbFireStore, "lists", listIDToSaveInstitutionTo);
       const docSnap = await getDoc(listRef);
