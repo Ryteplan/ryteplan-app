@@ -64,7 +64,7 @@ export const useUserStore = defineStore('user', {
       return Boolean(this.userInfo.email);
     },
     isAdmin() {
-      return Boolean(this.userInfo.isAdmin && this.adminMode);
+      return Boolean(this.userInfo.isAdmin);
     },
     paidUser() {
       return false;
