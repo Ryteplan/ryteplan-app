@@ -361,7 +361,7 @@ export default {
       }
       try {
         await sendPasswordResetEmail(getAuth(), this.email);
-        this.resetMessage = 'Password reset email sent! Please check your inbox (and spam folder).';
+        this.resetMessage = 'If this email is registered, a password reset email has been sent! <br/> Please check your inbox (and spam folder).';
       } catch (error) {
         this.processErrorCode(error.code);
       }
