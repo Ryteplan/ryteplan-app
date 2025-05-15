@@ -263,6 +263,14 @@ export default {
       initialLoading: true,
       dropDownItems: [
         {
+          title: 'Account Settings',
+          icon: 'mdi-account',
+          action: () => { 
+            this.$router.push('/account');
+          },
+          hideFromLoggedOut: true
+        },
+        {
           title: 'Register or Login',
           icon: 'mdi-account-plus',
           action: () => { 
