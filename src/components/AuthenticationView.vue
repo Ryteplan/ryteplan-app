@@ -4,7 +4,7 @@
       <v-tabs
         v-model="tab"
         align-tabs="center"
-        class="w-50 mx-auto"
+        class="w-md-33 mx-auto"
       >
         <v-tab value="Sign Up">
           Sign up
@@ -15,10 +15,10 @@
       </v-tabs>
       <v-window
         v-model="tab"
-        class="py-12 w-50 mx-auto text-center"
+        class="py-12 w-md-33 mx-auto text-center"
       >
         <v-window-item
-          class="px-6"
+          class="px-12 px-md-0"
           value="Sign Up"
         >
           <v-btn @click="signInWithGoogle" class="gsi-material-button">

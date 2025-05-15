@@ -170,26 +170,24 @@
     <v-main class="d-flex flex-column">
       <router-view :key="$route.fullPath"></router-view>
       <v-spacer></v-spacer>
-      <v-container class="footer-container pt-0">
-        <v-footer class="pb-4 ml-0 mr-0 pl-0 pr-0">
-          <v-row class="align-end">
-            <v-col cols="8">
-              <div style="font-size: 13px; margin-bottom: 0; gap: 8px; display: flex;">
-                <span>Version: {{ appVersionStore.getVersion() }}</span> 
-                <span>·</span>
-                <span>Ryteplan LLC © 2025</span>
-                <span>·</span>
-                <router-link to="/terms" class="terms-link" target="_blank">Terms and Conditions</router-link>
-                <span>·</span>
-                <router-link to="/privacy" class="terms-link" target="_blank">Privacy Policy</router-link>
-              </div>
-            </v-col>
-            <v-col cols="4">
-              <div style="font-size: 13px; margin-bottom: 0; gap: 8px; display: flex; justify-content: flex-end;">
-                <span><a style="color: #1d1d1d;" href="https://www.petersons.com" target="_blank"> Peterson's Data</a></span>
-              </div>
-            </v-col>
-          </v-row>
+      <v-container class="footer-container">
+        <v-footer class="pb-4 ml-0 mr-0 pl-0 pr-0 pb-0">
+          <div class="version-and-links-container">
+            <div class="small-print-container">
+              <span>Version: {{ appVersionStore.getVersion() }}</span> 
+              <span class="dot-separator">·</span>
+              <span>Ryteplan LLC © 2025</span>
+              <span class="dot-separator">·</span>
+            </div>
+            <div class="small-print-container small-print-links">
+              <router-link to="/terms" class="terms-link" target="_blank">Terms and Conditions</router-link>
+              <span class="dot-separator">·</span>
+              <router-link to="/privacy" class="terms-link" target="_blank">Privacy Policy</router-link>
+            </div>
+          </div>
+          <div class="petersons-data-attribution">
+            <span>Some university data <br class="d-md-none"/>provided by <a style="color: #1d1d1d;" href="https://www.petersons.com" target="_blank">Peterson's Data</a></span>
+          </div>
         </v-footer>
       </v-container>
     </v-main>
@@ -473,7 +471,75 @@ a {
   min-height: 100vh;
 }
 
-.footer-container {
+.v-container.footer-container {
+  border-top: 1px solid #e0e0e0;
+  background: #f5f5f5;
   margin-top: auto;
+  max-width: inherit;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  a { 
+    text-decoration: underline;
+  }
+
+  .dot-separator {
+    display: none;
+  }
+
+  footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+
+    .small-print-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .small-print-links, .petersons-data-attribution {
+      margin-top: 10px;
+     }
+
+    .petersons-data-attribution {
+      text-align: center;
+    }
+    @media screen and (min-width: 768px) {
+      flex-direction: row;
+      max-width: 900px;
+      justify-content: space-between;
+      margin: 0 auto;
+
+      .dot-separator {
+        display: inline;
+      }
+
+      .version-and-links-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+      }
+      .small-print-container {
+        flex-direction: row;
+        gap: 10px;
+      }
+      .small-print-links, .petersons-data-attribution {
+        margin-top: 0;
+      }
+    }
+    @media screen and (min-width: 1280px) {
+        max-width: 1200px;
+    }
+  }
 }
+
+
 </style>

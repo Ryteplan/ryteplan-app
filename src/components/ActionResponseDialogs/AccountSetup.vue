@@ -1,10 +1,10 @@
 <template>
   <v-card>
       <v-card-title>
-        Account Setup Required - Free, All Access
+        Account Setup Required
       </v-card-title>
       <v-card-text>
-        To continue, please complete your account setup.
+        Please continue setting up your account.
       </v-card-text>
       <v-card-actions>
         <v-spacer />
@@ -19,7 +19,7 @@
           to="/onboarding"
           @click="close"
         >
-          Free Account Setup
+          Continue setup
         </v-btn>
       </v-card-actions>
     </v-card>
