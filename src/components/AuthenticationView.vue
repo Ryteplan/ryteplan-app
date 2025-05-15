@@ -49,11 +49,15 @@
               v-model="email"
               type="email"
               placeholder="Email address"
+              required
+              :rules="[rules.required, rules.email]"
             />
             <v-text-field
               v-model="password"
               type="password"
               placeholder="Password"
+              required
+              :rules="[rules.required, rules.minPassword]"
             />
             <v-select
               v-model="userRole"
@@ -62,11 +66,10 @@
               placeholder="Select your role"
               required
               outlined
+              :rules="[rules.required]"
             />
-            <p v-if="errorMessage">
-              {{ errorMessage }}
-            </p>
-            <v-btn type="submit">
+            <p v-if="errorMessage" class="text-error my-2">{{ errorMessage }}</p>
+            <v-btn type="submit" color="primary" block class="mt-2">
               Create Account
             </v-btn>
           </form>
@@ -75,12 +78,23 @@
           class="px-6 text-center"
           value="Login"
         >
-          <v-btn @click="signInWithGoogle">
-            Login With Google
+          <v-btn @click="signInWithGoogle" class="gsi-material-button mb-6">
+             <div class="gsi-material-button-state"></div>
+              <div class="gsi-material-button-content-wrapper">
+                <div class="gsi-material-button-icon">
+                  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" xmlns:xlink="http://www.w3.org/1999/xlink" style="display: block;">
+                    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
+                    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
+                    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
+                    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
+                    <path fill="none" d="M0 0h48v48H0z"></path>
+                  </svg>
+                </div>
+                <span class="gsi-material-button-contents">Continue with Google</span>
+                <span style="display: none;">Continue with Google</span>
+              </div>
           </v-btn>
-          <p class="mt-6 mb-6">
-            Or
-          </p>
+          <p class="mt-6 mb-6">Or</p>
           <h2>Use Email</h2>
           <form
             class="mt-6"
@@ -90,16 +104,22 @@
               v-model="email"
               type="email"
               placeholder="Email address"
+              required
+              :rules="[rules.required, rules.email]"
             />
             <v-text-field
               v-model="password"
               type="password"
               placeholder="Password"
+              required
+              :rules="[rules.required]"
             />
-            <p v-if="errorMessage">
-              {{ errorMessage }}
-            </p>
-            <v-btn type="submit">
+            <div class="d-flex justify-end mb-2">
+              <a href="#" @click.prevent="handlePasswordReset" class="text-caption">Forgot Password?</a>
+            </div>
+            <p v-if="errorMessage" class="text-error my-2">{{ errorMessage }}</p>
+            <p v-if="resetMessage" class="text-success my-2">{{ resetMessage }}</p>
+            <v-btn type="submit" color="primary" block class="mt-2">
               Login
             </v-btn>
           </form>
@@ -110,7 +130,7 @@
 </template>
 
 <script>
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail } from 'firebase/auth';
 import { doc, setDoc, updateDoc, getDoc, Timestamp } from 'firebase/firestore'
 import { dbFireStore } from "../firebase";
 import { useUserStore, ROLE_OPTIONS } from '@/stores/userStore';
@@ -140,8 +160,17 @@ export default {
       email: "",
       password: "",
       errorMessage: "",
+      resetMessage: "",
       userRole: "",
       ROLE_OPTIONS,
+      rules: {
+        required: value => !!value || 'Required.',
+        email: value => {
+          const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          return pattern.test(value) || 'Invalid e-mail.'
+        },
+        minPassword: value => value.length >= 6 || 'Min 6 characters',
+      }
     }
   },
   mounted() {
@@ -155,6 +184,7 @@ export default {
   },
   methods: {
     processErrorCode(code) {
+      this.resetMessage = '';
       switch (code) {
         case 'auth/email-already-in-use':
           this.errorMessage = 'This email is already registered. Please login instead.';
@@ -172,7 +202,7 @@ export default {
           this.errorMessage = 'Network error. Please check your internet connection.';
           break;
         case 'auth/user-not-found':
-          this.errorMessage = 'No account with that email was found'
+          this.errorMessage = 'No account with that email was found for login or password reset.'
           break
         case 'auth/wrong-password':
           this.errorMessage = 'Incorrect password'
@@ -183,6 +213,17 @@ export default {
       }
     },
     async register() {
+      this.errorMessage = '';
+      this.resetMessage = '';
+      if (!this.email || !this.password || !this.userRole) {
+        this.errorMessage = "All fields are required for sign up.";
+        return;
+      }
+      if (this.password.length < 6) {
+        this.errorMessage = "Password must be at least 6 characters.";
+        return;
+      }
+
       const authResult = await createUserWithEmailAndPassword(getAuth(), this.email, this.password).catch((error) => {
         return new Error(error.code);
       });
@@ -193,22 +234,31 @@ export default {
       }
       const userRef = doc(dbFireStore, "users", authResult.user.uid);
 
-      // Wait for the user collection to be created
-      // because Rowy Extension overwrites the document
-      await waitForUserDocToExist(userRef);
-
-      const newUser = {
-        uid: authResult.user.uid,
-        role: this.userRole,
-        updated: Timestamp.now()
+      try {
+        await waitForUserDocToExist(userRef);
+        const newUser = {
+          uid: authResult.user.uid,
+          email: this.email,
+          role: this.userRole,
+          created: Timestamp.now(),
+          updated: Timestamp.now()
+        }
+        await updateDoc(userRef, newUser);
+        console.log("success");
+        await this.userStore.loadUserInfo();
+        this.$router.push('/onboarding');
+      } catch (error) {
+        console.error("Error during user document creation/update:", error);
+        this.errorMessage = "An error occurred setting up your account data. Please try again or contact support.";
       }
-      await updateDoc(userRef, newUser);
-
-      console.log("success");
-      await this.userStore.loadUserInfo();
-      this.$router.push('/onboarding');
     },
     signIn() {
+      this.errorMessage = '';
+      this.resetMessage = '';
+      if (!this.email || !this.password) {
+        this.errorMessage = "Email and password are required.";
+        return;
+      }
       signInWithEmailAndPassword(getAuth(), this.email, this.password)
         .then(async () => {
           await this.userStore.loadUserInfo();
@@ -223,23 +273,32 @@ export default {
         });
     },
     signInWithGoogle() {
+      this.errorMessage = '';
+      this.resetMessage = '';
       const provider = new GoogleAuthProvider();
       provider.addScope("https://www.googleapis.com/auth/user.birthday.read");
       signInWithPopup(getAuth(), provider)
         .then(async (result) => {
           const userRef = doc(dbFireStore, "users", result.user.uid);
           const userDoc = await getDoc(userRef);
+          let birthdayFromGoogle = null;
+          try {
+            birthdayFromGoogle = await this.getBirthday(result._tokenResponse.oauthAccessToken);
+          } catch (e) {
+            console.warn("Could not fetch birthday from Google:", e)
+          }
+
           const userBaseData = {
             "uid": result.user.uid,
             "email": result.user.email,
             "firstName": result._tokenResponse.firstName,
             "lastName": result._tokenResponse.lastName,
-            "role": "selfRegisteredUser",
-            "birthday": await this.getBirthday(result._tokenResponse.oauthAccessToken),
+            ...(birthdayFromGoogle && { "birthday": birthdayFromGoogle }),
           }
           if (!userDoc.exists()) {
             await setDoc(userRef, {
               ...userBaseData,
+              role: "selfRegisteredUser",
               created: Timestamp.fromDate(new Date()),
               updated: Timestamp.fromDate(new Date()),
             });
@@ -247,7 +306,7 @@ export default {
             const newData = {}
             const userData = userDoc.data()
             for (const key in userBaseData) {
-              if (userData[key] === undefined) {
+              if (userData[key] === undefined && userBaseData[key] !== undefined) {
                 newData[key] = userBaseData[key];
               }
             }
@@ -263,31 +322,49 @@ export default {
           }
         })
         .catch((error) => {
-          console.log(error);
+          console.error("Google Sign-In Error:", error);
+          if (error.code === 'auth/popup-closed-by-user') {
+            this.errorMessage = 'Google sign-in was cancelled.';
+          } else if (error.code === 'auth/network-request-failed') {
+            this.errorMessage = 'Network error. Please check your internet connection and try again.';
+          } else {
+            this.errorMessage = 'An error occurred during Google sign-in. Please try again.';
+          }
         });
     },
     async getBirthday(accessToken) {
-      // Use the access token to call Google People API
       const response = await fetch('https://people.googleapis.com/v1/people/me?personFields=birthdays', {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-
-      const data = await response.json();
-      const date = data.birthdays?.[0].date;
-      console.log('date:', date);
-      if (date) {
-        const birthday = [date.year, date.month, date.day].join('-')
-        console.log('birthday:', birthday);
-        return birthday;
-      } else {
+      if (!response.ok) {
+        console.error("Google People API error:", response.status, await response.text());
         return null;
       }
-      // const response = await fetch(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`);
-      // const data = await response.json();
-      // console.log('Birthday:', data);
-      // return data.birthday;
+      const data = await response.json();
+      const birthdayEntry = data.birthdays?.find(b => b.date?.year && b.date?.month && b.date?.day);
+      if (birthdayEntry?.date) {
+        const { year, month, day } = birthdayEntry.date;
+        const formattedMonth = String(month).padStart(2, '0');
+        const formattedDay = String(day).padStart(2, '0');
+        return `${year}-${formattedMonth}-${formattedDay}`;
+      }
+      return null;
+    },
+    async handlePasswordReset() {
+      this.errorMessage = '';
+      this.resetMessage = '';
+      if (!this.email) {
+        this.errorMessage = 'Please enter your email address to reset your password.';
+        return;
+      }
+      try {
+        await sendPasswordResetEmail(getAuth(), this.email);
+        this.resetMessage = 'Password reset email sent! Please check your inbox (and spam folder).';
+      } catch (error) {
+        this.processErrorCode(error.code);
+      }
     }
   }
 };
