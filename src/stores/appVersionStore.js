@@ -8,6 +8,7 @@ export const useAppVersionStore = defineStore('appVersion', {
   }),
   actions: {
     compareVersion() {
+      console.log('comparing version');
       this.version = process.env.node_env.PACKAGE_VERSION;
       this.versionFromLocalStorage = localStorage.getItem('appVersion');
 
@@ -17,6 +18,7 @@ export const useAppVersionStore = defineStore('appVersion', {
       if (this.versionFromLocalStorage == this.version) {
           this.versionMatch = true;
       } else {
+          console.log('version does not match, clearing localStorage');
           this.versionMatch = false;
           localStorage.clear();
           localStorage.setItem("appVersion", this.version);

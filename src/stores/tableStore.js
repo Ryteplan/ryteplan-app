@@ -485,17 +485,24 @@ export const useTableStore = defineStore('table', {
           align: "end",
 
         },
+        // {
+        //   title: "Total Cost (Resident)",
+        //   key: "totResD2025",
+        //   minWidth: "200px",
+        //   show: false,
+        //   align: "end"
+        // },
+        // {
+        //   title: "Total Cost of Attendance",
+        //   key: "compFeeD2025",
+        //   minWidth: "140px",
+        //   show: false,
+        //   align: "end"
+        // },
         {
-          title: "Total Cost (Resident)",
-          key: "totResD2025",
+          title: "Tuition Overall",
+          key: "tuitOverallFtD2025",
           minWidth: "200px",
-          show: false,
-          align: "end"
-        },
-        {
-          title: "Total Cost of Attendance",
-          key: "compFeeD2025",
-          minWidth: "140px",
           show: false,
           align: "end"
         },

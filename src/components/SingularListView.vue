@@ -215,16 +215,18 @@ import { jsPDF } from 'jspdf';
 export default {
  setup() {
     const tableStore = useTableStore();
-    if (tableStore.tableHeaders.length == 0) {
+    
+    // Initialize headers if needed
+    if (tableStore.tableHeaders.length === 0) {
       tableStore.loadTableHeaders();
-      tableStore.loadHeaderState('singularList');
     }
     
-    // Set the active headers for this view
+    // Set up the view-specific headers
+    tableStore.loadHeaderState('singularList');
     tableStore.setActiveHeaders('singularList');
     tableStore.updateHeaders('singularList');
 
-    let userStore = useUserStore();
+    const userStore = useUserStore();
     userStore.getAdminMode();
 
     return { tableStore, userStore };
@@ -696,24 +698,10 @@ export default {
         });
         
         // Save changes and update store
-        this.tableStore.viewHeaders['singularList'] = JSON.parse(JSON.stringify(headers));
+        this.tableStore.viewHeaders['singularList'] = headers;
         this.tableStore.saveHeaderState('singularList');
         this.tableStore.updateHeaders('singularList');
         this.tableStore.setActiveHeaders('singularList');
-        
-        // Force component update
-        this.$forceUpdate();
-        
-        // Refresh the institutions table
-        const temp = [...this.institutions];
-        this.institutions = [];
-        
-        // Use nextTick to ensure store updates are processed
-        this.$nextTick(() => {
-          this.institutions = temp;
-          // Force a component update to refresh the dialog
-          this.$forceUpdate();
-        });
       }
     },
     toggleColumn(header) {
@@ -741,20 +729,11 @@ export default {
       
       // Set the active headers to ensure the view is using the updated headers
       this.tableStore.setActiveHeaders('singularList');
-      
-      // Force a simple refresh
-      this.$forceUpdate();
-      
-      // Also force refresh institutions table
-      const temp = [...this.institutions];
-      this.institutions = [];
-      this.$nextTick(() => {
-        this.institutions = temp;
-      });
-    }
+    },
   },
   computed: {
-    filteredHeaders() {      
+    filteredHeaders() {
+      // Always get directly from the store to ensure reactivity
       return this.tableStore.getFilteredHeadersForDisplay('singularList');
     },
     reorderableHeaders() {
