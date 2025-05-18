@@ -4,8 +4,11 @@
       v-model="currentStep"
       class="mx-auto"
       max-width="800"
+      :complete="currentStep === steps.length && valid.terms"
     >
-      <v-stepper-header>
+      <span class="d-block text-h7 mb-2" style="font-weight: 400">Create your Ryteplan account</span>
+      <hr class="mb-4" style="border-color: #e0e0e0; border-width: 1px; border-style: solid;">
+      <v-stepper-header class="d-none">
         <v-stepper-item
           v-for="step in steps"
           :key="step.title"
@@ -13,12 +16,34 @@
           :value="step.value"
         />
       </v-stepper-header>
-
       <v-stepper-window>
         <v-stepper-window-item :value="1">
-          <v-card class="pa-4">
-            <h2 class="text-h5 mb-4">
-              Personal Information
+          <h2 class="text-h6 mb-4">
+            What best describes you?
+          </h2>
+          <v-form
+            ref="roleForm"
+            @submit.prevent
+          >
+            <v-radio-group
+              v-model="formData.role"
+              :error-messages="formData.role === '' && roleError ? 'Please select an option' : ''"
+              :rules="[v => !!v || 'Role is required']"
+              required
+              class="align-radio-left"
+            >
+              <v-radio
+                v-for="role in roleOptions"
+                :key="role.value"
+                :label="role.title"
+                :value="role.value"
+              />
+            </v-radio-group>
+          </v-form>
+        </v-stepper-window-item>
+        <v-stepper-window-item :value="2">
+          <h2 class="text-h6 mb-4">
+            Personal Information
             </h2>
             <v-form
               ref="personalForm"
@@ -47,21 +72,12 @@
                 ]"
                 required
               />
-              <v-select
-                v-model="formData.role"
-                :items="roleOptions"
-                label="Role"
-                :rules="[v => !!v || 'Role is required']"
-                required
-              />
             </v-form>
-          </v-card>
         </v-stepper-window-item>
 
-        <v-stepper-window-item :value="2">
-          <v-card class="pa-4">
-            <h2 class="text-h5 mb-4">
-              {{ isStudent || isParent || isEducator ? 'Education Information' : 'Business Information' }}
+        <v-stepper-window-item :value="3">
+          <h2 class="text-h6 mb-4">
+            {{ isStudent || isParent || isEducator ? 'Education Information' : 'Business Information' }}
             </h2>
             <v-form
               ref="educationForm"
@@ -99,50 +115,75 @@
                 required
               />
             </v-form>
-          </v-card>
         </v-stepper-window-item>
 
-        <v-stepper-window-item :value="3">
-          <v-card class="pa-4">
-            <h2 class="text-h5 mb-4">
-              Terms and Conditions
-            </h2>
-            <v-form
-              ref="termsForm"
-              v-model="valid.terms"
-              @submit.prevent
+        <v-stepper-window-item :value="4">
+          <h2 class="text-h6 mb-4">
+            Are you a resident of the European Union?
+          </h2>
+          <v-form
+            ref="euResidentForm"
+            @submit.prevent
+          >
+            <v-radio-group
+              v-model="formData.euResident"
+              :error-messages="formData.euResident === undefined && euResidentError ? 'Please select an option' : ''"
+              required
             >
-              <v-checkbox
-                v-model="formData.euResident"
-                label="I am a resident of the European Union"
+              <v-radio
+                :value="true"
+                label="Yes"
               />
-              <TermsView />
-              <PrivacyView />
-              <v-checkbox
-                v-model="formData.acceptTerms"
-                :rules="[v => !!v || 'You must accept the terms and privacy policy']"
-                label="I accept the Terms of Service and Privacy Policy"
-                required
+              <v-radio
+                :value="false"
+                label="No"
               />
-              <v-radio-group
-                v-model="formData.collegeContactConsent"
-                :rules="[v => v !== undefined || 'Please select an option']"
-                required
-              >
-                <template v-slot:label>
-                  <div>Would you like to receive information from colleges?</div>
-                </template>
-                <v-radio
-                  :value="true"
-                  label="I consent to have my contact information shared with colleges so they can send me relevant information about their institutions and opportunities for students."
-                />
-                <v-radio
-                  :value="false"
-                  label="No, please do not share my contact information with colleges."
-                />
-              </v-radio-group>
-            </v-form>
-          </v-card>
+            </v-radio-group>
+          </v-form>
+        </v-stepper-window-item>
+
+        <v-stepper-window-item :value="5">
+          <h2 class="text-h6 mb-4">
+            Do you consent to have your contact information shared with colleges so they can send you relevant information about their institutions and opportunities for students?
+          </h2>
+          <v-form
+            ref="collegeConsentForm"
+            @submit.prevent
+          >
+            <v-radio-group
+              v-model="formData.collegeContactConsent"
+              :error-messages="formData.collegeContactConsent === undefined && collegeConsentError ? 'Please select an option' : ''"
+              required
+            >
+              <v-radio
+                :value="true"
+                label="Yes"
+              />
+              <v-radio
+                :value="false"
+                label="No"
+              />
+            </v-radio-group>
+          </v-form>
+        </v-stepper-window-item>
+
+        <v-stepper-window-item :value="6">
+          <v-form
+            ref="termsForm"
+            v-model="valid.terms"
+            @submit.prevent
+            class="ma-0 pa-0"
+          >
+            <TermsView class="ma-0 pa-0" />
+            <PrivacyView />
+            <v-checkbox
+              v-model="formData.acceptTerms"
+              :error-messages="!formData.acceptTerms && termsError ? 'You must accept the terms and privacy policy' : ''"
+              label="I accept the Terms of Service and Privacy Policy"
+              required
+            />
+          </v-form>
+          <span v-if="!formData.acceptTerms" class="mx-4 pa-4" style="margin-top: 0; border-radius: 8px; display: block; border: 1px solid lightcoral; background: #fff">You must accept the terms to create an account.</span>
         </v-stepper-window-item>
       </v-stepper-window>
 
@@ -158,24 +199,24 @@
         </template>
 
         <v-spacer />
-
-        <template #next>
+        <template #next>  
           <v-btn
-            v-if="currentStep < 3"
+            v-if="currentStep < steps.length"
             color="primary"
             @click="nextStep"
           >
             Continue
           </v-btn>
-
-          <v-btn
-            v-if="currentStep === 3"
+          <div v-if="formData.acceptTerms">
+            <v-btn
+            v-if="currentStep === steps.length"
             color="primary"
-            :disabled="false"
             @click="submitForm"
+            :disabled="!valid.terms || !formData.acceptTerms"
           >
             Complete
           </v-btn>
+          </div>
         </template>
       </v-stepper-actions>
     </v-stepper>
@@ -183,7 +224,7 @@
 </template>
 
 <script>
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { differenceInYears } from 'date-fns';
 
@@ -224,36 +265,85 @@ export default {
     const personalForm = ref(null);
     const educationForm = ref(null);
     const termsForm = ref(null);
+    const euResidentForm = ref(null);
+    const collegeConsentForm = ref(null);
+    const roleForm = ref(null);
+    const roleError = ref(false);
 
     const router = useRouter();
 
     const steps = [
-      { title: 'Personal Info', value: 1 },
-      { title: 'Education', value: 2 },
-      { title: 'Terms', value: 3 }
+      { title: 'Role', value: 1 },
+      { title: 'Personal Info', value: 2 },
+      { title: 'Education', value: 3 },
+      { title: 'EU Resident', value: 4 },
+      { title: 'College Contact Consent', value: 5 },
+      { title: 'Terms', value: 6 }
     ];
 
     const isFormValid = computed(() => {
-      return valid.personal && valid.education && valid.terms;
+      return valid.personal && valid.education && valid.terms && formData.acceptTerms;
     });
+
+    const euResidentError = ref(false);
+    const collegeConsentError = ref(false);
+    const termsError = ref(false);
 
     const nextStep = async () => {
       const validateAndProceed = async (formRef) => {
         if (formRef.value) {
           const { valid } = await formRef.value.validate();
+          console.log('Form validation result:', valid);
           if (valid) currentStep.value++;
         }
       };
 
       if (currentStep.value === 1) {
-        await validateAndProceed(personalForm);
+        // Validate role selection
+        if (formData.role) {
+          roleError.value = false;
+          currentStep.value++;
+        } else {
+          roleError.value = true;
+        }
       } else if (currentStep.value === 2) {
+        await validateAndProceed(personalForm);
+      } else if (currentStep.value === 3) {
         await validateAndProceed(educationForm);
+      } else if (currentStep.value === 4) {
+        // Validate EU resident selection
+        if (formData.euResident !== undefined) {
+          euResidentError.value = false;
+          currentStep.value++;
+        } else {
+          euResidentError.value = true;
+        }
+      } else if (currentStep.value === 5) {
+        // Validate college contact consent
+        if (formData.collegeContactConsent !== undefined) {
+          collegeConsentError.value = false;
+          currentStep.value++;
+        } else {
+          collegeConsentError.value = true;
+        }
+      } else if (currentStep.value === 6) {
+        // For the final step, we don't want to increment currentStep
+        if (termsForm.value) {
+          const { valid } = await termsForm.value.validate();
+          console.log('Terms form validation:', valid);
+        }
       }
     }
 
     const submitForm = async () => {
+      console.log(formData)
+      termsError.value = !formData.acceptTerms;
+      
       try {
+        if (!formData.acceptTerms) {
+          return;
+        }
+        
         if (!personalForm.value || !educationForm.value || !termsForm.value) {
           console.error('Form references are not initialized');
           return;
@@ -267,7 +357,7 @@ export default {
 
         if (personalValid.valid && educationValid.valid && termsValid.valid) {
           userStore.updateUser(formData);
-          router.push('/');
+          router.push('/account');
         }
       } catch (error) {
         console.error('Form submission error:', error);
@@ -293,6 +383,12 @@ export default {
       return age > 12;
     };
 
+    watch(() => formData.acceptTerms, (newValue) => {
+      if (newValue) {
+        termsError.value = false;
+      }
+    });
+
     return {
       currentStep,
       steps,
@@ -305,21 +401,44 @@ export default {
       personalForm,
       educationForm,
       termsForm,
+      euResidentForm,
+      collegeConsentForm,
       isStudent,
       isParent,
       isEducator,
       checkAge,
+      euResidentError,
+      collegeConsentError,
+      roleForm,
+      roleError,
+      termsError,
     };
   },
 }
 </script>
 
 <style scoped>
-.v-stepper {
-  background: transparent !important;
+
+.v-stepper.v-sheet {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+
+  @media (min-width: 600px) {
+    padding: 24px 24px 4px 24px;
+    background: white;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
 }
 
-.v-card {
-  background: rgba(255, 255, 255, 0.5) !important;
+.v-stepper-actions {
+  margin-top: 24px;
 }
+
+.v-stepper-window {
+  margin: 0;
+}
+
 </style> 
