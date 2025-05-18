@@ -21,11 +21,9 @@
         <v-card-text>
           <!-- Personal Information Section -->
           <h3 class="text-h6 mb-4">Personal Information</h3>
-
           <v-btn color="outline" prepend-icon="mdi-account-edit" :to="'/onboarding'" class="mb-4">
             Edit Profile Information
           </v-btn>
-
           <v-row>
             <v-col cols="12" md="6">
               <div class="mb-4">

@@ -207,16 +207,14 @@
           >
             Continue
           </v-btn>
-          <div v-if="formData.acceptTerms">
             <v-btn
-            v-if="currentStep === steps.length"
+            v-if="currentStep === steps.length && formData.acceptTerms"
             color="primary"
             @click="submitForm"
             :disabled="!valid.terms || !formData.acceptTerms"
           >
             Complete
           </v-btn>
-          </div>
         </template>
       </v-stepper-actions>
     </v-stepper>
@@ -257,7 +255,7 @@ export default {
       businessName: userStore.userInfo.businessName || '',
       graduationYear: userStore.userInfo.graduationYear || '',
       zipCode: userStore.userInfo.zipCode || '',
-      euResident: userStore.userInfo.euResident || false,
+      euResident: userStore.userInfo.euResident || undefined,
       collegeContactConsent: userStore.userInfo.collegeContactConsent || undefined,
       acceptTerms: userStore.userInfo.acceptTerms || false,
     });
@@ -357,7 +355,7 @@ export default {
 
         if (personalValid.valid && educationValid.valid && termsValid.valid) {
           userStore.updateUser(formData);
-          router.push('/account');
+          router.push('/');
         }
       } catch (error) {
         console.error('Form submission error:', error);
