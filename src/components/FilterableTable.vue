@@ -50,6 +50,7 @@
                     elevation="1"
                     :title="isTableView ? 'Switch to Card View' : 'Switch to Table View'"
                     @click="toggleView"
+                    v-show="$vuetify.display.mdAndUp"
                   >
                     {{ isTableView ? 'Card View' : 'Table View' }}
                   </v-btn>
@@ -150,18 +151,14 @@
             :style="{ height: tableHeight, overflowY: 'auto' }"
             @scroll="onScroll"
           >
-            <v-row>
-              <v-col cols="12">
-                <InstitutionCard
-                  v-for="item in tableStore.tableData"
-                  :key="item.name"
-                  :item="item"
-                  :show-select="!!userStore.isLoggedIn"
-                  @click="({ event, item }) => navigateToInstitution(event, { item })"
-                  @update:selected="(selected) => updateCardSelection(item, selected)"
-                />
-              </v-col>
-            </v-row>
+            <InstitutionCard
+              v-for="item in tableStore.tableData"
+              :key="item.name"
+              :item="item"
+              :show-select="!!userStore.isLoggedIn"
+              @click="({ event, item }) => navigateToInstitution(event, { item })"
+              @update:selected="(selected) => updateCardSelection(item, selected)"
+            />
           </v-container>
         </v-col>
       </v-row>
@@ -417,7 +414,8 @@ export default {
       showFilters: true,
       showFiltersDialog: false,
       showColumnsDialog: false,
-      isTableView: true
+      isTableView: true,
+      previousViewWasTable: true
     }
   },
   methods: {
@@ -711,16 +709,24 @@ export default {
           debounce((newFilters) => {
             this.tableStore.applyNewSearch('filtersChanged');
             this.newFilters = JSON.stringify(newFilters);
-          }, 500), // 500ms debounce to prevent too many rapid updates
-          { deep: true } // Watch nested properties
+          }, 500),
+          { deep: true }
         );
       }
     });
-
-    // Load saved view preference
-    const savedView = localStorage.getItem('preferredView');
-    if (savedView) {
-      this.isTableView = savedView === 'table';
+  },
+  watch: {
+    '$vuetify.display.name': {
+      immediate: true,
+      handler(displayName) {
+        const isSmallScreen = ['xs', 'sm'].includes(displayName);
+        if (isSmallScreen) {
+          this.previousViewWasTable = this.isTableView;
+          this.isTableView = false;
+        } else {
+          this.isTableView = this.previousViewWasTable;
+        }
+      }
     }
   },
   components: {

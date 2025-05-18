@@ -95,8 +95,7 @@ export default {
 }
 
 .institution-card:hover {
-  transform: translateY(-2px);
-  background-color: #efefef;
+  background-color: #fdfdfd;
 }
 
 .info-item {
