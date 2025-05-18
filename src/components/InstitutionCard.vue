@@ -7,7 +7,7 @@
   >
     <div class="d-flex">
       <v-card-text class="flex-grow-1">
-        <div class="d-flex align-center justify-space-between mb-2">
+        <div class="d-flex align-center justify-space-between mb-4">
           <span class="text-h6">{{ item.name }}</span>
           <v-checkbox
             v-if="showSelect"
@@ -18,35 +18,43 @@
           />
         </div>
         <v-row>
-          <v-col cols="12" sm="4">
+          <v-col sm="4">
             <div class="info-item">
-              <span class="font-weight-medium">State:</span>
-              <span>{{ formatCellValue(item.stateCleaned) }}</span>
-            </div>
-            <div class="info-item">
-              <span class="font-weight-medium">Sector:</span>
-              <span>{{ formatCellValue(item.mainInstControlDesc) }}</span>
+              <span class="font-weight-medium text-caption">State</span>
+              <span class="text-body-1">{{ formatCellValue(item.stateCleaned) }}</span>
             </div>
           </v-col>
-          <v-col cols="12" sm="4">
+          <v-col sm="4">
             <div class="info-item">
-              <span class="font-weight-medium">UG Enrollment:</span>
-              <span>{{ formatCellValue(item.enTotUgN) }}</span>
-            </div>
-            <div class="info-item">
-              <span class="font-weight-medium">Calendar:</span>
-              <span>{{ formatCellValue(item.mainCalendar) }}</span>
+              <span class="font-weight-medium text-caption">Sector</span>
+              <span class="text-body-1">{{ formatCellValue(item.mainInstControlDesc) }}</span>
             </div>
           </v-col>
-          <v-col cols="12" sm="4">
+          <v-col sm="4">
             <div class="info-item">
-              <span class="font-weight-medium">Setting:</span>
-              <span>{{ formatCellValue(item.cmpsSetting) }}</span>
+              <span class="font-weight-medium text-caption">UG Enrollment</span>
+              <span class="text-body-1">{{ formatCellValue(item.enTotUgN) }}</span>
             </div>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col sm="4">
             <div class="info-item">
-              <span class="font-weight-medium">Admission Rate:</span>
-              <span>{{ formatCellValue(item.admitRate) }}%</span>
+              <span class="font-weight-medium text-caption">Calendar</span>
+              <span class="text-body-1">{{ formatCellValue(item.mainCalendar) }}</span>
             </div>
+          </v-col>
+          <v-col sm="4">
+            <div class="info-item">
+              <span class="font-weight-medium text-caption">Setting</span>
+              <span class="text-body-1">{{ formatCellValue(item.cmpsSetting) }}</span>
+            </div>
+          </v-col>
+          <v-col sm="4">
+            <!-- <div class="info-item">
+              <span class="font-weight-medium text-caption">Admission Rate</span>
+              <span class="text-body-1">{{ formatCellValue(item.admitRate) }}%</span>
+            </div> -->
           </v-col>
         </v-row>
       </v-card-text>
@@ -95,21 +103,41 @@ export default {
 }
 
 .institution-card:hover {
-  background-color: #fdfdfd;
+  transform: translateY(-2px);
+  background-color: #efefef;
 }
 
 .info-item {
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   display: flex;
-  gap: 8px;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .info-item span:first-child {
   color: rgba(0, 0, 0, 0.6);
-  min-width: 100px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.75rem;
+  line-height: 1.2;
+}
+
+.info-item span:last-child {
+  font-size: 0.875rem;
+  line-height: 1.3;
 }
 
 .v-card-text {
-  padding-right: 16px;
+  padding: 16px;
+}
+
+@media (max-width: 600px) {
+  .v-card-text {
+    padding: 12px 8px;
+  }
+  
+  .info-item {
+    margin-bottom: 8px;
+  }
 }
 </style> 
