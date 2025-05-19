@@ -10,6 +10,7 @@
         <div class="d-flex align-center justify-space-between mb-4">
           <span class="text-h6">{{ item.name }}</span>
           <v-checkbox
+            class="d-none"
             v-if="showSelect"
             v-model="selected"
             hide-details
