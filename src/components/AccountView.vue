@@ -21,6 +21,9 @@
         <v-card-text>
           <!-- Personal Information Section -->
           <h3 class="text-h6 mb-4">Personal Information</h3>
+          <v-btn color="outline" prepend-icon="mdi-account-edit" :to="'/onboarding'" class="mb-4">
+            Edit Profile Information
+          </v-btn>
           <v-row>
             <v-col cols="12" md="6">
               <div class="mb-4">
@@ -106,21 +109,11 @@
               </div>
             </v-col>
           </v-row>
-
-          <!-- Account Management Section -->
-          <h3 class="text-h6 mt-6 mb-4">Account Management</h3>
-           <div class="mb-4" v-if="userStore.userInfo.createdAt">
-                <div class="text-subtitle-1 font-weight-bold">Account Created</div>
-                <div>{{ formattedCreatedAt }}</div>
-            </div>
-          <v-btn color="primary" prepend-icon="mdi-account-edit" class="mt-2 mb-4" :to="'/onboarding'">
-            Edit Profile Information
-          </v-btn>
         </v-card-text>
         
         <v-divider class="mx-4 my-4"></v-divider>
         
-        <v-card-actions class="pa-4">
+        <v-card-actions class="pa-4 d-flex justify-space-between">
           <v-btn 
             color="error" 
             prepend-icon="mdi-delete" 

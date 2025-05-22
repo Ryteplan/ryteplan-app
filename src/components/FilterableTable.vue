@@ -45,6 +45,15 @@
                   >
                     Edit Columns
                   </v-btn>
+                  <v-btn
+                    size="x-small"
+                    elevation="1"
+                    :title="isTableView ? 'Switch to Card View' : 'Switch to Table View'"
+                    @click="toggleView"
+                    v-show="$vuetify.display.mdAndUp"
+                  >
+                    {{ isTableView ? 'Card View' : 'Table View' }}
+                  </v-btn>
                   <v-menu location="bottom end">
                     <template #activator="{ props }">
                       <v-btn
@@ -104,7 +113,7 @@
             </div>
           </div>
           <v-data-table 
-            v-show="isTableHeightCalculated"
+            v-show="isTableView && isTableHeightCalculated"
             id="dataTable" 
             ref="dataTable" 
             class="institutionDataTable" 
@@ -134,6 +143,23 @@
               {{ formatCellValue(item[header.key]) }}
             </template>
           </v-data-table>
+
+          <!-- Card View -->
+          <v-container 
+            v-show="!isTableView && isTableHeightCalculated" 
+            class="pa-0 card-container"
+            :style="{ height: tableHeight, overflowY: 'auto' }"
+            @scroll="onScroll"
+          >
+            <InstitutionCard
+              v-for="item in tableStore.tableData"
+              :key="item.name"
+              :item="item"
+              :show-select="!!userStore.isLoggedIn"
+              @click="({ event, item }) => navigateToInstitution(event, { item })"
+              @update:selected="(selected) => updateCardSelection(item, selected)"
+            />
+          </v-container>
         </v-col>
       </v-row>
       <v-row v-else>
@@ -306,6 +332,7 @@ import SaveToListDialog from './SaveToListDialog'
 import ShareDialog from './ShareDialog'
 import { debounce } from 'lodash';
 import FilterContent from './FilterContent.vue'
+import InstitutionCard from './InstitutionCard.vue'
 
 export default {
   setup() {
@@ -386,7 +413,9 @@ export default {
       tableHeight: 'auto',
       showFilters: true,
       showFiltersDialog: false,
-      showColumnsDialog: false
+      showColumnsDialog: false,
+      isTableView: true,
+      previousViewWasTable: true
     }
   },
   methods: {
@@ -628,6 +657,21 @@ export default {
       } else {
         return value;
       }
+    },
+    toggleView() {
+      this.isTableView = !this.isTableView;
+      // Save view preference to localStorage
+      localStorage.setItem('preferredView', this.isTableView ? 'table' : 'card');
+    },
+    updateCardSelection(item, selected) {
+      if (selected) {
+        this.selectedInstitutions.push(item);
+      } else {
+        const index = this.selectedInstitutions.findIndex(i => i.name === item.name);
+        if (index !== -1) {
+          this.selectedInstitutions.splice(index, 1);
+        }
+      }
     }
   },
   computed: {
@@ -665,16 +709,31 @@ export default {
           debounce((newFilters) => {
             this.tableStore.applyNewSearch('filtersChanged');
             this.newFilters = JSON.stringify(newFilters);
-          }, 500), // 500ms debounce to prevent too many rapid updates
-          { deep: true } // Watch nested properties
+          }, 500),
+          { deep: true }
         );
       }
     });
   },
+  watch: {
+    '$vuetify.display.name': {
+      immediate: true,
+      handler(displayName) {
+        const isSmallScreen = ['xs', 'sm'].includes(displayName);
+        if (isSmallScreen) {
+          this.previousViewWasTable = this.isTableView;
+          this.isTableView = false;
+        } else {
+          this.isTableView = this.previousViewWasTable;
+        }
+      }
+    }
+  },
   components: {
     SaveToListDialog,
     ShareDialog,
-    FilterContent
+    FilterContent,
+    InstitutionCard
   }
 };
 </script>
@@ -844,5 +903,45 @@ tr td {
 
 .v-data-table-header__content {
   text-wrap: nowrap;
+}
+
+// Add styles for card view transitions
+.v-container {
+  transition: opacity 0.3s ease;
+}
+
+.v-container:not(.v-container--is-scrolling) {
+  opacity: 1;
+}
+
+.v-container.v-container--is-scrolling {
+  opacity: 0.8;
+}
+
+.card-container {
+  position: relative;
+}
+
+// Update existing scroll styles to work with both views
+.v-data-table__wrapper,
+.card-container {
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 }
 </style>
