@@ -7,18 +7,7 @@
       <div class="pa-8">
         <div v-if="!shareSuccess">        
           <h2 class="mb-6 text-center">Share List</h2>
-
-          <p>This functionality is currently disabled while we work on it.</p>
-          <v-btn
-            class="mt-6"
-            color="primary"
-            block
-            @click="show = false"
-          >
-            Close
-          </v-btn>
-
-          <!-- <v-text-field
+          <v-text-field
             v-model="emailShareAddress"
             label="Enter email address"
             density="compact"
@@ -34,7 +23,7 @@
             @click="shareList(emailShareAddress)"
           >
             Share
-          </v-btn> -->
+          </v-btn>
         </div>
         <div v-else>
           <h2 class="mb-6 text-center">List Shared Successfully!</h2>
@@ -62,7 +51,7 @@ export default {
   setup() {
   },
   props: {
-     value: Boolean,
+     modelValue: Boolean,
      institutionId: String,
      selectedRows: Object
   },
@@ -80,7 +69,7 @@ export default {
   computed: {
     show: {
       get () {
-        return this.value
+        return this.modelValue
       },
       set (value) {
         this.$emit('update:modelValue', value)
@@ -137,6 +126,14 @@ export default {
         console.error("Error sharing list:", error);
       }
     }      
+  },
+  watch: {
+    show(newValue) {
+      if (!newValue) {
+        // Reset shareSuccess when the dialog is closed
+        this.shareSuccess = false;
+      }
+    }
   }
 }
 </script>
