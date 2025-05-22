@@ -7,7 +7,18 @@
       <div class="pa-8">
         <div v-if="!shareSuccess">        
           <h2 class="mb-6 text-center">Share List</h2>
-          <v-text-field
+
+          <p>This functionality is currently disabled while we work on it.</p>
+          <v-btn
+            class="mt-6"
+            color="primary"
+            block
+            @click="show = false"
+          >
+            Close
+          </v-btn>
+
+          <!-- <v-text-field
             v-model="emailShareAddress"
             label="Enter email address"
             density="compact"
@@ -23,7 +34,7 @@
             @click="shareList(emailShareAddress)"
           >
             Share
-          </v-btn>
+          </v-btn> -->
         </div>
         <div v-else>
           <h2 class="mb-6 text-center">List Shared Successfully!</h2>
