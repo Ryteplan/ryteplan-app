@@ -27,10 +27,8 @@ export const useUserActionsStore = defineStore('userActions', () => {
   const dialogStore = useDialogStore();
   let unsubscribeToUserLists = Promise.resolve();
   watch(user, async (newUser) => {
-    console.info('user info changed', newUser);
     await unsubscribeToUserLists;
     if (newUser.isLoggedIn) {
-      console.info('subscribed to user lists', newUser);
       unsubscribeToUserLists = observeUserLists(
         newUser.userInfo.uid,
         (lists) => {

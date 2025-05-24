@@ -15,7 +15,7 @@
           single-line
           hide-details
           menu-icon=""
-          placeholder="Search"
+          placeholder="Search by Institution Name"
           :items="suggestedResults"
           v-model.search="searchInput"
           @keydown.enter="handleSearchEnter"
@@ -250,12 +250,12 @@ export default {
     // Check if the URL contains a "search" parameter
     if (this.$route.query.search) {
       this.searchFilterSortStore.activeSearchTerms = this.$route.query.search;
-      this.searchInput = this.$route.query.search;
+      this.searchInput = this.$route.query.search || null;
     }
   },
   data() {
     return {
-      searchInput: "",
+      searchInput: null,
       suggestedResults: [],
       isLoadingSuggestion: false,
       initialLoading: true,
