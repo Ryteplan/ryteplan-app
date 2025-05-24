@@ -51,7 +51,7 @@ export default {
   setup() {
   },
   props: {
-     value: Boolean,
+     modelValue: Boolean,
      institutionId: String,
      selectedRows: Object
   },
@@ -69,7 +69,7 @@ export default {
   computed: {
     show: {
       get () {
-        return this.value
+        return this.modelValue
       },
       set (value) {
         this.$emit('update:modelValue', value)
@@ -126,6 +126,14 @@ export default {
         console.error("Error sharing list:", error);
       }
     }      
+  },
+  watch: {
+    show(newValue) {
+      if (!newValue) {
+        // Reset shareSuccess when the dialog is closed
+        this.shareSuccess = false;
+      }
+    }
   }
 }
 </script>

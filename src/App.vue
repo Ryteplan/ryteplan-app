@@ -186,7 +186,7 @@
             </div>
           </div>
           <div class="petersons-data-attribution">
-            <span>Some university data <br class="d-md-none"/>provided by <a style="color: #1d1d1d;" href="https://www.petersons.com" target="_blank">Peterson's 2023-2024 data</a>.</span>
+            <span>Source: <a style="color: #1d1d1d;" href="https://www.petersons.com" target="_blank">Petersons CDS 2023-2024 Data</a> & College Websites.</span>
           </div>
         </v-footer>
       </v-container>
