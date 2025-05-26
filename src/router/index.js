@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import { useUserStore } from "@/stores/userStore";
 
 import HomeView from '@/components/HomeView.vue';
 import AuthenticationView from '@/components/AuthenticationView.vue';
@@ -16,6 +17,7 @@ import ImageWorkView from '@/components/ImageWorkView.vue';
 import TermsView from '@/views/TermsView.vue';
 import PrivacyView from '@/views/PrivacyView.vue';
 import OnboardingView from '@/views/OnboardingView.vue';
+
 
 const routes = [
   {
@@ -84,11 +86,27 @@ const routes = [
     path: '/lists',
     name: 'ListsView',
     component: ListsView,
+    beforeEnter: (to, from, next) => {
+      const userStore = useUserStore();
+      if(userStore.isLoggedIn) {
+        next();
+      } else {
+        next('/login');
+      }
+    },
   },
   {
     path: '/list/:id',
     name: 'SingularListView',
     component: SingularListView,
+    beforeEnter: (to, from, next) => {
+      const userStore = useUserStore();
+      if(userStore.isLoggedIn) {
+        next();
+      } else {
+        next('/login');
+      }
+    },
   },
   {
     path: '/account',
