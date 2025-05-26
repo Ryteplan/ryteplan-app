@@ -149,8 +149,8 @@
             <v-list-item-title>Data Compare</v-list-item-title>
           </div>
         </v-list-item>
-        <v-list-item v-if="userStore.isLoggedIn">
-           <div class="d-flex justify-start align-center" @click="() => this.$router.push('/lists')">
+        <v-list-item @click="() => this.$router.push('/lists')">
+           <div class="d-flex justify-start align-center">
             <v-icon class="mr-3" icon="mdi-format-list-bulleted"></v-icon>
             <v-list-item-title>Lists</v-list-item-title>
            </div>
