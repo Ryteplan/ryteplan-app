@@ -19,37 +19,37 @@
           />
         </div>
         <v-row>
-          <v-col cols="12" sm="6" md="2">
+          <v-col cols="4" md="2">
             <div class="info-item">
               <span class="font-weight-medium text-caption">State</span>
               <span class="text-body-1">{{ formatCellValue(item.stateCleaned) }}</span>
             </div>
           </v-col>
-          <v-col cols="12" sm="6" md="2">
+          <v-col cols="4" md="2">
             <div class="info-item">
               <span class="font-weight-medium text-caption">Sector</span>
               <span class="text-body-1">{{ formatCellValue(item.mainInstControlDesc) }}</span>
             </div>
           </v-col>
-          <v-col cols="12" sm="6" md="2">
+          <v-col cols="4" md="2">
             <div class="info-item">
               <span class="font-weight-medium text-caption">UG Enrollment</span>
               <span class="text-body-1">{{ formatCellValue(item.enTotUgN) }}</span>
             </div>
           </v-col>
-          <v-col cols="12" sm="6" md="2">
+          <v-col cols="4" md="2">
             <div class="info-item">
               <span class="font-weight-medium text-caption">Calendar</span>
               <span class="text-body-1">{{ formatCellValue(item.mainCalendar) }}</span>
             </div>
           </v-col>
-          <v-col cols="12" sm="6" md="2">
+          <v-col cols="4" md="2">
             <div class="info-item">
               <span class="font-weight-medium text-caption">Setting</span>
               <span class="text-body-1">{{ formatCellValue(item.cmpsSetting) }}</span>
             </div>
           </v-col>
-          <v-col cols="12" sm="6" md="2">
+          <v-col cols="4" md="2">
             <!-- <div class="info-item">
               <span class="font-weight-medium text-caption">Admission Rate</span>
               <span class="text-body-1">{{ formatCellValue(item.admitRate) }}%</span>
