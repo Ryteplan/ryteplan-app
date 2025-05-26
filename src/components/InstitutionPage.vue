@@ -12,7 +12,6 @@
         </v-col>
         <v-col cols="6" class="d-flex justify-end">
           <v-btn
-            v-if="isLoggedIn"
             size="small"
             @click="showSaveToListDialog = true"
             class="mr-6"

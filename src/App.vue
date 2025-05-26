@@ -63,7 +63,7 @@
           >
             Submit feedback
           </v-btn>
-          <div v-if="userStore.isLoggedIn">
+          <div>
             <v-btn
               class="ml-3"
               @click="() => this.$router.push('/lists')"

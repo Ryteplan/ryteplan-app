@@ -15,6 +15,18 @@
         />
       </v-card-title>
       <div class="pa-8">
+        <p v-if="!userID">
+          You must be logged in to save to a list.
+          Please login or create an account today!
+        </p>
+        <v-btn
+          class="mt-5"
+          v-if="!userID"
+          href="/login"
+          color="primary"
+        >
+          Login or Create an account
+        </v-btn>
         <div
           v-if="!showCreateNewListInput && !showGoToList" 
         >        
