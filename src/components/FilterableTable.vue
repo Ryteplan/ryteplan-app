@@ -140,7 +140,7 @@
               :key="header.key"
               #[`item.${header.key}`]="{ item }"
             >
-              {{ formatCellValue(item[header.key]) }}
+              {{ formatCellValue(item[header.key], header.key) }}
             </template>
           </v-data-table>
 
@@ -649,12 +649,20 @@ export default {
         });
       }
     },
-    formatCellValue(value) {
+    formatCellValue(value, fieldKey) {
       if (value === -1 || value === '-1' || value === '0' || value === 0 || value === null || value === undefined || value === '-') {
         return '—';
       } else if (typeof value === 'string' && value.trim() === '') {
         return '—';
       } else {
+        // Format numbers with commas unless noCommas is set
+        if (typeof value === 'number') {
+          const header = this.filteredHeaders.find(h => h.key === fieldKey);
+          if (header?.noCommas) {
+            return value.toString();
+          }
+          return value.toLocaleString();
+        }
         return value;
       }
     },
