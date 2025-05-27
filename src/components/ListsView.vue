@@ -1,13 +1,6 @@
 <template>
   <v-container class="pt-4">
-    <div v-if="!userID" class="text-center">
-      <h2 class="text-h5 mb-4">Please Sign In</h2>
-      <p class="text-body-1 mb-6">You need to create an account or sign in to view and manage your lists.</p>
-      <v-btn color="primary" href="/login">
-        Login or Create an account
-      </v-btn>
-    </div>
-    <v-row v-else class="">
+    <v-row class="">
       <v-col cols="6">
         <div class="d-flex align-center justify-space-between">
           <div class="d-flex align-center">
@@ -27,13 +20,11 @@
             ({{ userLists.length }}/30)
           </span>
           <v-menu class="" offset-y>
-              <template v-slot:activator="{ props }">
-                <v-btn
-                text
-                v-bind="props"
-              >
+            <template v-slot:activator="{ props }">
+              <v-btn text v-bind="props">
                 <v-icon left>mdi-sort</v-icon>
-                Sort by: {{ sortOptions.find(opt => opt.value === currentSort).text }}
+                Sort by:
+                {{ sortOptions.find((opt) => opt.value === currentSort).text }}
               </v-btn>
             </template>
             <v-list>
@@ -50,8 +41,8 @@
         <div v-if="userLists.length > 0" class="mt-2">
           <ul class="">
             <v-list>
-              <v-list-item 
-                v-for="list in sortedLists" 
+              <v-list-item
+                v-for="list in sortedLists"
                 :key="list.id"
                 @click="navigateToList($event, list)"
               >
@@ -70,10 +61,10 @@
               <span>Create New List</span>
             </v-card-title>
             <v-card-text>
-              <v-text-field       
-                type="text"       
-                placeholder="Name"       
-                v-model="createNewListName"     
+              <v-text-field
+                type="text"
+                placeholder="Name"
+                v-model="createNewListName"
               />
             </v-card-text>
             <v-card-actions>
@@ -85,28 +76,31 @@
         </v-dialog>
       </v-col>
     </v-row>
-    
   </v-container>
 </template>
 <script>
-
 import { dbFireStore } from "../firebase";
-import { query, collection, orderBy, onSnapshot, where } from 'firebase/firestore'
-import { getAuth } from 'firebase/auth';
-import { useUserActionsStore } from '@/stores/userActionsStore.js';
+import {
+  query,
+  collection,
+  orderBy,
+  onSnapshot,
+  where,
+} from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { useUserActionsStore } from "@/stores/userActionsStore.js";
 
 export default {
   setup() {
     const userActionsStore = useUserActionsStore();
     return {
-      userActionsStore
-    }
+      userActionsStore,
+    };
   },
-  beforeMount() {
-  },
+  beforeMount() {},
   mounted() {
-    getAuth().onAuthStateChanged((user) =>{
-      if(user) {
+    getAuth().onAuthStateChanged((user) => {
+      if (user) {
         this.userID = user.uid;
         this.loadUserLists();
       } else {
@@ -114,62 +108,62 @@ export default {
         this.userLists = [];
       }
     });
-
   },
-  beforeUnmount() {
-  },
+  beforeUnmount() {},
   data() {
     return {
       createNewListName: "",
       userLists: [],
       userID: "",
       showCreateListDialog: false,
-      currentSort: 'name',
+      currentSort: "name",
       sortOptions: [
-        { text: 'Name (A-Z)', value: 'name' },
-        { text: 'Name (Z-A)', value: 'name-desc' },
-        { text: 'Recently Created', value: 'created' },
-        { text: 'Oldest Created', value: 'created-asc' }
-      ]
-    }
+        { text: "Name (A-Z)", value: "name" },
+        { text: "Name (Z-A)", value: "name-desc" },
+        { text: "Recently Created", value: "created" },
+        { text: "Oldest Created", value: "created-asc" },
+      ],
+    };
   },
   computed: {
     sortedLists() {
       const lists = [...this.userLists];
       switch (this.currentSort) {
-        case 'name':
+        case "name":
           return lists.sort((a, b) => a.name.localeCompare(b.name));
-        case 'name-desc':
+        case "name-desc":
           return lists.sort((a, b) => b.name.localeCompare(a.name));
-        case 'created':
+        case "created":
           return lists.sort((a, b) => b.created.toDate() - a.created.toDate());
-        case 'created-asc':
+        case "created-asc":
           return lists.sort((a, b) => a.created.toDate() - b.created.toDate());
         default:
           return lists;
       }
-    }
+    },
   },
   methods: {
     async loadUserLists() {
       const listsQuery = query(
-        collection(dbFireStore,"lists"),
-        orderBy('created', 'desc'), 
+        collection(dbFireStore, "lists"),
+        orderBy("created", "desc"),
         where("createdBy", "==", this.userID)
       );
-      onSnapshot(listsQuery,(snapshot)=>{
+      onSnapshot(listsQuery, (snapshot) => {
         this.userLists = snapshot.docs.map((doc) => ({
           id: doc.id,
-          ...doc.data()
+          ...doc.data(),
         }));
       });
     },
     async createNewList() {
-      const response = await this.userActionsStore.createNewList(this.createNewListName);
+      const response = await this.userActionsStore.createNewList(
+        this.createNewListName
+      );
       if (response.isError) {
         console.error("Error creating new list:", response);
       } else {
-        console.info('Created new list:', response);
+        console.info("Created new list:", response);
       }
       this.showCreateListDialog = false;
       this.createNewListName = "";
@@ -177,25 +171,22 @@ export default {
     },
     navigateToList(event, list) {
       let route = this.$router.resolve({
-        name: 'SingularListView',
+        name: "SingularListView",
         params: {
           id: list.id,
-        }
+        },
       });
 
       // Open in new tab for right click or if holding Ctrl/Cmd key
       if (event.ctrlKey || event.metaKey) {
-        window.open(route.href, '_blank');
+        window.open(route.href, "_blank");
       } else {
         // Navigate in current tab for normal left click
         this.$router.push(route);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
-<style>
-
-
-</style>
+<style></style>
