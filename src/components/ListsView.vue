@@ -1,8 +1,9 @@
 <template>
   <v-container class="pt-4">
     <div v-if="!userID" class="text-center">
-      <h2 class="text-h5 mb-4">Please Sign In</h2>
-      <p class="text-body-1 mb-6">You need to create an account or sign in to view and manage your lists.</p>
+      <h2 class="text-h5 mb-4">Welcome to RytePlan - Your FREE College Planning Hub!</h2>
+      <p class="text-body-1 mb-6"><a href="/login">Sign in</a> to create personalized college lists and data downloads for seamless application planning.</p>
+      <p class="text-body-1 mb-6">New to the RytePlan community? Create your FREE account and unlock all features!</p>
       <v-btn color="primary" href="/login">
         Login or Create an account
       </v-btn>
