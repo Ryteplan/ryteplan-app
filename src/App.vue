@@ -281,7 +281,11 @@ export default {
           title: 'Register or Login',
           icon: 'mdi-account-plus',
           action: () => { 
-            this.$router.push('/login');
+            if (this.$route.query.redirect) {
+              this.$router.push(`/login?redirect=${this.$route.query.redirect}`);
+            } else {
+              this.$router.push('/login');
+            }
           },
           hideFromLoggedIn: true
         },
