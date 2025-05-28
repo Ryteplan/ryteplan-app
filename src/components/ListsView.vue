@@ -3,7 +3,7 @@
     <v-row class="flex-column align-center">
       <v-col cols="12" lg="6">
         <div class="d-flex align-center justify-space-between">
-          <div class="d-flex align-center justify-space-between ">
+          <div class="d-flex align-center justify-space-between w-100">
             <h1 class="text-h6">Your lists</h1>
             <v-btn
               size="x-small"
