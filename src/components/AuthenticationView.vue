@@ -325,7 +325,11 @@ export default {
           }
           await this.userStore.loadUserInfo();
           if (this.userStore.isSetupFinished) {
-            this.$router.push("/");
+            if (this.$route.query.redirect) {
+              this.$router.push(this.$route.query.redirect);
+            } else {
+              this.$router.push("/");
+            }
           } else {
             this.$router.push("/onboarding");
           }
