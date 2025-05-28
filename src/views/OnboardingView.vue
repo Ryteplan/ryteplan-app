@@ -184,14 +184,13 @@
               required
             />
             <v-checkbox
-              v-if="!isStudent"
               v-model="formData.isAdult"
               :error-messages="!formData.isAdult && isAdultError ? 'You must accept the terms and privacy policy' : ''"
-              label="By checking this box, I represent that I am 18 years of age or older and agree to the terms of service and privacy policy"
+              :label="`By checking this box, I represent that I am ${!isStudent ? '18' : '13'} years of age or older and agree to the terms of service and privacy policy`"
               required
             />
           </v-form>
-          <span v-if="(!formData.acceptTerms || (!formData.isAdult && !isStudent))" class="mx-4 pa-4" style="margin-top: 0; border-radius: 8px; display: block; border: 1px solid lightcoral; background: #fff">You must accept the terms to create an account.</span>
+          <span v-if="(!formData.acceptTerms || !formData.isAdult)" class="mx-4 pa-4" style="margin-top: 0; border-radius: 8px; display: block; border: 1px solid lightcoral; background: #fff">You must accept the terms to create an account.</span>
         </v-stepper-window-item>
       </v-stepper-window>
 
@@ -252,8 +251,6 @@ export default {
       terms: false
     });
 
-    console.log(userStore.userInfo)
-
     const formData = reactive({
       firstName: userStore.userInfo.firstName || '',
       lastName: userStore.userInfo.lastName || '',
@@ -299,7 +296,6 @@ export default {
       const validateAndProceed = async (formRef) => {
         if (formRef.value) {
           const { valid } = await formRef.value.validate();
-          console.log('Form validation result:', valid);
           if (valid) currentStep.value++;
         }
       };
@@ -343,10 +339,10 @@ export default {
 
     const submitForm = async () => {
       termsError.value = !formData.acceptTerms;
-      isAdultError.value = !formData.isAdult && !isStudent.value;
+      isAdultError.value = !formData.isAdult;
 
       try {
-        if (!formData.acceptTerms || (!formData.isAdult && !isStudent.value)) {
+        if (!formData.acceptTerms || !formData.isAdult) {
           return;
         }
         
