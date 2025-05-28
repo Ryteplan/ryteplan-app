@@ -20,58 +20,133 @@
           ></v-text-field>
           
           <v-btn
+            variant="outlined"
+            :color="isFiltering ? 'primary' : undefined"
+            @click="showFilters = !showFilters"
+            density="compact"
+          >
+            <v-icon start size="small">mdi-filter</v-icon>
+            Filters
+            <v-badge
+              v-if="activeFilterCount"
+              :content="activeFilterCount"
+              color="primary"
+              inline
+            ></v-badge>
+          </v-btn>
+
+          <v-btn
             color="primary"
             variant="text"
             @click="clearFilters"
             :disabled="!isFiltering"
             density="compact"
           >
-            Clear Filters
+            Clear
           </v-btn>
         </div>
 
-        <div class="mt-2">
-          <v-row dense>
-            <v-col cols="12" sm="6" md="4">
-              <v-select
-                v-model="filters.role"
-                :items="roleOptions"
-                label="Role"
-                variant="outlined"
-                density="compact"
-                hide-details
-                clearable
-              ></v-select>
-            </v-col>
-            
-            <v-col cols="12" sm="6" md="4">
-              <v-select
-                v-model="filters.graduationYear"
-                :items="graduationYearOptions"
-                label="Graduation Year"
-                variant="outlined"
-                density="compact"
-                hide-details
-                clearable
-              ></v-select>
-            </v-col>
+        <v-expand-transition>
+          <div v-if="showFilters" class="mt-2">
+            <v-row dense>
+              <v-col cols="12" sm="6" md="4">
+                <v-select
+                  v-model="filters.role"
+                  :items="roleOptions"
+                  label="Role"
+                  variant="outlined"
+                  density="compact"
+                  hide-details
+                  clearable
+                ></v-select>
+              </v-col>
+              
+              <v-col cols="12" sm="6" md="4">
+                <v-select
+                  v-model="filters.graduationYear"
+                  :items="graduationYearOptions"
+                  label="Graduation Year"
+                  variant="outlined"
+                  density="compact"
+                  hide-details
+                  clearable
+                ></v-select>
+              </v-col>
 
-            <v-col cols="12" sm="6" md="4">
-              <v-select
-                v-model="filters.euResident"
-                :items="[
-                  { title: 'EU Resident', value: true },
-                  { title: 'Non-EU Resident', value: false }
-                ]"
-                label="EU Residency"
-                variant="outlined"
-                density="compact"
-                hide-details
-                clearable
-              ></v-select>
-            </v-col>
-          </v-row>
-        </div>
+              <v-col cols="12" sm="6" md="4">
+                <v-select
+                  v-model="filters.euResident"
+                  :items="[
+                    { title: 'EU Resident', value: true },
+                    { title: 'Non-EU Resident', value: false }
+                  ]"
+                  label="EU Residency"
+                  variant="outlined"
+                  density="compact"
+                  hide-details
+                  clearable
+                ></v-select>
+              </v-col>
+            </v-row>
+
+            <v-row dense class="mt-2">
+              <v-col cols="12">
+                <div class="text-caption text-medium-emphasis mb-1">Signup Date Range</div>
+                <div class="d-flex gap-2">
+                  <v-menu
+                    v-model="startDateMenu"
+                    :close-on-content-click="false"
+                  >
+                    <template v-slot:activator="{ props }">
+                      <v-text-field
+                        v-bind="props"
+                        v-model="filters.startDate"
+                        label="Start Date"
+                        placeholder="From"
+                        variant="outlined"
+                        density="compact"
+                        hide-details
+                        clearable
+                        readonly
+                        class="flex-grow-1"
+                        @click:clear="clearStartDate"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker
+                      v-model="filters.startDate"
+                      @update:model-value="startDateMenu = false"
+                    ></v-date-picker>
+                  </v-menu>
+
+                  <v-menu
+                    v-model="endDateMenu"
+                    :close-on-content-click="false"
+                  >
+                    <template v-slot:activator="{ props }">
+                      <v-text-field
+                        v-bind="props"
+                        v-model="filters.endDate"
+                        label="End Date"
+                        placeholder="To"
+                        variant="outlined"
+                        density="compact"
+                        hide-details
+                        clearable
+                        readonly
+                        class="flex-grow-1"
+                        @click:clear="clearEndDate"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker
+                      v-model="filters.endDate"
+                      @update:model-value="endDateMenu = false"
+                    ></v-date-picker>
+                  </v-menu>
+                </div>
+              </v-col>
+            </v-row>
+          </div>
+        </v-expand-transition>
       </v-card-text>
     </v-card>
 
@@ -87,6 +162,9 @@
       fixed-header
     >
       <template #bottom></template>
+      <template #[`item.name`]="{ item }">
+        {{ formatName(item) }}
+      </template>
       <template #[`item.role`]="{ item }">
         {{ formatRole(item.role) }}
       </template>
@@ -96,8 +174,8 @@
       <template #[`item.collegeContactConsent`]="{ item }">
         {{ item.collegeContactConsent ? 'Yes' : 'No' }}
       </template>
-      <template #[`item.createdAt`]="{ item }">
-        {{ formatDate(item.createdAt) }}
+      <template #[`item.created`]="{ item }">
+        {{ formatDate(item.created) }}
       </template>
     </v-data-table>
   </v-container>
@@ -107,9 +185,9 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/userStore';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, Timestamp } from 'firebase/firestore';
 import { dbFireStore } from "../firebase";
-import { format } from 'date-fns';
+import { format, isWithinInterval, parseISO, startOfDay, endOfDay } from 'date-fns';
 
 export default {
   name: 'UsersView',
@@ -119,12 +197,17 @@ export default {
     const users = ref([]);
     const loading = ref(true);
     const search = ref('');
+    const startDateMenu = ref(false);
+    const endDateMenu = ref(false);
+    const showFilters = ref(false);
 
     // Filter states
     const filters = ref({
       role: null,
       graduationYear: null,
       euResident: null,
+      startDate: null,
+      endDate: null,
     });
 
     const roleOptions = [
@@ -165,30 +248,58 @@ export default {
         result = result.filter(user => user.euResident === filters.value.euResident);
       }
 
+      if (filters.value.startDate || filters.value.endDate) {
+        result = result.filter(user => {
+          const createdAt = user.createdAt?.toDate();
+          if (!createdAt) return false;
+
+          if (filters.value.startDate && filters.value.endDate) {
+            return isWithinInterval(createdAt, {
+              start: startOfDay(parseISO(filters.value.startDate)),
+              end: endOfDay(parseISO(filters.value.endDate))
+            });
+          } else if (filters.value.startDate) {
+            return createdAt >= startOfDay(parseISO(filters.value.startDate));
+          } else if (filters.value.endDate) {
+            return createdAt <= endOfDay(parseISO(filters.value.endDate));
+          }
+          return true;
+        });
+      }
+
       return result;
     });
+
+    const clearStartDate = () => {
+      filters.value.startDate = null;
+    };
+
+    const clearEndDate = () => {
+      filters.value.endDate = null;
+    };
 
     const clearFilters = () => {
       filters.value = {
         role: null,
         graduationYear: null,
         euResident: null,
+        startDate: null,
+        endDate: null,
       };
     };
 
     const headers = [
-    { title: 'Email', key: 'email', align: 'start' },
-    { title: 'First Name', key: 'firstName', align: 'start' },
-      { title: 'Last Name', key: 'lastName', align: 'start' },
+      { title: 'Email', key: 'email', align: 'start' },
+      { title: 'Sign up date', key: 'created', align: 'start' },
+      { title: 'Name', key: 'name', align: 'start' },
       { title: 'Role', key: 'role', align: 'start' },
-      { title: 'Birthday', key: 'birthday', align: 'start' },
+      { title: 'Business', key: 'businessName', align: 'start' },
       { title: 'High School', key: 'highSchool', align: 'start' },
-      { title: 'Business Name', key: 'businessName', align: 'start' },
       { title: 'Graduation Year', key: 'graduationYear', align: 'start' },
-      { title: 'Zip Code', key: 'zipCode', align: 'start' },
       { title: 'EU Resident', key: 'euResident', align: 'center' },
       { title: 'College Contact Consent', key: 'collegeContactConsent', align: 'center' },
-      { title: 'Created At', key: 'createdAt', align: 'start' },
+      { title: 'Birthday', key: 'birthday', align: 'start' },
+      { title: 'Zip Code', key: 'zipCode', align: 'start' },
     ];
 
     const formatRole = (role) => {
@@ -196,7 +307,7 @@ export default {
         student: 'Student',
         guardian: 'Parent/Guardian',
         educator: 'Educator',
-        counselor: 'Counselor',
+        iec: 'Counselor',
         other: 'Other'
       };
       return roles[role] || role;
@@ -205,30 +316,41 @@ export default {
     const formatDate = (timestamp) => {
       if (!timestamp) return '';
       try {
-        const date = timestamp.toDate();
-        return format(date, 'MMM d, yyyy');
+        // If it's already a Timestamp, just use toDate()
+        if (timestamp instanceof Timestamp) {
+          return format(timestamp.toDate(), 'MMMM d, yyyy');
+        }
+        return '';
       } catch (error) {
         console.error('Error formatting date:', error);
         return '';
       }
     };
 
+    const formatName = (item) => {
+      const firstName = item.firstName || '';
+      const lastName = item.lastName || '';
+      return [firstName, lastName].filter(Boolean).join(' ');
+    };
+
     const fetchUsers = async () => {
       try {
-        const usersQuery = query(collection(dbFireStore, 'users'), orderBy('lastName'));
+        const usersQuery = query(
+          collection(dbFireStore, 'users'), 
+          orderBy('created', 'desc')
+        );
         const querySnapshot = await getDocs(usersQuery);
-        console.log('Number of users found:', querySnapshot.size);
         
         const userData = querySnapshot.docs.map(doc => {
           const data = doc.data();
-          console.log('User data:', data);
+          // Log the created timestamp for debugging
+          console.log('User created timestamp:', data.created);
           return {
             id: doc.id,
             ...data
           };
         });
         
-        console.log('Processed user data:', userData);
         users.value = userData;
       } catch (error) {
         console.error('Error fetching users:', error);
@@ -260,6 +382,12 @@ export default {
       isFiltering,
       activeFilterCount,
       clearFilters,
+      startDateMenu,
+      endDateMenu,
+      clearStartDate,
+      clearEndDate,
+      showFilters,
+      formatName,
     };
   }
 }
@@ -274,62 +402,78 @@ export default {
     cursor: pointer;
     background: #d8d8d8;
   }
+
+  // Frozen first column styles
+  tr th:first-of-type,
+  tr td:first-of-type {
+    position: sticky !important;
+    left: 0;
+    background: #eaeaea;
+    border-right: 1px solid rgba(0, 0, 0, 0.12);
+  }
+
+  // Ensure header has higher z-index than body cells
+  thead tr th:first-of-type {
+    z-index: 3;
+    background: #eaeaea;
+  }
+
+  tbody tr td:first-of-type {
+    z-index: 1;
+    background: white;
+  }
+
+  // Allow content to determine width
+  th {
+    white-space: nowrap;
+    min-width: fit-content;
+  }
+
+  td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  // Ensure proper layering for all header cells
+  thead tr th {
+    z-index: 2;
+    background: #eaeaea;
+  }
+
+  // Ensure body cells are below headers
+  tbody tr td {
+    background: white;
+  }
+
+  // Handle hover states
+  tbody tr:hover td {
+    background: #efefef !important;
+  }
+
+  tbody tr:hover td:first-of-type {
+    background: #efefef !important;
+  }
 }
 
 .v-data-table-header__content {
   color: #292f2c;
   font-weight: 500;
   font-size: 15px;
-  text-wrap: nowrap;
+  white-space: nowrap;
 }
 
 .v-table.v-table--fixed-header>.v-table__wrapper>table>thead>tr>th {
   background: #eaeaea;
 }
 
+// Remove redundant styles
 .v-data-table__tr:hover td {
   background: #efefef !important;
 }
 
 tr.v-data-table__selected {
   background: #f5f5f5;
-}
-
-tr th:first-of-type,
-tr td:first-of-type {
-  position: sticky !important;
-  z-index: 1;
-  left: 0;
-  background: #eaeaea;
-  width: 48px;
-  border-right: 1px solid rgba(0, 0, 0, 0.12);
-}
-
-.v-table--fixed-header>.v-table__wrapper>table:first-of-type>thead>tr:first-of-type>th:first-of-type {
-  z-index: 10;
-}
-
-table > thead > tr:nth-child(1) > th.v-data-table__td.v-data-table-column--fixed.v-data-table-column--last-fixed.v-data-table-column--align-.v-data-table__th--fixed.v-data-table__th {
-  z-index: 6 !important;
-}
-
-tr th:nth-child(2),
-tr td:nth-child(2) {
-  position: sticky !important;
-  left: 48px !important;
-  background: #eaeaea;
-  padding-bottom: 8px !important;
-  padding-top: 8px !important;
-}
-
-tr td {
-  line-height: 1.3em;
-  color: #232323;
-}
-
-.v-table>.v-table__wrapper>table>tbody>tr>td {
-  padding-top: 8px;
-  padding-bottom: 8px;
 }
 
 // Add scroll styles
@@ -354,17 +498,6 @@ tr td {
   }
 }
 
-// Fix background color for frozen columns when scrolling
-tr td:first-of-type,
-tr td:nth-child(2) {
-  background: white !important;
-}
-
-tr:hover td:first-of-type,
-tr:hover td:nth-child(2) {
-  background: #efefef !important;
-}
-
 // Add styles for search field
 .v-card {
   border-radius: 8px;
@@ -382,6 +515,7 @@ tr:hover td:nth-child(2) {
 }
 
 .v-badge__badge {
-  margin-left: 8px;
+  margin-left: 4px;
+  margin-right: -8px;
 }
 </style> 
