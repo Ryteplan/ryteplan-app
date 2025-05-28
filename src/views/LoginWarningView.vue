@@ -5,7 +5,7 @@
       <p class="text-body-1 mb-6">
         You need to create an account or sign in to view and manage your lists.
       </p>
-      <v-btn color="primary" :href="`/login${redirect}`">
+      <v-btn color="primary" :to="`/login${redirect}`">
         Login or Create an account
       </v-btn>
     </div>

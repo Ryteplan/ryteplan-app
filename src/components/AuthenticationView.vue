@@ -264,7 +264,6 @@ export default {
           await this.userStore.loadUserInfo();
           if (this.userStore.isSetupFinished) {
             if (this.$route.query.redirect) {
-              console.log("redirecting to", this.$route.query.redirect);
               this.$router.push(this.$route.query.redirect);
             } else {
               this.$router.push("/");
