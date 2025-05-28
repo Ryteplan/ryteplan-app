@@ -24,7 +24,10 @@ const validateLogin = (to, from, next) => {
   if(userStore.isLoggedIn) {
     next();
   } else {
-    next('/login-warning');
+    next({
+      path: '/login-warning',
+      query: { redirect: to.fullPath }
+    });
   }
 }
 
