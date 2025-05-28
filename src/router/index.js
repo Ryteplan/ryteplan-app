@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-
+import { useUserStore } from "@/stores/userStore";
 import HomeView from '@/components/HomeView.vue';
 import AuthenticationView from '@/components/AuthenticationView.vue';
 import FilterableTable from '@/components/FilterableTable.vue';
@@ -16,6 +16,16 @@ import ImageWorkView from '@/components/ImageWorkView.vue';
 import TermsView from '@/views/TermsView.vue';
 import PrivacyView from '@/views/PrivacyView.vue';
 import OnboardingView from '@/views/OnboardingView.vue';
+import LoginWarningView from '@/views/LoginWarningView.vue';
+
+const validateLogin = (to, from, next) => {
+  const userStore = useUserStore();
+  if(userStore.isLoggedIn) {
+    next();
+  } else {
+    next('/login-warning');
+  }
+}
 
 const routes = [
   {
@@ -84,11 +94,13 @@ const routes = [
     path: '/lists',
     name: 'ListsView',
     component: ListsView,
+    beforeEnter: validateLogin,
   },
   {
     path: '/list/:id',
     name: 'SingularListView',
     component: SingularListView,
+    beforeEnter: validateLogin,
   },
   {
     path: '/account',
@@ -109,6 +121,11 @@ const routes = [
     path: '/onboarding',
     name: 'onboarding',
     component: OnboardingView,
+  },
+  {
+    path: '/login-warning',
+    name: 'LoginWarning',
+    component: LoginWarningView,
   },
 ];
 
