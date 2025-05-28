@@ -269,6 +269,15 @@ export default {
           hideFromLoggedOut: true
         },
         {
+          title: 'Users',
+          icon: 'mdi-account-group',
+          action: () => { 
+            this.$router.push('/users');
+          },
+          hideFromLoggedOut: true,
+          adminOnly: true
+        },
+        {
           title: 'Register or Login',
           icon: 'mdi-account-plus',
           action: () => { 
@@ -380,9 +389,13 @@ export default {
   computed: {
     filteredDropDownItems() {
       if (this.userStore.isLoggedIn) {
-        return this.dropDownItems.filter(item => item.hideFromLoggedIn ? false : true);
+        return this.dropDownItems.filter(item => {
+          if (item.hideFromLoggedIn) return false;
+          if (item.adminOnly && !this.userStore.isAdmin) return false;
+          return true;
+        });
       } else {
-        return this.dropDownItems.filter(item => item.hideFromLoggedOut ? false : true);
+        return this.dropDownItems.filter(item => !item.hideFromLoggedOut);
       }
     }
   },

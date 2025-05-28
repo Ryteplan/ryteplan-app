@@ -17,6 +17,7 @@ import TermsView from '@/views/TermsView.vue';
 import PrivacyView from '@/views/PrivacyView.vue';
 import OnboardingView from '@/views/OnboardingView.vue';
 import LoginWarningView from '@/views/LoginWarningView.vue';
+import UsersView from '@/views/UsersView.vue';
 
 const validateLogin = (to, from, next) => {
   const userStore = useUserStore();
@@ -24,6 +25,15 @@ const validateLogin = (to, from, next) => {
     next();
   } else {
     next('/login-warning');
+  }
+}
+
+const validateAdmin = (to, from, next) => {
+  const userStore = useUserStore();
+  if(userStore.isAdmin) {
+    next();
+  } else {
+    next('/');
   }
 }
 
@@ -126,6 +136,12 @@ const routes = [
     path: '/login-warning',
     name: 'LoginWarning',
     component: LoginWarningView,
+  },
+  {
+    path: '/users',
+    name: 'users',
+    component: UsersView,
+    beforeEnter: validateAdmin,
   },
 ];
 

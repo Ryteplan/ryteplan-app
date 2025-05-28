@@ -57,7 +57,7 @@
         <v-menu location="bottom end">
           <template v-slot:activator="{ props }">
             <v-btn
-              size="small"
+              size="x-small"
               v-if="selectedInstitutions.length > 0"
               v-bind="props"
               :disabled="selectedInstitutions.length === 0"
@@ -118,7 +118,7 @@
       <v-card>
         <v-card-title class="d-flex justify-space-between align-center">
           <span>Edit Columns</span>
-          <v-btn icon="mdi-close" variant="text" @click="showColumnsDialog = false"></v-btn>
+          <v-btn size="x-small" icon="mdi-close" variant="text" @click="showColumnsDialog = false"></v-btn>
         </v-card-title>
         <v-card-text>
           <v-list>
