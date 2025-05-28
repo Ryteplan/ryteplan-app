@@ -139,8 +139,12 @@ export const useUserStore = defineStore('user', {
       localStorage.setItem("adminMode", this.adminMode);
     },
     async updateUser(updatedUserInfo) {
-      console.log('Updating user with:', updatedUserInfo, updateDoc);
-      updatedUserInfo.birthday = format(updatedUserInfo.birthday, 'yyyy-MM-dd');
+      if (updatedUserInfo.birthday) {
+        updatedUserInfo.birthday = format(updatedUserInfo.birthday, 'yyyy-MM-dd');
+      } else {
+        delete updatedUserInfo.birthday;
+      }
+
       this.userInfo = {
         ...this.userInfo,
         ...updatedUserInfo

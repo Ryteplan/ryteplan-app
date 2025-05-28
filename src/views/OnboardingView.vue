@@ -63,6 +63,7 @@
                 required
               />
               <v-date-input
+                v-if="formData.role === 'student'"
                 v-model="formData.birthday"
                 prepend-icon=""
                 label="Date of Birth"
@@ -182,8 +183,14 @@
               label="I accept the Terms of Service and Privacy Policy"
               required
             />
+            <v-checkbox
+              v-model="formData.isAdult"
+              :error-messages="!formData.isAdult && isAdultError ? 'You must be 18 years of age or older' : ''"
+              label="By checking this box, I represent that I am 18 years of age or older and agree to the terms of service and privacy policy"
+              required
+            />
           </v-form>
-          <span v-if="!formData.acceptTerms" class="mx-4 pa-4" style="margin-top: 0; border-radius: 8px; display: block; border: 1px solid lightcoral; background: #fff">You must accept the terms to create an account.</span>
+          <span v-if="!formData.acceptTerms || !formData.isAdult" class="mx-4 pa-4" style="margin-top: 0; border-radius: 8px; display: block; border: 1px solid lightcoral; background: #fff">You must accept the terms to create an account.</span>
         </v-stepper-window-item>
       </v-stepper-window>
 
@@ -286,7 +293,7 @@ export default {
     const euResidentError = ref(false);
     const collegeConsentError = ref(false);
     const termsError = ref(false);
-
+    const isAdultError = ref(false);
     const nextStep = async () => {
       const validateAndProceed = async (formRef) => {
         if (formRef.value) {
@@ -334,11 +341,11 @@ export default {
     }
 
     const submitForm = async () => {
-      console.log(formData)
       termsError.value = !formData.acceptTerms;
-      
+      isAdultError.value = !formData.isAdult;
+
       try {
-        if (!formData.acceptTerms) {
+        if (!formData.acceptTerms || !formData.isAdult) {
           return;
         }
         
@@ -410,6 +417,7 @@ export default {
       roleForm,
       roleError,
       termsError,
+      isAdultError,
     };
   },
 }
