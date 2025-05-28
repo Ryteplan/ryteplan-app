@@ -1,15 +1,87 @@
 <template>
   <v-container>
-    <div class="flex-column align-center mb-6">
-      <h1 class="text-h4">Users</h1>
-      <span class="text-subtitle-1 text-medium-emphasis">{{ users.length }} total</span>
+    <div class="flex-column align-center mb-4">
+      <h1 class="text-h5">Users</h1>
+      <span class="text-subtitle-2 text-medium-emphasis">{{ filteredUsers.length }} filtered / {{ users.length }} total</span>
     </div>
+    
+    <v-card class="mb-4">
+      <v-card-text class="pa-2">
+        <div class="d-flex flex-wrap gap-2">
+          <v-text-field
+            v-model="search"
+            prepend-inner-icon="mdi-magnify"
+            label="Search users"
+            single-line
+            hide-details
+            variant="outlined"
+            density="compact"
+            class="flex-grow-1"
+          ></v-text-field>
+          
+          <v-btn
+            color="primary"
+            variant="text"
+            @click="clearFilters"
+            :disabled="!isFiltering"
+            density="compact"
+          >
+            Clear Filters
+          </v-btn>
+        </div>
+
+        <div class="mt-2">
+          <v-row dense>
+            <v-col cols="12" sm="6" md="4">
+              <v-select
+                v-model="filters.role"
+                :items="roleOptions"
+                label="Role"
+                variant="outlined"
+                density="compact"
+                hide-details
+                clearable
+              ></v-select>
+            </v-col>
+            
+            <v-col cols="12" sm="6" md="4">
+              <v-select
+                v-model="filters.graduationYear"
+                :items="graduationYearOptions"
+                label="Graduation Year"
+                variant="outlined"
+                density="compact"
+                hide-details
+                clearable
+              ></v-select>
+            </v-col>
+
+            <v-col cols="12" sm="6" md="4">
+              <v-select
+                v-model="filters.euResident"
+                :items="[
+                  { title: 'EU Resident', value: true },
+                  { title: 'Non-EU Resident', value: false }
+                ]"
+                label="EU Residency"
+                variant="outlined"
+                density="compact"
+                hide-details
+                clearable
+              ></v-select>
+            </v-col>
+          </v-row>
+        </div>
+      </v-card-text>
+    </v-card>
+
     <v-data-table
       id="dataTable"
       :headers="headers"
-      :items="users"
+      :items="filteredUsers"
       :loading="loading"
       :items-per-page="-1"
+      :search="search"
       class="elevation-1"
       density="comfortable"
       fixed-header
@@ -32,7 +104,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/userStore';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
@@ -46,6 +118,63 @@ export default {
     const router = useRouter();
     const users = ref([]);
     const loading = ref(true);
+    const search = ref('');
+
+    // Filter states
+    const filters = ref({
+      role: null,
+      graduationYear: null,
+      euResident: null,
+    });
+
+    const roleOptions = [
+      { title: 'Student', value: 'student' },
+      { title: 'Parent/Guardian', value: 'guardian' },
+      { title: 'Educator', value: 'educator' },
+      { title: 'Counselor', value: 'iec' },
+      { title: 'Other', value: 'other' },
+    ];
+
+    // Generate graduation year options (current year - 2 to current year + 6)
+    const currentYear = new Date().getFullYear();
+    const graduationYearOptions = Array.from(
+      { length: 9 },
+      (_, i) => currentYear - 2 + i
+    );
+
+    const isFiltering = computed(() => {
+      return Object.values(filters.value).some(value => value !== null);
+    });
+
+    const activeFilterCount = computed(() => {
+      return Object.values(filters.value).filter(value => value !== null).length;
+    });
+
+    const filteredUsers = computed(() => {
+      let result = [...users.value];
+
+      if (filters.value.role) {
+        result = result.filter(user => user.role === filters.value.role);
+      }
+
+      if (filters.value.graduationYear) {
+        result = result.filter(user => user.graduationYear === filters.value.graduationYear);
+      }
+
+      if (filters.value.euResident !== null) {
+        result = result.filter(user => user.euResident === filters.value.euResident);
+      }
+
+      return result;
+    });
+
+    const clearFilters = () => {
+      filters.value = {
+        role: null,
+        graduationYear: null,
+        euResident: null,
+      };
+    };
 
     const headers = [
     { title: 'Email', key: 'email', align: 'start' },
@@ -122,7 +251,15 @@ export default {
       users,
       loading,
       formatRole,
-      formatDate
+      formatDate,
+      search,
+      filters,
+      roleOptions,
+      graduationYearOptions,
+      filteredUsers,
+      isFiltering,
+      activeFilterCount,
+      clearFilters,
     };
   }
 }
@@ -226,5 +363,25 @@ tr td:nth-child(2) {
 tr:hover td:first-of-type,
 tr:hover td:nth-child(2) {
   background: #efefef !important;
+}
+
+// Add styles for search field
+.v-card {
+  border-radius: 8px;
+}
+
+.v-text-field {
+  .v-field__input {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+  }
+}
+
+.gap-4 {
+  gap: 16px;
+}
+
+.v-badge__badge {
+  margin-left: 8px;
 }
 </style> 
