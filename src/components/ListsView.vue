@@ -1,11 +1,12 @@
 <template>
   <v-container class="pt-4">
-    <v-row class="">
-      <v-col cols="6">
+    <v-row class="flex-column align-center">
+      <v-col cols="12" lg="6">
         <div class="d-flex align-center justify-space-between">
-          <div class="d-flex align-center">
+          <div class="d-flex align-center justify-space-between ">
             <h1 class="text-h6">Your lists</h1>
             <v-btn
+              size="x-small"
               @click="showCreateListDialog = true"
               class="ml-6"
               :disabled="userLists.length >= 30"
@@ -15,13 +16,17 @@
             </v-btn>
           </div>
         </div>
-        <div class="d-flex align-end justify-space-between">
+        <div class="d-flex align-end justify-space-between mt-4">
           <span class="text-caption" style="color: #888888">
             ({{ userLists.length }}/30)
           </span>
           <v-menu class="" offset-y>
             <template v-slot:activator="{ props }">
-              <v-btn text v-bind="props">
+              <v-btn
+                text
+                v-bind="props"
+                size="x-small"
+              >
                 <v-icon left>mdi-sort</v-icon>
                 Sort by:
                 {{ sortOptions.find((opt) => opt.value === currentSort).text }}
