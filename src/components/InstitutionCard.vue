@@ -89,6 +89,15 @@ export default {
       } else if (typeof value === 'string' && value.trim() === '') {
         return '—';
       } else {
+        // Format numbers with commas unless it's an SAT/ACT score
+        if (typeof value === 'number') {
+          const noCommaFields = ['sat1Verb50thP', 'sat1Math50thP', 'sat1Combined50th', 'actComp50thP'];
+          const fieldName = Object.keys(this.item).find(key => this.item[key] === value);
+          if (noCommaFields.includes(fieldName)) {
+            return value.toString();
+          }
+          return value.toLocaleString();
+        }
         return value;
       }
     }

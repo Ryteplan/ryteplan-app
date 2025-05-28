@@ -15,10 +15,11 @@
         />
       </v-card-title>
       <div class="pa-8">
-        <p v-if="!userID">
-          You must be logged in to save to a list.
-          Please login or create an account today!
-        </p>
+        <div v-if="!userID">
+          <h2 class="text-h5 mb-4">Welcome to RytePlan - Your FREE College Planning Hub!</h2>
+          <p class="text-body-1 mb-6"><a href="/login">Sign in</a> to create personalized college lists and data downloads for seamless application planning.</p>
+          <p class="text-body-1 mb-6">New to the RytePlan community? Create your FREE account and unlock all features!</p>
+        </div>
         <v-btn
           class="mt-5"
           v-if="!userID"

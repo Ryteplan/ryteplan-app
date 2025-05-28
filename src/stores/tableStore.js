@@ -421,7 +421,7 @@ export const useTableStore = defineStore('table', {
           show: false,
           sortable: false,
           align: "end",
-
+          noCommas: true
         },
         {
           title: "SAT Math 50th",
@@ -430,7 +430,7 @@ export const useTableStore = defineStore('table', {
           show: false,
           sortable: false,
           align: "end",
-
+          noCommas: true
         },
         {
           title: "SAT Combined 50th",
@@ -439,7 +439,7 @@ export const useTableStore = defineStore('table', {
           show: false,
           sortable: false,
           align: "end",
-
+          noCommas: true
         },
         {
           title: "ACT 50th",
@@ -448,7 +448,7 @@ export const useTableStore = defineStore('table', {
           show: false,
           sortable: false,
           align: "end",
-
+          noCommas: true
         },
         {
           title: "Admit Rate",

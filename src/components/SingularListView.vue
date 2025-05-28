@@ -101,7 +101,7 @@
             {{ item.testingPolicy || '—' }}
           </template>          
           <template v-for="header in filteredHeaders" :key="header.key" #[`item.${header.key}`]="{ item }">
-            {{ formatCellValue(item[header.key]) }}
+            {{ formatCellValue(item[header.key], header.key) }}
           </template>
         </v-data-table>
       </v-col>
@@ -415,7 +415,7 @@ export default {
             
             let value = institution[header.key];
             // Apply formatting first
-            let displayValue = this.formatCellValue(value);
+            let displayValue = this.formatCellValue(value, header.key);
             
             // Skip further processing if it's already formatted to '—'
             if (displayValue === '—') {
@@ -506,7 +506,7 @@ export default {
             if (header.children) {
               const childValues = header.children.map(child => {
                 const rawValue = institution[child.key];
-                let formattedValue = this.formatCellValue(rawValue);
+                let formattedValue = this.formatCellValue(rawValue, child.key);
                 let finalCsvValue = formattedValue;
 
                 // Apply specific formatting only if the value isn't already '—'
@@ -527,7 +527,7 @@ export default {
             } else {
               // Logic for regular headers
               const rawValue = institution[header.key];
-              let formattedValue = this.formatCellValue(rawValue); // Step 1: Basic format
+              let formattedValue = this.formatCellValue(rawValue, header.key); // Step 1: Basic format
               let finalCsvValue = formattedValue; // Start with the formatted value
 
               // Apply specific formatting only if the value isn't already '—'
@@ -644,12 +644,20 @@ export default {
       }
       return value;
     },
-    formatCellValue(value) {
+    formatCellValue(value, fieldKey) {
       if (value === -1 || value === '-1' || value === '0' || value === 0 || value === null || value === undefined || value === '-') {
         return '—';
       } else if (typeof value === 'string' && value.trim() === '') {
         return '—';
       } else {
+        // Format numbers with commas unless noCommas is set
+        if (typeof value === 'number') {
+          const header = this.filteredHeaders.find(h => h.key === fieldKey);
+          if (header?.noCommas) {
+            return value.toString();
+          }
+          return value.toLocaleString();
+        }
         return value;
       }
     },
