@@ -8,8 +8,8 @@
         Login or Create an account
       </v-btn>
     </div>
-    <v-row v-else class="">
-      <v-col cols="6">
+    <v-row v-else class="flex-column align-center">
+      <v-col cols="12" lg="6">
         <div class="d-flex align-center justify-space-between">
           <div class="d-flex align-center">
             <h1 class="text-h6">Your lists</h1>
