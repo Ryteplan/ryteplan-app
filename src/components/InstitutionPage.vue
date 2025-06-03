@@ -881,6 +881,17 @@
                   <span class="stat-label">International</span>
                   <div>
                     <v-progress-linear
+                      :model-value="0"
+                      color="blue-grey"
+                      height="25"
+                      v-if="institution['enNonresAlienN'] === -1"
+                    >
+                      <template v-slot:default>
+                        <strong>0% (—)</strong>
+                      </template>
+                    </v-progress-linear>
+                    <v-progress-linear
+                      v-else
                       :model-value="((institution['enNonresAlienN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
                       color="blue-grey"
                       height="25"
@@ -895,6 +906,17 @@
                   <span class="stat-label">Asian</span>
                   <div>
                     <v-progress-linear
+                      :model-value="0"
+                      color="blue-grey"
+                      height="25"
+                      v-if="institution['enAsianNonhispanicN'] === -1"
+                    >
+                      <template v-slot:default>
+                        <strong>0% (—)</strong>
+                      </template>
+                    </v-progress-linear>
+                    <v-progress-linear
+                      v-else
                       :model-value="((institution['enAsianNonhispanicN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
                       color="blue-grey"
                       height="25"
@@ -909,6 +931,17 @@
                   <span class="stat-label">Black</span>
                   <div>
                     <v-progress-linear
+                      :model-value="0"
+                      color="blue-grey"
+                      height="25"
+                      v-if="institution['enBlackNonhispanicN'] === -1"
+                    >
+                      <template v-slot:default>
+                        <strong>0% (—)</strong>
+                      </template>
+                    </v-progress-linear>
+                    <v-progress-linear
+                      v-else
                       :model-value="((institution['enBlackNonhispanicN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
                       color="blue-grey"
                       height="25"
@@ -923,6 +956,17 @@
                   <span class="stat-label">Hispanic</span>
                   <div>
                     <v-progress-linear
+                      :model-value="0"
+                      color="blue-grey"
+                      height="25"
+                      v-if="institution['enHispanicEthnicityN'] === -1"
+                    >
+                      <template v-slot:default>
+                        <strong>0% (—)</strong>
+                      </template>
+                    </v-progress-linear>
+                    <v-progress-linear
+                      v-else
                       :model-value="((institution['enHispanicEthnicityN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
                       color="blue-grey"
                       height="25"
@@ -937,6 +981,17 @@
                   <span class="stat-label">Native Hawaiian or other Pacific Islander</span>
                   <div>
                     <v-progress-linear
+                      :model-value="0"
+                      color="blue-grey"
+                      height="25"
+                      v-if="institution['enIslanderNonhispanicN'] === -1"
+                    >
+                      <template v-slot:default>
+                        <strong>0% (—)</strong>
+                      </template>
+                    </v-progress-linear>
+                    <v-progress-linear
+                      v-else
                       :model-value="((institution['enIslanderNonhispanicN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
                       color="blue-grey"
                       height="25"
@@ -951,6 +1006,17 @@
                   <span class="stat-label">Multirace</span>
                   <div>
                     <v-progress-linear
+                      :model-value="0"
+                      color="blue-grey"
+                      height="25"
+                      v-if="institution['enMultiraceNonhispanicN'] === -1"
+                    >
+                      <template v-slot:default>
+                        <strong>0% (—)</strong>
+                      </template>
+                    </v-progress-linear>
+                    <v-progress-linear
+                      v-else
                       :model-value="((institution['enMultiraceNonhispanicN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
                       color="blue-grey"
                       height="25"
@@ -965,6 +1031,17 @@
                   <span class="stat-label">American Indian or Alaska Native</span>
                   <div>
                     <v-progress-linear
+                      :model-value="0"
+                      color="blue-grey"
+                      height="25"
+                      v-if="institution['enNativeNonhispanicN'] === -1"
+                    >
+                      <template v-slot:default>
+                        <strong>0% (—)</strong>
+                      </template>
+                    </v-progress-linear>
+                    <v-progress-linear
+                      v-else
                       :model-value="((institution['enNativeNonhispanicN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
                       color="blue-grey"
                       height="25"
@@ -979,6 +1056,17 @@
                   <span class="stat-label">Unknown</span>
                   <div>
                     <v-progress-linear
+                      :model-value="0"
+                      color="blue-grey"
+                      height="25"
+                      v-if="institution['enRaceEthnicityUnknownN'] === -1"
+                    >
+                      <template v-slot:default>
+                        <strong>0% (—)</strong>
+                      </template>
+                    </v-progress-linear>
+                    <v-progress-linear
+                      v-else
                       :model-value="((institution['enRaceEthnicityUnknownN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
                       color="blue-grey"
                       height="25"
@@ -993,6 +1081,17 @@
                   <span class="stat-label">White</span>
                   <div>
                     <v-progress-linear
+                      :model-value="0"
+                      color="blue-grey"
+                      height="25"
+                      v-if="institution['enWhiteNonhispanicN'] === -1"
+                    >
+                      <template v-slot:default>
+                        <strong>0% (—)</strong>
+                      </template>
+                    </v-progress-linear>
+                    <v-progress-linear
+                      v-else
                       :model-value="((institution['enWhiteNonhispanicN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
                       color="blue-grey"
                       height="25"
