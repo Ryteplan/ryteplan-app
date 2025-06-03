@@ -12,19 +12,7 @@ class Action {
     const missingPermissions = this.permissions.filter((permission) =>
       !user.permissions.includes(permission)
     );
-    const firstMissingPermission = missingPermissions[0];
 
-    if (firstMissingPermission === 'olderThan13') {
-      return new ActionResponse({
-        missingPermissions,
-        name: this.name,
-        status: 'error',
-        data: {
-          title: 'Account Age Restriction',
-          message: 'User must be older than 13 to perform this action. For your security your data will be deleted promptly.',
-        },
-      });
-    }
     if (missingPermissions.length > 0) {
       return new ActionResponse({
           missingPermissions,
@@ -44,7 +32,7 @@ class Action {
 export const availableActions = {
   createNewList: new Action({
     name: 'createNewList',
-    permissions: ['loggedIn', 'accountSetup', 'olderThan13'],
+    permissions: ['loggedIn', 'accountSetup'],
   }),
 };
 
