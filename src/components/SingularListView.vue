@@ -653,6 +653,12 @@ export default {
         // Format numbers with commas unless noCommas is set
         if (typeof value === 'number') {
           const header = this.filteredHeaders.find(h => h.key === fieldKey);
+          
+          // Handle currency display if the header has displayCurrency set to true
+          if (header?.displayCurrency) {
+            return `$${Math.round(value).toLocaleString()}`;
+          }
+          
           if (header?.noCommas) {
             return value.toString();
           }

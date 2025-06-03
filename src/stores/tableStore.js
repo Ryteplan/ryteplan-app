@@ -504,21 +504,25 @@ export const useTableStore = defineStore('table', {
           key: "tuitOverallFtD2025",
           minWidth: "200px",
           show: false,
-          align: "end"
+          align: "end",
+          displayCurrency: true
         },
         {
           title: "Tuition Non-Resident",
           key: "tuitNresFtD2025",
           minWidth: "200px",
           show: false,
-          align: "end"
+          align: "end",
+          displayCurrency: true
+
         },
         {
           title: "Tuition In-State",
           key: "tuitStateFtD2025",
           minWidth: "200px",
           show: false,
-          align: "end"
+          align: "end",
+          displayCurrency: true
         },          
         {
           title: "Tuition: International",
@@ -526,21 +530,24 @@ export const useTableStore = defineStore('table', {
           minWidth: "140px",
           show: false,
           sortable: false,
-          align: "end"
+          align: "end",
+          displayCurrency: true
         },
         {
           title: "Annual fees",
           key: "feesFtD2025",
           minWidth: "140px",
           show: false,
-          align: "end"
+          align: "end",
+          displayCurrency: true
         },
         {
           title: "Annual room and board, on campus",
           key: "rmBdD2025",
           minWidth: "200px",
           show: false,
-          align: "end"
+          align: "end",
+          displayCurrency: true
         },
         {
           title: "Early Decision Applicants",
@@ -770,6 +777,16 @@ export const useTableStore = defineStore('table', {
           sortable: false,
           align: "end"
         },
+        {
+          title: "Endowment",
+          key: "endow",
+          minWidth: "140px",
+          show: false,
+          sortable: false,
+          align: "end",
+          displayCurrency: true
+        },
+
       ];
       
       // Initialize headers with default values

@@ -27,6 +27,14 @@
       </v-btn>
 
       <v-btn
+        class="mt-8"
+        @click="mergeEndowFields"
+        color="primary"
+      >
+        Merge Endow Fields
+      </v-btn>
+
+      <v-btn
         class="d-none"
         @click="fixUniversitiesWithWrongState"
         color="primary"
@@ -576,6 +584,55 @@ export default {
         // set a timeout for 500 milliseconds
         await new Promise(resolve => setTimeout(resolve, 500));
       })
+    },
+    async mergeEndowFields() {
+      console.log('Merging endow fields');
+      
+      // Get all documents from the source collection
+      const sourceQuery = query(collection(dbFireStore, "Institutions_integrated_cloud_20250313V4"));
+      const sourceSnapshots = await getDocs(sourceQuery);
+      
+      let processedCount = 0;
+      const batchSize = 50; // Process in batches of 50
+      const delay = 2000; // 2 seconds delay between batches
+      
+      // Convert snapshots to array for batch processing
+      const documents = sourceSnapshots.docs;
+      
+      // Process in batches
+      for (let i = 0; i < documents.length; i += batchSize) {
+        const batch = documents.slice(i, i + batchSize);
+        console.log(`Processing batch ${i / batchSize + 1} of ${Math.ceil(documents.length / batchSize)}`);
+        
+        // Process each document in the current batch
+        await Promise.all(batch.map(async (doc) => {
+          const sourceData = doc.data();
+          const docId = doc.id;
+          
+          // Only proceed if there's an endow field
+          if (sourceData.endow !== undefined) {
+            try {
+              // Update the matching document in the target collection
+              await setDoc(
+                doc(dbFireStore, 'institutions_integrated', docId),
+                { endow: sourceData.endow },
+                { merge: true }
+              );
+              processedCount++;
+              console.log(`Updated endow field for document ${docId}`);
+            } catch (error) {
+              console.error(`Error updating document ${docId}:`, error);
+            }
+          }
+        }));
+        
+        // Add delay between batches to prevent overloading
+        if (i + batchSize < documents.length) {
+          await new Promise(resolve => setTimeout(resolve, delay));
+        }
+      }
+      
+      console.log(`Completed merging endow fields. Processed ${processedCount} documents.`);
     },
     async doDataIntegration() {
       console.log('doing data integration')
