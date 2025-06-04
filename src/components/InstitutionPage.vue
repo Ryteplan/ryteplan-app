@@ -1,6 +1,16 @@
 <template>
-  <v-container class="pt-0 px-0">
-    <div class="cover-image d-md-none" style= "z-index: -1;">
+  <v-container class="pt-0 px-0 position-relative">
+    <v-select
+      v-model="selectedSection"
+      :items="navigationItems"
+      density="compact"
+      size="x-small"
+      variant="outlined"
+      @update:model-value="scrollToSection"
+      class="section-navigation"
+      hide-details
+    ></v-select>
+    <div class="cover-image d-md-none" style= "z-index: -1;" id="intro">
       <img 
         v-if="imagesv2.length > 0"
         :src="imagesv2[0].url || imagesv2[0].URL"
@@ -230,11 +240,10 @@
             </ul>
           </div>
         </div>
-        <StorageImagesCollection :images="imagesv2" />
+        <StorageImagesCollection :images="imagesv2" class="" />
       </div>
-
       </div>
-      <div class="section-container three-by-three-stat-grid mt-8">
+      <div class="section-container three-by-three-stat-grid mt-8" id="stats">
         <StatDisplay
           label="Undergraduate (UG) Enrollment"
           :uri="institution['uri']"
@@ -536,7 +545,7 @@
           </div>
         </div>
       </div>
-      <div class="section-container descriptions-container mt-8">
+      <div class="section-container descriptions-container mt-8" id="descriptions">
         <v-expansion-panels v-model="expandedPanels.descriptions" multiple @update:model-value="savePanelStates">
           <v-expansion-panel>
             <v-expansion-panel-title>
@@ -708,400 +717,377 @@
           </v-expansion-panel>
         </v-expansion-panels>
       </div>
-      <v-expansion-panels class="mt-8" v-model="expandedPanels.costAid" @update:model-value="savePanelStates">
-        <v-expansion-panel>
-          <v-expansion-panel-title>
-            <h3>Cost & Aid</h3>
-          </v-expansion-panel-title>
-          <v-expansion-panel-text>
-            <v-list v-if="majors !== null">
-              <div class="four-column-grid mt-4">
-                <div class="stat-container"><span class="stat-label">Tuition In State</span> <span class="stat-content">{{ institution["tuitStateFtD2025"] === -1 ? '—' : '$' + (institution["tuitStateFtD2025"]?.toLocaleString() || '—') }}</span></div>
-                <div class="stat-container"><span class="stat-label">Tuition Out of State</span> <span class="stat-content">{{ institution["tuitNresFtD2025"] === -1 ? '—' : '$' + (institution["tuitNresFtD2025"]?.toLocaleString() || '—') }}</span></div>
-                <div class="stat-container"><span class="stat-label">Tuition International</span> <span class="stat-content">{{ institution["tuitIntlFtD2025"] === -1 ? '—' : '$' + (institution["tuitIntlFtD2025"]?.toLocaleString() || '—') }}</span></div>
-                <div class="stat-container"><span class="stat-label">Tuition Overall</span> <span class="stat-content">{{ institution["tuitOverallFtD2025"] === -1 ? '—' : '$' + (institution["tuitOverallFtD2025"]?.toLocaleString() || '—') }}</span></div>
-              </div>
-              <div class="three-by-three-stat-grid mt-8">
-                <div class="stat-container"><span class="stat-label">Undergrad Pell Grants Awarded</span> <span class="stat-content">{{ institution["grsBachInitPellN"] === -1 ? '—' : institution["grsBachInitPellN"]?.toLocaleString() || '—' }}</span></div>
-                <div class="stat-container"><span class="stat-label">Average Need-Based Scholarship</span> <span class="stat-content">{{ institution["ugFtAvgNbGiftD"] === -1 ? '—' : '$' + (institution["ugFtAvgNbGiftD"]?.toLocaleString() || '—') }}</span></div>
-              </div>
-              <div class="three-by-three-stat-grid mt-8">
-                <div class="stat-container"><span class="stat-label">Merit Scholarships Awarded <br/><span>(excluding athletics)</span> </span> <span class="stat-content">{{ institution["ugFtNnNoneedN"] === -1 ? '—' : '' + (institution["ugFtNnNoneedN"]?.toLocaleString() || '—') }}</span></div>
-                <div class="stat-container"><span class="stat-label">Average Merit Scholarship <br/><span>(excluding athletics)</span> </span> <span class="stat-content">{{ institution["ugFtNnNoneedD"] === -1 ? '—' : '$' + (institution["ugFtNnNoneedD"]?.toLocaleString() || '—') }}</span></div>
-              </div>
-            </v-list>
-          </v-expansion-panel-text>
-        </v-expansion-panel>
-      </v-expansion-panels>
-      <v-expansion-panels class="mt-8" v-model="expandedPanels.sports" @update:model-value="savePanelStates">
-        <v-expansion-panel>
-          <v-expansion-panel-title>
-            <h3>Sports & Athletics</h3>
-          </v-expansion-panel-title>
-          <v-expansion-panel-text>
-            <div class="d-flex align-center justify-space-between">
-              <v-btn
+      <div class="section-container cost-aid-container mt-8" id="cost">
+        <h3>Cost & Aid</h3>
+        <div class="four-column-grid mt-4">
+          <div class="stat-container"><span class="stat-label">Tuition In State</span> <span class="stat-content">{{ institution["tuitStateFtD2025"] === -1 ? '—' : '$' + (institution["tuitStateFtD2025"]?.toLocaleString() || '—') }}</span></div>
+          <div class="stat-container"><span class="stat-label">Tuition Out of State</span> <span class="stat-content">{{ institution["tuitNresFtD2025"] === -1 ? '—' : '$' + (institution["tuitNresFtD2025"]?.toLocaleString() || '—') }}</span></div>
+          <div class="stat-container"><span class="stat-label">Tuition International</span> <span class="stat-content">{{ institution["tuitIntlFtD2025"] === -1 ? '—' : '$' + (institution["tuitIntlFtD2025"]?.toLocaleString() || '—') }}</span></div>
+          <div class="stat-container"><span class="stat-label">Tuition Overall</span> <span class="stat-content">{{ institution["tuitOverallFtD2025"] === -1 ? '—' : '$' + (institution["tuitOverallFtD2025"]?.toLocaleString() || '—') }}</span></div>
+        </div>
+        <div class="three-by-three-stat-grid mt-8">
+          <div class="stat-container"><span class="stat-label">Undergrad Pell Grants Awarded</span> <span class="stat-content">{{ institution["grsBachInitPellN"] === -1 ? '—' : institution["grsBachInitPellN"]?.toLocaleString() || '—' }}</span></div>
+          <div class="stat-container"><span class="stat-label">Average Need-Based Scholarship</span> <span class="stat-content">{{ institution["ugFtAvgNbGiftD"] === -1 ? '—' : '$' + (institution["ugFtAvgNbGiftD"]?.toLocaleString() || '—') }}</span></div>
+        </div>
+        <div class="three-by-three-stat-grid mt-8">
+          <div class="stat-container"><span class="stat-label">Merit Scholarships Awarded <br/><span>(excluding athletics)</span> </span> <span class="stat-content">{{ institution["ugFtNnNoneedN"] === -1 ? '—' : '' + (institution["ugFtNnNoneedN"]?.toLocaleString() || '—') }}</span></div>
+          <div class="stat-container"><span class="stat-label">Average Merit Scholarship <br/><span>(excluding athletics)</span> </span> <span class="stat-content">{{ institution["ugFtNnNoneedD"] === -1 ? '—' : '$' + (institution["ugFtNnNoneedD"]?.toLocaleString() || '—') }}</span></div>
+        </div>
+      </div>
+      <div class="section-container sports-container mt-8" id="sports">
+        <h3>Sports & Athletics</h3>
+        <div class="d-flex align-center justify-space-between">
+          <v-btn
+            size="small"
+            class="mb-4"
+            :to="`/institution/${$route.params.slug}/sports-work`"
+            target="_blank"
+            v-if="userStore.adminMode"
+          >
+            Edit Sports
+          </v-btn>
+        </div>
+        <div v-if="sports.length > 0">
+          <div class="d-flex align-center">
+            <h3>Intercollegiate</h3>
+            <div class="ms-2">
+              <v-chip
+                v-if="institution.assnAthlNaia !== 'FALSE'"
                 size="small"
-                class="mb-4"
-                :to="`/institution/${$route.params.slug}/sports-work`"
-                target="_blank"
-                v-if="userStore.adminMode"
+                class="me-1"
+                color="primary"
               >
-                Edit Sports
-              </v-btn>
+                NAIA
+              </v-chip>
+              <v-chip
+                v-if="hasNCAAdivision('1')"
+                size="small"
+                class="me-1"
+                color="primary"
+              >
+                NCAA Division 1
+              </v-chip>
+              <v-chip
+                v-if="hasNCAAdivision('2')"
+                size="small"
+                class="me-1"
+                color="primary"
+              >
+                NCAA Division 2
+              </v-chip>
+              <v-chip
+                v-if="hasNCAAdivision('3')"
+                size="small"
+                class="me-1"
+                color="primary"
+              >
+                NCAA Division 3
+              </v-chip>
             </div>
-            <div v-if="sports.length > 0">
-              <div class="d-flex align-center">
-                <h3>Intercollegiate</h3>
-                <div class="ms-2">
-                  <v-chip
-                    v-if="institution.assnAthlNaia !== 'FALSE'"
-                    size="small"
-                    class="me-1"
-                    color="primary"
-                  >
-                    NAIA
-                  </v-chip>
-                  <v-chip
-                    v-if="hasNCAAdivision('1')"
-                    size="small"
-                    class="me-1"
-                    color="primary"
-                  >
-                    NCAA Division 1
-                  </v-chip>
-                  <v-chip
-                    v-if="hasNCAAdivision('2')"
-                    size="small"
-                    class="me-1"
-                    color="primary"
-                  >
-                    NCAA Division 2
-                  </v-chip>
-                  <v-chip
-                    v-if="hasNCAAdivision('3')"
-                    size="small"
-                    class="me-1"
-                    color="primary"
-                  >
-                    NCAA Division 3
-                  </v-chip>
-                </div>
-              </div>
-              <div class="d-flex">
-                <div class="flex-grow-1 mr-4" v-if="menIntercollegiateSports.length > 0">
-                  <h4>Men</h4>
-                  <ul class="d-flex flex-column" style="gap: 8px;">
-                    <SportItem
-                      v-for="sport in menIntercollegiateSports"
-                      :key="`men-${sport.sport_name}`"
-                      :sport="sport"
-                      :division-code="getIntercollegiateDivision(sport, 'men')"
-                    />
-                  </ul>
-                </div>
-                <div class="flex-grow-1" v-if="womenIntercollegiateSports.length > 0">
-                  <h4>Women</h4>
-                  <ul class="d-flex flex-column" style="gap: 8px;">
-                    <SportItem
-                      v-for="sport in womenIntercollegiateSports"
-                      :key="`women-${sport.sport_name}`"
-                      :sport="sport"
-                      :division-code="getIntercollegiateDivision(sport, 'women')"
-                    />
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <div class="mt-4 d-none" v-if="hasAnyIntramural">
-              <h3>Intramural</h3>
-              <div class="d-flex">
-                <div class="flex-grow-1 mr-4" v-if="menIntramuralSports.length > 0">
-                  <h4>Men</h4>
-                  <ul class="d-flex flex-column" style="gap: 8px;">
-                    <SportItem
-                      v-for="sport in menIntramuralSports"
-                      :key="`intramural-men-${sport.sport_name}`"
-                      :sport="sport"
-                      :division-code="getIntramuralDivision(sport, 'men')"
-                    />
-                  </ul>
-                </div>
-                <div class="flex-grow-1" v-if="womenIntramuralSports.length > 0">
-                  <h4>Women</h4>
-                  <ul class="d-flex flex-column" style="gap: 8px;">
-                    <SportItem
-                      v-for="sport in womenIntramuralSports"
-                      :key="`intramural-women-${sport.sport_name}`"
-                      :sport="sport"
-                      :division-code="getIntramuralDivision(sport, 'women')"
-                    />
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <div class="mt-4" v-if="sports.filter(sport => this.isUncategorizedSport(sport)).length > 0">
-              <h3>Uncategorized</h3>
-              <ul class="d-flex flex-column mt-1" style="gap: 8px;">
+          </div>
+          <div class="d-flex">
+            <div class="flex-grow-1 mr-4" v-if="menIntercollegiateSports.length > 0">
+              <h4>Men</h4>
+              <ul class="d-flex flex-column" style="gap: 8px;">
                 <SportItem
-                  v-for="sport in sports.filter(sport => this.isUncategorizedSport(sport))"
-                  :key="sport.sport_name"
+                  v-for="sport in menIntercollegiateSports"
+                  :key="`men-${sport.sport_name}`"
                   :sport="sport"
-                  :division-code=null
+                  :division-code="getIntercollegiateDivision(sport, 'men')"
                 />
               </ul>
             </div>
-          </v-expansion-panel-text>
-        </v-expansion-panel>
-      </v-expansion-panels>
-      <v-expansion-panels 
-        class="mt-8" 
-        v-model="expandedPanels.ethnicity"
-        @update:model-value="savePanelStates"
-      >
-        <v-expansion-panel>
-          <v-expansion-panel-title>
-            <h3>Enrolled Students' Ethnicity</h3>
-          </v-expansion-panel-title>
-          <v-expansion-panel-text>
-            <div 
-              class="ethnic-stats"
-              v-if="ethnicityPopulationTotal !== 0"
-            >
-              <div class="three-by-three-stat-grid mt-4" style="max-width: 900px; margin: 0 auto;">
-                <div class="stat-container">          
-                  <span class="stat-label">International</span>
-                  <div>
-                    <v-progress-linear
-                      :model-value="0"
-                      color="blue-grey"
-                      height="25"
-                      v-if="institution['enNonresAlienN'] === -1"
-                    >
-                      <template v-slot:default>
-                        <strong>0% (—)</strong>
-                      </template>
-                    </v-progress-linear>
-                    <v-progress-linear
-                      v-else
-                      :model-value="((institution['enNonresAlienN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
-                      color="blue-grey"
-                      height="25"
-                    >
-                      <template v-slot:default="{ value }">
-                        <strong>{{ Math.ceil(value) }}% ({{ institution["enNonresAlienN"] }})</strong>
-                      </template>
-                    </v-progress-linear>
-                  </div>
-                </div>
-                <div class="stat-container">
-                  <span class="stat-label">Asian</span>
-                  <div>
-                    <v-progress-linear
-                      :model-value="0"
-                      color="blue-grey"
-                      height="25"
-                      v-if="institution['enAsianNonhispanicN'] === -1"
-                    >
-                      <template v-slot:default>
-                        <strong>0% (—)</strong>
-                      </template>
-                    </v-progress-linear>
-                    <v-progress-linear
-                      v-else
-                      :model-value="((institution['enAsianNonhispanicN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
-                      color="blue-grey"
-                      height="25"
-                    >
-                      <template v-slot:default="{ value }">
-                        <strong>{{ Math.ceil(value) }}% ({{ institution["enAsianNonhispanicN"] }})</strong>
-                      </template>
-                    </v-progress-linear>
-                  </div>
-                </div>
-                <div class="stat-container">
-                  <span class="stat-label">Black</span>
-                  <div>
-                    <v-progress-linear
-                      :model-value="0"
-                      color="blue-grey"
-                      height="25"
-                      v-if="institution['enBlackNonhispanicN'] === -1"
-                    >
-                      <template v-slot:default>
-                        <strong>0% (—)</strong>
-                      </template>
-                    </v-progress-linear>
-                    <v-progress-linear
-                      v-else
-                      :model-value="((institution['enBlackNonhispanicN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
-                      color="blue-grey"
-                      height="25"
-                    >
-                      <template v-slot:default="{ value }">
-                        <strong>{{ Math.ceil(value) }}% ({{ institution["enBlackNonhispanicN"] }})</strong>
-                      </template>
-                    </v-progress-linear>                
-                  </div>
-                </div>
-                <div class="stat-container">
-                  <span class="stat-label">Hispanic</span>
-                  <div>
-                    <v-progress-linear
-                      :model-value="0"
-                      color="blue-grey"
-                      height="25"
-                      v-if="institution['enHispanicEthnicityN'] === -1"
-                    >
-                      <template v-slot:default>
-                        <strong>0% (—)</strong>
-                      </template>
-                    </v-progress-linear>
-                    <v-progress-linear
-                      v-else
-                      :model-value="((institution['enHispanicEthnicityN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
-                      color="blue-grey"
-                      height="25"
-                    >
-                      <template v-slot:default="{ value }">
-                        <strong>{{ Math.ceil(value) }}% ({{ institution["enHispanicEthnicityN"] }})</strong>
-                      </template>
-                    </v-progress-linear>
-                  </div>
-                </div>
-                <div class="stat-container">
-                  <span class="stat-label">Native Hawaiian or other Pacific Islander</span>
-                  <div>
-                    <v-progress-linear
-                      :model-value="0"
-                      color="blue-grey"
-                      height="25"
-                      v-if="institution['enIslanderNonhispanicN'] === -1"
-                    >
-                      <template v-slot:default>
-                        <strong>0% (—)</strong>
-                      </template>
-                    </v-progress-linear>
-                    <v-progress-linear
-                      v-else
-                      :model-value="((institution['enIslanderNonhispanicN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
-                      color="blue-grey"
-                      height="25"
-                    >
-                      <template v-slot:default="{ value }">
-                        <strong>{{ Math.ceil(value) }}% ({{ institution["enIslanderNonhispanicN"] }})</strong>
-                      </template>
-                    </v-progress-linear>
-                  </div>
-                </div>
-                <div class="stat-container">
-                  <span class="stat-label">Multirace</span>
-                  <div>
-                    <v-progress-linear
-                      :model-value="0"
-                      color="blue-grey"
-                      height="25"
-                      v-if="institution['enMultiraceNonhispanicN'] === -1"
-                    >
-                      <template v-slot:default>
-                        <strong>0% (—)</strong>
-                      </template>
-                    </v-progress-linear>
-                    <v-progress-linear
-                      v-else
-                      :model-value="((institution['enMultiraceNonhispanicN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
-                      color="blue-grey"
-                      height="25"
-                    >
-                      <template v-slot:default="{ value }">
-                        <strong>{{ Math.ceil(value) }}% ({{ institution["enMultiraceNonhispanicN"] }})</strong>
-                      </template>
-                    </v-progress-linear>                
-                  </div>
-                </div>
-                <div class="stat-container">
-                  <span class="stat-label">American Indian or Alaska Native</span>
-                  <div>
-                    <v-progress-linear
-                      :model-value="0"
-                      color="blue-grey"
-                      height="25"
-                      v-if="institution['enNativeNonhispanicN'] === -1"
-                    >
-                      <template v-slot:default>
-                        <strong>0% (—)</strong>
-                      </template>
-                    </v-progress-linear>
-                    <v-progress-linear
-                      v-else
-                      :model-value="((institution['enNativeNonhispanicN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
-                      color="blue-grey"
-                      height="25"
-                    >
-                      <template v-slot:default="{ value }">
-                        <strong>{{ Math.ceil(value) }}% ({{ institution["enNativeNonhispanicN"] }})</strong>
-                      </template>
-                    </v-progress-linear>
-                  </div>
-                </div>
-                <div class="stat-container">
-                  <span class="stat-label">Unknown</span>
-                  <div>
-                    <v-progress-linear
-                      :model-value="0"
-                      color="blue-grey"
-                      height="25"
-                      v-if="institution['enRaceEthnicityUnknownN'] === -1"
-                    >
-                      <template v-slot:default>
-                        <strong>0% (—)</strong>
-                      </template>
-                    </v-progress-linear>
-                    <v-progress-linear
-                      v-else
-                      :model-value="((institution['enRaceEthnicityUnknownN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
-                      color="blue-grey"
-                      height="25"
-                    >
-                      <template v-slot:default="{ value }">
-                        <strong>{{ Math.ceil(value) }}% ({{ institution["enRaceEthnicityUnknownN"] }})</strong>
-                      </template>
-                    </v-progress-linear>
-                  </div>
-                </div>
-                <div class="stat-container">
-                  <span class="stat-label">White</span>
-                  <div>
-                    <v-progress-linear
-                      :model-value="0"
-                      color="blue-grey"
-                      height="25"
-                      v-if="institution['enWhiteNonhispanicN'] === -1"
-                    >
-                      <template v-slot:default>
-                        <strong>0% (—)</strong>
-                      </template>
-                    </v-progress-linear>
-                    <v-progress-linear
-                      v-else
-                      :model-value="((institution['enWhiteNonhispanicN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
-                      color="blue-grey"
-                      height="25"
-                    >
-                      <template v-slot:default="{ value }">
-                        <strong>{{ Math.ceil(value) }}% ({{ institution["enWhiteNonhispanicN"] }})</strong>
-                      </template>
-                    </v-progress-linear>
-                  </div>
-                </div>
+            <div class="flex-grow-1" v-if="womenIntercollegiateSports.length > 0">
+              <h4>Women</h4>
+              <ul class="d-flex flex-column" style="gap: 8px;">
+                <SportItem
+                  v-for="sport in womenIntercollegiateSports"
+                  :key="`women-${sport.sport_name}`"
+                  :sport="sport"
+                  :division-code="getIntercollegiateDivision(sport, 'women')"
+                />
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 d-none" v-if="hasAnyIntramural">
+          <h3>Intramural</h3>
+          <div class="d-flex">
+            <div class="flex-grow-1 mr-4" v-if="menIntramuralSports.length > 0">
+              <h4>Men</h4>
+              <ul class="d-flex flex-column" style="gap: 8px;">
+                <SportItem
+                  v-for="sport in menIntramuralSports"
+                  :key="`intramural-men-${sport.sport_name}`"
+                  :sport="sport"
+                  :division-code="getIntramuralDivision(sport, 'men')"
+                />
+              </ul>
+            </div>
+            <div class="flex-grow-1" v-if="womenIntramuralSports.length > 0">
+              <h4>Women</h4>
+              <ul class="d-flex flex-column" style="gap: 8px;">
+                <SportItem
+                  v-for="sport in womenIntramuralSports"
+                  :key="`intramural-women-${sport.sport_name}`"
+                  :sport="sport"
+                  :division-code="getIntramuralDivision(sport, 'women')"
+                />
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4" v-if="sports.filter(sport => this.isUncategorizedSport(sport)).length > 0">
+          <h3>Uncategorized</h3>
+          <ul class="d-flex flex-column mt-1" style="gap: 8px;">
+            <SportItem
+              v-for="sport in sports.filter(sport => this.isUncategorizedSport(sport))"
+              :key="sport.sport_name"
+              :sport="sport"
+              :division-code=null
+            />
+          </ul>
+        </div>
+      </div>
+      <div class="section-container ethnicity-container mt-8" id="ethnicity">
+        <h3>Enrolled Students' Ethnicity</h3>
+        <div 
+          class="ethnic-stats"
+          v-if="ethnicityPopulationTotal !== 0"
+        >
+          <div class="three-by-three-stat-grid mt-4" style="max-width: 900px; margin: 0 auto;">
+            <div class="stat-container">          
+              <span class="stat-label">International</span>
+              <div>
+                <v-progress-linear
+                  :model-value="0"
+                  color="blue-grey"
+                  height="25"
+                  v-if="institution['enNonresAlienN'] === -1"
+                >
+                  <template v-slot:default>
+                    <strong>0% (—)</strong>
+                  </template>
+                </v-progress-linear>
+                <v-progress-linear
+                  v-else
+                  :model-value="((institution['enNonresAlienN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
+                  color="blue-grey"
+                  height="25"
+                >
+                  <template v-slot:default="{ value }">
+                    <strong>{{ Math.ceil(value) }}% ({{ institution["enNonresAlienN"] }})</strong>
+                  </template>
+                </v-progress-linear>
               </div>
             </div>
-            <div v-else>
-              <p>No data available</p>
+            <div class="stat-container">
+              <span class="stat-label">Asian</span>
+              <div>
+                <v-progress-linear
+                  :model-value="0"
+                  color="blue-grey"
+                  height="25"
+                  v-if="institution['enAsianNonhispanicN'] === -1"
+                >
+                  <template v-slot:default>
+                    <strong>0% (—)</strong>
+                  </template>
+                </v-progress-linear>
+                <v-progress-linear
+                  v-else
+                  :model-value="((institution['enAsianNonhispanicN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
+                  color="blue-grey"
+                  height="25"
+                >
+                  <template v-slot:default="{ value }">
+                    <strong>{{ Math.ceil(value) }}% ({{ institution["enAsianNonhispanicN"] }})</strong>
+                  </template>
+                </v-progress-linear>
+              </div>
             </div>
-          </v-expansion-panel-text>
-        </v-expansion-panel>
-      </v-expansion-panels>
+            <div class="stat-container">
+              <span class="stat-label">Black</span>
+              <div>
+                <v-progress-linear
+                  :model-value="0"
+                  color="blue-grey"
+                  height="25"
+                  v-if="institution['enBlackNonhispanicN'] === -1"
+                >
+                  <template v-slot:default>
+                    <strong>0% (—)</strong>
+                  </template>
+                </v-progress-linear>
+                <v-progress-linear
+                  v-else
+                  :model-value="((institution['enBlackNonhispanicN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
+                  color="blue-grey"
+                  height="25"
+                >
+                  <template v-slot:default="{ value }">
+                    <strong>{{ Math.ceil(value) }}% ({{ institution["enBlackNonhispanicN"] }})</strong>
+                  </template>
+                </v-progress-linear>                
+              </div>
+            </div>
+            <div class="stat-container">
+              <span class="stat-label">Hispanic</span>
+              <div>
+                <v-progress-linear
+                  :model-value="0"
+                  color="blue-grey"
+                  height="25"
+                  v-if="institution['enHispanicEthnicityN'] === -1"
+                >
+                  <template v-slot:default>
+                    <strong>0% (—)</strong>
+                  </template>
+                </v-progress-linear>
+                <v-progress-linear
+                  v-else
+                  :model-value="((institution['enHispanicEthnicityN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
+                  color="blue-grey"
+                  height="25"
+                >
+                  <template v-slot:default="{ value }">
+                    <strong>{{ Math.ceil(value) }}% ({{ institution["enHispanicEthnicityN"] }})</strong>
+                  </template>
+                </v-progress-linear>
+              </div>
+            </div>
+            <div class="stat-container">
+              <span class="stat-label">Native Hawaiian or other Pacific Islander</span>
+              <div>
+                <v-progress-linear
+                  :model-value="0"
+                  color="blue-grey"
+                  height="25"
+                  v-if="institution['enIslanderNonhispanicN'] === -1"
+                >
+                  <template v-slot:default>
+                    <strong>0% (—)</strong>
+                  </template>
+                </v-progress-linear>
+                <v-progress-linear
+                  v-else
+                  :model-value="((institution['enIslanderNonhispanicN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
+                  color="blue-grey"
+                  height="25"
+                >
+                  <template v-slot:default="{ value }">
+                    <strong>{{ Math.ceil(value) }}% ({{ institution["enIslanderNonhispanicN"] }})</strong>
+                  </template>
+                </v-progress-linear>
+              </div>
+            </div>
+            <div class="stat-container">
+              <span class="stat-label">Multirace</span>
+              <div>
+                <v-progress-linear
+                  :model-value="0"
+                  color="blue-grey"
+                  height="25"
+                  v-if="institution['enMultiraceNonhispanicN'] === -1"
+                >
+                  <template v-slot:default>
+                    <strong>0% (—)</strong>
+                  </template>
+                </v-progress-linear>
+                <v-progress-linear
+                  v-else
+                  :model-value="((institution['enMultiraceNonhispanicN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
+                  color="blue-grey"
+                  height="25"
+                >
+                  <template v-slot:default="{ value }">
+                    <strong>{{ Math.ceil(value) }}% ({{ institution["enMultiraceNonhispanicN"] }})</strong>
+                  </template>
+                </v-progress-linear>                
+              </div>
+            </div>
+            <div class="stat-container">
+              <span class="stat-label">American Indian or Alaska Native</span>
+              <div>
+                <v-progress-linear
+                  :model-value="0"
+                  color="blue-grey"
+                  height="25"
+                  v-if="institution['enNativeNonhispanicN'] === -1"
+                >
+                  <template v-slot:default>
+                    <strong>0% (—)</strong>
+                  </template>
+                </v-progress-linear>
+                <v-progress-linear
+                  v-else
+                  :model-value="((institution['enNativeNonhispanicN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
+                  color="blue-grey"
+                  height="25"
+                >
+                  <template v-slot:default="{ value }">
+                    <strong>{{ Math.ceil(value) }}% ({{ institution["enNativeNonhispanicN"] }})</strong>
+                  </template>
+                </v-progress-linear>
+              </div>
+            </div>
+            <div class="stat-container">
+              <span class="stat-label">Unknown</span>
+              <div>
+                <v-progress-linear
+                  :model-value="0"
+                  color="blue-grey"
+                  height="25"
+                  v-if="institution['enRaceEthnicityUnknownN'] === -1"
+                >
+                  <template v-slot:default>
+                    <strong>0% (—)</strong>
+                  </template>
+                </v-progress-linear>
+                <v-progress-linear
+                  v-else
+                  :model-value="((institution['enRaceEthnicityUnknownN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
+                  color="blue-grey"
+                  height="25"
+                >
+                  <template v-slot:default="{ value }">
+                    <strong>{{ Math.ceil(value) }}% ({{ institution["enRaceEthnicityUnknownN"] }})</strong>
+                  </template>
+                </v-progress-linear>
+              </div>
+            </div>
+            <div class="stat-container">
+              <span class="stat-label">White</span>
+              <div>
+                <v-progress-linear
+                  :model-value="0"
+                  color="blue-grey"
+                  height="25"
+                  v-if="institution['enWhiteNonhispanicN'] === -1"
+                >
+                  <template v-slot:default>
+                    <strong>0% (—)</strong>
+                  </template>
+                </v-progress-linear>
+                <v-progress-linear
+                  v-else
+                  :model-value="((institution['enWhiteNonhispanicN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
+                  color="blue-grey"
+                  height="25"
+                >
+                  <template v-slot:default="{ value }">
+                    <strong>{{ Math.ceil(value) }}% ({{ institution["enWhiteNonhispanicN"] }})</strong>
+                  </template>
+                </v-progress-linear>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-else>
+          <p>No data available</p>
+        </div>
+
+      </div>
       <v-expansion-panels class="d-none mt-8" v-model="expandedPanels.fieldsOfStudy" @update:model-value="savePanelStates">
         <v-expansion-panel>
           <v-expansion-panel-title>
@@ -1196,6 +1182,15 @@ export default {
   },
   data() {
     return {
+      selectedSection: 'intro',
+      navigationItems: [
+      { title: 'Intro', value: 'intro' },
+      { title: 'Stats', value: 'stats' },
+      { title: 'Descriptions', value: 'descriptions' },
+      { title: 'Cost & Aid', value: 'cost' },
+      { title: 'Sports', value: 'sports' },
+      { title: 'Ethnicity', value: 'ethnicity' }
+      ],
       isLoggedIn: false,
       isEditImagesSaveButtonDisabled: false,
       isEditImagesSaveButtonVisible: false,
@@ -1235,10 +1230,6 @@ export default {
       selectedImageUrl: null,
       expandedPanels: {
         descriptions: [],
-        costAid: true,
-        sports: false,
-        fieldsOfStudy: false,
-        ethnicity: false
       },
       imagesv2: [],
       editedDescriptions: {},
@@ -1246,6 +1237,29 @@ export default {
     }
   },
   methods: {
+    scrollToSection(sectionId) {
+      // If this is a descriptions section, expand the panel
+      if (sectionId === 'descriptions') {
+        if (!this.expandedPanels.descriptions.includes(0)) {
+          this.expandedPanels.descriptions.push(0);
+        }
+      }
+
+      // Wait for any panel expansions to complete
+      this.$nextTick(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          const headerOffset = 84; // Height of sticky header
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+        }
+      });
+    },
     getDivisionText(code) {
       const divisions = {
         '1': 'NCAA Division 1',
@@ -1887,4 +1901,23 @@ export default {
   justify-content: flex-end;
   margin-right: 4px;
 }
+
+.section-navigation {
+  position: fixed;
+  right: 12px;
+  top: 84px;
+  z-index: 100;
+  background-color: white;
+  color: rgba(0, 0, 0, 0.87);
+  width: 160px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: right;
+
+  .v-field__outline {
+    display: none !important;
+  }
+
+}
+
 </style>
