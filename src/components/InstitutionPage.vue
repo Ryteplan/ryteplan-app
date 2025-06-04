@@ -7,10 +7,10 @@
       size="x-small"
       variant="outlined"
       @update:model-value="scrollToSection"
-      class="section-navigation"
+      class="section-navigation d-md-none"
       hide-details
     ></v-select>
-    <div class="cover-image d-md-none" style= "z-index: -1;" id="intro">
+    <div class="cover-image d-md-none" style= "z-index: -1;">
       <img 
         v-if="imagesv2.length > 0"
         :src="imagesv2[0].url || imagesv2[0].URL"
@@ -200,10 +200,10 @@
           </span>
         </v-btn>
       </div>
-      <div class="intro-block">
+      <div class="intro-block" id="intro">
         <div class="action-row my-4 d-md-none">
           <v-btn
-            size="x-small"
+            size="small"
             @click="showSaveToListDialog = true"
             class="md-mr-6"
           >
@@ -1173,7 +1173,38 @@ export default {
       } else {
         this.isLoggedIn = false;
       }
-    })
+    });
+
+    // Ensure intro is the initial section
+    this.selectedSection = 'intro';
+
+    // Wait for cover image to load before setting up observer
+    const setupObserver = () => {
+      const options = {
+        root: null,
+        rootMargin: '-60% 0px -40% 0px', // Update when section is 60% from top
+        threshold: 0
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            this.selectedSection = entry.target.id;
+          }
+        });
+      }, options);
+
+      // Observe all sections
+      this.navigationItems.forEach(item => {
+        const element = document.getElementById(item.value);
+        if (element) {
+          observer.observe(element);
+        }
+      });
+    };
+    setTimeout(() => {
+      setupObserver();
+    }, 1500);
   },
   beforeUnmount() {
     if (this.root) {
@@ -1247,6 +1278,14 @@ export default {
 
       // Wait for any panel expansions to complete
       this.$nextTick(() => {
+        if (sectionId === 'intro') {
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+          return;
+        }
+
         const element = document.getElementById(sectionId);
         if (element) {
           const headerOffset = 84; // Height of sticky header
@@ -1909,7 +1948,8 @@ export default {
   z-index: 100;
   background-color: white;
   color: rgba(0, 0, 0, 0.87);
-  width: 160px;
+  min-width: 100px;
+  width: auto;
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   text-align: right;
