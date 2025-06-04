@@ -1,27 +1,64 @@
 <template>
-  <v-container class="pt-0 px-3 px-lg-0">
-    <div style="margin: 0 auto 64px; max-width: 1200px;">
-      <v-row class="d-flex justify-space-between mt-2">
-        <v-col cols="6">
-          <h1 class="text-h6">{{ institution["name"] }}</h1>
-          <div v-if="userStore.adminMode">
-            <span>{{ institution["uri"] }}</span>
-            <span class="mx-2">—</span>
-            <span>{{ institution["inunId"] }}</span>
-          </div>
-        </v-col>
-        <v-col cols="6" class="d-flex justify-end">
+  <v-container class="pt-0 px-0">
+    <div class="cover-image d-md-none" style= "z-index: -1;">
+      <img 
+        v-if="imagesv2.length > 0"
+        :src="imagesv2[0].url || imagesv2[0].URL"
+        alt="Cover Image" 
+      />
+    </div>
+    <div class="mx-2">
+      <v-container class="d-none d-md-block">
+        <v-row class="justify-space-between">
+          <v-col cols="12" sm="12" md="6" lg="6" class="order-last order-md-first">
+            <div v-if="userStore.adminMode">
+              <span>{{ institution["uri"] }}</span>
+              <span class="mx-2">—</span>
+              <span>{{ institution["inunId"] }}</span>
+            </div>
+          </v-col>
+          <v-col cols="12" sm="12" md="6" lg="6" class="d-flex align-center justify-end">
+            <v-btn
+              size="x-small"
+              @click="showSaveToListDialog = true"
+              class="md-mr-6"
+            >
+              Add to list
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
+      <v-row class="flex-row mx-0 mt-0 mb-1 align-center" style="gap: 24px;" v-if="userStore.adminMode">
           <v-btn
+            v-if="userStore.adminMode"
             size="small"
-            @click="showSaveToListDialog = true"
-            class="mr-6"
+            :to="`/image-work/${institution['uri']}`"
           >
-            Add to list
+            Edit Images
           </v-btn>
-        </v-col>
-      </v-row>
-      <v-row class="mx-0 mt-0 mb-1" v-if="userStore.adminMode">
-        <v-col cols="6" lg="3" class="pa-0">
+
+          <v-switch
+            v-if="userStore.adminMode"
+            label="HBCU"
+            v-model="institution['hbcu']"
+            @change="toggleFieldTrueFalse('hbcu')"
+            color="primary"
+            hide-details
+            dense
+          >
+          </v-switch>
+
+          <v-switch
+            v-if="userStore.adminMode"
+            label="Tribal"
+            v-model="institution['tribal']"
+            @change="toggleFieldTrueFalse('tribal')"
+            color="primary"
+            hide-details
+            dense
+          >
+          </v-switch>
+
           <v-switch 
             label="Hidden from Search"
             color="primary"
@@ -31,19 +68,8 @@
             @change="toggleFieldTrueFalse('hidden')"
           >
           </v-switch>         
-        </v-col>
-        <v-col cols="6" lg="3" class="pa-0">
-          <v-btn
-            v-if="userStore.adminMode"
-            size="small"
-            class="mt-2"
-            :to="`/image-work/${institution['uri']}`"
-          >
-            Edit Images
-          </v-btn>
-        </v-col>
       </v-row>
-      <div class="section-container" style="max-width: 600px;" v-if="userStore.adminMode">
+      <div class="section-container mb-8" style="max-width: 600px;" v-if="userStore.adminMode">
         <h4>Aliases</h4>
         <div v-if="institution?.aliases?.length > 0" class="aliases-container mt-4 mb-4">
           <div v-for="(alias, index) in institution.aliases" :key="index" class="d-flex align-center mb-2">
@@ -164,42 +190,51 @@
           </span>
         </v-btn>
       </div>
-      <div class="section-container location-links-images-container mt-4" style="gap: 20px;">
+      <div class="intro-block">
+        <div class="action-row my-4 d-md-none">
+          <v-btn
+            size="x-small"
+            @click="showSaveToListDialog = true"
+            class="md-mr-6"
+          >
+            Add to list
+          </v-btn>
+      </div>
+      <div class="section-container location-links-images-container" style="gap: 20px;">
         <div class="d-flex flex-column">
-          <div class="location-container d-flex flex-column" style="gap: 12px">
-            <div class="stat-container">
-              <span class="stat-label">Country</span>
-              <span class="stat-content">{{ institution["countryCode"] }}</span>
+          <div class="location-container d-flex flex-column" style="gap: 4px">
+            <div class="d-flex flex-row" style="gap: 4px; font-size: 13px;">
+              <span class="pill">{{ institution["mainInstControlDesc"] }}</span>
+              <span v-if="institution['denomDesc'] !== '-'" class="pill">{{ institution["denomDesc"] }}</span>
+              <span v-if="institution['afilDesc'] !== '—'" class="pill">{{ institution["afilDesc"] }}</span>
+              <span v-if="institution['hbcu']" class="pill">HBCU</span>
+              <span v-if="institution['tribal']" class="pill">Tribal</span>
             </div>
-            <div class="stat-container">
-              <span class="stat-label">City</span>
-              <span class="stat-content">{{ institution["city"] }}</span>
+            <h1 class="text-h6">{{ institution["name"] }}</h1>
+            <div class="d-flex flex-row" style="gap: 4px;">
+              <div class="d-flex flex-row" style="gap: 4px;">
+                <span class="">{{ institution["city"] }},</span>
+                <span class="">{{ institution["stateCleaned"] }}</span>
+              </div>
+              <div class="d-flex flex-row" style="gap: 4px;">
+                <span class="">·</span>
+                <span class="">{{ institution["countryCode"] }}</span>
+              </div>
             </div>
-            <StatDisplay
-              label="State"
-              :uri="institution['uri']"
-              field="stateCleaned"
-              :valueFromIntegrated="institution['stateCleaned']" 
-              :valueFromPetersons="petersonsInstitution['stateCleaned']" 
-              :valueFromManual="manualInstitionData['stateCleaned']"
-              valueType="string"
-            />
           </div>
-          <div class="external-links mt-4">
-            <ul class="mt-3 header-links d-flex flex-column no-wrap" style="gap: 12px;">
-              <li><a :href="institution['urlAddress']" target="_blank">Official site</a></li>
-              <li v-if="institution['urlAddressPriceCalc2023'] !== 'null'"><a :href="institution['urlAddressPriceCalc2023']" target="_blank">Net Price Calculator</a></li>          
+          <div class="external-links mt-2 mt-md-4">
+            <ul class="mt-0 mt-md-3 header-links d-flex flex-row no-wrap" style="gap: 12px;">
+              <li><a :href="institution['urlAddress']" target="_blank">Official site<v-icon size="small" class="ml-1">mdi-open-in-new</v-icon></a></li>
+              <li v-if="institution['urlAddressPriceCalc2023'] !== 'null'"><a :href="institution['urlAddressPriceCalc2023']" target="_blank">Net Price Calculator<v-icon size="small" class="ml-1">mdi-open-in-new</v-icon></a></li>          
               <!-- <li><a :href="institution['adEmail']" target="_blank">Admissions</a></li> -->
             </ul>
           </div>
         </div>
         <StorageImagesCollection :images="imagesv2" />
       </div>
+
+      </div>
       <div class="section-container three-by-three-stat-grid mt-8">
-        <div class="stat-container">
-          <span class="stat-label">Sector</span> 
-          <span class="stat-content">{{ institution["mainInstControlDesc"] }}</span>
-        </div>
         <StatDisplay
           label="Undergraduate (UG) Enrollment"
           :uri="institution['uri']"
@@ -216,15 +251,6 @@
           :valueFromPetersons="petersonsInstitution['enTotGradN']" 
           :valueFromManual="manualInstitionData['enTotGradN']"
         />
-        <div class="stat-container">
-          <span class="stat-label">Religious</span>
-          <div>
-            <span v-if="institution['denomDesc'] !== '—'" class="stat-content">{{ institution["denomDesc"] }}</span> 
-            <span v-if="institution['afilDesc'] !== '—'" class="stat-content">{{ institution["afilDesc"] }}</span>
-          </div>
-          <span v-if="institution['denomDesc'] == '—' && institution['afilDesc'] == '—'" class="stat-content">—</span>
-        </div>
-
         <div class="stat-container d-none">
           <div class="d-none">
             <span class="stat-label">Admission Difficulty</span>
@@ -282,40 +308,6 @@
         <div class="stat-container">
           <span class="stat-label">Calendar</span>
           <span class="stat-content">{{ institution["mainCalendar"] }}</span>
-        </div>
-        <div class="multiple-stat-container">
-          <div class="stat-container">
-            <span class="stat-label">HBCU</span> 
-            <span v-if="!userStore.adminMode" class="stat-content">
-              {{ institution["hbcu"] ? '✔️' : '—' }}
-            </span>
-            <v-switch
-                v-if="userStore.adminMode"
-                label=""
-                v-model="institution['hbcu']"
-                @change="toggleFieldTrueFalse('hbcu')"
-                color="primary"
-                hide-details
-                dense
-              >
-              </v-switch>
-          </div>
-          <div class="stat-container">
-            <span class="stat-label">Tribal</span> 
-            <span v-if="!userStore.adminMode" class="stat-content">
-              {{ manualInstitionData["tribal"] ? '✔️' : '—' }}              
-            </span>
-            <v-switch
-              v-if="userStore.adminMode"
-              label=""
-              v-model="manualInstitionData['tribal']"
-              @change="toggleFieldTrueFalse('tribal')"
-              color="primary"
-              hide-details
-              dense
-            >
-            </v-switch>
-          </div>
         </div>
         <StatDisplay
           label="Average GPA"
@@ -1641,6 +1633,33 @@ export default {
 </script>
 
 <style>
+  .cover-image {
+    position: relative;
+    aspect-ratio: 1;
+    margin-bottom: -24px;
+    img {
+      object-fit: cover;
+      object-position: center;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .intro-block {
+    position: relative;
+    margin-top: -60vw;
+    max-width: 1200px;
+    z-index: 1;
+
+    @media (max-width: 768px) {
+      margin-top: -40vw;
+    }
+
+    @media (min-width: 960px) {
+      margin: 0;
+    }
+  }
+
   ul {
     list-style: none;
   }
@@ -1698,7 +1717,7 @@ export default {
     row-gap: 24px;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 767px) {
     .three-by-three-stat-grid > div:not(:first-of-type) {
       margin-top: 24px;
     }
@@ -1760,13 +1779,10 @@ export default {
   }
 
   .header-links a {
-    padding: 8px;
-    background: rgb(230, 230, 230);
     margin-right: 8px;
     border-radius: 8px;
-    color: black;
-    font-size: 13px;
-    text-decoration: none;
+    font-size: 14px;
+    color: #2a2a2a;
   }
 
   @media (min-width: 960px) {
@@ -1857,4 +1873,18 @@ export default {
     margin-top: 12px;
   }
 
+
+.pill {
+  background-color: #f0f0f0;
+  padding: 4px 8px;
+}
+
+.action-row {
+  position: relative;
+  display: flex; 
+  flex-direction: row; 
+  align-items: flex-end;
+  justify-content: flex-end;
+  margin-right: 4px;
+}
 </style>

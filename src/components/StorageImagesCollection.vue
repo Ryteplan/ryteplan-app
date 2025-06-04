@@ -1,7 +1,7 @@
 <template>
   <div v-if="images.length > 0">
     <div class="institution-images-container">
-      <div class="img-bg position-relative" 
+      <div class="d-none d-md-block img-bg position-relative" 
            @mouseenter="hoveredImageIndex = 1" 
            @mouseleave="hoveredImageIndex = null">
         <img 
