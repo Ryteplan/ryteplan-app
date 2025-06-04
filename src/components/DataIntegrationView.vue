@@ -10,7 +10,7 @@
           <p>{{ item.tuition }}</p>
         </div>
       -->
-
+      
       <v-btn
         @click="duplicateCollection"
         color="primary"
@@ -28,10 +28,10 @@
 
       <v-btn
         class="mt-8"
-        @click="mergeEndowFields"
+        @click="updateEthnicityFields"
         color="primary"
       >
-        Merge Endow Fields
+        Update Ethnicity Fields
       </v-btn>
 
       <v-btn
@@ -120,7 +120,7 @@
 import { dbFireStore } from "../firebase";
 
 // eslint-disable-next-line no-unused-vars
-import { collection, query, getDocs, setDoc, doc, where, documentId, deleteField, deleteDoc, limit } from 'firebase/firestore'
+import { collection, query, getDocs, setDoc, doc, where, documentId, deleteField, deleteDoc, limit, getDoc } from 'firebase/firestore'
 
 export default {
   name: 'DataIntegration',
@@ -576,63 +576,14 @@ export default {
       });
 
       this.integratedData.forEach(async (institution) => {
-        setDoc(doc(dbFireStore, 'institutions_integrated_v20250313V2_backup_1', institution["uri"]), {
+        setDoc(doc(dbFireStore, 'institutions_integrated_jun032025_backup_1', institution["uri"]), {
           ...institution
         }, { merge: true })
-        console.log('done adding: ' + institution.name + ' to institutions_integrated_v20250313V2_backup_1');
+        console.log('done adding: ' + institution.name + ' to institutions_integrated_jun032025_backup_1');
 
         // set a timeout for 500 milliseconds
         await new Promise(resolve => setTimeout(resolve, 500));
       })
-    },
-    async mergeEndowFields() {
-      console.log('Merging endow fields');
-      
-      // Get all documents from the source collection
-      const sourceQuery = query(collection(dbFireStore, "Institutions_integrated_cloud_20250313V4"));
-      const sourceSnapshots = await getDocs(sourceQuery);
-      
-      let processedCount = 0;
-      const batchSize = 50; // Process in batches of 50
-      const delay = 2000; // 2 seconds delay between batches
-      
-      // Convert snapshots to array for batch processing
-      const documents = sourceSnapshots.docs;
-      
-      // Process in batches
-      for (let i = 0; i < documents.length; i += batchSize) {
-        const batch = documents.slice(i, i + batchSize);
-        console.log(`Processing batch ${i / batchSize + 1} of ${Math.ceil(documents.length / batchSize)}`);
-        
-        // Process each document in the current batch
-        await Promise.all(batch.map(async (doc) => {
-          const sourceData = doc.data();
-          const docId = doc.id;
-          
-          // Only proceed if there's an endow field
-          if (sourceData.endow !== undefined) {
-            try {
-              // Update the matching document in the target collection
-              await setDoc(
-                doc(dbFireStore, 'institutions_integrated', docId),
-                { endow: sourceData.endow },
-                { merge: true }
-              );
-              processedCount++;
-              console.log(`Updated endow field for document ${docId}`);
-            } catch (error) {
-              console.error(`Error updating document ${docId}:`, error);
-            }
-          }
-        }));
-        
-        // Add delay between batches to prevent overloading
-        if (i + batchSize < documents.length) {
-          await new Promise(resolve => setTimeout(resolve, delay));
-        }
-      }
-      
-      console.log(`Completed merging endow fields. Processed ${processedCount} documents.`);
     },
     async doDataIntegration() {
       console.log('doing data integration')
@@ -682,7 +633,54 @@ export default {
         console.log('done adding: ' + institution.name);
         await new Promise(resolve => setTimeout(resolve, 1000));
       })
-    }
+    },
+    async updateEthnicityFields() {
+      console.log('Updating ethnicity fields from cloud to integrated collection');
+      
+      const ethnicityFields = [
+        'ethnicityPopulationTotal',
+      ];
+
+      // Get documents from cloud collection
+      const cloudQuery = query(collection(dbFireStore, "institutions_integrated_cloud_20250313V4"));
+      const cloudSnapshots = await getDocs(cloudQuery);
+      
+      let updatedCount = 0;
+      let errorCount = 0;
+
+      // Process each document
+      for (const cloudDoc of cloudSnapshots.docs) {
+        const cloudData = cloudDoc.data();
+        const docId = cloudDoc.id;
+        
+        // Extract only the ethnicity fields
+        const updateData = {};
+        ethnicityFields.forEach(field => {
+          updateData[field] = cloudData[field] || 0;
+        });
+
+        try {
+          // Update the matching document in the integrated collection
+          await setDoc(
+            doc(dbFireStore, 'institutions_integrated', docId),
+            updateData,
+            { merge: true }
+          );
+          updatedCount++;
+          
+          if (updatedCount % 100 === 0) {
+            console.log(`Progress: Updated ${updatedCount} documents`);
+          }
+        } catch (error) {
+          console.error(`Error updating document ${docId}:`, error);
+          errorCount++;
+        }
+      }
+      
+      console.log(`Finished updating ethnicity fields.`);
+      console.log(`Successfully updated: ${updatedCount} documents`);
+      console.log(`Failed updates: ${errorCount} documents`);
+    },
   }
 }
 </script>
