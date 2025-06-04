@@ -222,10 +222,10 @@
               </div>
             </div>
           </div>
-          <div class="external-links mt-2 mt-md-4">
-            <ul class="mt-0 mt-md-3 header-links d-flex flex-row no-wrap" style="gap: 12px;">
+          <div class="external-links mt-2">
+            <ul class="mt-0 header-links d-flex flex-row no-wrap" style="gap: 12px;">
               <li><a :href="institution['urlAddress']" target="_blank">Official site<v-icon size="small" class="ml-1">mdi-open-in-new</v-icon></a></li>
-              <li v-if="institution['urlAddressPriceCalc2023'] !== 'null'"><a :href="institution['urlAddressPriceCalc2023']" target="_blank">Net Price Calculator<v-icon size="small" class="ml-1">mdi-open-in-new</v-icon></a></li>          
+              <li v-if="institution['urlAddressPriceCalc2023'] !== '-' "><a :href="institution['urlAddressPriceCalc2023']" target="_blank">Net Price Calculator<v-icon size="small" class="ml-1">mdi-open-in-new</v-icon></a></li>          
               <!-- <li><a :href="institution['adEmail']" target="_blank">Admissions</a></li> -->
             </ul>
           </div>
