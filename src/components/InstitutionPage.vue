@@ -377,7 +377,7 @@
         <div class="stat-container">
           <span class="stat-label">Undergrad International Population</span> 
           <span class="stat-content">
-            {{ institution["enNonresAlienN"] !== null ? Math.round((institution["enNonresAlienN"] / ((institution["enTotFtMenN"]) + (institution["enTotPtMenN"]) + institution["enTotFtWmnN"] + institution["enTotPtWmnN"])) * 100) + '%' : '—' }}
+            {{ (institution["enNonresAlienN"] === -1 || institution["enNonresAlienN"] === null || institution["enTotFtMenN"] === -1 || institution["enTotPtMenN"] === -1 || institution["enTotFtWmnN"] === -1 || institution["enTotPtWmnN"] === -1 || ((institution["enTotFtMenN"]) + (institution["enTotPtMenN"]) + institution["enTotFtWmnN"] + institution["enTotPtWmnN"]) === 0) ? '—' : Math.round((institution["enNonresAlienN"] / ((institution["enTotFtMenN"]) + (institution["enTotPtMenN"]) + institution["enTotFtWmnN"] + institution["enTotPtWmnN"])) * 100) + '%' }}
           </span>
           <!-- ({{ institution["enNonresAlienN"] }}) -->
         </div>
