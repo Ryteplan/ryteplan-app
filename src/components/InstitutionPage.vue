@@ -853,7 +853,7 @@
         <h3>Enrolled Students' Ethnicity</h3>
         <div 
           class="ethnic-stats"
-          v-if="ethnicityPopulationTotal !== 0"
+          v-if="institution['ethnicityPopulationTotal'] !== 0"
         >
           <div class="three-by-three-stat-grid mt-4" style="max-width: 900px; margin: 0 auto;">
             <div class="stat-container">          
@@ -871,12 +871,12 @@
                 </v-progress-linear>
                 <v-progress-linear
                   v-else
-                  :model-value="((institution['enNonresAlienN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
+                  :model-value="((institution['enNonresAlienN'] / institution['ethnicityPopulationTotal']) * 100).toFixed(2)"
                   color="blue-grey"
                   height="25"
                 >
                   <template v-slot:default="{ value }">
-                    <strong>{{ Math.ceil(value) }}% ({{ institution["enNonresAlienN"] }})</strong>
+                    <strong>{{ Math.floor(value) }}% ({{ institution["enNonresAlienN"] }})</strong>
                   </template>
                 </v-progress-linear>
               </div>
@@ -896,12 +896,12 @@
                 </v-progress-linear>
                 <v-progress-linear
                   v-else
-                  :model-value="((institution['enAsianNonhispanicN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
+                  :model-value="((institution['enAsianNonhispanicN'] / institution['ethnicityPopulationTotal']) * 100).toFixed(2)"
                   color="blue-grey"
                   height="25"
                 >
                   <template v-slot:default="{ value }">
-                    <strong>{{ Math.ceil(value) }}% ({{ institution["enAsianNonhispanicN"] }})</strong>
+                    <strong>{{ Math.floor(value) }}% ({{ institution["enAsianNonhispanicN"] }})</strong>
                   </template>
                 </v-progress-linear>
               </div>
@@ -921,12 +921,12 @@
                 </v-progress-linear>
                 <v-progress-linear
                   v-else
-                  :model-value="((institution['enBlackNonhispanicN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
+                  :model-value="((institution['enBlackNonhispanicN'] / institution['ethnicityPopulationTotal']) * 100).toFixed(2)"
                   color="blue-grey"
                   height="25"
                 >
                   <template v-slot:default="{ value }">
-                    <strong>{{ Math.ceil(value) }}% ({{ institution["enBlackNonhispanicN"] }})</strong>
+                    <strong>{{ Math.floor(value) }}% ({{ institution["enBlackNonhispanicN"] }})</strong>
                   </template>
                 </v-progress-linear>                
               </div>
@@ -946,12 +946,12 @@
                 </v-progress-linear>
                 <v-progress-linear
                   v-else
-                  :model-value="((institution['enHispanicEthnicityN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
+                  :model-value="((institution['enHispanicEthnicityN'] / institution['ethnicityPopulationTotal']) * 100).toFixed(2)"
                   color="blue-grey"
                   height="25"
                 >
                   <template v-slot:default="{ value }">
-                    <strong>{{ Math.ceil(value) }}% ({{ institution["enHispanicEthnicityN"] }})</strong>
+                    <strong>{{ Math.floor(value) }}% ({{ institution["enHispanicEthnicityN"] }})</strong>
                   </template>
                 </v-progress-linear>
               </div>
@@ -971,12 +971,12 @@
                 </v-progress-linear>
                 <v-progress-linear
                   v-else
-                  :model-value="((institution['enIslanderNonhispanicN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
+                  :model-value="((institution['enIslanderNonhispanicN'] / institution['ethnicityPopulationTotal']) * 100).toFixed(2)"
                   color="blue-grey"
                   height="25"
                 >
                   <template v-slot:default="{ value }">
-                    <strong>{{ Math.ceil(value) }}% ({{ institution["enIslanderNonhispanicN"] }})</strong>
+                    <strong>{{ Math.floor(value) }}% ({{ institution["enIslanderNonhispanicN"] }})</strong>
                   </template>
                 </v-progress-linear>
               </div>
@@ -996,12 +996,12 @@
                 </v-progress-linear>
                 <v-progress-linear
                   v-else
-                  :model-value="((institution['enMultiraceNonhispanicN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
+                  :model-value="((institution['enMultiraceNonhispanicN'] / institution['ethnicityPopulationTotal']) * 100).toFixed(2)"
                   color="blue-grey"
                   height="25"
                 >
                   <template v-slot:default="{ value }">
-                    <strong>{{ Math.ceil(value) }}% ({{ institution["enMultiraceNonhispanicN"] }})</strong>
+                    <strong>{{ Math.floor(value) }}% ({{ institution["enMultiraceNonhispanicN"] }})</strong>
                   </template>
                 </v-progress-linear>                
               </div>
@@ -1021,12 +1021,12 @@
                 </v-progress-linear>
                 <v-progress-linear
                   v-else
-                  :model-value="((institution['enNativeNonhispanicN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
+                  :model-value="((institution['enNativeNonhispanicN'] / institution['ethnicityPopulationTotal']) * 100).toFixed(2)"
                   color="blue-grey"
                   height="25"
                 >
                   <template v-slot:default="{ value }">
-                    <strong>{{ Math.ceil(value) }}% ({{ institution["enNativeNonhispanicN"] }})</strong>
+                    <strong>{{ Math.floor(value) }}% ({{ institution["enNativeNonhispanicN"] }})</strong>
                   </template>
                 </v-progress-linear>
               </div>
@@ -1046,12 +1046,12 @@
                 </v-progress-linear>
                 <v-progress-linear
                   v-else
-                  :model-value="((institution['enRaceEthnicityUnknownN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
+                  :model-value="((institution['enRaceEthnicityUnknownN'] / institution['ethnicityPopulationTotal']) * 100).toFixed(2)"
                   color="blue-grey"
                   height="25"
                 >
                   <template v-slot:default="{ value }">
-                    <strong>{{ Math.ceil(value) }}% ({{ institution["enRaceEthnicityUnknownN"] }})</strong>
+                    <strong>{{ Math.floor(value) }}% ({{ institution["enRaceEthnicityUnknownN"] }})</strong>
                   </template>
                 </v-progress-linear>
               </div>
@@ -1071,12 +1071,12 @@
                 </v-progress-linear>
                 <v-progress-linear
                   v-else
-                  :model-value="((institution['enWhiteNonhispanicN'] / ethnicityPopulationTotal) * 100).toFixed(2)"
+                  :model-value="((institution['enWhiteNonhispanicN'] / institution['ethnicityPopulationTotal']) * 100).toFixed(2)"
                   color="blue-grey"
                   height="25"
                 >
-                  <template v-slot:default="{ value }">
-                    <strong>{{ Math.ceil(value) }}% ({{ institution["enWhiteNonhispanicN"] }})</strong>
+                  <template v-slot:default="{ value }"> 
+                    <strong>{{ Math.floor(value) }}% ({{ institution["enWhiteNonhispanicN"] }})</strong>
                   </template>
                 </v-progress-linear>
               </div>
@@ -1380,7 +1380,6 @@ export default {
       this.getSports();
       this.getImages();
       this.getDescriptions();
-      this.getEthnicityPopulationTotal();
       document.title = this.institution["name"] + " | Ryteplan College Search";
     },
     async getDescriptions() {
@@ -1491,17 +1490,6 @@ export default {
       return str.replace(/\w\S*/g, function(txt){
         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
       });
-    },
-    getEthnicityPopulationTotal() {
-      this.ethnicityPopulationTotal = 
-        this.institution["enAsianNonhispanicN"] + 
-        this.institution["enBlackNonhispanicN"] + 
-        this.institution["enHispanicEthnicityN"] + 
-        this.institution["enIslanderNonhispanicN"] + 
-        this.institution["enMultiraceNonhispanicN"] + 
-        this.institution["enNativeNonhispanicN"] + 
-        this.institution["enRaceEthnicityUnknownN"] + 
-        this.institution["enWhiteNonhispanicN"];
     },
     toggleEditImages(){
       this.editMode = !this.editMode;
