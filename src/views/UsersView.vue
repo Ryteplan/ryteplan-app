@@ -185,7 +185,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/userStore';
-import { collection, getDocs, query, orderBy, Timestamp } from 'firebase/firestore';
+import { collection, getDocs, query, Timestamp } from 'firebase/firestore';
 import { dbFireStore } from "../firebase";
 import { format, isWithinInterval, parseISO, startOfDay, endOfDay } from 'date-fns';
 
@@ -250,7 +250,7 @@ export default {
 
       if (filters.value.startDate || filters.value.endDate) {
         result = result.filter(user => {
-          const createdAt = user.createdAt?.toDate();
+          const createdAt = user.created?.toDate();
           if (!createdAt) return false;
 
           if (filters.value.startDate && filters.value.endDate) {
@@ -336,21 +336,34 @@ export default {
     const fetchUsers = async () => {
       try {
         const usersQuery = query(
-          collection(dbFireStore, 'users'), 
-          orderBy('created', 'desc')
+          collection(dbFireStore, 'users')
         );
         const querySnapshot = await getDocs(usersQuery);
         
         const userData = querySnapshot.docs.map(doc => {
           const data = doc.data();
-          // Log the created timestamp for debugging
-          console.log('User created timestamp:', data.created);
+          // Normalize the creation date field
+          const created = data.created || data.createdAt;
           return {
             id: doc.id,
-            ...data
+            ...data,
+            created: created
           };
         });
-        
+
+        // Now sort on the client side using the normalized 'created' field
+        userData.sort((a, b) => {
+          const dateA = a.created;
+          const dateB = b.created;
+
+          if (dateA && dateB) {
+            return dateB.toDate() - dateA.toDate();
+          }
+          if (dateA) return -1;
+          if (dateB) return 1;
+          return 0;
+        });
+
         users.value = userData;
       } catch (error) {
         console.error('Error fetching users:', error);
