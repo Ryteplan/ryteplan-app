@@ -243,7 +243,8 @@
         <StorageImagesCollection :images="imagesv2" class="" />
       </div>
       </div>
-      <div class="section-container three-by-three-stat-grid mt-8" id="stats">
+      <h3 class="ml-4 mt-5 mb-n-5">Overview</h3>
+      <div class="section-container three-by-three-stat-grid mt-8" id="overview">
         <StatDisplay
           label="Undergraduate (UG) Enrollment"
           :uri="institution['uri']"
@@ -545,6 +546,7 @@
           </div>
         </div>
       </div>
+      <h3 class="ml-4 mt-5 mb-n-5">Descriptions</h3>
       <div class="section-container descriptions-container mt-8" id="descriptions">
         <v-expansion-panels v-model="expandedPanels.descriptions" multiple @update:model-value="savePanelStates">
           <v-expansion-panel>
@@ -717,8 +719,8 @@
           </v-expansion-panel>
         </v-expansion-panels>
       </div>
+      <h3 class="ml-4 mt-5 mb-n-5">Cost & Aid</h3>
       <div class="section-container cost-aid-container mt-8" id="cost">
-        <h3>Cost & Aid</h3>
         <div class="four-column-grid mt-4">
           <div class="stat-container"><span class="stat-label">Tuition In State</span> <span class="stat-content">{{ institution["tuitStateFtD2025"] === -1 ? '—' : '$' + (institution["tuitStateFtD2025"]?.toLocaleString() || '—') }}</span></div>
           <div class="stat-container"><span class="stat-label">Tuition Out of State</span> <span class="stat-content">{{ institution["tuitNresFtD2025"] === -1 ? '—' : '$' + (institution["tuitNresFtD2025"]?.toLocaleString() || '—') }}</span></div>
@@ -734,15 +736,17 @@
           <div class="stat-container"><span class="stat-label">Average Merit Scholarship <br/><span>(excluding athletics)</span> </span> <span class="stat-content">{{ institution["ugFtNnNoneedD"] === -1 ? '—' : '$' + (institution["ugFtNnNoneedD"]?.toLocaleString() || '—') }}</span></div>
         </div>
       </div>
+      <h3 class="ml-4 mt-5 mb-n-5">Sports & Athletics</h3>
       <div class="section-container sports-container mt-8" id="sports">
-        <h3>Sports & Athletics</h3>
-        <div class="d-flex align-center justify-space-between">
+        <div 
+          class="d-flex align-center justify-space-between mb-4"
+          v-if="userStore.adminMode"
+        >
           <v-btn
             size="small"
             class="mb-4"
             :to="`/institution/${$route.params.slug}/sports-work`"
             target="_blank"
-            v-if="userStore.adminMode"
           >
             Edit Sports
           </v-btn>
@@ -849,8 +853,8 @@
           </ul>
         </div>
       </div>
+      <h3 class="ml-4 mt-5 mb-n-5">Enrolled Students' Ethnicity</h3>
       <div class="section-container ethnicity-container mt-8" id="ethnicity">
-        <h3>Enrolled Students' Ethnicity</h3>
         <div 
           class="ethnic-stats"
           v-if="institution['ethnicityPopulationTotal'] !== 0"
@@ -1086,7 +1090,6 @@
         <div v-else>
           <p>No data available</p>
         </div>
-
       </div>
       <v-expansion-panels class="d-none mt-8" v-model="expandedPanels.fieldsOfStudy" @update:model-value="savePanelStates">
         <v-expansion-panel>
@@ -1216,7 +1219,7 @@ export default {
       selectedSection: 'intro',
       navigationItems: [
       { title: 'Intro', value: 'intro' },
-      { title: 'Stats', value: 'stats' },
+      { title: 'Overview', value: 'overview' },
       { title: 'Descriptions', value: 'descriptions' },
       { title: 'Cost & Aid', value: 'cost' },
       { title: 'Sports', value: 'sports' },
@@ -1288,7 +1291,7 @@ export default {
 
         const element = document.getElementById(sectionId);
         if (element) {
-          const headerOffset = 84; // Height of sticky header
+          const headerOffset = 110; // Height of sticky header
           const elementPosition = element.getBoundingClientRect().top;
           const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
