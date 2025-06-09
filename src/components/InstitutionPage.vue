@@ -8,8 +8,16 @@
       variant="outlined"
       @update:model-value="scrollToSection"
       class="section-navigation d-md-none"
+      :class="{ 'is-fixed': isNavFixed }"
       hide-details
     ></v-select>
+    <v-btn
+      size="small"
+      @click="showSaveToListDialog = true"
+      class="add-to-list-mobile d-md-none"
+    >
+      Add to list
+    </v-btn>
     <div class="cover-image d-md-none" style= "z-index: -1;">
       <img 
         v-if="imagesv2.length > 0"
@@ -202,13 +210,6 @@
       </div>
       <div class="intro-block" id="intro">
         <div class="action-row my-4 d-md-none">
-          <v-btn
-            size="small"
-            @click="showSaveToListDialog = true"
-            class="md-mr-6"
-          >
-            Add to list
-          </v-btn>
       </div>
       <div class="section-container location-links-images-container" style="gap: 20px;">
         <div class="d-flex flex-column">
@@ -1178,6 +1179,15 @@ export default {
       }
     });
 
+    window.addEventListener('scroll', this.handleScroll);
+
+    this.$nextTick(() => {
+      const navElement = this.$el.querySelector('.section-navigation');
+      if (navElement) {
+        this.navOriginalTop = navElement.offsetTop;
+      }
+    });
+
     // Ensure intro is the initial section
     this.selectedSection = 'intro';
 
@@ -1213,6 +1223,7 @@ export default {
     if (this.root) {
       this.root.dispose();
     }
+    window.removeEventListener('scroll', this.handleScroll);
   },
   data() {
     return {
@@ -1225,6 +1236,8 @@ export default {
       { title: 'Sports', value: 'sports' },
       { title: 'Ethnicity', value: 'ethnicity' }
       ],
+      isNavFixed: false,
+      navOriginalTop: 0,
       isLoggedIn: false,
       isEditImagesSaveButtonDisabled: false,
       isEditImagesSaveButtonVisible: false,
@@ -1271,6 +1284,19 @@ export default {
     }
   },
   methods: {
+    handleScroll() {
+      const navElement = this.$el.querySelector('.section-navigation');
+      if (!navElement || window.getComputedStyle(navElement).display === 'none') {
+        this.isNavFixed = false;
+        return;
+      }
+
+      if (window.scrollY > (this.navOriginalTop - 80)) {
+        this.isNavFixed = true;
+      } else {
+        this.isNavFixed = false;
+      }
+    },
     scrollToSection(sectionId) {
       // If this is a descriptions section, expand the panel
       if (sectionId === 'descriptions') {
@@ -1933,9 +1959,9 @@ export default {
 }
 
 .section-navigation {
-  position: fixed;
+  position: absolute;
   right: 12px;
-  top: 84px;
+  top: 57vw;
   z-index: 100;
   background-color: white;
   color: rgba(0, 0, 0, 0.87);
@@ -1949,6 +1975,21 @@ export default {
     display: none !important;
   }
 
+  @media (min-width: 768px) {
+    top: 38vw;
+  }
+
+}
+
+.section-navigation.is-fixed {
+  position: fixed;
+  top: 80px;
+}
+
+.add-to-list-mobile {
+  position: absolute;
+  top: 12px;
+  right: 16px;
 }
 
 </style>
