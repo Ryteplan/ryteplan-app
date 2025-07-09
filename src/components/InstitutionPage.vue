@@ -244,7 +244,7 @@
         <StorageImagesCollection :images="imagesv2" class="" />
       </div>
       </div>
-      <h3 class="ml-4 mt-5 mb-n-5">Overview</h3>
+      <h3 class="ml-4 mt-8 mb-n-5">Overview</h3>
       <div class="section-container three-by-three-stat-grid mt-8" id="overview">
         <StatDisplay
           label="Undergraduate (UG) Enrollment"
@@ -547,7 +547,7 @@
           </div>
         </div>
       </div>
-      <h3 class="ml-4 mt-5 mb-n-5">Descriptions</h3>
+      <h3 class="ml-4 mt-8 mb-n-5">Descriptions</h3>
       <div class="section-container descriptions-container mt-8" id="descriptions">
         <v-expansion-panels v-model="expandedPanels.descriptions" multiple @update:model-value="savePanelStates">
           <v-expansion-panel>
@@ -720,9 +720,9 @@
           </v-expansion-panel>
         </v-expansion-panels>
       </div>
-      <h3 class="ml-4 mt-5 mb-n-5">Cost & Aid</h3>
+      <h3 class="ml-4 mt-8 mb-n-5">Cost & Aid</h3>
       <div class="section-container cost-aid-container mt-8" id="cost">
-        <div class="four-column-grid mt-4">
+        <div class="four-column-grid mt-4-md">
           <div class="stat-container"><span class="stat-label">Tuition In State</span> <span class="stat-content">{{ institution["tuitStateFtD2025"] === -1 ? '—' : '$' + (institution["tuitStateFtD2025"]?.toLocaleString() || '—') }}</span></div>
           <div class="stat-container"><span class="stat-label">Tuition Out of State</span> <span class="stat-content">{{ institution["tuitNresFtD2025"] === -1 ? '—' : '$' + (institution["tuitNresFtD2025"]?.toLocaleString() || '—') }}</span></div>
           <div class="stat-container"><span class="stat-label">Tuition International</span> <span class="stat-content">{{ institution["tuitIntlFtD2025"] === -1 ? '—' : '$' + (institution["tuitIntlFtD2025"]?.toLocaleString() || '—') }}</span></div>
@@ -737,7 +737,7 @@
           <div class="stat-container"><span class="stat-label">Average Merit Scholarship <br/><span>(excluding athletics)</span> </span> <span class="stat-content">{{ institution["ugFtNnNoneedD"] === -1 ? '—' : '$' + (institution["ugFtNnNoneedD"]?.toLocaleString() || '—') }}</span></div>
         </div>
       </div>
-      <h3 class="ml-4 mt-5 mb-n-5">Sports & Athletics</h3>
+      <h3 class="ml-4 mt-8 mb-n-5">Sports & Athletics</h3>
       <div class="section-container sports-container mt-8" id="sports">
         <div 
           class="d-flex align-center justify-space-between mb-4"
@@ -752,7 +752,8 @@
             Edit Sports
           </v-btn>
         </div>
-        <div v-if="sports.length > 0">
+        
+        <div class="w-100" v-if="sports.length > 0">
           <div class="d-flex align-center">
             <h3>Intercollegiate</h3>
             <div class="ms-2">
@@ -790,7 +791,7 @@
               </v-chip>
             </div>
           </div>
-          <div class="d-flex">
+          <div class="d-flex mt-4 w-100">
             <div class="flex-grow-1 mr-4" v-if="menIntercollegiateSports.length > 0">
               <h4>Men</h4>
               <ul class="d-flex flex-column" style="gap: 8px;">
@@ -814,6 +815,9 @@
               </ul>
             </div>
           </div>
+        </div>
+        <div v-else>
+          <p>No sports data available</p>
         </div>
         <div class="mt-4 d-none" v-if="hasAnyIntramural">
           <h3>Intramural</h3>
@@ -854,7 +858,7 @@
           </ul>
         </div>
       </div>
-      <h3 class="ml-4 mt-5 mb-n-5">Enrolled Students' Ethnicity</h3>
+      <h3 class="ml-4 mt-8 mb-n-5">Enrolled Students' Ethnicity</h3>
       <div class="section-container ethnicity-container mt-8" id="ethnicity">
         <div 
           class="ethnic-stats"
@@ -1413,10 +1417,12 @@ export default {
     },
     async getDescriptions() {
       const slugFromURL = this.$route.params.slug;
+      console.log(slugFromURL);
       const descriptions = collection(dbFireStore, 'Descriptions');
-      const q = query(descriptions, where("uri", "==", slugFromURL));
+      const q = query(descriptions, where(documentId(), "==", slugFromURL));
       const docSnap = await getDocs(q);
       docSnap.forEach((doc) => {
+        console.log(doc.data());
         this.descriptions = doc.data();
       });
     },
@@ -1788,8 +1794,11 @@ export default {
   }
 
   @media (max-width: 767px) {
-    .three-by-three-stat-grid > div:not(:first-of-type) {
-      margin-top: 24px;
+    .four-column-grid,
+    .three-by-three-stat-grid {
+      > div:not(:first-of-type) {
+        margin-top: 24px;
+      }
     }
   }  
 
@@ -1864,7 +1873,7 @@ export default {
 
   .section-container {
     background: white;
-    padding: 24px;
+    padding: 16px 24px;
     border-radius: 16px;
   }
 
