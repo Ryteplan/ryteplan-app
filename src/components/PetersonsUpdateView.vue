@@ -3,7 +3,7 @@
     <div class="petersons-update">
       <div class="d-flex flex-column align-center justify-space-between mb-4">
         <h1>Petersons Update</h1>
-        <div class="d-flex align-center gap-2">
+        <div class="d-flex align-center gap-2 mt-4">
           <v-btn
           color="secondary"
           variant="outlined"
@@ -115,7 +115,7 @@
         </tr>
       </template>
     </v-data-table>
-    <div class="d-flex justify-center">
+    <div class="d-flex justify-center mt-4">
       <v-btn
         color="primary"
         variant="elevated"
@@ -126,6 +126,32 @@
         Update fields that don't have manual overrides
       </v-btn>
     </div>
+    <div class="d-flex align-center justify-center gap-2 mt-4">
+      <v-btn
+          color="secondary"
+          variant="outlined"
+          :loading="loadingNextSchool"
+          @click="goToPreviousSchool"
+          >
+            Previous School
+          </v-btn>
+          <v-btn
+            v-if="institution.name"
+            :to="`/institution/${$route.params.slug}`"
+            color="primary"
+            variant="outlined"
+          >
+            View Institution Page
+          </v-btn>
+          <v-btn
+            color="secondary"
+            variant="outlined"
+            :loading="loadingNextSchool"
+            @click="goToNextSchool"
+          >
+            Next School
+          </v-btn>
+        </div>
   </v-container>
 </template>
 
