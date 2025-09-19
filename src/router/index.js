@@ -12,6 +12,7 @@ import AccountView from '@/components/AccountView.vue';
 import PlaygroundView from '@/components/PlaygroundView.vue';
 import DataIntegrationView from '@/components/DataIntegrationView.vue';
 import DataCompareView from '@/components/DataCompareView.vue';
+import PetersonsUpdateView from '@/components/PetersonsUpdateView.vue';
 import ImageWorkView from '@/components/ImageWorkView.vue';
 import TermsView from '@/views/TermsView.vue';
 import PrivacyView from '@/views/PrivacyView.vue';
@@ -60,6 +61,11 @@ const routes = [
     path: '/data-compare',
     name: 'DataCompare',
     component: DataCompareView,
+  },
+  {
+    path: '/petersons-update/:slug',
+    name: 'PetersonsUpdate',
+    component: PetersonsUpdateView,
   },
   {
     path: '/',

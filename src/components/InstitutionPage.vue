@@ -47,45 +47,51 @@
         </v-row>
       </v-container>
       <v-row class="flex-row mx-0 mt-0 mb-1 align-center" style="gap: 24px;" v-if="userStore.adminMode">
-          <v-btn
-            v-if="userStore.adminMode"
-            size="small"
-            :to="`/image-work/${institution['uri']}`"
-          >
-            Edit Images
-          </v-btn>
+        <v-btn
+          v-if="userStore.adminMode"
+          size="small"
+          :to="`/petersons-update/${institution['uri']}`"
+        >
+          Petersons Update
+        </v-btn> 
+        <v-btn
+          v-if="userStore.adminMode"
+          size="small"
+          :to="`/image-work/${institution['uri']}`"
+        >
+          Edit Images
+        </v-btn>
+        <v-switch
+          v-if="userStore.adminMode"
+          label="HBCU"
+          v-model="institution['hbcu']"
+          @change="toggleFieldTrueFalse('hbcu')"
+          color="primary"
+          hide-details
+          dense
+        >
+        </v-switch>
 
-          <v-switch
-            v-if="userStore.adminMode"
-            label="HBCU"
-            v-model="institution['hbcu']"
-            @change="toggleFieldTrueFalse('hbcu')"
-            color="primary"
-            hide-details
-            dense
-          >
-          </v-switch>
+        <v-switch
+          v-if="userStore.adminMode"
+          label="Tribal"
+          v-model="institution['tribal']"
+          @change="toggleFieldTrueFalse('tribal')"
+          color="primary"
+          hide-details
+          dense
+        >
+        </v-switch>
 
-          <v-switch
-            v-if="userStore.adminMode"
-            label="Tribal"
-            v-model="institution['tribal']"
-            @change="toggleFieldTrueFalse('tribal')"
-            color="primary"
-            hide-details
-            dense
-          >
-          </v-switch>
-
-          <v-switch 
-            label="Hidden from Search"
-            color="primary"
-            hide-details
-            dense
-            v-model="manualInstitionData['hidden']"
-            @change="toggleFieldTrueFalse('hidden')"
-          >
-          </v-switch>         
+        <v-switch 
+          label="Hidden from Search"
+          color="primary"
+          hide-details
+          dense
+          v-model="manualInstitionData['hidden']"
+          @change="toggleFieldTrueFalse('hidden')"
+        >
+        </v-switch>         
       </v-row>
       <div class="section-container mb-8" style="max-width: 600px;" v-if="userStore.adminMode">
         <h4>Aliases</h4>
