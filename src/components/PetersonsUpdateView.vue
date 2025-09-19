@@ -521,6 +521,20 @@ export default {
       if (item.fieldName === 'Hidden') {
         return;
       }
+      
+      // Check if manual value exists and is not empty
+      const hasManualValue = item.manualValue !== null && 
+                           item.manualValue !== undefined && 
+                           item.manualValue !== '' && 
+                           item.manualValue !== '—' && 
+                           item.manualValue !== '–' && 
+                           item.manualValue !== -1;
+      
+      // Priority: manual value highlighting over difference highlighting
+      if (hasManualValue) {
+        return 'manual-value-row';
+      }
+      
       return item.isDifferent ? 'highlighted-row' : ''; 
     },
     async updateField(item) {
@@ -848,8 +862,22 @@ export default {
   background-color: #ffeaa7 !important;
 }
 
+/* Blue highlighting for rows with manual values */
+.manual-value-row {
+  background-color: #e3f2fd !important;
+  border-left: 4px solid #2196f3 !important;
+}
+
+.manual-value-row:hover {
+  background-color: #bbdefb !important;
+}
+
 /* Ensure the highlighting works even with Vuetify's default styling */
 .v-data-table .highlighted-row td {
+  background-color: inherit !important;
+}
+
+.v-data-table .manual-value-row td {
   background-color: inherit !important;
 }
 </style>
