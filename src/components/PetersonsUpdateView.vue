@@ -71,7 +71,43 @@
       </template>
 
       <template #[`item.manualValue`]="{ item }">
-        <span :class="{ 'text-grey': !item.manualValue || item.manualValue === '—' || item.manualValue === '–' }">
+        <div v-if="editingCell === item.fieldKey" class="d-flex align-center gap-2">
+          <v-text-field
+            v-model="editingValue"
+            density="compact"
+            variant="outlined"
+            hide-details
+            @keyup.enter="saveManualValue(item)"
+            @keyup.escape="cancelEdit"
+            autofocus
+            class="flex-grow-1"
+          />
+          <v-btn
+            icon="mdi-check"
+            size="small"
+            color="success"
+            variant="text"
+            :loading="savingCell === item.fieldKey"
+            @click="saveManualValue(item)"
+          />
+          <v-btn
+            icon="mdi-close"
+            size="small"
+            color="error"
+            variant="text"
+            @click="cancelEdit"
+          />
+        </div>
+        <span
+          v-else
+          :class="{ 
+            'text-grey': !item.manualValue || item.manualValue === '—' || item.manualValue === '–',
+            'cursor-pointer': true,
+            'hover-highlight': true
+          }"
+          @click="startEditManualValue(item)"
+          title="Click to edit"
+        >
           {{ formatValue(item.manualValue, item.fieldKey) }}
         </span>
       </template>
@@ -91,7 +127,43 @@
             </span>
           </td>
           <td>
-            <span :class="{ 'text-grey': !item.manualValue || item.manualValue === '—' || item.manualValue === '–' }">
+            <div v-if="editingCell === item.fieldKey" class="d-flex align-center gap-2">
+              <v-text-field
+                v-model="editingValue"
+                density="compact"
+                variant="outlined"
+                hide-details
+                @keyup.enter="saveManualValue(item)"
+                @keyup.escape="cancelEdit"
+                autofocus
+                class="flex-grow-1"
+              />
+              <v-btn
+                icon="mdi-check"
+                size="small"
+                color="success"
+                variant="text"
+                :loading="savingCell === item.fieldKey"
+                @click="saveManualValue(item)"
+              />
+              <v-btn
+                icon="mdi-close"
+                size="small"
+                color="error"
+                variant="text"
+                @click="cancelEdit"
+              />
+            </div>
+            <span
+              v-else
+              :class="{ 
+                'text-grey': !item.manualValue || item.manualValue === '—' || item.manualValue === '–',
+                'cursor-pointer': true,
+                'hover-highlight': true
+              }"
+              @click="startEditManualValue(item)"
+              title="Click to edit"
+            >
               {{ formatValue(item.manualValue, item.fieldKey) }}
             </span>
           </td>
@@ -157,7 +229,7 @@
 
 <script>
 import { dbFireStore } from "../firebase";
-import { collection, query, where, getDocs, doc, updateDoc, orderBy } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, updateDoc, orderBy, setDoc } from 'firebase/firestore';
 import { useTableStore } from '../stores/tableStore';
 
 export default {
@@ -175,6 +247,9 @@ export default {
       institutionDocId: null,
       bulkUpdating: false,
       loadingNextSchool: false,
+      editingCell: null, // Track which cell is being edited (fieldKey)
+      editingValue: '', // The value being edited
+      savingCell: null, // Track which cell is being saved
       headers: [
         { title: 'Field Name', key: 'fieldName', width: '20%', sortable: true },
         { title: 'Petersons', key: 'petersonsValue', width: '20%', sortable: false },
@@ -655,6 +730,75 @@ export default {
       } finally {
         this.loadingNextSchool = false;
       }
+    },
+    startEditManualValue(item) {
+      this.editingCell = item.fieldKey;
+      // Get the raw value (not the formatted display value)
+      const rawValue = this.manualData[item.fieldKey];
+      
+      // Handle various empty value representations
+      if (rawValue === null || rawValue === undefined || rawValue === '' || rawValue === '—' || rawValue === '–' || rawValue === -1) {
+        this.editingValue = '';
+      } else {
+        this.editingValue = rawValue.toString();
+      }
+    },
+    cancelEdit() {
+      this.editingCell = null;
+      this.editingValue = '';
+      this.savingCell = null;
+    },
+    async saveManualValue(item) {
+      if (this.savingCell === item.fieldKey) {
+        return; // Already saving
+      }
+
+      this.savingCell = item.fieldKey;
+
+      try {
+        const slugFromURL = this.$route.params.slug;
+        
+        // Convert empty string to null for consistency
+        const valueToSave = this.editingValue.trim() === '' ? null : this.editingValue.trim();
+        
+        // Check if valueToSave is a number
+        let processedValue = valueToSave;
+        if (valueToSave !== null && !isNaN(valueToSave) && !isNaN(parseFloat(valueToSave))) {
+          processedValue = parseFloat(valueToSave);
+        }
+        
+        // Create or update the manual data document
+        const manualDocRef = doc(dbFireStore, 'manual_institution_data', slugFromURL);
+        await setDoc(manualDocRef, {
+          [item.fieldKey]: processedValue
+        }, { merge: true }); // Use merge to only update the specific field
+        
+        // Also update the integrated collection with the manual override
+        if (this.institutionDocId) {
+          const institutionRef = doc(dbFireStore, 'institutions_integrated', this.institutionDocId);
+          await updateDoc(institutionRef, {
+            [item.fieldKey]: processedValue
+          });
+          
+          // Update local integrated state
+          this.institution[item.fieldKey] = processedValue;
+        }
+        
+        // Update local manual state
+        this.manualData[item.fieldKey] = processedValue;
+        
+        // Exit editing mode
+        this.editingCell = null;
+        this.editingValue = '';
+        
+        console.log(`Successfully updated manual value for ${item.fieldName} to ${processedValue}`);
+        
+      } catch (error) {
+        console.error('Error saving manual value:', error);
+        // You could add a snackbar or toast notification here
+      } finally {
+        this.savingCell = null;
+      }
     }
   },
   setup() {
@@ -679,6 +823,17 @@ export default {
 
 .gap-2 {
   gap: 8px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.hover-highlight:hover {
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  padding: 2px 4px;
+  margin: -2px -4px;
 }
 </style>
 
