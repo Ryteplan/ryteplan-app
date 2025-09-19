@@ -564,19 +564,45 @@ export default {
 
     async findNextSchool() {
       try {
+        // Get all institutions from institution_images collection
         const institutionsRef = collection(dbFireStore, 'institution_images');
-        const q = query(
-          institutionsRef,
-          orderBy(documentId()),
-          startAfter(this.schoolId),
-          limit(1)
-        );
+        const allSchoolsQuery = query(institutionsRef, orderBy(documentId()));
+        const querySnapshot = await getDocs(allSchoolsQuery);
         
-        const querySnapshot = await getDocs(q);
-        if (!querySnapshot.empty) {
-          this.nextSchoolId = querySnapshot.docs[0].id;
-        } else {
+        const schoolIds = [];
+        
+        // Collect all school IDs, checking if they're hidden in institutions_integrated
+        for (const doc of querySnapshot.docs) {
+          const schoolId = doc.id;
+          
+          // Check if this school is hidden by querying institutions_integrated
+          const integratedQuery = query(
+            collection(dbFireStore, 'institutions_integrated'),
+            where("uri", "==", schoolId)
+          );
+          const integratedSnapshot = await getDocs(integratedQuery);
+          
+          let isHidden = false;
+          integratedSnapshot.forEach((integratedDoc) => {
+            const data = integratedDoc.data();
+            if (data.hidden === true) {
+              isHidden = true;
+            }
+          });
+          
+          // Only include non-hidden schools
+          if (!isHidden) {
+            schoolIds.push(schoolId);
+          }
+        }
+        
+        // Find current school index
+        const currentIndex = schoolIds.findIndex(id => id === this.schoolId);
+        
+        if (currentIndex === -1 || currentIndex >= schoolIds.length - 1) {
           this.nextSchoolId = null;
+        } else {
+          this.nextSchoolId = schoolIds[currentIndex + 1];
         }
       } catch (error) {
         console.error('Error finding next school:', error);
@@ -586,19 +612,45 @@ export default {
 
     async findPrevSchool() {
       try {
+        // Get all institutions from institution_images collection
         const institutionsRef = collection(dbFireStore, 'institution_images');
-        const q = query(
-          institutionsRef,
-          orderBy(documentId(), 'desc'),
-          startAfter(this.schoolId),
-          limit(1)
-        );
+        const allSchoolsQuery = query(institutionsRef, orderBy(documentId()));
+        const querySnapshot = await getDocs(allSchoolsQuery);
         
-        const querySnapshot = await getDocs(q);
-        if (!querySnapshot.empty) {
-          this.prevSchoolId = querySnapshot.docs[0].id;
-        } else {
+        const schoolIds = [];
+        
+        // Collect all school IDs, checking if they're hidden in institutions_integrated
+        for (const doc of querySnapshot.docs) {
+          const schoolId = doc.id;
+          
+          // Check if this school is hidden by querying institutions_integrated
+          const integratedQuery = query(
+            collection(dbFireStore, 'institutions_integrated'),
+            where("uri", "==", schoolId)
+          );
+          const integratedSnapshot = await getDocs(integratedQuery);
+          
+          let isHidden = false;
+          integratedSnapshot.forEach((integratedDoc) => {
+            const data = integratedDoc.data();
+            if (data.hidden === true) {
+              isHidden = true;
+            }
+          });
+          
+          // Only include non-hidden schools
+          if (!isHidden) {
+            schoolIds.push(schoolId);
+          }
+        }
+        
+        // Find current school index
+        const currentIndex = schoolIds.findIndex(id => id === this.schoolId);
+        
+        if (currentIndex === -1 || currentIndex <= 0) {
           this.prevSchoolId = null;
+        } else {
+          this.prevSchoolId = schoolIds[currentIndex - 1];
         }
       } catch (error) {
         console.error('Error finding previous school:', error);

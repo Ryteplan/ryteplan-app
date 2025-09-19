@@ -651,7 +651,7 @@ export default {
         
         snapshot.forEach((doc) => {
           const data = doc.data();
-          if (data.uri && data.name) { // Only include institutions with both URI and name
+          if (data.uri && data.name && !data.hidden) { // Only include institutions with both URI and name, and not hidden
             institutions.push({
               uri: data.uri,
               name: data.name,
@@ -708,7 +708,7 @@ export default {
         
         snapshot.forEach((doc) => {
           const data = doc.data();
-          if (data.uri && data.name) { // Only include institutions with both URI and name
+          if (data.uri && data.name && !data.hidden) { // Only include institutions with both URI and name, and not hidden
             institutions.push({
               uri: data.uri,
               name: data.name,
