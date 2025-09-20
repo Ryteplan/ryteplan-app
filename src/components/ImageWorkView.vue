@@ -168,7 +168,7 @@
 
 <script>
 import { dbFireStore } from "../firebase";
-import { collection, query, getDocs, where, documentId, doc, getDoc, setDoc, orderBy, startAfter, limit } from 'firebase/firestore';
+import { collection, query, getDocs, where, documentId, doc, getDoc, setDoc, orderBy } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import axios from 'axios';
 import TiptapInputA from '../components/TiptapInputA.vue';
