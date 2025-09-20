@@ -33,7 +33,7 @@
       
       <div v-if="institution.name" class="institution-info mb-4">
         <h2>{{ institution.name }}</h2>
-        Last updated: {{ institution.lastUpdated }}
+        <p>Last updated: <i>{{ formatTimestamp(institution.lastUpdated) }}</i></p>
       </div>
     </div>
     <v-data-table
@@ -382,6 +382,36 @@ export default {
     await this.loadInstitutionData();
   },
   methods: {
+    formatTimestamp(timestamp) {
+      if (!timestamp) {
+        return '—';
+      }
+      
+      // Convert Firebase timestamp to JavaScript Date
+      let date;
+      if (timestamp.toDate) {
+        // Firebase Timestamp object
+        date = timestamp.toDate();
+      } else if (timestamp.seconds) {
+        // Timestamp object with seconds and nanoseconds
+        date = new Date(timestamp.seconds * 1000 + Math.floor(timestamp.nanoseconds / 1000000));
+      } else {
+        // Already a Date object or timestamp number
+        date = new Date(timestamp);
+      }
+      
+      // Format as "Month Date, Year Hours:Seconds AM/PM"
+      const options = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      };
+      
+      return date.toLocaleDateString('en-US', options);
+    },
     async loadInstitutionData() {
       const slugFromURL = this.$route.params.slug;
       
