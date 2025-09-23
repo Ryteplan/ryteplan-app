@@ -246,6 +246,9 @@
               <!-- <li><a :href="institution['adEmail']" target="_blank">Admissions</a></li> -->
             </ul>
           </div>
+          <div class="mt-2">
+            <p style="font-size: 13px;">Last updated: <i>{{ formatTimestamp(institution.lastUpdated) }}</i></p>
+          </div>
         </div>
         <StorageImagesCollection :images="imagesv2" class="" />
       </div>
@@ -1159,6 +1162,7 @@ import StatDisplay from './StatDisplay.vue';
 import TiptapInputA from "./TiptapInputA.vue"
 import SportItem from './SportItem.vue'
 import StorageImagesCollection from '@/components/StorageImagesCollection.vue'
+import { formatTimestamp } from '../utils/timestampUtils';
 
 export default {
   setup() {
@@ -1294,6 +1298,7 @@ export default {
     }
   },
   methods: {
+    formatTimestamp,
     handleScroll() {
       const navElement = this.$el.querySelector('.section-navigation');
       if (!navElement || window.getComputedStyle(navElement).display === 'none') {

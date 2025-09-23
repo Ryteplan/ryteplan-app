@@ -231,6 +231,7 @@
 import { dbFireStore } from "../firebase";
 import { collection, query, where, getDocs, doc, updateDoc, orderBy, setDoc } from 'firebase/firestore';
 import { useTableStore } from '../stores/tableStore';
+import { formatTimestamp } from '../utils/timestampUtils';
 
 export default {
   name: 'PetersonsUpdateView',
@@ -382,36 +383,7 @@ export default {
     await this.loadInstitutionData();
   },
   methods: {
-    formatTimestamp(timestamp) {
-      if (!timestamp) {
-        return '—';
-      }
-      
-      // Convert Firebase timestamp to JavaScript Date
-      let date;
-      if (timestamp.toDate) {
-        // Firebase Timestamp object
-        date = timestamp.toDate();
-      } else if (timestamp.seconds) {
-        // Timestamp object with seconds and nanoseconds
-        date = new Date(timestamp.seconds * 1000 + Math.floor(timestamp.nanoseconds / 1000000));
-      } else {
-        // Already a Date object or timestamp number
-        date = new Date(timestamp);
-      }
-      
-      // Format as "Month Date, Year Hours:Seconds AM/PM"
-      const options = {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true
-      };
-      
-      return date.toLocaleDateString('en-US', options);
-    },
+    formatTimestamp,
     async loadInstitutionData() {
       const slugFromURL = this.$route.params.slug;
       
