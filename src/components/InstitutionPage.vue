@@ -1355,17 +1355,29 @@ export default {
       };
       return divisions[code] || code;
     },
-    toggleFieldTrueFalse(field) {
-      setDoc(doc(dbFireStore, 'manual_institution_data', this.institution["uri"]), {
-        [field]: this.manualInstitionData[field]
-      }, { merge: true });
-      setDoc(doc(dbFireStore, 'institutions_integrated', this.institution["uri"]), {
-        [field]: this.manualInstitionData[field]
-      }, { merge: true });
+    async toggleFieldTrueFalse(field) {
+      console.log('Updating field:', field, 'with value:', this.institution[field]);
+      
+      // Check if user is logged in
+      if (!this.isLoggedIn) {
+        console.error('User must be logged in to update institution data');
+        return;
+      }
+      
+      try {
+        await setDoc(doc(dbFireStore, 'manual_institution_data', this.institution["uri"]), {
+          [field]: this.institution[field]
+        }, { merge: true });
+
+        await setDoc(doc(dbFireStore, 'institutions_integrated', this.institution["uri"]), {
+          [field]: this.institution[field]
+        }, { merge: true });
+
+        console.log('Successfully updated field:', field);
+      } catch (error) {
+        console.error('Error updating field:', field, error);
+      }
     },
-    // saveManualFieldState() {
-    //   this.userStore.setAdminMode();
-    // },
     async loadManualInstitutionData() {
       const slugFromURL = this.$route.params.slug;
       const manual_institution_data = collection(dbFireStore, 'manual_institution_data');
