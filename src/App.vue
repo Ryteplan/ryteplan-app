@@ -97,13 +97,22 @@
                   ></v-switch>
                 </div>
               </v-list-item>
-              <v-list-item
+              <!-- <v-list-item
                 v-if="userStore.isAdmin"
                 @click="() => this.$router.push('/data-compare')"
               >
                 <div class="d-flex justify-end align-center">
                   <v-list-item-title>Data Compare</v-list-item-title>
                   <v-icon class="ml-3" icon="mdi-ab-testing"></v-icon>
+                </div>
+              </v-list-item> -->
+              <v-list-item
+                v-if="userStore.isAdmin"
+                @click="() => this.$router.push('/institutions')"
+              >
+                <div class="d-flex justify-end align-center">
+                  <v-list-item-title>Institutions</v-list-item-title>
+                  <v-icon class="ml-3" icon="mdi-merge"></v-icon>
                 </div>
               </v-list-item>
               <v-list-item
@@ -147,6 +156,15 @@
           <div class="d-flex justify-start align-center">
              <v-icon class="mr-3" icon="mdi-ab-testing"></v-icon>
             <v-list-item-title>Data Compare</v-list-item-title>
+          </div>
+        </v-list-item>
+        <v-list-item
+          v-if="userStore.isAdmin"
+          @click="() => this.$router.push('/institutions')"
+        >
+          <div class="d-flex justify-start align-center">
+             <v-icon class="mr-3" icon="mdi-merge"></v-icon>
+            <v-list-item-title>Institutions</v-list-item-title>
           </div>
         </v-list-item>
         <v-list-item @click="() => this.$router.push('/lists')">

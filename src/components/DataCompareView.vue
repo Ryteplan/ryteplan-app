@@ -82,6 +82,7 @@
 <script>
 import { dbFireStore } from "../firebase";
 import { collection, query, getDocs } from 'firebase/firestore';
+import { COLLECTIONS } from '@/data/collections';
 
 export default {
   name: 'DataCompareView',
@@ -117,7 +118,7 @@ export default {
   methods: {
     async getManualAndPetersonsData() {
       // Get manual data
-      const manualDataQuery = query(collection(dbFireStore, "manual_institution_data"));
+      const manualDataQuery = query(collection(dbFireStore, COLLECTIONS.MANUAL_INSTITUTION_DATA));
       const manualSnapshots = await getDocs(manualDataQuery);
 
       this.manualData = manualSnapshots.docs
@@ -126,9 +127,9 @@ export default {
 
       // Get petersons data
       const collections = [
-        { name: "institutions_v19", target: this.petersonsData1 },
-        { name: "institutions_petersons_processed_20250313", target: this.petersonsData2 },
-        { name: "institutions_integrated", target: this.petersonsData3 }
+        { name: COLLECTIONS.INSTITUTIONS_V19, target: this.petersonsData1 },
+        { name: COLLECTIONS.INSTITUTIONS_PETERSONS_PROCESSED, target: this.petersonsData2 },
+        { name: COLLECTIONS.INSTITUTIONS_INTEGRATED, target: this.petersonsData3 }
       ];
 
       for (const col of collections) {

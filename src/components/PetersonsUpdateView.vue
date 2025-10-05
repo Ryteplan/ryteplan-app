@@ -33,7 +33,14 @@
       
       <div v-if="institution.name" class="institution-info mb-4">
         <h2>{{ institution.name }}</h2>
-        <p>Last updated: <i>{{ formatTimestamp(institution.lastUpdated) }}</i></p>
+        <div class="mt-2">
+          <p>
+            Last updated: <i>{{ formatTimestamp(institution.lastUpdated) }}</i><br/>
+            ID: {{ institution.inunId }} <br/>
+            URL: {{ institution.uri }} <br/>
+            from {{ COLLECTIONS.INSTITUTIONS_PETERSONS_PROCESSED }}<br/>
+          </p>
+        </div>
       </div>
     </div>
     <v-data-table
@@ -232,6 +239,7 @@ import { dbFireStore } from "../firebase";
 import { collection, query, where, getDocs, doc, updateDoc, orderBy, setDoc } from 'firebase/firestore';
 import { useTableStore } from '../stores/tableStore';
 import { formatTimestamp } from '../utils/timestampUtils';
+import { COLLECTIONS } from '@/data/collections';
 
 export default {
   name: 'PetersonsUpdateView',
@@ -310,7 +318,6 @@ export default {
       const additionalFields = [
         // Basic institution info
         { key: 'uri', label: 'URI' },
-        { key: 'inunId', label: 'INUN ID' },
         { key: 'afilDesc', label: 'Affiliation Description' },
         { key: 'hbcu', label: 'HBCU' },
         { key: 'tribal', label: 'Tribal' },
@@ -390,7 +397,7 @@ export default {
       try {
         // Load integrated institution data
         const integratedQuery = query(
-          collection(dbFireStore, 'institutions_integrated'),
+          collection(dbFireStore, COLLECTIONS.INSTITUTIONS_INTEGRATED),
           where("uri", "==", slugFromURL)
         );
         const integratedSnapshot = await getDocs(integratedQuery);
@@ -401,7 +408,7 @@ export default {
 
         // Load manual institution data
         const manualQuery = query(
-          collection(dbFireStore, 'manual_institution_data'),
+          collection(dbFireStore, COLLECTIONS.MANUAL_INSTITUTION_DATA),
           where("__name__", "==", slugFromURL)
         );
         const manualSnapshot = await getDocs(manualQuery);
@@ -411,7 +418,7 @@ export default {
 
         // Load petersons data
         const petersonsQuery = query(
-          collection(dbFireStore, 'institutions_petersons_processed_20250731'),
+          collection(dbFireStore, COLLECTIONS.INSTITUTIONS_PETERSONS_PROCESSED),
           where("uri", "==", slugFromURL)
         );
         const petersonsSnapshot = await getDocs(petersonsQuery);
@@ -553,7 +560,7 @@ export default {
         const updateValue = this.petersonsData[item.fieldKey];
         
         // Update the Firestore document
-        const institutionRef = doc(dbFireStore, 'institutions_integrated', this.institutionDocId);
+        const institutionRef = doc(dbFireStore, COLLECTIONS.INSTITUTIONS_INTEGRATED, this.institutionDocId);
         await updateDoc(institutionRef, {
           [item.fieldKey]: updateValue
         });
@@ -784,14 +791,14 @@ export default {
         }
         
         // Create or update the manual data document
-        const manualDocRef = doc(dbFireStore, 'manual_institution_data', slugFromURL);
+        const manualDocRef = doc(dbFireStore, COLLECTIONS.MANUAL_INSTITUTION_DATA, slugFromURL);
         await setDoc(manualDocRef, {
           [item.fieldKey]: processedValue
         }, { merge: true }); // Use merge to only update the specific field
         
         // Also update the integrated collection with the manual override
         if (this.institutionDocId) {
-          const institutionRef = doc(dbFireStore, 'institutions_integrated', this.institutionDocId);
+          const institutionRef = doc(dbFireStore, COLLECTIONS.INSTITUTIONS_INTEGRATED, this.institutionDocId);
           await updateDoc(institutionRef, {
             [item.fieldKey]: processedValue
           });
@@ -820,7 +827,8 @@ export default {
   setup() {
     const tableStore = useTableStore();
     return {
-      tableStore
+      tableStore,
+      COLLECTIONS
     };
   }
 }

@@ -588,7 +588,7 @@ export default {
     async doDataIntegration() {
       console.log('doing data integration')
       
-      const petersonsDataQuery = query(collection(dbFireStore, "institutions_petersons_processed_20250313V3"));      
+      const petersonsDataQuery = query(collection(dbFireStore, "institutions_petersons_processed_20250731"));      
       const petersonsSnapshots = await getDocs(petersonsDataQuery);
 
       petersonsSnapshots.docs.forEach(doc => {
