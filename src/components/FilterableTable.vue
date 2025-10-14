@@ -340,8 +340,6 @@ export default {
 
     let tableStore = useTableStore();
 
-    tableStore.fetchTableData();
-
     if (tableStore.tableHeaders.length == 0) {
       tableStore.loadTableHeaders();
       tableStore.loadHeaderState('filterableTable');
@@ -351,11 +349,9 @@ export default {
     tableStore.setActiveHeaders('filterableTable');
     tableStore.updateHeaders('filterableTable');
 
-    tableStore.getHideHidden();
-
     let searchFilterSortStore = useSearchFilterSortStore();
     
-    // Sync the hideHidden state between stores on initialization
+    // IMPORTANT: Sync the hideHidden state BEFORE calling getHideHidden or fetchTableData
     const savedHiddenState = localStorage.getItem("hideHidden");
     if (savedHiddenState !== null) {
       const showHidden = savedHiddenState === 'true';
@@ -368,6 +364,9 @@ export default {
       // Set the localStorage to match our default
       localStorage.setItem("hideHidden", "false");
     }
+
+    // Now that stores are synced, fetch the table data
+    tableStore.fetchTableData();
 
     return {
       searchFilterSortStore,

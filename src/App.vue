@@ -204,7 +204,7 @@
             </div>
           </div>
           <div class="petersons-data-attribution">
-            <span>Source: <a style="color: #1d1d1d;" href="https://www.petersons.com" target="_blank">Petersons CDS 2023-2024 Data</a> & College Websites.</span>
+            <span>Source: <a style="color: #1d1d1d;" href="https://www.petersons.com" target="_blank">Petersons CDS 2024-2025 Data</a> & College Websites.</span>
           </div>
         </v-footer>
       </v-container>
