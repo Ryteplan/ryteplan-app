@@ -86,12 +86,11 @@
                 <div class="d-flex align-center">
                   <v-switch 
                     v-if="userStore.isLoggedIn && userStore.adminMode" 
-                    v-model="tableStore.hideHidden" 
+                    v-model="showHiddenResults" 
                     label="Show hidden results" 
                     color="primary"
                     hide-details 
-                    class="inherit-height align-end mr-6" 
-                    @change="tableStore.saveHideHiddenState"
+                    class="inherit-height align-end mr-6"
                   />
                   <div class="text-subtitle-2 mr-4 align-center">
                     Results: 
@@ -355,6 +354,20 @@ export default {
     tableStore.getHideHidden();
 
     let searchFilterSortStore = useSearchFilterSortStore();
+    
+    // Sync the hideHidden state between stores on initialization
+    const savedHiddenState = localStorage.getItem("hideHidden");
+    if (savedHiddenState !== null) {
+      const showHidden = savedHiddenState === 'true';
+      searchFilterSortStore.hideHidden = showHidden;
+      tableStore.hideHidden = !showHidden; // tableStore uses inverted logic for historical reasons
+    } else {
+      // Default: don't show hidden results (showHiddenResults = false)
+      searchFilterSortStore.hideHidden = false;
+      tableStore.hideHidden = true;
+      // Set the localStorage to match our default
+      localStorage.setItem("hideHidden", "false");
+    }
 
     return {
       searchFilterSortStore,
@@ -706,6 +719,30 @@ export default {
     },
     hiddenColumns() {
       return this.reorderableHeaders.filter(header => header.show === false);
+    },
+    showHiddenResults: {
+      get() {
+        // The toggle shows "Show hidden results"  
+        // When true: show hidden results (searchFilterSortStore.hideHidden should be true)
+        // When false: don't show hidden results (searchFilterSortStore.hideHidden should be false)
+        return this.searchFilterSortStore.hideHidden;
+      },
+      set(newValue) {
+        console.log('Toggle setter called with:', newValue);
+        
+        // Update searchFilterSortStore with the new toggle value
+        this.searchFilterSortStore.hideHidden = newValue;
+        
+        // Keep tableStore in sync (uses opposite logic for historical reasons)
+        this.tableStore.hideHidden = !newValue;
+        
+        // Save to localStorage using the same semantics as the toggle
+        localStorage.setItem("hideHidden", newValue.toString());
+        
+        // Trigger a fresh search
+        this.tableStore.freshSearch = true;
+        this.tableStore.fetchTableData();
+      }
     }
   },
   created() {

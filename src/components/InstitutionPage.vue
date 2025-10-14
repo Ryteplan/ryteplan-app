@@ -88,7 +88,7 @@
           color="primary"
           hide-details
           dense
-          v-model="manualInstitionData['hidden']"
+          v-model="institution['hidden']"
           @change="toggleFieldTrueFalse('hidden')"
         >
         </v-switch>         

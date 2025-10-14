@@ -892,10 +892,19 @@ export const useTableStore = defineStore('table', {
       }
     },
     getHideHidden() {
+      const searchFilterSort = useSearchFilterSortStore();
+      
       if (localStorage.getItem("hideHidden") !== null) {
-        this.hideHidden = localStorage.getItem("hideHidden") === 'true';
+        const showHidden = localStorage.getItem("hideHidden") === 'true';
+        // Sync both stores with correct semantics
+        searchFilterSort.hideHidden = showHidden;
+        this.hideHidden = !showHidden; // tableStore uses inverted logic for historical reasons
       } else {
-          this.hideHidden = false;
+        // Default: don't show hidden results (showHiddenResults = false)
+        searchFilterSort.hideHidden = false;
+        this.hideHidden = true;
+        // Set the localStorage to match our default
+        localStorage.setItem("hideHidden", "false");
       }
       return this.hideHidden;
     },
