@@ -388,6 +388,19 @@ export default {
     // Load table headers to get field definitions
     await this.tableStore.loadTableHeaders();
     await this.loadInstitutionData();
+    this.updatePageTitle();
+  },
+  watch: {
+    'institution.name': {
+      handler() {
+        this.updatePageTitle();
+      },
+      immediate: true
+    }
+  },
+  beforeUnmount() {
+    // Reset title when leaving the page
+    document.title = 'College Counselor';
   },
   methods: {
     formatTimestamp,
@@ -440,6 +453,14 @@ export default {
         console.error('Error loading institution data:', error);
       } finally {
         this.loading = false;
+        this.updatePageTitle();
+      }
+    },
+    updatePageTitle() {
+      if (this.institution.name) {
+        document.title = `Petersons Update | ${this.institution.name}`;
+      } else {
+        document.title = 'Petersons Update';
       }
     },
     formatValue(value, fieldKey) {
