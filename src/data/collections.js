@@ -1,7 +1,7 @@
 // Firebase Firestore collection names
 export const COLLECTIONS = {
   // Institution data collections
-  INSTITUTIONS_PETERSONS_PROCESSED: "institutions_petersons_processed_20250731",
+  INSTITUTIONS_PETERSONS_PROCESSED: "institutions_petersons_processed_20251003",
   INSTITUTIONS_INTEGRATED: "institutions_integrated",
   INSTITUTIONS_V19: "institutions_v19",
   INSTITUTIONS_PETERSONS_PROCESSED_MARCH: "institutions_petersons_processed_20250313",
