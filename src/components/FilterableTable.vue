@@ -881,7 +881,8 @@ table > thead > tr:nth-child(1) > th.v-data-table__td.v-data-table-column--fixed
 
 tr th:nth-child(2),
 tr td:nth-child(2) {
-  left: 56px !important;
+  position: sticky !important;
+  left: 48px !important;
   padding-bottom: 8px !important;
   padding-top: 8px !important;
 }
