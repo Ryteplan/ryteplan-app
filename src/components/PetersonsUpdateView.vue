@@ -330,7 +330,7 @@ export default {
         { key: 'tuitOverallFtD2025', label: 'Tuition Overall' },
         { key: 'grsBachInitPellN', label: '# of Undergrad Pell Grants Awarded' },
         { key: 'ugFtAvgNbGiftD', label: 'Average Need-Based Scholarship' },
-        { key: 'ugFtNnNoneedN', label: '# of Merit Scholarships Awarded' },
+        { key: 'ugFtNnNoneedN', label: 'Merit Scholarships Awarded' },
         { key: 'ugFtNnNoneedD', label: 'Average Merit Scholarship' },
         
         // Ethnicity fields
