@@ -742,7 +742,7 @@
           <div class="stat-container"><span class="stat-label">Average Need-Based Scholarship</span> <span class="stat-content">{{ institution["ugFtAvgNbGiftD"] === -1 ? '—' : '$' + (institution["ugFtAvgNbGiftD"]?.toLocaleString() || '—') }}</span></div>
         </div>
         <div class="three-by-three-stat-grid mt-8">
-          <div class="stat-container"><span class="stat-label">Merit Scholarships Awarded <br/><span>(excluding athletics)</span> </span> <span class="stat-content">{{ institution["ugFtNnNoneedN"] === -1 ? '—' : '' + (institution["ugFtNnNoneedN"]?.toLocaleString() || '—') }}</span></div>
+          <div class="stat-container"><span class="stat-label"># of Merit Scholarships Awarded<br/><span>(excluding athletics)</span> </span> <span class="stat-content">{{ institution["ugFtNnNoneedN"] === -1 ? '—' : '' + (institution["ugFtNnNoneedN"]?.toLocaleString() || '—') }}</span></div>
           <div class="stat-container"><span class="stat-label">Average Merit Scholarship <br/><span>(excluding athletics)</span> </span> <span class="stat-content">{{ institution["ugFtNnNoneedD"] === -1 ? '—' : '$' + (institution["ugFtNnNoneedD"]?.toLocaleString() || '—') }}</span></div>
         </div>
       </div>
