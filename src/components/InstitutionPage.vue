@@ -738,7 +738,7 @@
           <div class="stat-container"><span class="stat-label">Tuition Overall</span> <span class="stat-content">{{ institution["tuitOverallFtD2025"] === -1 ? '—' : '$' + (institution["tuitOverallFtD2025"]?.toLocaleString() || '—') }}</span></div>
         </div>
         <div class="three-by-three-stat-grid mt-8">
-          <div class="stat-container"><span class="stat-label">Undergrad Pell Grants Awarded</span> <span class="stat-content">{{ institution["grsBachInitPellN"] === -1 ? '—' : institution["grsBachInitPellN"]?.toLocaleString() || '—' }}</span></div>
+          <div class="stat-container"><span class="stat-label"># of Undergrad Pell Grants Awarded</span> <span class="stat-content">{{ institution["grsBachInitPellN"] === -1 ? '—' : institution["grsBachInitPellN"]?.toLocaleString() || '—' }}</span></div>
           <div class="stat-container"><span class="stat-label">Average Need-Based Scholarship</span> <span class="stat-content">{{ institution["ugFtAvgNbGiftD"] === -1 ? '—' : '$' + (institution["ugFtAvgNbGiftD"]?.toLocaleString() || '—') }}</span></div>
         </div>
         <div class="three-by-three-stat-grid mt-8">

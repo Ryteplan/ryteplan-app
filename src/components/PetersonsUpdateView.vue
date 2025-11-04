@@ -328,7 +328,7 @@ export default {
         { key: 'tuitNresFtD2025', label: 'Tuition Out of State' },
         { key: 'tuitIntlFtD2025', label: 'Tuition International' },
         { key: 'tuitOverallFtD2025', label: 'Tuition Overall' },
-        { key: 'grsBachInitPellN', label: 'Undergrad Pell Grants Awarded' },
+        { key: 'grsBachInitPellN', label: '# of Undergrad Pell Grants Awarded' },
         { key: 'ugFtAvgNbGiftD', label: 'Average Need-Based Scholarship' },
         { key: 'ugFtNnNoneedN', label: 'Merit Scholarships Awarded' },
         { key: 'ugFtNnNoneedD', label: 'Average Merit Scholarship' },
