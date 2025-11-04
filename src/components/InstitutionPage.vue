@@ -368,7 +368,7 @@
           :valueFromManual="manualInstitionData['testingPolicy']"
         />
         <StatDisplay
-          label="Freshmen Living on Campus"
+          label="First Year Students Living on Campus"
           :uri="institution['uri']"
           field="hous1stUgP"
           :valueFromIntegrated="institution['hous1stUgP']" 
@@ -393,7 +393,7 @@
           <!-- ({{ institution["enNonresAlienN"] }}) -->
         </div>
         <StatDisplay
-          label="Freshman Retention Rate"
+          label="First Year Student Retention Rate"
           :uri="institution['uri']"
           field="retentionFrshP"
           :valueFromIntegrated="institution['retentionFrshP']" 
@@ -465,7 +465,7 @@
             valueType="date"
           />
           <StatDisplay
-            label="Fall Freshman Priority"
+            label="Fall First Year Student Priority"
             :uri="institution['uri']"
             field="fallFreshPrio"
             :valueFromIntegrated="institution['fallFreshPrio']" 
