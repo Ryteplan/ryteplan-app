@@ -6,13 +6,41 @@
         <span class="stat-content d-flex">
           <span class="d-flex">
             <div v-if="valueType !== 'testingPolicy'">
-              <span v-html="processValue(currentValue, valueType)"></span>
-              <span v-if="displayPercentage">%</span>
+              <div v-if="field === 'testingPolicy' && shouldShowAccordion">
+                <v-expansion-panels v-model="testingPolicyExpanded" variant="accordion">
+                  <v-expansion-panel>
+                    <v-expansion-panel-title>
+                      <span>{{ truncatedTestingPolicy }}</span>
+                    </v-expansion-panel-title>
+                    <v-expansion-panel-text>
+                      <span class="d-block">{{ fullTestingPolicy }}</span>
+                    </v-expansion-panel-text>
+                  </v-expansion-panel>
+                </v-expansion-panels>
+              </div>
+              <div v-else>
+                <span v-html="processValue(currentValue, valueType)"></span>
+                <span v-if="displayPercentage">%</span>
+              </div>
             </div>
             <div v-if="valueType === 'testingPolicy'">
               <div v-if="manualValue">
                 <span class="d-block testing-header">Rya's Note</span>
-                <span class="d-block testing-body">{{ manualValue }}</span>
+                <div v-if="!shouldShowAccordion">
+                  <span class="d-block testing-body">{{ fullTestingPolicy }}</span>
+                </div>
+                <div v-else>
+                  <v-expansion-panels v-model="testingPolicyExpanded" variant="accordion">
+                    <v-expansion-panel>
+                      <v-expansion-panel-title>
+                        <span class="testing-body">{{ truncatedTestingPolicy }}</span>
+                      </v-expansion-panel-title>
+                      <v-expansion-panel-text>
+                        <span class="d-block testing-body">{{ fullTestingPolicy }}</span>
+                      </v-expansion-panel-text>
+                    </v-expansion-panel>
+                  </v-expansion-panels>
+                </div>
               </div>
             </div>
           </span>
@@ -150,7 +178,8 @@ export default {
       initialEditVerbalValue: null,
       testingPolicySwitchVisibiltyValues: {},
       testingContainers: [],
-      testingPoliciesEmptyState: true
+      testingPoliciesEmptyState: true,
+      testingPolicyExpanded: false
     }
   },
   methods: {
@@ -557,6 +586,26 @@ export default {
     showEditButton() {
       return this.userStore.adminMode
     },
+    shouldShowAccordion() {
+      // Show accordion for testing policy if over 50 characters
+      if (this.field === 'testingPolicy') {
+        const textToCheck = this.manualValue || this.currentValue;
+        if (textToCheck && typeof textToCheck === 'string') {
+          return textToCheck.length > 50;
+        }
+      }
+      return false;
+    },
+    truncatedTestingPolicy() {
+      const textToCheck = this.manualValue || this.currentValue;
+      if (textToCheck && typeof textToCheck === 'string' && textToCheck.length > 50) {
+        return textToCheck.substring(0, 50) + '...';
+      }
+      return textToCheck;
+    },
+    fullTestingPolicy() {
+      return this.manualValue || this.currentValue;
+    }
   }
 }
 </script>
