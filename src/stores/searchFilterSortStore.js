@@ -8,7 +8,7 @@ import { defaultFilters } from '../data/defaultFilters';
 
 export const useSearchFilterSortStore = defineStore('searchFilterSort', {
   state: () => ({
-    cipCodes: cipCodes,
+    cipCodes: [...cipCodes].sort((a, b) => a.major.localeCompare(b.major)),
     hideHidden: false,
     selectedRows: [],
     StatesList: states,

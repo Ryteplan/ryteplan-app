@@ -196,14 +196,14 @@
           variant="outlined"
           hide-details 
           multiple 
-        clearable 
-        chips 
-        label="Majors"
-        :items="searchFilterSortStore.cipCodes" 
-        item-value="cipCode" 
-        item-title="major"
-        v-model="searchFilterSortStore.filters.cipCode" 
-        @update:menu="onUpdateMenu"
+          clearable 
+          chips 
+          label="Majors"
+          :items="searchFilterSortStore.cipCodes" 
+          item-value="cipCode" 
+          item-title="major"
+          v-model="searchFilterSortStore.filters.cipCode" 
+          @update:menu="onUpdateMenu"
         />
       </div>
       <div class="filters-content-section">
