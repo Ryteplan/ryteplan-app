@@ -1,16 +1,6 @@
 <template>
   <v-container class="pt-4">
-    <div class="data-integration d-flex flex-column">
-      <!-- 
-        <p>Output the merge candidate institution data</p>
-        <div v-for="(item, index) in mergeCandidateInstitutionData" :key="index">
-          <h2>{{ index }}</h2>
-          {{ item }}
-          <p>{{ item.name }}</p>
-          <p>{{ item.tuition }}</p>
-        </div>
-      -->
-      
+    <div class="data-integration d-flex flex-column">      
       <v-btn
         @click="duplicateCollection"
         color="primary"
@@ -576,19 +566,19 @@ export default {
       });
 
       this.integratedData.forEach(async (institution) => {
-        setDoc(doc(dbFireStore, 'institutions_integrated_jun032025_backup_1', institution["uri"]), {
+        setDoc(doc(dbFireStore, 'institutions_integrated_nov182025_backup_1', institution["uri"]), {
           ...institution
         }, { merge: true })
-        console.log('done adding: ' + institution.name + ' to institutions_integrated_jun032025_backup_1');
+        console.log('done adding: ' + institution.name + ' to institutions_integrated_nov182025_backup_1');
 
         // set a timeout for 500 milliseconds
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, 1000));
       })
     },
     async doDataIntegration() {
       console.log('doing data integration')
       
-      const petersonsDataQuery = query(collection(dbFireStore, "institutions_petersons_processed_20250731"));      
+      const petersonsDataQuery = query(collection(dbFireStore, "institutions_petersons_processed_20251003V2"));      
       const petersonsSnapshots = await getDocs(petersonsDataQuery);
 
       petersonsSnapshots.docs.forEach(doc => {

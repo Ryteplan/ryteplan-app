@@ -792,8 +792,28 @@ export const useTableStore = defineStore('table', {
           sortable: false,
           align: "end",
           displayCurrency: true
+        },        
+        {
+          title: "Transfer Admit",
+          key: "transferAdmit",
+          minWidth: "140px",
+          show: false,
+          sortable: false,
         },
-
+        {
+          title: "Transfer Applicants",
+          key: "transferApplicants",
+          minWidth: "140px",
+          show: false,
+          sortable: false,
+        },
+        {
+          title: "Transfer Admit Rate",
+          key: "transferAdmitRate",
+          minWidth: "140px",
+          show: false,
+          sortable: false,
+        },
       ];
       
       // Initialize headers with default values
